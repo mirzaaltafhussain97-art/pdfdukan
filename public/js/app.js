@@ -1370,15 +1370,40 @@ function initSidebarNav() {
 }
 function handleNavClick(nav) {
   const isInTools = window.location.pathname.includes('/tools/');
+  const isOnHome  = !isInTools && (
+    window.location.pathname === '/' ||
+    window.location.pathname.includes('index.html') ||
+    window.location.pathname === ''
+  );
   const prefix = isInTools ? '../' : '';
   const routes = {
     home:      prefix + 'index.html',
-    docs:      prefix + 'scanner.html',
+    docs:      function() {
+      // "My Documents" — scroll to recent docs on homepage, or go home if elsewhere
+      if (isOnHome) {
+        const grid = document.getElementById('recentGrid');
+        if (grid) {
+          grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Flash the section so user notices it
+          grid.style.transition = 'box-shadow 0.3s';
+          grid.style.boxShadow  = '0 0 0 3px var(--primary)';
+          setTimeout(() => { grid.style.boxShadow = ''; }, 1500);
+        } else {
+          toast('No documents yet — scan or upload a file to get started', 'info');
+        }
+      } else {
+        window.location.href = prefix + 'index.html';
+      }
+    },
     tools:     prefix + 'tools.html',
     settings:  prefix + 'settings.html',
     help:      prefix + 'help.html',
     favorites: prefix + 'tools.html',
-    recent:    () => toast('Recent docs below ↓'),
+    recent:    function() {
+      const grid = document.getElementById('recentGrid');
+      if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else toast('Recent docs below ↓');
+    },
   };
   const target = routes[nav];
   if (!target) return;
