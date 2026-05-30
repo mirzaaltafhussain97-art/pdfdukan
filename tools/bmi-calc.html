@@ -1,0 +1,503 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BMI Calculator — Free Body Mass Index Tool | PDFdukan</title>
+<meta name="description" content="Free BMI calculator. Enter height and weight in metric or imperial units. Get your Body Mass Index, category, and ideal weight range instantly.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/bmi-calc">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+/* ── BMI-specific styles ── */
+.unit-toggle {
+  display: flex;
+  background: var(--card-2);
+  border-radius: var(--radius);
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 22px;
+  width: fit-content;
+}
+.unit-btn {
+  padding: 8px 22px;
+  border-radius: calc(var(--radius) - 2px);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-3);
+  transition: .2s;
+}
+.unit-btn.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255,99,51,.35);
+}
+.bmi-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+@media(max-width:440px) { .bmi-inputs { grid-template-columns: 1fr; } }
+.bmi-field { display: flex; flex-direction: column; gap: 6px; }
+.bmi-field label { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; }
+.bmi-field input {
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 11px 14px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  outline: none;
+  transition: .2s;
+  font-family: inherit;
+}
+.bmi-field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+
+.bmi-calc-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .2s;
+  margin-top: 4px;
+}
+.bmi-calc-btn:hover { opacity: .88; }
+
+/* Result */
+.bmi-result-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  text-align: center;
+  margin-top: 18px;
+}
+.bmi-big-val {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--primary), #ff8c42);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.bmi-category {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+/* Gauge bar */
+.bmi-gauge {
+  position: relative;
+  height: 20px;
+  border-radius: 100px;
+  background: linear-gradient(to right,
+    #3b82f6 0% 18%,       /* underweight */
+    #10b981 18% 45%,      /* normal */
+    #f59e0b 45% 65%,      /* overweight */
+    #ef4444 65% 80%,      /* obese I */
+    #dc2626 80% 90%,      /* obese II */
+    #991b1b 90% 100%      /* obese III */
+  );
+  margin: 0 auto 28px;
+  max-width: 400px;
+  overflow: visible;
+}
+.bmi-needle {
+  position: absolute;
+  top: -5px;
+  width: 4px;
+  height: 30px;
+  background: #fff;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 6px rgba(0,0,0,.4);
+  transition: left .6s cubic-bezier(.34,1.56,.64,1);
+}
+.gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-muted);
+  max-width: 400px;
+  margin: 4px auto 0;
+}
+
+/* Range blocks */
+.bmi-ranges {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+@media(max-width:500px) { .bmi-ranges { grid-template-columns: 1fr 1fr; } }
+.bmi-range-block {
+  padding: 10px 6px;
+  border-radius: var(--radius);
+  border: 1.5px solid transparent;
+  font-size: 12px;
+  font-weight: 600;
+  transition: .2s;
+}
+.bmi-range-block.under  { background: rgba(59,130,246,.12);  border-color: rgba(59,130,246,.25);  color: #3b82f6; }
+.bmi-range-block.normal { background: rgba(16,185,129,.12);  border-color: rgba(16,185,129,.25);  color: #10b981; }
+.bmi-range-block.over   { background: rgba(245,158,11,.12);  border-color: rgba(245,158,11,.25);  color: #f59e0b; }
+.bmi-range-block.obese  { background: rgba(239,68,68,.12);   border-color: rgba(239,68,68,.25);   color: #ef4444; }
+.bmi-range-block.active-range { border-width: 2.5px; box-shadow: 0 0 12px rgba(0,0,0,.15); transform: scale(1.04); }
+
+/* Extra stats */
+.bmi-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+@media(max-width:440px) { .bmi-stats { grid-template-columns: 1fr 1fr; } }
+.bmi-stat { background: var(--card-2); border-radius: var(--radius); padding: 12px 10px; text-align: center; }
+.bs-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
+.bs-val { font-size: 15px; font-weight: 800; color: var(--text); }
+</style>
+</head>
+<body data-tool="bmi-calc">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/compress.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/age-calc.html"      class="mnd-link">Age Calculator</a>
+  <a href="../tools/bmi-calc.html"      class="mnd-link">BMI Calculator</a>
+  <a href="../tools/discount-calc.html" class="mnd-link">Discount Calc</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>BMI Calculator</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#0288d1,#4fc3f7)">⚖️</div>
+    <h1>BMI Calculator</h1>
+    <p>Calculate your Body Mass Index instantly. Supports metric (kg/cm) and imperial (lbs/ft) units.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <div class="tool-card">
+    <h3><span class="tc-icon">📐</span> Enter Your Measurements</h3>
+
+    <!-- Unit Toggle -->
+    <div class="unit-toggle" role="group" aria-label="Unit system">
+      <button class="unit-btn active" data-system="metric" onclick="BMICalc.switchSystem(this)">Metric (kg / cm)</button>
+      <button class="unit-btn"        data-system="imperial" onclick="BMICalc.switchSystem(this)">Imperial (lbs / ft)</button>
+    </div>
+
+    <!-- Metric inputs -->
+    <div id="metricInputs">
+      <div class="bmi-inputs">
+        <div class="bmi-field">
+          <label>Weight (kg)</label>
+          <input type="number" id="weightKg" placeholder="e.g. 70" min="1" max="500" step="0.1" autocomplete="off">
+        </div>
+        <div class="bmi-field">
+          <label>Height (cm)</label>
+          <input type="number" id="heightCm" placeholder="e.g. 175" min="50" max="300" step="0.1" autocomplete="off">
+        </div>
+      </div>
+    </div>
+
+    <!-- Imperial inputs -->
+    <div id="imperialInputs" style="display:none">
+      <div class="bmi-inputs">
+        <div class="bmi-field">
+          <label>Weight (lbs)</label>
+          <input type="number" id="weightLbs" placeholder="e.g. 154" min="1" max="1100" step="0.1" autocomplete="off">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="bmi-field">
+            <label>Height — Feet</label>
+            <input type="number" id="heightFt" placeholder="5" min="1" max="9" autocomplete="off">
+          </div>
+          <div class="bmi-field">
+            <label>Inches</label>
+            <input type="number" id="heightIn" placeholder="9" min="0" max="11" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="bmi-calc-btn" id="calcBMI" onclick="BMICalc.calculate()">⚖️ Calculate BMI</button>
+  </div>
+
+  <!-- Result -->
+  <div class="bmi-result-card" id="bmiResult" style="display:none">
+    <div style="font-size:13px;color:var(--text-3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;font-weight:700">Your BMI</div>
+    <div class="bmi-big-val" id="bmiValue">—</div>
+    <div class="bmi-category" id="bmiCategory"></div>
+
+    <!-- Gauge -->
+    <div class="bmi-gauge">
+      <div class="bmi-needle" id="bmiNeedle" style="left:50%"></div>
+    </div>
+    <div class="gauge-labels">
+      <span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40+</span>
+    </div>
+
+    <!-- Category blocks -->
+    <div class="bmi-ranges" style="margin-top:20px">
+      <div class="bmi-range-block under"  id="rangeUnder">
+        <div>Underweight</div><div style="font-size:10px;opacity:.7;margin-top:3px">&lt; 18.5</div>
+      </div>
+      <div class="bmi-range-block normal" id="rangeNormal">
+        <div>Normal</div><div style="font-size:10px;opacity:.7;margin-top:3px">18.5 – 24.9</div>
+      </div>
+      <div class="bmi-range-block over"   id="rangeOver">
+        <div>Overweight</div><div style="font-size:10px;opacity:.7;margin-top:3px">25 – 29.9</div>
+      </div>
+      <div class="bmi-range-block obese"  id="rangeObese">
+        <div>Obese</div><div style="font-size:10px;opacity:.7;margin-top:3px">≥ 30</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="bmi-stats">
+      <div class="bmi-stat"><div class="bs-label">Ideal Weight Range</div><div class="bs-val" id="idealWeight">—</div></div>
+      <div class="bmi-stat"><div class="bs-label">Weight to Lose / Gain</div><div class="bs-val" id="weightDelta">—</div></div>
+      <div class="bmi-stat"><div class="bs-label">Healthy BMI Range</div><div class="bs-val">18.5 – 24.9</div></div>
+    </div>
+  </div>
+
+  <div class="ad-slot" style="margin-top:24px"><p>Advertisement — Google AdSense</p></div>
+
+  <section class="seo-section">
+    <h2>BMI Calculator — What is Body Mass Index?</h2>
+    <p class="lead">BMI (Body Mass Index) is a simple measure of body fat based on height and weight. A BMI between 18.5 and 24.9 is considered normal. This free calculator supports metric (kg, cm) and imperial (lbs, ft/in) units and provides your category, ideal weight range, and a visual gauge.</p>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="fc-icon">📐</div><div class="fc-title">Metric &amp; Imperial</div><div class="fc-desc">Switch between kg/cm and lbs/ft inches with one click.</div></div>
+      <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">Visual Gauge</div><div class="fc-desc">Animated needle shows exactly where your BMI falls on the range scale.</div></div>
+      <div class="feature-card"><div class="fc-icon">⚖️</div><div class="fc-title">Ideal Weight</div><div class="fc-desc">See your healthy weight range and how much to gain or lose.</div></div>
+    </div>
+    <div class="tool-card" style="margin-top:24px">
+      <h3>⚠️ Medical Disclaimer</h3>
+      <p style="color:var(--text-2);font-size:14px;line-height:1.7">BMI is a screening tool, not a diagnostic measure. It does not account for muscle mass, bone density, age, or sex. Consult a qualified healthcare professional for personalised health advice.</p>
+    </div>
+  </section>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleBMI">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleBMI" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      </div>
+      <div class="auth-field">
+        <label>Gender</label>
+        <select id="suGender" autocomplete="sex">
+          <option value="">&#8212; Select gender &#8212;</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field">
+        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
+        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script src="../js/tools.js"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div></body>
+</html>

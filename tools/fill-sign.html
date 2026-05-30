@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fill &amp; Sign PDF — Draw or Type Signatures | CamMaster by PDFdukan</title>
+<meta name="description" content="Fill form fields and sign PDFs online. Draw a freehand signature, type your name, or upload an image signature. Download the signed PDF instantly. Free, no upload.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/fill-sign">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.fs-toolbar {
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  padding:10px 14px; background:var(--card-2);
+  border:1px solid var(--border); border-radius:var(--radius) var(--radius) 0 0;
+}
+.fs-tool-btn {
+  display:flex; align-items:center; gap:5px; padding:7px 12px;
+  border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card); cursor:pointer; font-size:12px; font-weight:700;
+  color:var(--text-2); transition:var(--t) var(--ease); white-space:nowrap;
+}
+.fs-tool-btn:hover { border-color:var(--primary); color:var(--primary); }
+.fs-tool-btn.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.fs-tool-btn.danger:hover { border-color:var(--error); color:var(--error); }
+
+.fs-page-nav {
+  display:flex; align-items:center; gap:8px; margin-left:auto;
+  font-size:12px; color:var(--text-3); font-weight:600;
+}
+.fs-canvas-wrap {
+  position:relative; display:block; overflow:hidden;
+  border:1px solid var(--border); border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  background:#e8e8e8; cursor:crosshair;
+}
+#pdfCanvas   { display:block; }
+#drawCanvas  {
+  position:absolute; top:0; left:0;
+  display:block; touch-action:none; z-index:2;
+}
+.fs-sig-modal {
+  position:fixed; inset:0; background:rgba(0,0,0,.6);
+  z-index:900; display:flex; align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; transition:.2s;
+}
+.fs-sig-modal.open { opacity:1; visibility:visible; }
+.fs-sig-box {
+  background:var(--card); border-radius:var(--radius-lg);
+  padding:24px; width:min(480px,94vw); box-shadow:var(--shadow-xl);
+}
+.fs-sig-canvas { background:#fff; border:1px solid var(--border); border-radius:6px; display:block; touch-action:none; }
+.fs-sig-tabs   { display:flex; gap:6px; margin-bottom:14px; }
+.fs-sig-tab    { flex:1; padding:8px; border-radius:var(--radius-sm); border:2px solid var(--border); background:var(--card-2); cursor:pointer; font-size:12px; font-weight:700; color:var(--text-3); transition:.15s; text-align:center; }
+.fs-sig-tab.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.text-nodes-layer { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:3; }
+
+/* ── Object wrapper + handles ── */
+.fs-obj-wrap {
+  position:absolute; border:1.5px dashed rgba(255,99,51,.5);
+  border-radius:3px; box-sizing:border-box; cursor:move;
+  pointer-events:all; min-width:28px; min-height:20px; user-select:none;
+}
+.fs-obj-wrap:hover { border-color:var(--primary); }
+.fs-text-node {
+  display:block; background:transparent; mix-blend-mode:multiply;
+  border:none; padding:3px 6px; min-width:60px; min-height:22px;
+  cursor:text; pointer-events:all; font-size:14px; color:#1a1a1a;
+  white-space:nowrap; user-select:text; outline:none;
+  width:100%; height:100%; box-sizing:border-box;
+}
+.fs-text-node:focus { outline:1.5px solid var(--primary); }
+.fs-tick-node {
+  display:flex; align-items:center; justify-content:center;
+  width:100%; height:100%; font-size:22px; line-height:1;
+  color:#1a237e; background:transparent; mix-blend-mode:multiply;
+  pointer-events:none; user-select:none;
+}
+.fs-obj-trash {
+  position:absolute; top:-11px; right:-11px;
+  width:20px; height:20px; padding:0; line-height:20px; text-align:center;
+  background:var(--error,#ef4444); color:#fff;
+  border:none; border-radius:50%; font-size:11px;
+  cursor:pointer; z-index:20; display:none;
+}
+.fs-obj-wrap:hover .fs-obj-trash { display:block; }
+.fs-resize-handle {
+  position:absolute; width:10px; height:10px;
+  background:#fff; border:1.5px solid var(--primary,#ff6333);
+  border-radius:2px; z-index:15; pointer-events:all; display:none;
+}
+.fs-obj-wrap:hover .fs-resize-handle { display:block; }
+.fs-resize-handle.nw { top:-5px;  left:-5px;              cursor:nw-resize; }
+.fs-resize-handle.n  { top:-5px;  left:calc(50% - 5px);   cursor:n-resize;  }
+.fs-resize-handle.ne { top:-5px;  right:-5px;              cursor:ne-resize; }
+.fs-resize-handle.w  { top:calc(50% - 5px); left:-5px;     cursor:w-resize;  }
+.fs-resize-handle.e  { top:calc(50% - 5px); right:-5px;    cursor:e-resize;  }
+.fs-resize-handle.sw { bottom:-5px; left:-5px;             cursor:sw-resize; }
+.fs-resize-handle.s  { bottom:-5px; left:calc(50% - 5px); cursor:s-resize;  }
+.fs-resize-handle.se { bottom:-5px; right:-5px;            cursor:se-resize; }
+</style>
+</head>
+<body data-tool="fill-sign">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Tools</span>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
+          <div class="nd-divider"></div>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Fill &amp; Sign</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#1b5e20,#43a047)">✍️</div>
+    <h1>Fill &amp; Sign PDF</h1>
+    <p>Add text fields, draw a freehand signature, or upload a signature image directly onto any PDF page.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload -->
+  <div class="tool-card" id="uploadCard">
+    <h3><span class="tc-icon">📂</span> Upload PDF to Sign</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF here or click to browse</div>
+      <div class="dz-hint">All signing happens locally — nothing is uploaded</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+  </div>
+
+  <!-- Editor workspace -->
+  <div id="editorWrap" style="display:none">
+    <div class="tool-card" style="padding:0;overflow:hidden">
+
+      <!-- Toolbar -->
+      <div class="fs-toolbar">
+        <button class="fs-tool-btn active" id="btnText" onclick="setMode('text')" title="Click on page to add a text field">📝 Text</button>
+        <button class="fs-tool-btn" id="btnDraw" onclick="setMode('draw')" title="Draw freehand">✏️ Draw</button>
+        <button class="fs-tool-btn" id="btnErase" onclick="setMode('erase')" title="Erase drawings">🧹 Erase</button>
+        <button class="fs-tool-btn" id="btnCheck" onclick="setMode('check')" title="Click on page to stamp a ✓ check mark">☑️ Check</button>
+        <button class="fs-tool-btn" id="btnSign" onclick="openSigModal()" title="Open signature pad">🖋️ Signature</button>
+        <span style="width:1px;height:22px;background:var(--border);margin:0 4px"></span>
+        <input type="color" id="inkColor" value="#1a237e" title="Ink color" style="width:32px;height:32px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:2px;">
+        <input type="range" id="inkSize" min="1" max="20" value="3" title="Brush size" style="width:80px;">
+        <button class="fs-tool-btn danger" onclick="clearDrawLayer()" title="Clear all drawings">🗑️ Clear</button>
+        <div class="fs-page-nav">
+          <button class="fs-tool-btn" onclick="FS.prevPage()">‹</button>
+          <span id="pageIndicator">Page 1 / 1</span>
+          <button class="fs-tool-btn" onclick="FS.nextPage()">›</button>
+        </div>
+      </div>
+
+      <!-- Canvas area -->
+      <div class="fs-canvas-wrap" id="canvasWrap">
+        <canvas id="pdfCanvas"></canvas>
+        <canvas id="drawCanvas"></canvas>
+        <div class="text-nodes-layer" id="textLayer"></div>
+      </div>
+    </div>
+
+    <div class="tool-card" style="margin-top:12px">
+      <button class="btn btn-primary btn-lg" onclick="FS.exportPDF()">⬇️ Save &amp; Download Signed PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- Signature Modal -->
+<div class="fs-sig-modal" id="sigModal">
+  <div class="fs-sig-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h3 style="margin:0">Create Signature</h3>
+      <button onclick="closeSigModal()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-3)">✕</button>
+    </div>
+    <div class="fs-sig-tabs">
+      <button class="fs-sig-tab active" id="sigTabDraw" onclick="setSigTab('draw')">✏️ Draw</button>
+      <button class="fs-sig-tab" id="sigTabType" onclick="setSigTab('type')">⌨️ Type</button>
+      <button class="fs-sig-tab" id="sigTabUpload" onclick="setSigTab('upload')">📁 Upload</button>
+    </div>
+    <div id="sigDrawPanel">
+      <canvas class="fs-sig-canvas" id="sigCanvas" width="430" height="160"></canvas>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn btn-sm" onclick="clearSigCanvas()">Clear</button>
+        <input type="color" id="sigColor" value="#1a237e" style="height:32px;width:40px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:2px;">
+      </div>
+    </div>
+    <div id="sigTypePanel" style="display:none">
+      <input type="text" id="sigTypeText" placeholder="Type your name…" style="width:100%;font-size:22px;font-family:'Brush Script MT',cursive;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card-2);color:var(--text);">
+      <select id="sigTypeFont" style="margin-top:8px;width:100%;padding:8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card-2);color:var(--text);" onchange="updateSigPreview()">
+        <option value="'Brush Script MT',cursive">Brush Script</option>
+        <option value="'Dancing Script',cursive">Dancing Script</option>
+        <option value="Georgia,serif">Georgia</option>
+        <option value="Arial,sans-serif">Arial</option>
+      </select>
+    </div>
+    <div id="sigUploadPanel" style="display:none">
+      <input type="file" id="sigUploadInput" accept="image/*" onchange="loadSigUpload(this)" style="margin-bottom:8px">
+      <img id="sigUploadPreview" src="" alt="" style="max-width:100%;max-height:160px;border:1px solid var(--border);border-radius:6px;display:none;">
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px;width:100%" onclick="applySig()">✅ Place Signature on Page</button>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
+      </div>
+      <div class="auth-field"><label>Gender</label><select id="suGender"><option value="">— Select —</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
+        <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script src="../js/header.js"></script>
+<script>
+/* ── Fill & Sign Engine ──────────────────────────────────────── */
+const FS = (() => {
+  let _pdfBytes    = null;
+  let _pdfDoc      = null;
+  let _numPages    = 0;
+  let _curPage     = 1;
+  let _scale       = 1.5;
+  let _mode        = 'text';
+  let _pageDraws   = {};
+  let _pageObjects = {};
+  let _tickPngCache = null;
+
+  const pdfCanvas  = document.getElementById('pdfCanvas');
+  const drawCanvas = document.getElementById('drawCanvas');
+  const pdfCtx     = pdfCanvas.getContext('2d');
+  const drawCtx    = drawCanvas.getContext('2d');
+  const textLayer  = document.getElementById('textLayer');
+
+  // ── Module-level drag & resize state ─────────────────────────
+  let _drag = false, _dragEl = null, _dox = 0, _doy = 0;
+  let _rz = false, _rzWrap = null, _rzDir = '';
+  let _rzSX, _rzSY, _rzSL, _rzST, _rzSW, _rzSH;
+
+  document.addEventListener('mousemove', e => {
+    if (_drag && _dragEl) {
+      _dragEl.style.left = (e.clientX - _dox) + 'px';
+      _dragEl.style.top  = (e.clientY - _doy) + 'px';
+    }
+    if (_rz && _rzWrap) {
+      const dx = e.clientX - _rzSX, dy = e.clientY - _rzSY;
+      const d  = _rzDir;
+      let L = _rzSL, T = _rzST, W = _rzSW, H = _rzSH;
+      if (d.includes('e')) W = Math.max(30, _rzSW + dx);
+      if (d.includes('s')) H = Math.max(20, _rzSH + dy);
+      if (d.includes('w')) { W = Math.max(30, _rzSW - dx); L = _rzSL + (_rzSW - W); }
+      if (d.includes('n')) { H = Math.max(20, _rzSH - dy); T = _rzST + (_rzSH - H); }
+      _rzWrap.style.left   = L + 'px';
+      _rzWrap.style.top    = T + 'px';
+      _rzWrap.style.width  = W + 'px';
+      _rzWrap.style.height = H + 'px';
+    }
+  });
+  document.addEventListener('mouseup', () => {
+    _drag = false; _dragEl = null;
+    _rz = false; _rzWrap = null;
+  });
+
+  // ── Drawing state ─────────────────────────────────────────────
+  let _drawing = false, _lastX = 0, _lastY = 0;
+
+  function getEventPos(e) {
+    const rect  = drawCanvas.getBoundingClientRect();
+    const touch = e.touches ? e.touches[0] : e;
+    return {
+      x: (touch.clientX - rect.left) * (drawCanvas.width  / rect.width),
+      y: (touch.clientY - rect.top)  * (drawCanvas.height / rect.height)
+    };
+  }
+
+  drawCanvas.addEventListener('mousedown',  startDraw);
+  drawCanvas.addEventListener('mousemove',  moveDraw);
+  drawCanvas.addEventListener('mouseup',    endDraw);
+  drawCanvas.addEventListener('mouseleave', endDraw);
+  drawCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e); }, { passive: false });
+  drawCanvas.addEventListener('touchmove',  e => { e.preventDefault(); moveDraw(e);  }, { passive: false });
+  drawCanvas.addEventListener('touchend',   endDraw);
+
+  function startDraw(e) {
+    if (_mode === 'text') {
+      const pos = getEventPos(e);
+      addObject('text', 'Text', pos.x - 60, pos.y - 14, 140, 30);
+      return;
+    }
+    if (_mode === 'check') {
+      const pos = getEventPos(e);
+      addObject('tick', '✓', pos.x - 14, pos.y - 14, 28, 28);
+      return;
+    }
+    _drawing = true;
+    const pos = getEventPos(e);
+    _lastX = pos.x; _lastY = pos.y;
+    drawCtx.beginPath();
+    drawCtx.moveTo(_lastX, _lastY);
+  }
+
+  function moveDraw(e) {
+    if (!_drawing) return;
+    const pos = getEventPos(e);
+    if (_mode === 'erase') {
+      drawCtx.globalCompositeOperation = 'destination-out';
+      drawCtx.lineWidth = parseInt(document.getElementById('inkSize').value) * 4;
+      drawCtx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+      drawCtx.globalCompositeOperation = 'source-over';
+      drawCtx.lineWidth   = document.getElementById('inkSize').value;
+      drawCtx.strokeStyle = document.getElementById('inkColor').value;
+    }
+    drawCtx.lineCap = 'round'; drawCtx.lineJoin = 'round';
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.stroke();
+    drawCtx.beginPath();
+    drawCtx.moveTo(pos.x, pos.y);
+    _lastX = pos.x; _lastY = pos.y;
+  }
+
+  function endDraw() {
+    if (!_drawing) return;
+    _drawing = false;
+    drawCtx.globalCompositeOperation = 'source-over';
+    savePageDraw();
+  }
+
+  function savePageDraw() {
+    _pageDraws[_curPage] = drawCanvas.toDataURL('image/png');
+  }
+
+  // ── Object system ─────────────────────────────────────────────
+
+  function addObject(type, content, left, top, width, height) {
+    const wrap = document.createElement('div');
+    wrap.className    = 'fs-obj-wrap';
+    wrap.dataset.type = type;
+    wrap.style.left   = left   + 'px';
+    wrap.style.top    = top    + 'px';
+    wrap.style.width  = (width  || 120) + 'px';
+    wrap.style.height = (height || 30)  + 'px';
+
+    if (type === 'text') {
+      const node = document.createElement('div');
+      node.className       = 'fs-text-node';
+      node.contentEditable = 'true';
+      node.textContent     = content || 'Text';
+      wrap.appendChild(node);
+    } else if (type === 'image') {
+      const img     = document.createElement('img');
+      img.src       = content;
+      img.style.cssText = 'width:100%;height:100%;object-fit:contain;pointer-events:none;display:block;';
+      img.draggable = false;
+      wrap.appendChild(img);
+    } else if (type === 'tick') {
+      const tick = document.createElement('div');
+      tick.className   = 'fs-tick-node';
+      tick.textContent = '✓';
+      wrap.appendChild(tick);
+    }
+
+    // Trash button
+    const trash = document.createElement('button');
+    trash.className = 'fs-obj-trash';
+    trash.title     = 'Delete';
+    trash.innerHTML = '&#128465;';
+    trash.addEventListener('mousedown', ev => ev.stopPropagation());
+    trash.addEventListener('click',     ev => { ev.stopPropagation(); wrap.remove(); });
+    wrap.appendChild(trash);
+
+    // 8 resize handles
+    ['nw','n','ne','w','e','sw','s','se'].forEach(dir => {
+      const h = document.createElement('div');
+      h.className   = 'fs-resize-handle ' + dir;
+      h.dataset.dir = dir;
+      h.addEventListener('mousedown', ev => {
+        ev.preventDefault(); ev.stopPropagation();
+        _rz = true; _rzWrap = wrap; _rzDir = dir;
+        _rzSX = ev.clientX; _rzSY = ev.clientY;
+        _rzSL = wrap.offsetLeft; _rzST = wrap.offsetTop;
+        _rzSW = wrap.offsetWidth; _rzSH = wrap.offsetHeight;
+      });
+      wrap.appendChild(h);
+    });
+
+    // Drag-to-move (uses module-level state)
+    wrap.addEventListener('mousedown', ev => {
+      if (ev.target.classList.contains('fs-resize-handle')) return;
+      if (ev.target.classList.contains('fs-obj-trash'))     return;
+      if (ev.target.contentEditable === 'true' && document.activeElement === ev.target) return;
+      ev.preventDefault(); ev.stopPropagation();
+      _drag  = true;
+      _dragEl = wrap;
+      _dox   = ev.clientX - wrap.offsetLeft;
+      _doy   = ev.clientY - wrap.offsetTop;
+    });
+
+    textLayer.appendChild(wrap);
+
+    if (type === 'text') {
+      setTimeout(() => wrap.querySelector('.fs-text-node').focus(), 10);
+    }
+    return wrap;
+  }
+
+  // ── Save / restore objects per page ──────────────────────────
+
+  function _saveObjects() {
+    const wraps = textLayer.querySelectorAll('.fs-obj-wrap');
+    _pageObjects[_curPage] = [];
+    wraps.forEach(wrap => {
+      const type = wrap.dataset.type;
+      let content = '';
+      if      (type === 'text')  content = (wrap.querySelector('.fs-text-node') || {}).textContent || '';
+      else if (type === 'image') content = (wrap.querySelector('img')           || {}).src          || '';
+      else if (type === 'tick')  content = '✓';
+      _pageObjects[_curPage].push({
+        type,
+        content,
+        left:   parseFloat(wrap.style.left)   || 0,
+        top:    parseFloat(wrap.style.top)    || 0,
+        width:  parseFloat(wrap.style.width)  || 120,
+        height: parseFloat(wrap.style.height) || 30,
+      });
+    });
+  }
+
+  function _restoreObjects(pageNum) {
+    textLayer.innerHTML = '';
+    (_pageObjects[pageNum] || []).forEach(rec => {
+      addObject(rec.type, rec.content, rec.left, rec.top, rec.width, rec.height);
+    });
+  }
+
+  // ── Page rendering ────────────────────────────────────────────
+
+  async function renderPage(n) {
+    const page = await _pdfDoc.getPage(n);
+    const vp   = page.getViewport({ scale: _scale });
+    pdfCanvas.width   = vp.width;  pdfCanvas.height  = vp.height;
+    drawCanvas.width  = vp.width;  drawCanvas.height = vp.height;
+    document.getElementById('canvasWrap').style.width = vp.width + 'px';
+    await page.render({ canvasContext: pdfCtx, viewport: vp }).promise;
+
+    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+    if (_pageDraws[n]) {
+      const img = new Image(); img.src = _pageDraws[n];
+      img.onload = () => drawCtx.drawImage(img, 0, 0);
+    }
+    _restoreObjects(n);
+    document.getElementById('pageIndicator').textContent = 'Page ' + n + ' / ' + _numPages;
+  }
+
+  async function load(file) {
+    const rawBuf  = await file.arrayBuffer();
+    _pdfBytes     = rawBuf.slice(0);   // immutable clone — pdfjs will detach rawBuf
+    _pdfDoc       = await pdfjsLib.getDocument({ data: new Uint8Array(rawBuf) }).promise;
+    _numPages    = _pdfDoc.numPages;
+    _curPage     = 1;
+    _pageDraws   = {};
+    _pageObjects = {};
+    _tickPngCache = null;
+    await renderPage(1);
+    document.getElementById('uploadCard').style.display = 'none';
+    document.getElementById('editorWrap').style.display = 'block';
+  }
+
+  async function nextPage() {
+    savePageDraw(); _saveObjects();
+    if (_curPage < _numPages) { _curPage++; await renderPage(_curPage); }
+  }
+  async function prevPage() {
+    savePageDraw(); _saveObjects();
+    if (_curPage > 1) { _curPage--; await renderPage(_curPage); }
+  }
+
+  async function _getTickPng(pdfDoc) {
+    if (_tickPngCache) return _tickPngCache;
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, 64, 64);
+    ctx.font = 'bold 52px Arial, sans-serif';
+    ctx.fillStyle = '#1a237e';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('✓', 32, 32);
+    const base64 = c.toDataURL('image/png').split(',')[1];
+    const bytes  = Uint8Array.from(atob(base64), ch => ch.charCodeAt(0));
+    _tickPngCache = await pdfDoc.embedPng(bytes);
+    return _tickPngCache;
+  }
+
+  async function exportPDF() {
+    savePageDraw(); _saveObjects();
+    toast('⏳ Preparing signed PDF…');
+    try {
+      const { PDFDocument, StandardFonts, rgb } = PDFLib;
+      const pdfDoc = await PDFDocument.load(_pdfBytes);
+      const pages  = pdfDoc.getPages();
+      const font   = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      _tickPngCache = null;
+
+      for (let i = 1; i <= _numPages; i++) {
+        const page = pages[i - 1];
+        const { width, height } = page.getSize();
+
+        // Bake freehand draw layer
+        if (_pageDraws[i]) {
+          const base64   = _pageDraws[i].split(',')[1];
+          const imgBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+          page.drawImage(await pdfDoc.embedPng(imgBytes), { x: 0, y: 0, width, height });
+        }
+
+        // Bake objects
+        for (const obj of (_pageObjects[i] || [])) {
+          const pdfX = obj.left   / _scale;
+          const pdfY = height - (obj.top + obj.height) / _scale;
+          const pdfW = obj.width  / _scale;
+          const pdfH = obj.height / _scale;
+
+          if (obj.type === 'text') {
+            if (!obj.content.trim()) continue;
+            page.drawText(obj.content, { x: pdfX + 2, y: pdfY + 2, size: 13, font, color: rgb(0.1, 0.1, 0.5) });
+          } else if (obj.type === 'tick') {
+            const tickImg = await _getTickPng(pdfDoc);
+            page.drawImage(tickImg, { x: pdfX, y: pdfY, width: pdfW, height: pdfH });
+          } else if (obj.type === 'image') {
+            try {
+              const b64   = obj.content.split(',')[1];
+              const iBytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+              const mime   = obj.content.split(';')[0].split(':')[1];
+              const emb    = mime === 'image/png' ? await pdfDoc.embedPng(iBytes) : await pdfDoc.embedJpg(iBytes);
+              page.drawImage(emb, { x: pdfX, y: pdfY, width: pdfW, height: pdfH });
+            } catch(_) {}
+          }
+        }
+      }
+
+      const outBytes = await pdfDoc.save();
+      const blob     = new Blob([outBytes], { type: 'application/pdf' });
+      const defaultName = 'signed.pdf';
+      if (window.CMFilename) {
+        window.CMFilename.prompt(defaultName).then(function(chosenName) {
+          if (!chosenName) return;
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = chosenName;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          if (window.CMLogs) window.CMLogs.log({ tool: 'Fill & Sign', action: 'export', output: chosenName, size: blob.size, pages: _numPages });
+          toast('✅ Signed PDF downloaded!');
+        });
+      } else {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = defaultName;
+        a.click();
+        toast('✅ Signed PDF downloaded!');
+      }
+    } catch(e) {
+      toast('❌ Export error: ' + e.message);
+    }
+  }
+
+  return {
+    load, nextPage, prevPage, exportPDF,
+    addImageObject: (src, l, t, w, h) => addObject('image', src, l, t, w, h),
+    setMode(m) { _mode = m; }
+  };
+})();
+
+function setMode(m) {
+  FS.setMode(m);
+  document.querySelectorAll('.fs-tool-btn').forEach(b => b.classList.remove('active'));
+  const map = { text: 'btnText', draw: 'btnDraw', erase: 'btnErase', check: 'btnCheck' };
+  if (map[m]) document.getElementById(map[m]).classList.add('active');
+  const dc = document.getElementById('drawCanvas');
+  dc.style.cursor = (m === 'draw' || m === 'erase') ? 'crosshair' : (m === 'check' ? 'cell' : 'default');
+}
+
+function clearDrawLayer() {
+  const dc = document.getElementById('drawCanvas');
+  dc.getContext('2d').clearRect(0, 0, dc.width, dc.height);
+}
+
+// ── Signature modal ───────────────────────────────────────────
+let _sigMode = 'draw';
+
+function openSigModal()  { document.getElementById('sigModal').classList.add('open'); initSigCanvas(); }
+function closeSigModal() { document.getElementById('sigModal').classList.remove('open'); }
+
+function setSigTab(t) {
+  _sigMode = t;
+  ['draw','type','upload'].forEach(x => {
+    document.getElementById('sigTab'  + x.charAt(0).toUpperCase() + x.slice(1)).classList.toggle('active', x === t);
+    document.getElementById('sig'     + x.charAt(0).toUpperCase() + x.slice(1) + 'Panel').style.display = x === t ? 'block' : 'none';
+  });
+}
+
+function initSigCanvas() {
+  const sc  = document.getElementById('sigCanvas');
+  const ctx = sc.getContext('2d');
+  ctx.clearRect(0, 0, sc.width, sc.height);
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, sc.width, sc.height);
+  if (sc._sigReady) return;
+  sc._sigReady = true;
+  let drawing = false, lx = 0, ly = 0;
+  sc.addEventListener('mousedown',  e => {
+    drawing = true;
+    const r = sc.getBoundingClientRect(); lx = e.clientX - r.left; ly = e.clientY - r.top;
+  });
+  sc.addEventListener('mousemove',  e => {
+    if (!drawing) return;
+    const r = sc.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(x, y);
+    ctx.strokeStyle = document.getElementById('sigColor').value;
+    ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.stroke();
+    lx = x; ly = y;
+  });
+  sc.addEventListener('mouseup',    () => { drawing = false; });
+  sc.addEventListener('mouseleave', () => { drawing = false; });
+}
+
+function clearSigCanvas() {
+  const sc = document.getElementById('sigCanvas'), ctx = sc.getContext('2d');
+  ctx.clearRect(0, 0, sc.width, sc.height);
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, sc.width, sc.height);
+}
+
+function loadSigUpload(inp) {
+  if (!inp.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const p = document.getElementById('sigUploadPreview');
+    p.src = e.target.result; p.style.display = 'block';
+  };
+  r.readAsDataURL(inp.files[0]);
+}
+
+function applySig() {
+  let dataUrl;
+  if (_sigMode === 'draw') {
+    dataUrl = document.getElementById('sigCanvas').toDataURL('image/png');
+  } else if (_sigMode === 'type') {
+    const text = document.getElementById('sigTypeText').value;
+    if (!text) { toast('Please type your name.'); return; }
+    const fontFam = document.getElementById('sigTypeFont').value;
+    const c = document.createElement('canvas');
+    c.width = 400; c.height = 100;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, 400, 100);
+    ctx.font = '48px ' + fontFam;
+    ctx.fillStyle = '#1a237e'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 10, 50);
+    dataUrl = c.toDataURL('image/png');
+  } else {
+    const p = document.getElementById('sigUploadPreview');
+    if (!p.src || p.style.display === 'none') { toast('Please upload a signature image.'); return; }
+    dataUrl = p.src;
+  }
+
+  // Place as interactive object in the overlay layer
+  const cw = document.getElementById('canvasWrap');
+  const cx = Math.max(0, cw.offsetWidth  / 2 - 150);
+  const cy = Math.max(0, cw.offsetHeight - 130);
+  FS.addImageObject(dataUrl, cx, cy, 300, 80);
+  closeSigModal();
+  toast('✅ Signature placed — drag to move, handles to resize.');
+}
+
+// ── Drop zone ─────────────────────────────────────────────────
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click',    () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e  => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave',() => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0]; if (f) handleFile(f);
+});
+document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  FS.load(f);
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring"><div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

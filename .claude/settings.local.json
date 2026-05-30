@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\blog\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\tools\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\*.html\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\*.xml\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\tools\\\\*.html\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\blog\\\\*.html\" /B)",
+      "Bash(dir \"F:\\\\Website Data\\\\Tool Kit Web\\\\CamMaster Project\\\\js\\\\*.js\" /B)",
+      "Bash(for f in \"img-to-pdf.html\" \"pdf-to-img.html\" \"merge-pdf.html\" \"split-pdf.html\" \"ocr.html\" \"age-calc.html\"; do *)",
+      "Bash(python3 -c ' *)",
+      "Bash(grep \"\\\\.html$\")",
+      "Bash(discount)",
+      "Bash(pdf-to-word)",
+      "Bash(word-to-pdf\")"
+    ]
+  }
+}

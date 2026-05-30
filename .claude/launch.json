@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cammaster",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "7720"],
+      "port": 7720
+    }
+  ]
+}

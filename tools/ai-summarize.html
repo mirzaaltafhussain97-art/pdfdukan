@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI Text Summarizer — PDF &amp; Document Summary | CamMaster by PDFdukan</title>
+<meta name="description" content="Instantly summarize any PDF or pasted text using client-side AI. Generates bullet-point summaries using TF-IDF sentence scoring. Free, private, no upload.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/ai-summarize">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.ai-input-tabs { display:flex; gap:6px; margin-bottom:14px; }
+.ai-tab {
+  flex:1; padding:9px; border:2px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card-2); cursor:pointer; font-size:12px; font-weight:700;
+  color:var(--text-3); transition:.15s; text-align:center;
+}
+.ai-tab.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.summary-output {
+  background:var(--card-2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; margin-top:14px;
+}
+.summary-bullet {
+  display:flex; gap:10px; align-items:flex-start; padding:9px 0;
+  border-bottom:1px solid var(--border); line-height:1.55;
+}
+.summary-bullet:last-child { border-bottom:none; }
+.summary-bullet-icon { flex-shrink:0; font-size:16px; margin-top:1px; }
+.summary-bullet-text { font-size:14px; color:var(--text); }
+.ai-meta-row {
+  display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px;
+}
+.ai-meta-chip {
+  background:var(--card-2); border:1px solid var(--border); border-radius:var(--radius-pill);
+  padding:4px 12px; font-size:11px; font-weight:700; color:var(--text-3);
+}
+.ai-meta-chip strong { color:var(--primary); }
+.keyword-cloud { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.kw-chip {
+  background:var(--primary-soft); border:1px solid var(--primary);
+  border-radius:var(--radius-pill); padding:3px 10px; font-size:11px;
+  font-weight:700; color:var(--primary);
+}
+</style>
+</head>
+<body data-tool="ai-summarize">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PPT</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
+          <div class="nd-divider"></div>
+          <a href="../scanner.html"        class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
+          <a href="../tools/compress.html" class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
+          <a href="../tools/ocr.html"      class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/ai-summarize.html" class="mnd-link">AI Summarizer</a>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>AI Summarizer</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#37474f,#607d8b)">🤖</div>
+    <h1>AI Text Summarizer</h1>
+    <p>Upload a PDF or paste any text to get an instant bullet-point summary powered by client-side TF-IDF sentence scoring — no API calls, fully private.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Input -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📥</span> Input Source</h3>
+    <div class="ai-input-tabs">
+      <button class="ai-tab active" id="tabPDF"  onclick="setInputTab('pdf')">📄 Upload PDF</button>
+      <button class="ai-tab" id="tabText" onclick="setInputTab('text')">📝 Paste Text</button>
+    </div>
+
+    <div id="pdfPanel">
+      <div class="drop-zone" id="dropZone">
+        <div class="dz-icon">📄</div>
+        <div class="dz-title">Drop PDF here or click to browse</div>
+        <div class="dz-hint">Text will be extracted automatically</div>
+        <span class="dz-btn">Choose PDF</span>
+        <input type="file" id="fileInput" accept=".pdf" style="display:none">
+      </div>
+      <div id="pdfStatus" style="font-size:12px;color:var(--text-3);margin-top:8px"></div>
+    </div>
+
+    <div id="textPanel" style="display:none">
+      <textarea id="rawText" rows="10" placeholder="Paste your document text here…" style="width:100%;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;color:var(--text);font-size:13px;resize:vertical;font-family:inherit;"></textarea>
+    </div>
+  </div>
+
+  <!-- Options -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">⚙️</span> Summary Options</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="option-group">
+        <label>Summary Length</label>
+        <select id="summaryLen">
+          <option value="5">Brief (5 bullets)</option>
+          <option value="10" selected>Standard (10 bullets)</option>
+          <option value="15">Detailed (15 bullets)</option>
+          <option value="20">Extended (20 bullets)</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Focus On</label>
+        <select id="summaryFocus">
+          <option value="auto" selected>Auto (most important)</option>
+          <option value="first">Document beginning</option>
+          <option value="mixed">Evenly distributed</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+        <input type="checkbox" id="showKeywords" checked>
+        Show keyword cloud
+      </label>
+    </div>
+  </div>
+
+  <!-- Action -->
+  <div class="tool-card">
+    <button class="btn btn-primary btn-lg" id="summarizeBtn" onclick="AI.summarize()">
+      🤖 Generate Summary
+    </button>
+  </div>
+
+  <!-- Output -->
+  <div class="tool-card" id="outputCard" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <h3 style="margin:0"><span class="tc-icon">📋</span> AI Summary</h3>
+      <button class="btn btn-sm" onclick="AI.copyToClipboard()">📋 Copy All</button>
+    </div>
+    <div class="ai-meta-row" id="metaRow"></div>
+    <div class="summary-output" id="summaryOutput"></div>
+    <div id="keywordSection" style="margin-top:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Top Keywords</div>
+      <div class="keyword-cloud" id="keywordCloud"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save summaries.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
+      </div>
+      <div class="auth-field"><label>Gender</label><select id="suGender"><option value="">— Select —</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
+        <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+/* ── AI Summarizer (TF-IDF Client-Side) ──────────────────────── */
+const AI = (() => {
+  const STOP = new Set(['the','a','an','and','or','but','in','on','at','to','for','of','with','by','from','is','was','are','were','be','been','being','have','has','had','do','does','did','will','would','could','should','may','might','shall','can','not','no','nor','so','yet','both','either','neither','each','few','more','most','other','some','such','than','then','there','these','those','this','that','it','its','as','if','while','after','before','during','about','into','through','between','above','below','up','down','out','off','over','under','again','further','once','here','when','where','why','how','all','also','just','too','very','still','any','same','what','which','who','whom','whose']);
+
+  function tokenize(text) {
+    return text.toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
+  }
+
+  function sentenceSplit(text) {
+    return text.match(/[^.!?]+[.!?]*/g)?.map(s => s.trim()).filter(s => s.length > 30) || [];
+  }
+
+  function tfIdfScore(sentences) {
+    const docFreq = {};
+    const sentTokens = sentences.map(s => tokenize(s));
+    sentTokens.forEach(tokens => {
+      const unique = [...new Set(tokens)];
+      unique.forEach(t => { docFreq[t] = (docFreq[t] || 0) + 1; });
+    });
+    const N = sentences.length || 1;
+    return sentences.map((sent, i) => {
+      const tokens = sentTokens[i];
+      const tf = {};
+      tokens.forEach(t => { tf[t] = (tf[t] || 0) + 1; });
+      let score = 0;
+      Object.entries(tf).forEach(([term, cnt]) => {
+        const idf = Math.log((N + 1) / ((docFreq[term] || 1) + 1));
+        score += (cnt / (tokens.length || 1)) * idf;
+      });
+      return { sent, score, idx: i };
+    });
+  }
+
+  function topKeywords(text, n = 15) {
+    const tokens = tokenize(text);
+    const freq = {};
+    tokens.forEach(t => { if (t.length > 3) freq[t] = (freq[t]||0)+1; });
+    return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([w])=>w);
+  }
+
+  async function extractPDFText(file) {
+    const buf = await file.arrayBuffer();
+    const doc = await pdfjsLib.getDocument({data: new Uint8Array(buf)}).promise;
+    let text = '';
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    return { text, pages: doc.numPages };
+  }
+
+  async function summarize() {
+    const btn = document.getElementById('summarizeBtn');
+    btn.disabled = true; btn.textContent = '⏳ Analyzing…';
+
+    try {
+      let rawText = '', pages = 0;
+      const activeTab = document.getElementById('tabPDF').classList.contains('active') ? 'pdf' : 'text';
+
+      if (activeTab === 'pdf') {
+        if (!window._aiFile) { toast('Please upload a PDF first.'); return; }
+        const result = await extractPDFText(window._aiFile);
+        rawText = result.text; pages = result.pages;
+      } else {
+        rawText = document.getElementById('rawText').value.trim();
+        if (!rawText) { toast('Please paste some text.'); return; }
+      }
+
+      if (rawText.length < 100) { toast('Text is too short to summarize.'); return; }
+
+      const numBullets = parseInt(document.getElementById('summaryLen').value);
+      const focus      = document.getElementById('summaryFocus').value;
+      const showKw     = document.getElementById('showKeywords').checked;
+
+      const sentences = sentenceSplit(rawText);
+      if (sentences.length < 3) { toast('Not enough sentences to summarize.'); return; }
+
+      let scored = tfIdfScore(sentences);
+
+      // Apply focus filter
+      if (focus === 'first') {
+        scored = scored.filter(s => s.idx < Math.ceil(sentences.length * 0.4));
+      } else if (focus !== 'auto') {
+        // mixed: keep distribution
+      }
+
+      // Select top N by score, then sort back by original order
+      const top = scored.sort((a,b) => b.score - a.score)
+                        .slice(0, numBullets)
+                        .sort((a,b) => a.idx - b.idx);
+
+      // Render output
+      const wordCount  = rawText.split(/\s+/).length;
+      const readTime   = Math.ceil(wordCount / 200);
+      const metaRow    = document.getElementById('metaRow');
+      const meta = [
+        { label:'Words',     val: wordCount.toLocaleString() },
+        { label:'Sentences', val: sentences.length },
+        { label:'Read time', val: readTime + ' min' },
+      ];
+      if (pages) meta.push({ label:'Pages', val: pages });
+      metaRow.innerHTML = meta.map(m => `<div class="ai-meta-chip">${m.label}: <strong>${m.val}</strong></div>`).join('');
+
+      const icons = ['🔹','🔸','💡','📌','⭐','🎯','📍','🔑','✅','💬','📊','🔎','💎','🏷️','📝'];
+      const output = document.getElementById('summaryOutput');
+      output.innerHTML = top.map((item,i) =>
+        `<div class="summary-bullet">
+           <span class="summary-bullet-icon">${icons[i % icons.length]}</span>
+           <span class="summary-bullet-text">${item.sent.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>
+         </div>`
+      ).join('');
+
+      if (showKw) {
+        const keywords = topKeywords(rawText);
+        document.getElementById('keywordCloud').innerHTML = keywords.map(k => `<span class="kw-chip">${k}</span>`).join('');
+        document.getElementById('keywordSection').style.display = 'block';
+      } else {
+        document.getElementById('keywordSection').style.display = 'none';
+      }
+
+      document.getElementById('outputCard').style.display = 'block';
+      document.getElementById('outputCard').scrollIntoView({ behavior:'smooth' });
+      toast('✅ Summary generated: ' + top.length + ' key points extracted!');
+    } catch(e) {
+      toast('❌ Error: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '🤖 Generate Summary';
+    }
+  }
+
+  function copyToClipboard() {
+    const bullets = [...document.querySelectorAll('.summary-bullet-text')].map(el => '• ' + el.textContent).join('\n');
+    navigator.clipboard.writeText(bullets).then(() => toast('📋 Summary copied to clipboard!'));
+  }
+
+  return { summarize, copyToClipboard };
+})();
+
+function setInputTab(t) {
+  document.getElementById('tabPDF').classList.toggle('active', t==='pdf');
+  document.getElementById('tabText').classList.toggle('active', t==='text');
+  document.getElementById('pdfPanel').style.display  = t==='pdf'  ? 'block' : 'none';
+  document.getElementById('textPanel').style.display = t==='text' ? 'block' : 'none';
+}
+
+// Drop zone
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click', () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  window._aiFile = f;
+  document.getElementById('pdfStatus').textContent = '✅ Loaded: ' + f.name + ' (' + (f.size/1024).toFixed(1) + ' KB)';
+  document.getElementById('pdfStatus').style.color = 'var(--success)';
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring"><div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

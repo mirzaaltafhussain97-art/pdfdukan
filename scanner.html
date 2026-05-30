@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CamMaster Scanner — PDFdukan | Free Document Scanner</title>
+<meta name="description" content="Scan documents online with CamMaster by PDFdukan. Auto-detect edges, apply AI filters, export to PDF or JPG. Free, no installation needed.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/scanner">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+
+<!-- OpenCV.js -->
+<script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
+
+<!-- CDN Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<script>
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+<style>
+.scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
+.cv-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: var(--radius-pill);
+  font-size: 11px; font-weight: 700; margin-bottom: 16px;
+  background: var(--warning); color: #000;
+}
+.cv-badge.ready { background: var(--success); color: #fff; }
+
+/* Crop layout */
+.crop-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.crop-canvas-outer {
+  background: #000; border-radius: var(--radius); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 380px; max-height: 580px;
+}
+#cropCanvas { display: block; max-width: 100%; max-height: 560px; touch-action: none; }
+
+/* Filter layout */
+.filter-layout { display: grid; grid-template-columns: 1fr 310px; gap: 20px; align-items: start; }
+.filter-preview-outer {
+  background: #000; border-radius: var(--radius); overflow: hidden;
+  min-height: 350px; display: flex; align-items: center; justify-content: center;
+}
+#previewCanvas { display: block; max-width: 100%; max-height: 540px; }
+.filter-panel-inner {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; position: sticky; top: 80px;
+}
+.fp-title { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
+
+/* Pages layout */
+.pages-screen { padding-top: 4px; }
+
+/* Export layout */
+.export-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.export-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 24px;
+}
+.export-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.ec-icon { width: 28px; height: 28px; background: var(--primary-soft); color: var(--primary); border-radius: var(--radius-sm); display: grid; place-items: center; font-size: 14px; }
+
+@media (max-width: 900px) {
+  .filter-layout { grid-template-columns: 1fr; }
+  .export-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .scanner-wrap { padding: 16px 12px 90px; }
+}
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<!-- HEADER -->
+<header class="header" role="banner">
+  <a href="index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">▾</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">📄 PDF Converters</span>
+          <a href="tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">📉</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">📊</span><div class="nd-link-body"><div class="nd-link-name">PDF → PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">PDF → Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">🌐</span><div class="nd-link-body"><div class="nd-link-name">HTML → PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">✏️ Edit &amp; Sign</span>
+          <a href="tools/pdf-editor.html"    class="nd-link"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="tools/fill-sign.html"     class="nd-link"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="tools/watermark.html"     class="nd-link"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="tools/page-numbers.html"  class="nd-link"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="tools/delete-pages.html"  class="nd-link"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="tools/ai-summarize.html"  class="nd-link"><span class="nd-link-icon">🤖</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">🖼️ Image &amp; Scan</span>
+          <a href="scanner.html"           class="nd-link"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="tools/compress.html"    class="nd-link"><span class="nd-link-icon">🗜️</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="tools/ocr.html"         class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">🔧 Calculators</span>
+          <a href="tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">📅</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">⚖️</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">▾</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="about.html"   class="nd-link"><span class="nd-link-icon">🏢</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="privacy.html" class="nd-link"><span class="nd-link-icon">🔒</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="terms.html"   class="nd-link"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="cookies.html" class="nd-link"><span class="nd-link-icon">🍪</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="sitemap.xml"  class="nd-link"><span class="nd-link-icon">🗺️</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <div id="cvStatus" class="cv-badge">⏳ Loading OpenCV…</div>
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">🇺🇸</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="index.html"              class="mnd-link">🏠 Home</a>
+  <div class="mnd-section">📄 PDF Tools</div>
+  <a href="tools/img-to-pdf.html"   class="mnd-link">📑 Image to PDF</a>
+  <a href="tools/pdf-to-img.html"   class="mnd-link">🖼️ PDF to JPG</a>
+  <a href="tools/merge-pdf.html"    class="mnd-link">🔗 Merge PDF</a>
+  <a href="tools/split-pdf.html"    class="mnd-link">✂️ Split PDF</a>
+  <a href="tools/compress-pdf.html" class="mnd-link">📉 Compress PDF</a>
+  <a href="tools/pdf-to-word.html"  class="mnd-link">📝 PDF to Word</a>
+  <a href="tools/word-to-pdf.html"  class="mnd-link">📄 Word to PDF</a>
+  <div class="mnd-section">✏️ Edit &amp; Sign</div>
+  <a href="tools/fill-sign.html"    class="mnd-link">✍️ Fill &amp; Sign</a>
+  <a href="tools/watermark.html"    class="mnd-link">💧 Watermark</a>
+  <a href="tools/page-numbers.html" class="mnd-link">🔢 Page Numbers</a>
+  <a href="tools/delete-pages.html" class="mnd-link">🗑️ Delete Pages</a>
+  <div class="mnd-section">🖼️ Image &amp; Scan</div>
+  <a href="scanner.html"            class="mnd-link active">📷 Smart Scan</a>
+  <a href="tools/compress.html"     class="mnd-link">🗜️ Compress Image</a>
+  <a href="tools/ocr.html"          class="mnd-link">🔤 OCR Text</a>
+  <div class="mnd-section">🔧 Calculators</div>
+  <a href="tools/age-calc.html"      class="mnd-link">📅 Age Calculator</a>
+  <a href="tools/bmi-calc.html"      class="mnd-link">⚖️ BMI Calculator</a>
+  <a href="tools/discount-calc.html" class="mnd-link">🏷️ Discount Calc</a>
+  <div class="mnd-section">More</div>
+  <a href="blog/index.html" class="mnd-link">📝 Blog</a>
+  <a href="about.html"      class="mnd-link">🏢 About</a>
+</div>
+
+<div class="scanner-wrap">
+
+  <!-- Step Indicator -->
+  <div class="scanner-steps" role="navigation" aria-label="Scanner steps">
+    <div class="scanner-step active" data-step="upload">📤 Upload</div>
+    <div class="scanner-step" data-step="crop">✂️ Crop</div>
+    <div class="scanner-step" data-step="filter">🎨 Filter</div>
+    <div class="scanner-step" data-step="pages">📄 Pages</div>
+    <div class="scanner-step" data-step="export">📥 Export</div>
+  </div>
+
+  <!-- ======== SCREEN: UPLOAD ======== -->
+  <div class="scanner-screen active" id="screen-upload">
+    <div class="scanner-upload">
+      <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Upload document">
+        <div class="uz-icon">📁</div>
+        <h2 class="uz-title">Drop documents here or click to upload</h2>
+        <p class="uz-hint">Supports JPG, PNG, WEBP, PDF — multiple files at once</p>
+        <div class="uz-actions">
+          <button class="action-btn primary" onclick="event.stopPropagation();document.getElementById('fileInputScanner').click()">
+            <span>📷</span> Upload Images
+          </button>
+          <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputPdfScan').click()">
+            <span>📂</span> Import PDF
+          </button>
+        </div>
+        <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">🔒 All processing is local — files never leave your device</p>
+      </div>
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:16px">
+        <p style="font-size:13px;color:var(--text-3);margin-bottom:10px;font-weight:600">📋 Quick Tips</p>
+        <ul style="font-size:12px;color:var(--text-3);line-height:2;padding-left:16px">
+          <li>For best results, place document on a contrasting background</li>
+          <li>Good lighting reduces shadows — try near a window</li>
+          <li>Upload multiple images to create a multi-page PDF</li>
+          <li>Use <strong>Magic Pro</strong> filter to remove shadows from scanned docs</li>
+        </ul>
+      </div>
+
+      <div class="ad-slot" style="margin-top:16px"><p>Advertisement — Google AdSense</p></div>
+    </div>
+  </div>
+
+  <!-- ======== SCREEN: CROP ======== -->
+  <div class="scanner-screen" id="screen-crop">
+    <div class="crop-layout">
+      <div class="crop-canvas-outer">
+        <canvas id="cropCanvas"></canvas>
+      </div>
+      <div class="crop-controls">
+        <div class="crop-info">Drag the 4 <strong>corner handles</strong> individually, or the <strong>edge handles</strong> to move an entire edge</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+          <button class="btn btn-secondary btn-sm" id="btnBackToUpload" title="Back to upload">← Back</button>
+          <button class="btn btn-secondary btn-sm" id="btnResetCrop" title="Re-detect edges">↺ Reset</button>
+          <button class="btn btn-secondary btn-sm" id="btnRotateL" title="Rotate 90° left">↺ Rotate L</button>
+          <button class="btn btn-secondary btn-sm" id="btnRotateR" title="Rotate 90° right">↻ Rotate R</button>
+          <button class="btn btn-secondary btn-sm" id="btnSkipCrop" title="Skip perspective correction">Skip →</button>
+          <button class="btn btn-primary" id="btnApplyCrop" style="margin-left:auto">✓ Apply Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SCREEN: FILTER ======== -->
+  <div class="scanner-screen" id="screen-filter">
+    <div class="filter-layout">
+
+      <!-- Left: Preview -->
+      <div>
+        <div class="filter-preview-outer">
+          <canvas id="previewCanvas"></canvas>
+        </div>
+        <div class="compare-row" style="margin-top:12px">
+          <div class="compare-box"><div class="cb-label">Original</div><canvas id="origMini"></canvas></div>
+          <div class="compare-box"><div class="cb-label">Processed</div><canvas id="procMini"></canvas></div>
+        </div>
+        <!-- Back + Next row always visible below preview -->
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn btn-secondary" id="btnBackToCropMain" style="flex-shrink:0">← Back</button>
+          <button class="btn btn-primary btn-lg" id="btnAddPageMain" style="flex:1;font-size:15px">✓ Done — Next →</button>
+        </div>
+      </div>
+
+      <!-- Right: Controls -->
+      <div class="filter-panel-inner">
+        <div class="fp-title">🎨 Magic Pro Filters</div>
+        <div class="filter-strip" id="filterStrip"></div>
+
+        <div class="fp-title" style="margin-top:16px">🎛️ Fine Tune</div>
+        <div class="sliders-grid">
+          <div class="slider-group">
+            <label>Brightness <span class="sv" id="sv_brightness">0</span></label>
+            <input type="range" id="sl_brightness" min="-100" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <label>Contrast <span class="sv" id="sv_contrast">0</span></label>
+            <input type="range" id="sl_contrast" min="-100" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <label>Sharpness <span class="sv" id="sv_sharpness">0</span></label>
+            <input type="range" id="sl_sharpness" min="0" max="100" value="0">
+          </div>
+          <div class="slider-group">
+            <label>Saturation <span class="sv" id="sv_saturation">0</span></label>
+            <input type="range" id="sl_saturation" min="-100" max="100" value="0">
+          </div>
+        </div>
+
+        <label class="apply-all">
+          <input type="checkbox" id="applyToAll"> Apply to all pages
+        </label>
+
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+          <button class="btn btn-secondary btn-sm" id="btnBackToCrop">← Back to Crop</button>
+          <button class="btn btn-primary" id="btnAddPage">✓ Add Page →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== SCREEN: PAGES ======== -->
+  <div class="scanner-screen pages-screen" id="screen-pages">
+    <div class="pages-screen-header">
+      <h2>📄 Document Pages</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary" id="btnAddMore">+ Add More</button>
+        <button class="btn btn-primary" id="btnGoExport">Export PDF →</button>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text-3);margin-bottom:16px">Drag to reorder pages · Click to edit filter · Hover to delete</p>
+    <div class="pages-grid" id="pagesGrid"></div>
+    <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+  </div>
+
+  <!-- ======== SCREEN: EXPORT ======== -->
+  <div class="scanner-screen" id="screen-export">
+    <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
+      <button class="btn btn-secondary" id="btnBackToPages">← Back to Pages</button>
+      <span style="font-size:14px;color:var(--text-3)">Ready to export — <strong id="exportPageCount">0 pages</strong></span>
+    </div>
+
+    <div class="export-layout">
+      <!-- PDF Options -->
+      <div class="export-card">
+        <h3><span class="ec-icon">📄</span> Export as PDF</h3>
+        <div class="pdf-options">
+          <div class="po-row">
+            <label>Page Size</label>
+            <select id="pdfPageSize">
+              <option value="a4">A4</option>
+              <option value="letter">Letter</option>
+              <option value="a3">A3</option>
+            </select>
+          </div>
+          <div class="po-row">
+            <label>Orientation</label>
+            <select id="pdfOrientation">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+          <div class="po-row">
+            <label>Quality</label>
+            <select id="pdfQuality">
+              <option value="0.95">High (larger file)</option>
+              <option value="0.85" selected>Medium (recommended)</option>
+              <option value="0.7">Low (smaller file)</option>
+            </select>
+          </div>
+        </div>
+        <button class="download-btn" id="btnDownloadPDF">
+          <span>📄</span> Download PDF
+        </button>
+      </div>
+
+      <!-- Image Options -->
+      <div class="export-card">
+        <h3><span class="ec-icon">🖼️</span> Export as Images</h3>
+        <p style="font-size:13px;color:var(--text-3);margin-bottom:16px">Single page → JPG download<br>Multiple pages → ZIP archive</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn-primary" id="btnDownloadJPG">
+            <span>🖼️</span> Download JPG
+          </button>
+          <button class="btn btn-secondary" id="btnDownloadZIP">
+            <span>📦</span> Download ZIP (all pages)
+          </button>
+        </div>
+        <div class="ad-slot" style="margin-top:16px;min-height:60px"><p>Advertisement</p></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /scanner-wrap -->
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+
+<!-- AUTH MODAL — tabbed Sign In / Sign Up -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleScanner">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleScanner" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save scanned docs across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign Up with Google
+      </button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      </div>
+      <div class="auth-field">
+        <label>Gender</label>
+        <select id="suGender" autocomplete="sex">
+          <option value="">— Select gender —</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field">
+        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
+        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account →</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing…</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+
+<!-- Processing overlay -->
+<div class="processing-overlay" id="processingOverlay">
+  <div class="spinner"></div>
+  <p id="processingMsg">Processing…</p>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" id="fileInputScanner" accept="image/*" multiple>
+<input type="file" id="fileInputPdfScan" accept=".pdf,application/pdf" multiple>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="js/app.js"></script>
+<script src="js/particles.js"></script>
+<script src="js/crop.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/scanner.js"></script>
+</body>
+</html>

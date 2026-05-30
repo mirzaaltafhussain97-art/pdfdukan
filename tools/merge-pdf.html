@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Merge PDF Files — Select Pages Per File | CamMaster by PDFdukan</title>
+<meta name="description" content="Merge multiple PDF files into one document. Choose specific pages from each file, drag to reorder, then merge instantly. Free, no upload. PDFdukan CamMaster.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/merge-pdf">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+/* ── PDF File Card ─────────────────────────────────────────── */
+.pdf-file-card {
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color var(--t) var(--ease);
+}
+.pdf-file-card:hover { border-color: var(--border-strong); }
+.pdf-file-card.sortable-ghost { opacity: 0.4; }
+
+.pfc-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; background: var(--card-3);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.pfc-drag {
+  font-size: 18px; color: var(--text-muted); cursor: grab;
+  padding: 2px 4px; border-radius: 4px; line-height: 1;
+  flex-shrink: 0;
+}
+.pfc-drag:hover { color: var(--text-3); }
+.pfc-doc-icon { font-size: 22px; flex-shrink: 0; }
+.pfc-info { flex: 1; min-width: 0; }
+.pfc-name {
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis; color: var(--text);
+}
+.pfc-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.pfc-controls { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; align-items: center; }
+.pfc-btn {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text-2); padding: 4px 9px; border-radius: var(--radius-sm);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: var(--t) var(--ease);
+}
+.pfc-btn:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.pfc-del {
+  background: none; border: 1px solid transparent;
+  color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm);
+  font-size: 13px; cursor: pointer; transition: var(--t) var(--ease);
+}
+.pfc-del:hover { background: rgba(239,68,68,0.12); border-color: var(--error); color: var(--error); }
+
+/* ── Page checkboxes ───────────────────────────────────────── */
+.pfc-pages {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 12px 14px 4px;
+  max-height: 180px; overflow-y: auto;
+}
+.pfc-page {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border: 1.5px solid var(--primary); border-radius: 6px;
+  background: var(--primary-soft); cursor: pointer;
+  transition: var(--t) var(--ease); position: relative;
+}
+.pfc-page input[type=checkbox] {
+  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
+}
+.pfc-page.unchecked {
+  border-color: var(--border); background: transparent;
+}
+.pfc-page.unchecked .pp-num { color: var(--text-muted); }
+.pfc-page:hover { transform: scale(1.1); }
+.pp-num { font-size: 11px; font-weight: 700; color: var(--primary); pointer-events: none; }
+.pfc-page.unchecked:hover { border-color: var(--text-3); }
+
+/* ── Summary bar ───────────────────────────────────────────── */
+.pfc-summary {
+  padding: 7px 14px 10px;
+  font-size: 11px; color: var(--text-3); font-weight: 500;
+}
+
+/* ── Merge hint ────────────────────────────────────────────── */
+.merge-hint {
+  background: var(--card-2); border-radius: var(--radius-sm);
+  padding: 10px 14px; font-size: 12px; color: var(--text-3);
+  display: flex; align-items: center; gap: 6px; margin-top: 10px;
+}
+</style>
+</head>
+<body data-tool="merge-pdf">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/compress.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/age-calc.html"      class="mnd-link">Age Calculator</a>
+  <a href="../tools/bmi-calc.html"      class="mnd-link">BMI Calculator</a>
+  <a href="../tools/discount-calc.html" class="mnd-link">Discount Calc</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Merge PDF</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7b1fa2,#ab47bc)">🔗</div>
+    <h1>Merge PDF Files</h1>
+    <p>Combine multiple PDFs into one. Select specific pages from each file, drag to reorder, then merge.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload drop zone -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Add PDF Files</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF files here or click to browse</div>
+      <div class="dz-hint">Add 2 or more PDFs — select pages per file before merging</div>
+      <span class="dz-btn">Choose PDFs</span>
+      <input type="file" id="fileInput" accept=".pdf,application/pdf" multiple>
+    </div>
+
+    <!-- File cards (populated by MergePDF.renderList) -->
+    <div id="fileList" style="margin-top:14px"></div>
+
+    <div class="merge-hint">
+      <span>💡</span>
+      Drag ⠿ to reorder files · Click page numbers to toggle · Use <strong>Range…</strong> for quick selection
+    </div>
+  </div>
+
+  <!-- Merge button -->
+  <div class="tool-card">
+    <button class="btn btn-primary btn-lg" id="mergeBtn" onclick="MergePDF.merge()" disabled style="width:100%">
+      🔗 Merge PDFs
+    </button>
+  </div>
+
+  <!-- Progress -->
+  <div class="tool-card" id="progressCard" style="display:none">
+    <h3><span class="tc-icon">⏳</span> Merging</h3>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">Starting…</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="tool-card result-section" id="resultSection">
+    <h3><span class="tc-icon">✅</span> Merged PDF Ready</h3>
+    <div class="result-stats">
+      <div class="result-stat"><div class="rs-label">Total Pages</div><div class="rs-value" id="statPages">—</div></div>
+      <div class="result-stat"><div class="rs-label">File Size</div><div class="rs-value" id="statSize">—</div></div>
+    </div>
+    <button class="download-btn" id="downloadBtn" onclick="MergePDF.download()" disabled>
+      <span>📥</span> Download Merged PDF
+    </button>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <section class="seo-section">
+    <h2>Merge PDF Files Online — Free & Private</h2>
+    <p class="lead">PDFdukan's Merge PDF tool lets you combine multiple PDF documents into a single file — with full control. Select exactly which pages to include from each file, drag to reorder the documents, then download the merged result instantly. No files are sent to any server.</p>
+  </section>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      </div>
+      <div class="auth-field">
+        <label>Gender</label>
+        <select id="suGender" autocomplete="sex">
+          <option value="">&#8212; Select gender &#8212;</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field">
+        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
+        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script src="../js/tools.js"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div></body>
+</html>

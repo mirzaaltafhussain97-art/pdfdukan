@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Add Page Numbers to PDF — Header &amp; Footer | CamMaster by PDFdukan</title>
+<meta name="description" content="Add automatic page numbers to any PDF. Choose position (header/footer, left/center/right), format, font size, and starting number. Free, client-side.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/page-numbers">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.pn-position-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-width:300px;
+}
+.pn-pos-btn {
+  aspect-ratio:1.5; border:2px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card-2); cursor:pointer; font-size:18px; transition:var(--t) var(--ease);
+  display:flex; align-items:center; justify-content:center;
+}
+.pn-pos-btn:hover { border-color:var(--primary); }
+.pn-pos-btn.active { border-color:var(--primary); background:var(--primary-soft); }
+.options-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:560px){ .options-grid-2 { grid-template-columns:1fr; } }
+.pn-preview-row {
+  background:var(--card-2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:14px 18px; font-size:13px; color:var(--text-2); display:flex;
+  align-items:center; gap:8px; margin-top:12px;
+}
+</style>
+</head>
+<body data-tool="page-numbers">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Page Numbers</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#311b92,#7c4dff)">🔢</div>
+    <h1>Add Page Numbers to PDF</h1>
+    <p>Automatically number every page with customizable position, format, font size, and starting number.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF here or click to browse</div>
+      <div class="dz-hint">Accepts .pdf — runs 100% in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+    <div id="fileChip" style="display:none;margin-top:10px">
+      <div class="file-chip">
+        <span class="fc-icon">📄</span>
+        <span class="fc-name" id="fileName"></span>
+        <button class="fc-del" onclick="clearFile()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">⚙️</span> Numbering Options</h3>
+
+    <p style="font-size:12px;color:var(--text-3);margin-bottom:10px">Position — click a cell to select placement:</p>
+    <div class="pn-position-grid" id="posGrid">
+      <button class="pn-pos-btn" data-pos="top-left"     onclick="setPos('top-left')"     title="Top Left">↖</button>
+      <button class="pn-pos-btn active" data-pos="top-center"  onclick="setPos('top-center')"  title="Top Center">↑</button>
+      <button class="pn-pos-btn" data-pos="top-right"    onclick="setPos('top-right')"    title="Top Right">↗</button>
+      <button class="pn-pos-btn" data-pos="mid-left"     onclick="setPos('mid-left')"     title="Middle Left">←</button>
+      <button class="pn-pos-btn" data-pos="mid-center"   onclick="setPos('mid-center')"   title="Center">✦</button>
+      <button class="pn-pos-btn" data-pos="mid-right"    onclick="setPos('mid-right')"    title="Middle Right">→</button>
+      <button class="pn-pos-btn" data-pos="bot-left"     onclick="setPos('bot-left')"     title="Bottom Left">↙</button>
+      <button class="pn-pos-btn" data-pos="bot-center"   onclick="setPos('bot-center')"   title="Bottom Center">↓</button>
+      <button class="pn-pos-btn" data-pos="bot-right"    onclick="setPos('bot-right')"    title="Bottom Right">↘</button>
+    </div>
+
+    <div class="options-grid-2" style="margin-top:16px">
+      <div class="option-group">
+        <label>Format</label>
+        <select id="fmtSel" onchange="updatePreview()">
+          <option value="n">1, 2, 3…</option>
+          <option value="page-n" selected>Page 1, Page 2…</option>
+          <option value="n-of-t">1 of 10, 2 of 10…</option>
+          <option value="page-n-of-t">Page 1 of 10…</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Start Number</label>
+        <input type="number" id="startNum" value="1" min="0" max="9999" oninput="updatePreview()">
+      </div>
+      <div class="option-group">
+        <label>Font Size (pt)</label>
+        <input type="number" id="fontSize" value="11" min="6" max="36" oninput="updatePreview()">
+      </div>
+      <div class="option-group">
+        <label>Margin (pt)</label>
+        <input type="number" id="margin" value="22" min="4" max="72" oninput="updatePreview()">
+      </div>
+      <div class="option-group">
+        <label>Font Color</label>
+        <input type="color" id="fontColor" value="#333333" oninput="updatePreview()" style="height:38px;width:100%;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;">
+      </div>
+      <div class="option-group">
+        <label>Skip First Pages</label>
+        <input type="number" id="skipPages" value="0" min="0" max="999" title="Leave this many pages un-numbered at the start (e.g. cover page)">
+      </div>
+    </div>
+
+    <div class="pn-preview-row">
+      <span>Preview:</span>
+      <strong id="previewText" style="color:var(--primary)">Page 1</strong>
+      <span style="color:var(--text-muted);font-size:11px">(page 1 of 10 example)</span>
+    </div>
+  </div>
+
+  <!-- Action -->
+  <div class="tool-card">
+    <button class="btn btn-primary btn-lg" id="applyBtn" onclick="PN.apply()" disabled>
+      🔢 Apply Page Numbers
+    </button>
+    <button id="downloadBtn" class="bg-orange-600 hover:bg-orange-700 text-white font-bold p-4 rounded-lg shadow-xl block w-full text-center mt-4" style="display:none;background:#ea580c;color:#fff;font-weight:700;padding:16px;border-radius:8px;box-shadow:0 10px 25px rgba(234,88,12,.3);width:100%;text-align:center;margin-top:16px;border:none;cursor:pointer;font-size:15px;transition:background .2s;" onmouseover="this.style.background='#c2410c'" onmouseout="this.style.background='#ea580c'">
+      ⬇️ Download Numbered PDF
+    </button>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      </div>
+      <div class="auth-field">
+        <label>Gender</label>
+        <select id="suGender" autocomplete="sex">
+          <option value="">&#8212; Select gender &#8212;</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field">
+        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
+        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script src="../js/header.js"></script>
+<script>
+/* ── Page Numbers Engine ─────────────────────────────────────── */
+const PN = (() => {
+  let _bytes = null;
+  let _pos   = 'top-center';
+
+  // Map position → {x-anchor, y-fn(pageH,margin)}
+  const POS_MAP = {
+    'top-left':   { xFn:(w,m)=>m,       yFn:(h,m)=>h-m,   align:'left'   },
+    'top-center': { xFn:(w,m)=>w/2,     yFn:(h,m)=>h-m,   align:'center' },
+    'top-right':  { xFn:(w,m)=>w-m,     yFn:(h,m)=>h-m,   align:'right'  },
+    'mid-left':   { xFn:(w,m)=>m,       yFn:(h,m)=>h/2,   align:'left'   },
+    'mid-center': { xFn:(w,m)=>w/2,     yFn:(h,m)=>h/2,   align:'center' },
+    'mid-right':  { xFn:(w,m)=>w-m,     yFn:(h,m)=>h/2,   align:'right'  },
+    'bot-left':   { xFn:(w,m)=>m,       yFn:(h,m)=>m,     align:'left'   },
+    'bot-center': { xFn:(w,m)=>w/2,     yFn:(h,m)=>m,     align:'center' },
+    'bot-right':  { xFn:(w,m)=>w-m,     yFn:(h,m)=>m,     align:'right'  },
+  };
+
+  function formatLabel(fmt, n, total) {
+    switch(fmt) {
+      case 'n':           return String(n);
+      case 'page-n':      return 'Page ' + n;
+      case 'n-of-t':      return n + ' of ' + total;
+      case 'page-n-of-t': return 'Page ' + n + ' of ' + total;
+      default:            return String(n);
+    }
+  }
+
+  function hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16)/255;
+    const g = parseInt(hex.slice(3,5),16)/255;
+    const b = parseInt(hex.slice(5,7),16)/255;
+    return { r, g, b };
+  }
+
+  async function apply() {
+    if (!_bytes) { toast('Please upload a PDF first.'); return; }
+    const btn = document.getElementById('applyBtn');
+    btn.disabled = true; btn.textContent = '⏳ Applying…';
+    document.getElementById('downloadBtn').style.display = 'none';
+
+    try {
+      const fmt       = document.getElementById('fmtSel').value;
+      const startNum  = parseInt(document.getElementById('startNum').value) || 1;
+      const fontSize  = parseInt(document.getElementById('fontSize').value) || 11;
+      const margin    = parseInt(document.getElementById('margin').value) || 22;
+      const colorHex  = document.getElementById('fontColor').value;
+      const skipPages = parseInt(document.getElementById('skipPages').value) || 0;
+      const { r, g, b } = hexToRgb(colorHex);
+      const col = PDFLib.rgb(r, g, b);
+      const posConf = POS_MAP[_pos];
+
+      const { PDFDocument, StandardFonts } = PDFLib;
+      const pdfDoc = await PDFDocument.load(_bytes);
+      const font   = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const pages  = pdfDoc.getPages();
+      const total  = pages.length;
+
+      pages.forEach((page, idx) => {
+        if (idx < skipPages) return;
+        const { width, height } = page.getSize();
+        const pageNum = startNum + (idx - skipPages);
+        const label   = formatLabel(fmt, pageNum, total);
+        const textW   = font.widthOfTextAtSize(label, fontSize);
+
+        const x = posConf.xFn(width, margin);
+        const y = posConf.yFn(height, margin);
+        const finalX = posConf.align === 'center' ? x - textW/2
+                     : posConf.align === 'right'  ? x - textW
+                     : x;
+
+        page.drawText(label, { x: finalX, y, size: fontSize, font, color: col });
+      });
+
+      const outBytes = await pdfDoc.save();
+      const blob     = new Blob([outBytes], { type:'application/pdf' });
+      var defaultName = (window._pnFileName || 'document').replace(/\.pdf$/i, '') + '_numbered.pdf';
+      const dl       = document.getElementById('downloadBtn');
+      dl.style.display = 'block';
+      dl.onclick = function(e) {
+        e.preventDefault();
+        if (window.CMFilename) {
+          window.CMFilename.prompt(defaultName).then(function(chosenName) {
+            if (!chosenName) return;
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = chosenName;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            if (window.CMLogs) window.CMLogs.log({ tool: 'Page Numbers', action: 'number', output: chosenName, size: blob.size, pages: total });
+          });
+        } else {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = defaultName;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+      };
+      toast('✅ Page numbers applied to ' + total + ' pages!');
+    } catch(e) {
+      toast('❌ Error: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '🔢 Apply Page Numbers';
+    }
+  }
+
+  return { apply, setPos(p){ _pos=p; }, setBytes(b){ _bytes=b; } };
+})();
+
+// Position grid
+function setPos(p) {
+  PN.setPos(p);
+  document.querySelectorAll('.pn-pos-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-pos="${p}"]`).classList.add('active');
+}
+
+function updatePreview() {
+  const fmt  = document.getElementById('fmtSel').value;
+  const n    = parseInt(document.getElementById('startNum').value) || 1;
+  const fmts = { n:'1', 'page-n':'Page 1', 'n-of-t':'1 of 10', 'page-n-of-t':'Page 1 of 10' };
+  document.getElementById('previewText').textContent = fmts[fmt];
+}
+
+// Drop zone
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click', () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0]; if (f) handleFile(f);
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+async function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  var buf = await f.arrayBuffer();
+  window._pnFileName = f.name;
+  PN.setBytes(buf);
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('fileChip').style.display = 'block';
+  document.getElementById('applyBtn').disabled = false;
+}
+function clearFile() {
+  PN.setBytes(null);
+  document.getElementById('fileChip').style.display = 'none';
+  document.getElementById('applyBtn').disabled = true;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('downloadBtn').style.display = 'none';
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

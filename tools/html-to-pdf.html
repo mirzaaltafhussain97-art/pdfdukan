@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HTML to PDF — Convert HTML &amp; CSS to PDF | CamMaster by PDFdukan</title>
+<meta name="description" content="Convert raw HTML and CSS into a downloadable PDF. Paste your code, preview in real-time, and print to PDF. Free, 100% client-side, no server upload.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/html-to-pdf">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.ht-editor-wrap {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px; min-height:500px;
+}
+@media(max-width:768px){ .ht-editor-wrap { grid-template-columns:1fr; } }
+.ht-editor-pane { display:flex; flex-direction:column; }
+.ht-editor-label {
+  background:var(--card-3); border:1px solid var(--border);
+  border-bottom:none; padding:8px 14px; font-size:11px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.7px; color:var(--text-3);
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+#htmlEditor {
+  flex:1; min-height:420px; resize:vertical;
+  background:var(--card-2); border:1px solid var(--border);
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:14px; color:var(--text); font-family:'Courier New',monospace;
+  font-size:13px; line-height:1.6; outline:none; tab-size:2;
+}
+#previewFrame {
+  flex:1; min-height:420px; border:1px solid var(--border);
+  border-radius:0 0 var(--radius) var(--radius); border-top:none;
+  background:#fff;
+}
+.page-size-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.ps-btn {
+  padding:6px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card-2); cursor:pointer; font-size:12px; font-weight:700;
+  color:var(--text-3); transition:.15s;
+}
+.ps-btn.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.ht-mode-tabs { display:flex; gap:0; margin-bottom:0; }
+.ht-mode-tab {
+  padding:9px 16px; background:var(--card-2); border:1.5px solid var(--border);
+  cursor:pointer; font-size:12px; font-weight:700;
+  color:var(--text-3); transition:.15s;
+  border-radius:var(--radius) var(--radius) 0 0; margin-right:-1.5px;
+}
+.ht-mode-tab:hover { color:var(--text); background:var(--card); }
+.ht-mode-tab.active { border-color:var(--primary); background:var(--card); color:var(--primary); }
+.ht-mode-pnl { display:flex; flex-direction:column; flex:1; }
+.ht-url-panel { padding:24px 16px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.ht-url-row { display:flex; gap:8px; }
+.ht-url-input {
+  flex:1; background:var(--card-2); border:2px solid var(--border);
+  color:var(--text); padding:12px 16px; border-radius:var(--radius);
+  font-size:14px; outline:none; transition:var(--t);
+}
+.ht-url-input:focus { border-color:var(--primary); }
+.ht-url-note { font-size:12px; color:var(--text-3); line-height:1.5; margin:0; }
+.ht-upload-zone {
+  min-height:350px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  border:2px dashed var(--border); border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  background:var(--card-2); cursor:pointer; transition:.2s;
+}
+.ht-upload-zone.dragover { border-color:var(--primary); background:var(--primary-soft); }
+.ht-upload-icon { font-size:48px; margin-bottom:12px; opacity:.7; }
+.ht-upload-text { font-size:15px; font-weight:700; color:var(--text); margin:0 0 4px; }
+.ht-upload-hint { font-size:13px; color:var(--text-3); margin:0; }
+.ht-upload-info {
+  display:flex; align-items:center; gap:12px; padding:12px 16px;
+  background:var(--primary-soft); border:1px solid var(--primary);
+  border-radius:var(--radius); margin-top:10px;
+}
+.ht-upload-fname { font-weight:700; color:var(--primary); font-size:14px; flex:1; }
+</style>
+</head>
+<body data-tool="html-to-pdf">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PPT</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
+          <div class="nd-divider"></div>
+          <a href="../scanner.html"        class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
+          <a href="../tools/compress.html" class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
+          <a href="../tools/ocr.html"      class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"             class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/html-to-pdf.html" class="mnd-link">HTML to PDF</a>
+  <a href="../tools/merge-pdf.html"   class="mnd-link">Merge PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>HTML to PDF</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#006064,#00acc1)">🌐</div>
+    <h1>HTML to PDF Converter</h1>
+    <p>Write or paste your HTML &amp; CSS, preview it live, then use your browser's print engine to generate a perfect PDF — no server, no upload.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Page options -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">⚙️</span> Page Settings</h3>
+    <div class="page-size-row">
+      <span style="font-size:12px;color:var(--text-3);font-weight:600">Size:</span>
+      <button class="ps-btn active" id="sizeA4"     onclick="setSize('A4')">A4</button>
+      <button class="ps-btn" id="sizeLetter"         onclick="setSize('Letter')">Letter</button>
+      <button class="ps-btn" id="sizeA3"             onclick="setSize('A3')">A3</button>
+      <span style="width:16px"></span>
+      <span style="font-size:12px;color:var(--text-3);font-weight:600">Orientation:</span>
+      <button class="ps-btn active" id="oriPort"    onclick="setOri('portrait')">Portrait</button>
+      <button class="ps-btn" id="oriLand"            onclick="setOri('landscape')">Landscape</button>
+      <div class="option-group" style="margin-left:auto;margin-bottom:0;min-width:120px">
+        <label style="font-size:11px">Margin (mm)</label>
+        <input type="number" id="marginMM" value="15" min="0" max="50">
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor + Preview -->
+  <div class="tool-card">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <h3 style="margin:0"><span class="tc-icon">💻</span> HTML Editor + Live Preview</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="loadTemplate('invoice')">📄 Invoice</button>
+        <button class="btn btn-sm" onclick="loadTemplate('report')">📊 Report</button>
+        <button class="btn btn-sm" onclick="loadTemplate('letter')">✉️ Letter</button>
+      </div>
+    </div>
+
+    <!-- Input mode tabs -->
+    <div class="ht-mode-tabs">
+      <button class="ht-mode-tab active" data-mode="code" onclick="switchInputMode('code')">💻 HTML Code</button>
+      <button class="ht-mode-tab" data-mode="url" onclick="switchInputMode('url')">🌐 URL</button>
+      <button class="ht-mode-tab" data-mode="upload" onclick="switchInputMode('upload')">📁 Upload .html</button>
+    </div>
+
+    <div class="ht-editor-wrap">
+      <!-- Left pane: switches between code / url / upload -->
+      <div class="ht-editor-pane">
+
+        <!-- Code mode (default) -->
+        <div id="modeCode" class="ht-mode-pnl">
+          <div class="ht-editor-label" style="border-radius:0">📝 HTML / CSS Code</div>
+          <textarea id="htmlEditor" oninput="updatePreview()" spellcheck="false" placeholder="Type or paste your HTML here…"></textarea>
+        </div>
+
+        <!-- URL mode -->
+        <div id="modeUrl" class="ht-mode-pnl" style="display:none">
+          <div class="ht-editor-label" style="border-radius:0">🌐 Enter Web Page URL</div>
+          <div class="ht-url-panel">
+            <div class="ht-url-row">
+              <input type="url" id="urlInput" class="ht-url-input" placeholder="https://example.com/page.html" onkeydown="if(event.key==='Enter')loadFromUrl()">
+              <button class="btn btn-primary" onclick="loadFromUrl()">Load</button>
+            </div>
+            <p class="ht-url-note">⚠️ Some sites block embedding due to security policies (CORS / X-Frame-Options). If the preview fails, copy the page source into <strong>HTML Code</strong> mode instead.</p>
+          </div>
+        </div>
+
+        <!-- Upload mode -->
+        <div id="modeUpload" class="ht-mode-pnl" style="display:none">
+          <div class="ht-editor-label" style="border-radius:0">📁 Upload HTML File</div>
+          <div class="ht-upload-zone" id="uploadZone" onclick="document.getElementById('htmlFileInput').click()">
+            <div class="ht-upload-icon">📄</div>
+            <p class="ht-upload-text">Drop your .html or .htm file here</p>
+            <p class="ht-upload-hint">or click to browse</p>
+            <input type="file" id="htmlFileInput" accept=".html,.htm,.xhtml" onchange="handleFileSelect(this.files)" hidden>
+          </div>
+          <div class="ht-upload-info" id="uploadInfo" style="display:none">
+            <span class="ht-upload-fname" id="uploadFilename"></span>
+            <button class="btn btn-sm" onclick="clearUpload()" style="margin-left:auto">✕ Remove</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right pane: preview (shared across all modes) -->
+      <div class="ht-editor-pane">
+        <div class="ht-editor-label">👁️ Live Preview</div>
+        <iframe id="previewFrame" title="HTML Preview" sandbox="allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="tool-card">
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-lg" onclick="printToPDF()">🖨️ Print to PDF</button>
+      <button class="btn btn-lg" onclick="document.getElementById('htmlEditor').value='';updatePreview()">🗑️ Clear</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-3);margin-top:10px">
+      💡 <strong>Tip:</strong> Click "Print to PDF" → in the browser print dialog, select <strong>"Save as PDF"</strong> as the destination, then set paper size and margins to match your settings.
+    </p>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save templates.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
+      </div>
+      <div class="auth-field"><label>Gender</label><select id="suGender"><option value="">— Select —</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
+        <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+/* ── HTML to PDF ─────────────────────────────────────────────── */
+let _pageSize = 'A4', _orientation = 'portrait';
+let _inputMode = 'code', _loadedUrl = '';
+
+const PAGE_SIZES = {
+  A4:     { portrait:'210mm×297mm', landscape:'297mm×210mm' },
+  Letter: { portrait:'8.5in×11in',  landscape:'11in×8.5in' },
+  A3:     { portrait:'297mm×420mm', landscape:'420mm×297mm' },
+};
+
+/* ── Input Mode Switching ── */
+function switchInputMode(mode) {
+  _inputMode = mode;
+  document.querySelectorAll('.ht-mode-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+  document.getElementById('modeCode').style.display   = mode === 'code'   ? 'flex' : 'none';
+  document.getElementById('modeUrl').style.display     = mode === 'url'    ? 'flex' : 'none';
+  document.getElementById('modeUpload').style.display  = mode === 'upload' ? 'flex' : 'none';
+  if (mode === 'code') {
+    var frame = document.getElementById('previewFrame');
+    frame.removeAttribute('src');
+    frame.setAttribute('sandbox', 'allow-same-origin');
+    _loadedUrl = '';
+    updatePreview();
+  }
+}
+
+/* ── URL Mode ── */
+function loadFromUrl() {
+  var url = document.getElementById('urlInput').value.trim();
+  if (!url) { toast('Please enter a URL.'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  var frame = document.getElementById('previewFrame');
+  frame.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-forms');
+  frame.src = url;
+  _loadedUrl = url;
+  toast('Loading URL into preview…');
+}
+
+/* ── File Upload Mode ── */
+function handleFileSelect(files) {
+  if (!files || !files.length) return;
+  var file = files[0];
+  if (!/\.(html?|htm|xhtml)$/i.test(file.name)) {
+    toast('Please select an .html or .htm file.'); return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('htmlEditor').value = e.target.result;
+    document.getElementById('uploadFilename').textContent = '📄 ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+    document.getElementById('uploadInfo').style.display = 'flex';
+    switchInputMode('code');
+    updatePreview();
+    toast('✅ File loaded! Edit the code or print to PDF.');
+  };
+  reader.readAsText(file);
+}
+
+function clearUpload() {
+  document.getElementById('uploadInfo').style.display = 'none';
+  document.getElementById('htmlFileInput').value = '';
+}
+
+/* Drag & drop wiring for upload zone */
+(function() {
+  document.addEventListener('DOMContentLoaded', function() {
+    var zone = document.getElementById('uploadZone');
+    if (!zone) return;
+    ['dragenter','dragover'].forEach(function(ev) {
+      zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('dragover'); });
+    });
+    ['dragleave','drop'].forEach(function(ev) {
+      zone.addEventListener(ev, function(e) { e.preventDefault(); e.stopPropagation(); zone.classList.remove('dragover'); });
+    });
+    zone.addEventListener('drop', function(e) {
+      var dt = e.dataTransfer;
+      if (dt && dt.files && dt.files.length) handleFileSelect(dt.files);
+    });
+  });
+})();
+
+function setSize(s) {
+  _pageSize = s;
+  document.querySelectorAll('[id^="size"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('size' + s).classList.add('active');
+}
+function setOri(o) {
+  _orientation = o;
+  document.getElementById('oriPort').classList.toggle('active', o==='portrait');
+  document.getElementById('oriLand').classList.toggle('active', o==='landscape');
+}
+
+function updatePreview() {
+  const html = document.getElementById('htmlEditor').value;
+  const frame = document.getElementById('previewFrame');
+  const doc   = frame.contentDocument || frame.contentWindow.document;
+  doc.open();
+  doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>body{font-family:Arial,sans-serif;line-height:1.5;padding:16px;}</style>
+    </head><body>${html}</body></html>`);
+  doc.close();
+}
+
+function printToPDF() {
+  /* URL mode: open the loaded URL directly for printing */
+  if (_inputMode === 'url' && _loadedUrl) {
+    const pw = window.open(_loadedUrl, '_blank', 'width=900,height=700');
+    if (pw) { pw.focus(); setTimeout(() => { pw.print(); }, 1500); }
+    return;
+  }
+  /* Code / File mode: print from editor content */
+  const html   = document.getElementById('htmlEditor').value;
+  if (!html.trim()) { toast('Please enter some HTML first.'); return; }
+  const margin = document.getElementById('marginMM').value || 15;
+
+  const printWin = window.open('', '_blank', 'width=900,height=700');
+  printWin.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HTML to PDF</title>
+  <style>
+    @page {
+      size: ${_pageSize} ${_orientation};
+      margin: ${margin}mm;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; line-height: 1.5; }
+  </style>
+</head>
+<body>${html}</body>
+</html>`);
+  printWin.document.close();
+  printWin.focus();
+  setTimeout(() => { printWin.print(); }, 500);
+}
+
+const TEMPLATES = {
+  invoice: `<style>
+  body{font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto;}
+  .header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #ff6333;padding-bottom:16px;margin-bottom:24px;}
+  h1{color:#ff6333;margin:0;}
+  table{width:100%;border-collapse:collapse;margin:20px 0;}
+  th{background:#ff6333;color:#fff;padding:10px;}
+  td{padding:8px;border-bottom:1px solid #eee;}
+  .total{text-align:right;font-size:18px;font-weight:bold;color:#ff6333;}
+</style>
+<div class="header">
+  <div><h1>INVOICE</h1><p>#INV-2024-001 &nbsp;|&nbsp; Date: May 27, 2026</p></div>
+  <div style="text-align:right"><strong>Your Company</strong><br>123 Business St<br>contact@yourco.com</div>
+</div>
+<p><strong>Bill To:</strong><br>Client Name<br>client@email.com</p>
+<table>
+  <tr><th>Description</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
+  <tr><td>Web Design Services</td><td>1</td><td>$1,200.00</td><td>$1,200.00</td></tr>
+  <tr><td>SEO Optimization</td><td>3</td><td>$200.00</td><td>$600.00</td></tr>
+  <tr><td>Hosting (annual)</td><td>1</td><td>$150.00</td><td>$150.00</td></tr>
+</table>
+<p class="total">Total: $1,950.00</p>
+<p style="margin-top:40px;font-size:12px;color:#888">Payment due within 30 days. Thank you for your business!</p>`,
+
+  report: `<style>
+  body{font-family:Georgia,serif;color:#1a1a1a;max-width:700px;margin:auto;}
+  h1{color:#2c3e50;border-bottom:2px solid #2c3e50;padding-bottom:8px;}
+  h2{color:#34495e;margin-top:28px;}
+  .stat-row{display:flex;gap:16px;margin:20px 0;}
+  .stat{flex:1;background:#f8f9fa;border-left:4px solid #ff6333;padding:12px 16px;border-radius:4px;}
+  .stat-num{font-size:28px;font-weight:bold;color:#ff6333;}
+  .stat-label{font-size:12px;color:#888;margin-top:4px;}
+</style>
+<h1>Quarterly Business Report — Q2 2026</h1>
+<p>Prepared by: Analytics Team &nbsp;|&nbsp; Date: May 27, 2026</p>
+<div class="stat-row">
+  <div class="stat"><div class="stat-num">$124K</div><div class="stat-label">Revenue</div></div>
+  <div class="stat"><div class="stat-num">+18%</div><div class="stat-label">Growth vs Q1</div></div>
+  <div class="stat"><div class="stat-num">2,840</div><div class="stat-label">New Users</div></div>
+  <div class="stat"><div class="stat-num">94%</div><div class="stat-label">Satisfaction</div></div>
+</div>
+<h2>Executive Summary</h2>
+<p>Q2 2026 showed strong performance across all key metrics. Revenue grew 18% quarter-over-quarter driven by new product launches and improved conversion rates in the enterprise segment.</p>
+<h2>Key Highlights</h2>
+<ul>
+  <li>Launched 3 new product features with high adoption rates</li>
+  <li>Expanded into 2 new geographic markets</li>
+  <li>Reduced customer churn by 12% through proactive support</li>
+  <li>Signed 8 new enterprise contracts worth $45K collectively</li>
+</ul>`,
+
+  letter: `<style>
+  body{font-family:'Times New Roman',serif;color:#1a1a1a;max-width:650px;margin:40px auto;}
+  .address{margin-bottom:32px;}
+  .greeting{margin:24px 0 16px;}
+  p{line-height:1.7;margin-bottom:12px;}
+  .signature{margin-top:40px;}
+</style>
+<div class="address">
+  <strong>John Doe</strong><br>
+  123 Main Street<br>
+  New York, NY 10001<br>
+  john.doe@email.com
+</div>
+<p>May 27, 2026</p>
+<div class="address">
+  <strong>Jane Smith</strong><br>
+  Director of Operations<br>
+  ABC Corporation<br>
+  456 Business Avenue
+</div>
+<div class="greeting">Dear Ms. Smith,</div>
+<p>I am writing to express my interest in the Senior Project Manager position at ABC Corporation. With over eight years of experience leading cross-functional teams and delivering complex projects on time and within budget, I am confident I would be a valuable addition to your organization.</p>
+<p>In my current role, I have successfully managed a portfolio of projects totaling $2.4 million in budget while maintaining a 98% on-time delivery rate. My expertise spans agile methodologies, stakeholder communication, and risk management across technology and operations domains.</p>
+<p>I would welcome the opportunity to discuss how my background aligns with your team's needs. Thank you for your consideration.</p>
+<div class="signature">
+  Sincerely,<br><br><br>
+  <strong>John Doe</strong>
+</div>`
+};
+
+function loadTemplate(t) {
+  const ed = document.getElementById('htmlEditor');
+  ed.value = TEMPLATES[t] || '';
+  updatePreview();
+  toast('✅ Template loaded! Edit it then print to PDF.');
+}
+
+// Initialize with a starter template
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('htmlEditor').value = TEMPLATES.invoice;
+  updatePreview();
+});
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring"><div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

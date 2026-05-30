@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PDF to PowerPoint — Convert PDF Pages to PPTX Slides | CamMaster</title>
+<meta name="description" content="Convert PDF pages to PowerPoint slides. Each page becomes a full-slide image in a .pptx file. Free, no upload, 100% client-side using PptxGenJS.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/pdf-to-ppt">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.conversion-progress {
+  background:var(--card-2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:16px; margin-top:14px;
+}
+.cp-bar-wrap { background:var(--bg-2); border-radius:var(--radius-pill); height:10px; overflow:hidden; margin:10px 0; }
+.cp-bar      { height:100%; background:linear-gradient(90deg,#b71c1c,#f44336); border-radius:var(--radius-pill); width:0%; transition:width .3s; }
+.cp-label    { font-size:12px; color:var(--text-3); margin-bottom:4px; }
+.slide-thumb-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:8px; margin-top:12px; }
+.slide-thumb { border:1px solid var(--border); border-radius:4px; overflow:hidden; background:#fff; }
+.slide-thumb canvas { width:100%; display:block; }
+.slide-thumb-num { font-size:10px; font-weight:700; color:var(--text-3); text-align:center; padding:3px 0; background:var(--card-2); }
+</style>
+</head>
+<body data-tool="pdf-to-ppt">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
+          <div class="nd-divider"></div>
+          <a href="../scanner.html"        class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
+          <a href="../tools/compress.html" class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
+          <a href="../tools/ocr.html"      class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"             class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/pdf-to-ppt.html"  class="mnd-link">PDF to PowerPoint</a>
+  <a href="../tools/pdf-to-excel.html" class="mnd-link">PDF to Excel</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>PDF to PowerPoint</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#b71c1c,#f44336)">📊</div>
+    <h1>PDF to PowerPoint</h1>
+    <p>Each PDF page is rendered as a full-slide image and packaged into a presentation-ready .pptx file. Free, runs in your browser.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF here or click to browse</div>
+      <div class="dz-hint">All conversion happens in your browser — no server upload</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+    <div id="fileChip" style="display:none;margin-top:10px">
+      <div class="file-chip">
+        <span class="fc-icon">📄</span>
+        <span class="fc-name" id="fileName"></span>
+        <button class="fc-del" onclick="clearFile()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">⚙️</span> Slide Options</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="option-group">
+        <label>Slide Aspect Ratio</label>
+        <select id="slideRatio">
+          <option value="16:9" selected>16:9 (Widescreen)</option>
+          <option value="4:3">4:3 (Standard)</option>
+          <option value="A4">A4 (Portrait)</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label>Render Quality</label>
+        <select id="renderQuality">
+          <option value="1.5">Standard (1.5×)</option>
+          <option value="2" selected>High (2×)</option>
+          <option value="3">Ultra (3×)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="tool-card" id="progressCard" style="display:none">
+    <h3><span class="tc-icon">⏳</span> Converting…</h3>
+    <div class="conversion-progress">
+      <div class="cp-label" id="cpLabel">Initializing…</div>
+      <div class="cp-bar-wrap"><div class="cp-bar" id="cpBar"></div></div>
+    </div>
+    <div class="slide-thumb-grid" id="thumbGrid"></div>
+  </div>
+
+  <!-- Action -->
+  <div class="tool-card">
+    <button class="btn btn-primary btn-lg" id="convertBtn" onclick="convertPDFtoPPT()" disabled>
+      📊 Convert to PowerPoint
+    </button>
+    <a class="btn btn-primary btn-lg" id="downloadBtn" style="display:none" href="#" download="presentation.pptx">
+      ⬇️ Download .PPTX
+    </a>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
+      </div>
+      <div class="auth-field"><label>Gender</label><select id="suGender"><option value="">— Select —</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
+        <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+/* ── PDF to PPT Engine ───────────────────────────────────────── */
+let _pdfFile = null;
+
+async function convertPDFtoPPT() {
+  if (!_pdfFile) { toast('Please upload a PDF first.'); return; }
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true; btn.textContent = '⏳ Converting…';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('progressCard').style.display = 'block';
+  document.getElementById('thumbGrid').innerHTML = '';
+
+  try {
+    const ratio   = document.getElementById('slideRatio').value;
+    const quality = parseFloat(document.getElementById('renderQuality').value);
+
+    // Slide dimensions in inches (pptxgenjs uses inches)
+    const slideDims = {
+      '16:9': { w:10,    h:5.625 },
+      '4:3':  { w:10,    h:7.5   },
+      'A4':   { w:7.48,  h:10.58 },
+    }[ratio] || { w:10, h:5.625 };
+
+    const arrayBuf = await _pdfFile.arrayBuffer();
+    const pdfDoc   = await pdfjsLib.getDocument({ data: new Uint8Array(arrayBuf) }).promise;
+    const numPages = pdfDoc.numPages;
+
+    const pptx = new PptxGenJS();
+    pptx.layout  = ratio === '4:3' ? 'LAYOUT_4x3' : 'LAYOUT_WIDE';
+    pptx.defineLayout({ name:'CUSTOM', width:slideDims.w, height:slideDims.h });
+    pptx.layout  = 'CUSTOM';
+
+    for (let i = 1; i <= numPages; i++) {
+      const pct = Math.round((i/numPages)*90);
+      document.getElementById('cpBar').style.width   = pct + '%';
+      document.getElementById('cpLabel').textContent = `Rendering page ${i} of ${numPages}…`;
+
+      const page = await pdfDoc.getPage(i);
+      const vp   = page.getViewport({ scale: quality });
+      const canvas = document.createElement('canvas');
+      canvas.width = vp.width; canvas.height = vp.height;
+      const ctx = canvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport: vp }).promise;
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+
+      // Add thumbnail
+      const thumbDiv = document.createElement('div');
+      thumbDiv.className = 'slide-thumb';
+      const thumbCanvas = document.createElement('canvas');
+      const tvp = page.getViewport({ scale: 0.2 });
+      thumbCanvas.width = tvp.width; thumbCanvas.height = tvp.height;
+      await page.render({ canvasContext: thumbCanvas.getContext('2d'), viewport: tvp }).promise;
+      thumbDiv.appendChild(thumbCanvas);
+      const numDiv = document.createElement('div');
+      numDiv.className = 'slide-thumb-num'; numDiv.textContent = 'Slide ' + i;
+      thumbDiv.appendChild(numDiv);
+      document.getElementById('thumbGrid').appendChild(thumbDiv);
+
+      // Add slide to PPTX
+      const slide = pptx.addSlide();
+      slide.background = { color:'000000' };
+      slide.addImage({
+        data: dataUrl,
+        x: 0, y: 0,
+        w: slideDims.w, h: slideDims.h,
+        sizing: { type:'contain', w: slideDims.w, h: slideDims.h }
+      });
+    }
+
+    document.getElementById('cpBar').style.width   = '95%';
+    document.getElementById('cpLabel').textContent = 'Building PPTX…';
+
+    const pptxBlob = await pptx.write({ outputType:'blob' });
+    const url = URL.createObjectURL(pptxBlob);
+    const dl  = document.getElementById('downloadBtn');
+    dl.href     = url;
+    dl.download = _pdfFile.name.replace('.pdf','') + '.pptx';
+    dl.style.display = 'block';
+
+    document.getElementById('cpBar').style.width   = '100%';
+    document.getElementById('cpLabel').textContent = 'Done!';
+    toast(`✅ Converted ${numPages} pages → ${numPages} slides!`);
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '📊 Convert to PowerPoint';
+  }
+}
+
+// Drop zone
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click', () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  _pdfFile = f;
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('fileChip').style.display = 'block';
+  document.getElementById('convertBtn').disabled = false;
+  document.getElementById('downloadBtn').style.display = 'none';
+}
+function clearFile() {
+  _pdfFile = null;
+  document.getElementById('fileChip').style.display = 'none';
+  document.getElementById('convertBtn').disabled = true;
+  document.getElementById('fileInput').value = '';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('progressCard').style.display = 'none';
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring"><div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

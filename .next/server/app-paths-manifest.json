@@ -1,0 +1,7 @@
+{
+  "/api/auth/forgot-password/route": "app/api/auth/forgot-password/route.js",
+  "/api/auth/verify-otp/route": "app/api/auth/verify-otp/route.js",
+  "/api/auth/reset-password/route": "app/api/auth/reset-password/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/forgot-password/page": "app/forgot-password/page.js"
+}

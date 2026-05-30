@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PowerPoint to PDF — Convert PPTX Slides to PDF | CamMaster</title>
+<meta name="description" content="Convert PowerPoint PPTX files to PDF online. Each slide renders to a PDF page. Free, client-side using JSZip and pdf-lib.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/ppt-to-pdf">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E%F0%9F%93%84%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body data-tool="ppt-to-pdf">
+<canvas id="particleCanvas"></canvas>
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links">
+    <a href="../index.html" class="nav-item">Home</a>
+    <a href="../tools.html" class="nav-item">Tools</a>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+    <div class="lang-selector"><button class="lang-btn" aria-haspopup="true"><svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span></button><div class="lang-dropdown" role="menu"></div></div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn"><span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span></button>
+  </div>
+</header>
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <a href="../index.html" class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/pdf-to-ppt.html"   class="mnd-link">PDF to PPT</a>
+  <a href="../tools/ppt-to-pdf.html"   class="mnd-link">PPT to PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> &#8250; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &#8250; <span>PowerPoint to PDF</span>
+  </nav>
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#880e4f,#e91e63)">&#128202;</div>
+    <h1>PowerPoint to PDF</h1>
+    <p>Upload a .pptx file. Each slide thumbnail is extracted and assembled into a downloadable PDF. Free, client-side.</p>
+  </div>
+  <div class="ad-slot"><p>Advertisement</p></div>
+  <div class="tool-card">
+    <h3><span class="tc-icon">&#128193;</span> Upload PowerPoint</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">&#128202;</div>
+      <div class="dz-title">Drop .pptx file here or click to browse</div>
+      <div class="dz-hint">Supports .pptx format — runs 100% in your browser</div>
+      <span class="dz-btn">Choose .PPTX</span>
+      <input type="file" id="fileInput" accept=".pptx" style="display:none">
+    </div>
+    <div id="fileChip" style="display:none;margin-top:10px">
+      <div class="file-chip"><span class="fc-icon">&#128202;</span><span class="fc-name" id="fileName"></span><button class="fc-del" onclick="clearFile()">&#10005;</button></div>
+    </div>
+  </div>
+  <div class="tool-card" id="previewCard" style="display:none">
+    <h3><span class="tc-icon">&#128444;</span> Slide Images Found</h3>
+    <div id="slideList" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px">Note: PPTX slide thumbnails extracted from embedded media. Complex slides may render simplified.</p>
+  </div>
+  <div class="tool-card">
+    <button class="btn btn-primary btn-lg" id="convertBtn" onclick="convertPPTtoPDF()" disabled>&#128202; Convert to PDF</button>
+    <a class="btn btn-primary btn-lg" id="downloadBtn" style="display:none" href="#" download="slides.pdf">&#11015;&#65039; Download PDF</a>
+  </div>
+</div>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()">&#10005;</button>
+    <div class="auth-tabs"><button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button><button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button></div>
+    <div id="panelSignIn"><h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2><button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button><div class="auth-divider"><span>or</span></div><div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div><div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div><button class="auth-submit" onclick="signInEmail()">Sign In</button><p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up</a></p></div>
+    <div id="panelSignUp" style="display:none"><h2 style="margin-bottom:6px">Create account</h2><button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button><div class="auth-divider"><span>or fill in below</span></div><div class="auth-field-row"><div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div><div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div></div><div class="auth-field"><label>Gender</label><select id="suGender"><option value="">&#8212; Select &#8212;</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div><div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div><div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div><div class="auth-field-row"><div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div><div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div></div><button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button><p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+let _pptxFile = null;
+let _slideImages = [];
+
+async function loadPPTX(file) {
+  const buf  = await file.arrayBuffer();
+  const zip  = await JSZip.loadAsync(buf);
+  const imgs = [];
+
+  // Extract slide thumbnail images (ppt/media/)
+  const mediaFiles = Object.keys(zip.files).filter(k => k.startsWith('ppt/media/') && /\.(png|jpg|jpeg|gif|svg)$/i.test(k));
+
+  // Also look for slide rels to understand ordering
+  const slideRels = Object.keys(zip.files).filter(k => /ppt\/slides\/_rels\/slide\d+\.xml\.rels$/.test(k))
+                                           .sort((a,b)=>{
+    const na=parseInt(a.match(/\d+/)?.[0]||0), nb=parseInt(b.match(/\d+/)?.[0]||0);
+    return na-nb;
+  });
+
+  let ordered = [];
+  for (const relFile of slideRels) {
+    const xml = await zip.files[relFile].async('text');
+    const matches = [...xml.matchAll(/Target="\.\.\/media\/([^"]+)"/g)];
+    if (matches.length > 0) {
+      for (const m of matches) {
+        const fn = 'ppt/media/' + m[1];
+        if (zip.files[fn] && !/\.emf$/i.test(fn)) { ordered.push(fn); break; }
+      }
+    }
+  }
+
+  // Fallback: use all media images sorted
+  if (ordered.length === 0) ordered = mediaFiles.slice(0, 50);
+
+  const slideList = document.getElementById('slideList');
+  slideList.innerHTML = '';
+  _slideImages = [];
+
+  for (let i = 0; i < ordered.length; i++) {
+    const fn = ordered[i];
+    if (!zip.files[fn]) continue;
+    const blob = await zip.files[fn].async('blob');
+    const url  = URL.createObjectURL(blob);
+    _slideImages.push(url);
+
+    const thumb = document.createElement('div');
+    thumb.style.cssText = 'border:1px solid var(--border);border-radius:4px;overflow:hidden;width:80px;text-align:center;';
+    const img = document.createElement('img');
+    img.src = url; img.style.cssText = 'width:100%;display:block;';
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:9px;color:var(--text-3);padding:2px;background:var(--card-2);';
+    lbl.textContent = 'Slide ' + (i + 1);
+    thumb.appendChild(img); thumb.appendChild(lbl);
+    slideList.appendChild(thumb);
+  }
+
+  document.getElementById('previewCard').style.display = _slideImages.length > 0 ? 'block' : 'none';
+  if (_slideImages.length === 0) toast('No slide images found in this PPTX. Try a different file.');
+  else toast('✅ Found ' + _slideImages.length + ' slide image(s). Ready to convert!');
+}
+
+async function convertPPTtoPDF() {
+  if (_slideImages.length === 0) { toast('No slide images to convert. Upload a valid PPTX first.'); return; }
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true; btn.textContent = 'Converting...';
+  try {
+    const { PDFDocument } = PDFLib;
+    const newPdf = await PDFDocument.create();
+
+    for (const imgUrl of _slideImages) {
+      const resp = await fetch(imgUrl);
+      const blob = await resp.blob();
+      const arrBuf = await blob.arrayBuffer();
+      const bytes  = new Uint8Array(arrBuf);
+      let pdfImg;
+      if (blob.type === 'image/png' || imgUrl.match(/\.png/i)) {
+        pdfImg = await newPdf.embedPng(bytes);
+      } else {
+        try { pdfImg = await newPdf.embedJpg(bytes); } catch(e) { pdfImg = await newPdf.embedPng(bytes); }
+      }
+      const dims = pdfImg.scale(1);
+      // Normalize to 1920x1080 or original dims
+      const w = dims.width || 960, h = dims.height || 540;
+      const page = newPdf.addPage([w, h]);
+      page.drawImage(pdfImg, { x:0, y:0, width:w, height:h });
+    }
+
+    const outBytes = await newPdf.save();
+    const blob     = new Blob([outBytes], { type:'application/pdf' });
+    var defaultName = _pptxFile.name.replace(/\.pptx$/i,'') + '.pdf';
+    const dl = document.getElementById('downloadBtn');
+    dl.style.display = 'block';
+    dl.onclick = function(e) {
+      e.preventDefault();
+      if (window.CMFilename) {
+        window.CMFilename.prompt(defaultName).then(function(chosenName) {
+          if (!chosenName) return;
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = chosenName;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          if (window.CMLogs) window.CMLogs.log({ tool: 'PPT to PDF', action: 'convert', input: _pptxFile.name, output: chosenName, size: blob.size, pages: _slideImages.length });
+        });
+      } else {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = defaultName;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      }
+    };
+    toast('PDF created with ' + _slideImages.length + ' pages!');
+  } catch(e) {
+    toast('Error: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Convert to PDF';
+  }
+}
+
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click', () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+document.getElementById('fileInput').addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pptx')) { toast('Please select a .pptx file.'); return; }
+  _pptxFile = f;
+  document.getElementById('fileName').textContent = f.name;
+  document.getElementById('fileChip').style.display = 'block';
+  document.getElementById('convertBtn').disabled = false;
+  loadPPTX(f);
+}
+function clearFile() {
+  _pptxFile = null; _slideImages = [];
+  document.getElementById('fileChip').style.display = 'none';
+  document.getElementById('convertBtn').disabled = true;
+  document.getElementById('previewCard').style.display = 'none';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+}
+</script>
+<div class="brand-loader-overlay" id="brandLoader" style="display:none"><div class="brand-loader-ring"><div class="brand-loader-glow"></div><div class="brand-loader-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36"><defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs><rect width="40" height="40" rx="10" fill="url(#blg)"/><rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/></svg></div></div></div>
+</body>
+</html>

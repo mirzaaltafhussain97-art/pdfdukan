@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Add Watermark to PDF — Text &amp; Image | CamMaster by PDFdukan</title>
+<meta name="description" content="Add custom text or image watermarks to every page of a PDF. Set opacity, rotation, font size, and position. Free, no upload, 100% client-side.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/watermark">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.wm-type-tabs { display:flex; gap:8px; margin-bottom:16px; }
+.wm-type-btn {
+  flex:1; padding:9px; border:2px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card-2); cursor:pointer; font-size:13px; font-weight:700;
+  color:var(--text-2); transition:var(--t) var(--ease); text-align:center;
+}
+.wm-type-btn.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.wm-preview-box {
+  background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+  min-height:200px; display:flex; align-items:center; justify-content:center;
+  overflow:hidden; position:relative;
+}
+.wm-preview-box canvas { max-width:100%; max-height:280px; }
+.wm-range-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.wm-range-row label { width:90px; font-size:12px; color:var(--text-3); flex-shrink:0; font-weight:600; }
+.wm-range { flex:1; }
+.wm-range-val { width:44px; text-align:right; font-size:12px; font-weight:700; color:var(--primary); }
+.wm-pos-toggle { display:flex; gap:8px; }
+.wm-pos-btn {
+  flex:1; padding:8px 10px; border:2px solid var(--border); border-radius:var(--radius-sm);
+  background:var(--card-2); cursor:pointer; font-size:12px; font-weight:700;
+  color:var(--text-2); transition:.15s; text-align:center;
+}
+.wm-pos-btn.active { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.wm-preview-deck {
+  background:#ddd; border:1px solid var(--border); border-radius:var(--radius);
+  max-height:480px; overflow-y:auto; padding:12px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.wm-page-wrap {
+  position:relative; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.18);
+  border-radius:3px; overflow:hidden; flex-shrink:0; max-width:100%;
+}
+.wm-page-wrap canvas { display:block; max-width:100%; }
+.wm-page-label {
+  position:absolute; bottom:5px; right:6px; background:rgba(0,0,0,.5);
+  color:#fff; font-size:10px; font-weight:700; padding:2px 6px;
+  border-radius:3px; pointer-events:none;
+}
+
+/* ── Image upload zone ── */
+.wm-img-upload-zone {
+  border:2px dashed var(--border); border-radius:var(--radius);
+  background:var(--card-2); padding:20px 16px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; cursor:pointer; transition:border-color .15s, background .15s;
+  text-align:center; user-select:none;
+}
+.wm-img-upload-zone:hover { border-color:var(--primary); background:var(--primary-soft); }
+.wm-img-upload-zone.drag-over { border-color:var(--primary); background:var(--primary-soft); }
+.wm-img-upload-icon { font-size:28px; line-height:1; }
+.wm-img-upload-label { font-size:13px; font-weight:700; color:var(--text-2); }
+.wm-img-upload-hint  { font-size:11px; color:var(--text-3); }
+.wm-img-preview-row {
+  display:flex; align-items:center; gap:12px;
+  background:var(--card-2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:10px 12px; margin-top:8px;
+}
+.wm-img-thumb {
+  width:52px; height:52px; object-fit:contain;
+  border-radius:4px; border:1px solid var(--border); background:#fff;
+  flex-shrink:0;
+}
+.wm-img-info { flex:1; min-width:0; }
+.wm-img-name { font-size:12px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wm-img-size { font-size:11px; color:var(--text-3); margin-top:2px; }
+.wm-img-clear {
+  background:none; border:none; cursor:pointer; color:var(--text-3);
+  font-size:16px; padding:4px; line-height:1; flex-shrink:0;
+  transition:color .15s;
+}
+.wm-img-clear:hover { color:var(--error, #ef4444); }
+</style>
+</head>
+<body data-tool="watermark">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html" class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div></div></a>
+          <a href="../tools/merge-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
+          <a href="../tools/split-pdf.html"  class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"        class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
+          <a href="../tools/compress.html" class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
+          <a href="../tools/ocr.html"      class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml" class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Watermark PDF</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#004d40,#00897b)">💧</div>
+    <h1>PDF Watermark Tool</h1>
+    <p>Stamp custom text or an image watermark on every page of your PDF with full control over opacity, rotation, and size.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload PDF -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF here or click to browse</div>
+      <div class="dz-hint">Accepts .pdf files — everything stays in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+    <div id="fileChip" style="display:none;margin-top:10px">
+      <div class="file-chip">
+        <span class="fc-icon">📄</span>
+        <span class="fc-name" id="fileName"></span>
+        <button class="fc-del" onclick="clearFile()">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Watermark settings -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">💧</span> Watermark Settings</h3>
+
+    <div class="wm-type-tabs">
+      <button class="wm-type-btn active" id="tabText" onclick="setWmType('text')">📝 Text Watermark</button>
+      <button class="wm-type-btn" id="tabImage" onclick="setWmType('image')">🖼️ Image Watermark</button>
+    </div>
+
+    <!-- Text options -->
+    <div id="textOptions">
+      <div class="option-group" style="margin-bottom:12px">
+        <label>Watermark Text</label>
+        <input type="text" id="wmText" value="CONFIDENTIAL" placeholder="e.g. DRAFT, DO NOT COPY" oninput="renderPreview()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div class="option-group">
+          <label>Font Color</label>
+          <input type="color" id="wmColor" value="#cc0000" oninput="renderPreview()" style="height:38px;width:100%;border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;">
+        </div>
+        <div class="option-group">
+          <label>Font Size (pt)</label>
+          <input type="number" id="wmFontSize" value="52" min="12" max="200" oninput="renderPreview()">
+        </div>
+      </div>
+      <div class="option-group" style="margin-bottom:12px">
+        <label>Font Family</label>
+        <select id="wmFontFamily" onchange="renderPreview()" style="background:var(--card-2);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:var(--radius-sm);width:100%;font-size:13px;">
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="'Helvetica Neue', sans-serif">Helvetica</option>
+          <option value="Georgia, serif">Georgia</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+          <option value="'Courier New', monospace">Courier New</option>
+          <option value="Impact, sans-serif">Impact</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Image options -->
+    <div id="imageOptions" style="display:none">
+      <!-- Hidden real file input -->
+      <input type="file" id="wmImgInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none" onchange="loadWmImage(this)">
+
+      <!-- Styled upload zone (shown when no image selected) -->
+      <div class="wm-img-upload-zone" id="wmImgZone" onclick="document.getElementById('wmImgInput').click()"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="event.preventDefault();this.classList.remove('drag-over');if(event.dataTransfer.files[0]){document.getElementById('wmImgInput').files=event.dataTransfer.files;loadWmImage(document.getElementById('wmImgInput'))}">
+        <div class="wm-img-upload-icon">🖼️</div>
+        <div class="wm-img-upload-label">Click or drag &amp; drop image here</div>
+        <div class="wm-img-upload-hint">PNG (with transparency) recommended · JPG, WebP, SVG supported</div>
+      </div>
+
+      <!-- Preview row (shown after image is selected) -->
+      <div class="wm-img-preview-row" id="wmImgPreviewRow" style="display:none">
+        <img class="wm-img-thumb" id="wmImgThumb" src="" alt="Watermark preview">
+        <div class="wm-img-info">
+          <div class="wm-img-name" id="wmImgName">—</div>
+          <div class="wm-img-size" id="wmImgSize">—</div>
+        </div>
+        <button class="wm-img-clear" title="Remove image" onclick="clearWmImage()">✕</button>
+      </div>
+    </div>
+
+    <!-- Shared sliders -->
+    <div class="wm-range-row">
+      <label>Opacity</label>
+      <input type="range" class="wm-range" id="wmOpacity" min="5" max="100" value="25" oninput="document.getElementById('wmOpacityVal').textContent=this.value+'%'; renderPreview()">
+      <span class="wm-range-val" id="wmOpacityVal">25%</span>
+    </div>
+    <div class="wm-range-row">
+      <label>Rotation</label>
+      <input type="range" class="wm-range" id="wmRotation" min="-180" max="180" value="-45" oninput="document.getElementById('wmRotVal').textContent=this.value+'°'; renderPreview()">
+      <span class="wm-range-val" id="wmRotVal">-45°</span>
+    </div>
+
+    <!-- Position toggle -->
+    <div style="margin-bottom:14px">
+      <p style="font-size:12px;font-weight:600;color:var(--text-3);margin:0 0 8px">Position</p>
+      <div class="wm-pos-toggle">
+        <button class="wm-pos-btn active" id="posCenterBtn" onclick="setWmPos('center')">⊙ Center</button>
+        <button class="wm-pos-btn" id="posTileBtn" onclick="setWmPos('tile')">⠿ Tile</button>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <h4 style="margin:16px 0 8px;font-size:12px;color:var(--text-3);text-transform:uppercase;letter-spacing:.6px">Preview — All Pages</h4>
+    <div class="wm-preview-deck" id="previewDeck">
+      <span style="color:var(--text-3);font-size:12px;padding:24px">Upload a PDF to preview watermark</span>
+    </div>
+  </div>
+
+  <!-- Action -->
+  <div class="tool-card">
+    <div style="display:flex;gap:10px;align-items:stretch;">
+      <button class="btn btn-primary btn-lg" id="applyBtn" onclick="WM.apply()" disabled style="flex:1">
+        💧 Apply Watermark to All Pages
+      </button>
+      <button class="btn btn-primary btn-lg" id="downloadBtn" style="display:none;flex:1">
+        ⬇️ Download Watermarked PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
+      </div>
+      <div class="auth-field"><label>Gender</label><select id="suGender"><option value="">— Select —</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option></select></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
+        <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script src="../js/header.js"></script>
+<script>
+/* ── Watermark Engine ────────────────────────────────────────── */
+const WM = (() => {
+  let _bytes      = null;
+  let _wmType     = 'text';
+  let _wmImgSrc   = null;
+  let _wmPosition = 'center';
+
+  async function loadAllPreviewPages(bytes) {
+    window._wmAllPages         = [];
+    window._wmPageBaseCanvases = [];
+    if (!bytes) return;
+    try {
+      const doc = await pdfjsLib.getDocument({ data: new Uint8Array(bytes) }).promise;
+      for (let i = 1; i <= doc.numPages; i++) {
+        const page = await doc.getPage(i);
+        window._wmAllPages.push(page);
+        const vp = page.getViewport({ scale: 0.5 });
+        const oc = document.createElement('canvas');
+        oc.width  = vp.width;
+        oc.height = vp.height;
+        await page.render({ canvasContext: oc.getContext('2d'), viewport: vp }).promise;
+        window._wmPageBaseCanvases.push({ canvas: oc, vp });
+      }
+      renderPreview();
+    } catch(e) {}
+  }
+
+  async function apply() {
+    if (!_bytes) { toast('Please upload a PDF first.'); return; }
+    const btn = document.getElementById('applyBtn');
+    btn.disabled = true; btn.textContent = '⏳ Applying watermark…';
+    document.getElementById('downloadBtn').style.display = 'none';
+
+    try {
+      const opacity  = parseInt(document.getElementById('wmOpacity').value)  / 100;
+      const rotation = parseInt(document.getElementById('wmRotation').value);
+      const { PDFDocument, rgb, StandardFonts, degrees } = PDFLib;
+      // .slice(0) produces an isolated copy — pdf-lib transfers (detaches) the
+      // buffer it receives, so _bytes must never be passed directly or it will
+      // be zeroed out and every subsequent apply() call will throw.
+      const pdfDoc = await PDFDocument.load(_bytes.slice(0));
+      const pages  = pdfDoc.getPages();
+      const isTile = (_wmPosition === 'tile');
+      const fontFamSel = document.getElementById('wmFontFamily').value;
+      const FONT_MAP = {
+        'Arial, sans-serif':            StandardFonts.HelveticaBold,
+        "'Helvetica Neue', sans-serif": StandardFonts.HelveticaBold,
+        'Georgia, serif':               StandardFonts.TimesRomanBold,
+        "'Times New Roman', serif":     StandardFonts.TimesRomanBold,
+        "'Courier New', monospace":     StandardFonts.CourierBold,
+        'Impact, sans-serif':           StandardFonts.HelveticaBold,
+      };
+
+      if (_wmType === 'text') {
+        const text     = document.getElementById('wmText').value || 'WATERMARK';
+        const fontSize = parseInt(document.getElementById('wmFontSize').value) || 52;
+        const colorHex = document.getElementById('wmColor').value;
+        const r = parseInt(colorHex.slice(1,3),16)/255;
+        const g = parseInt(colorHex.slice(3,5),16)/255;
+        const b = parseInt(colorHex.slice(5,7),16)/255;
+        const stdFont = FONT_MAP[fontFamSel] || StandardFonts.HelveticaBold;
+        const font    = await pdfDoc.embedFont(stdFont);
+        const col     = rgb(r, g, b);
+
+        pages.forEach(page => {
+          const { width, height } = page.getSize();
+          const textW = font.widthOfTextAtSize(text, fontSize);
+          if (isTile) {
+            const sX = width  * 0.38, sY = height * 0.28;
+            const tfs = fontSize * 0.65;
+            const tW  = font.widthOfTextAtSize(text, tfs);
+            for (let tx = sX / 2; tx < width; tx += sX) {
+              for (let ty = sY / 2; ty < height; ty += sY) {
+                page.drawText(text, { x: tx - tW/2, y: ty - tfs/2, size: tfs, font, color: col, opacity, rotate: degrees(rotation) });
+              }
+            }
+          } else {
+            page.drawText(text, { x: width/2 - textW/2, y: height/2 - fontSize/2, size: fontSize, font, color: col, opacity, rotate: degrees(rotation) });
+          }
+        });
+
+      } else if (_wmType === 'image' && _wmImgSrc) {
+        const base64   = _wmImgSrc.split(',')[1];
+        const imgBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        const mimeType = _wmImgSrc.split(';')[0].split(':')[1];
+        let embeddedImg;
+        if (mimeType === 'image/png') embeddedImg = await pdfDoc.embedPng(imgBytes);
+        else embeddedImg = await pdfDoc.embedJpg(imgBytes);
+
+        pages.forEach(page => {
+          const { width, height } = page.getSize();
+          const iDims = embeddedImg.scale(1);
+          if (isTile) {
+            const tileW = Math.min(width * 0.22, iDims.width);
+            const tileH = tileW * (iDims.height / iDims.width);
+            const sX = tileW * 1.6, sY = tileH * 2.0;
+            for (let tx = 0; tx < width; tx += sX) {
+              for (let ty = 0; ty < height; ty += sY) {
+                page.drawImage(embeddedImg, { x: tx, y: ty, width: tileW, height: tileH, opacity, rotate: degrees(rotation) });
+              }
+            }
+          } else {
+            const ratio = Math.min((width*0.6)/iDims.width, (height*0.6)/iDims.height);
+            const w = iDims.width*ratio, h = iDims.height*ratio;
+            page.drawImage(embeddedImg, { x: width/2-w/2, y: height/2-h/2, width: w, height: h, opacity, rotate: degrees(rotation) });
+          }
+        });
+      }
+
+      const outBytes = await pdfDoc.save();
+      const blob     = new Blob([outBytes], { type: 'application/pdf' });
+      var defaultName = (window._wmFileName || 'document').replace(/\.pdf$/i, '') + '_watermarked.pdf';
+      const dl = document.getElementById('downloadBtn');
+      dl.style.display = 'inline-flex';
+      dl.onclick = function(e) {
+        e.preventDefault();
+        if (window.CMFilename) {
+          window.CMFilename.prompt(defaultName).then(function(chosenName) {
+            if (!chosenName) return;
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = chosenName;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            if (window.CMLogs) window.CMLogs.log({ tool: 'Watermark', action: 'watermark', input: window._wmFileName||'', output: chosenName, size: blob.size, pages: pages.length });
+          });
+        } else {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = defaultName;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+      };
+      toast('✅ Watermark applied to ' + pages.length + ' pages!');
+    } catch(e) {
+      toast('❌ Error: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '💧 Apply Watermark to All Pages';
+    }
+  }
+
+  return {
+    apply,
+    setBytes(b)    { _bytes = b; loadAllPreviewPages(b ? b.slice(0) : null); },  // fresh copy — pdfjs consumes the buffer
+    setType(t)     { _wmType = t; },
+    setImg(s)      { _wmImgSrc = s; },
+    setPosition(p) { _wmPosition = p; },
+  };
+})();
+
+/* ── Preview helpers ─────────────────────────────────────────── */
+var _previewDebounce;
+function renderPreview() {
+  clearTimeout(_previewDebounce);
+  _previewDebounce = setTimeout(function() { _doRenderPreview(); }, 100);
+}
+
+function _applyWatermarkToCtx(ctx, vp) {
+  var opacity  = parseInt(document.getElementById('wmOpacity').value)  / 100;
+  var rotation = parseInt(document.getElementById('wmRotation').value) * Math.PI / 180;
+  var isText   = document.getElementById('tabText').classList.contains('active');
+  var isTile   = document.getElementById('posTileBtn').classList.contains('active');
+
+  ctx.save();
+  ctx.globalAlpha = opacity;
+
+  if (isTile) {
+    var tSpX = vp.width  * 0.35;
+    var tSpY = vp.height * 0.26;
+    for (var tx = tSpX / 2; tx < vp.width; tx += tSpX) {
+      for (var ty = tSpY / 2; ty < vp.height; ty += tSpY) {
+        ctx.save();
+        ctx.translate(tx, ty);
+        ctx.rotate(rotation);
+        if (isText) {
+          var t1  = document.getElementById('wmText').value || 'WATERMARK';
+          var fs1 = parseInt(document.getElementById('wmFontSize').value) || 52;
+          var ff1 = document.getElementById('wmFontFamily').value;
+          ctx.font = 'bold ' + Math.round(fs1 * 0.28) + 'px ' + ff1;
+          ctx.fillStyle = document.getElementById('wmColor').value;
+          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(t1, 0, 0);
+        } else if (window._wmCachedImg && window._wmCachedImg.naturalWidth > 0) {
+          var im1 = window._wmCachedImg;
+          var mW1 = tSpX * 0.8, mH1 = tSpY * 0.8;
+          var r1  = Math.min(mW1/im1.naturalWidth, mH1/im1.naturalHeight);
+          ctx.drawImage(im1, -(im1.naturalWidth*r1)/2, -(im1.naturalHeight*r1)/2, im1.naturalWidth*r1, im1.naturalHeight*r1);
+        }
+        ctx.restore();
+      }
+    }
+  } else {
+    ctx.translate(vp.width / 2, vp.height / 2);
+    ctx.rotate(rotation);
+    if (isText) {
+      var t2  = document.getElementById('wmText').value || 'WATERMARK';
+      var fs2 = parseInt(document.getElementById('wmFontSize').value) || 52;
+      var ff2 = document.getElementById('wmFontFamily').value;
+      ctx.font = 'bold ' + Math.round(fs2 * 0.5) + 'px ' + ff2;
+      ctx.fillStyle = document.getElementById('wmColor').value;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(t2, 0, 0);
+    } else if (window._wmCachedImg && window._wmCachedImg.naturalWidth > 0) {
+      var im2 = window._wmCachedImg;
+      var mW2 = vp.width * 0.6, mH2 = vp.height * 0.6;
+      var r2  = Math.min(mW2/im2.naturalWidth, mH2/im2.naturalHeight);
+      ctx.drawImage(im2, -(im2.naturalWidth*r2)/2, -(im2.naturalHeight*r2)/2, im2.naturalWidth*r2, im2.naturalHeight*r2);
+    }
+  }
+  ctx.restore();
+}
+
+async function _doRenderPreview() {
+  var pages = window._wmPageBaseCanvases;
+  if (!pages || !pages.length) return;
+  var deck = document.getElementById('previewDeck');
+  deck.innerHTML = '';
+
+  for (var i = 0; i < pages.length; i++) {
+    var base   = pages[i];
+    var wrap   = document.createElement('div');
+    wrap.className = 'wm-page-wrap';
+
+    var canvas  = document.createElement('canvas');
+    canvas.width  = base.vp.width;
+    canvas.height = base.vp.height;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(base.canvas, 0, 0);
+    _applyWatermarkToCtx(ctx, base.vp);
+
+    var lbl = document.createElement('span');
+    lbl.className   = 'wm-page-label';
+    lbl.textContent = i + 1;
+
+    wrap.appendChild(canvas);
+    wrap.appendChild(lbl);
+    deck.appendChild(wrap);
+  }
+}
+
+function setWmType(t) {
+  WM.setType(t);
+  document.getElementById('tabText').classList.toggle('active',  t === 'text');
+  document.getElementById('tabImage').classList.toggle('active', t === 'image');
+  document.getElementById('textOptions').style.display  = t === 'text'  ? 'block' : 'none';
+  document.getElementById('imageOptions').style.display = t === 'image' ? 'block' : 'none';
+  renderPreview();
+}
+
+function setWmPos(p) {
+  WM.setPosition(p);
+  document.getElementById('posCenterBtn').classList.toggle('active', p === 'center');
+  document.getElementById('posTileBtn').classList.toggle('active',   p === 'tile');
+  renderPreview();
+}
+
+function loadWmImage(inp) {
+  if (!inp.files || !inp.files[0]) return;
+  const file   = inp.files[0];
+  const reader = new FileReader();
+  reader.onload = e => {
+    const src = e.target.result;
+
+    /* Cache image for canvas preview */
+    window._wmCachedImg         = new Image();
+    window._wmCachedImg.onload  = () => renderPreview();
+    window._wmCachedImg.onerror = () => {};
+    window._wmCachedImg.src     = src;
+    WM.setImg(src);
+
+    /* Update UI — hide zone, show preview row */
+    document.getElementById('wmImgZone').style.display       = 'none';
+    document.getElementById('wmImgPreviewRow').style.display = 'flex';
+    document.getElementById('wmImgThumb').src                = src;
+    document.getElementById('wmImgName').textContent         = file.name;
+    document.getElementById('wmImgSize').textContent         = _fmtFileSize(file.size);
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearWmImage() {
+  window._wmCachedImg = null;
+  WM.setImg(null);
+  document.getElementById('wmImgInput').value              = '';
+  document.getElementById('wmImgZone').style.display       = '';
+  document.getElementById('wmImgPreviewRow').style.display = 'none';
+  document.getElementById('wmImgThumb').src                = '';
+  renderPreview();
+}
+
+function _fmtFileSize(bytes) {
+  if (bytes < 1024)        return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+// Drop zone
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click',    () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave',() => dz.classList.remove('drag-over'));
+dz.addEventListener('drop',     e => { e.preventDefault(); dz.classList.remove('drag-over'); const f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+document.getElementById('fileInput').addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+async function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  var buf = await f.arrayBuffer();
+  window._wmFileName = f.name;
+  WM.setBytes(buf.slice(0));
+  document.getElementById('fileName').textContent   = f.name;
+  document.getElementById('fileChip').style.display = 'block';
+  document.getElementById('applyBtn').disabled       = false;
+}
+
+function clearFile() {
+  WM.setBytes(null);
+  window._wmAllPages         = [];
+  window._wmPageBaseCanvases = [];
+  window._wmCachedImg        = null;
+  document.getElementById('fileChip').style.display   = 'none';
+  document.getElementById('applyBtn').disabled         = true;
+  document.getElementById('fileInput').value           = '';
+  document.getElementById('downloadBtn').style.display = 'none';
+  document.getElementById('previewDeck').innerHTML     = '<span style="color:var(--text-3);font-size:12px;padding:24px">Upload a PDF to preview watermark</span>';
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring"><div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

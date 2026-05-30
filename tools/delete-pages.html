@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Delete PDF Pages — Visual Thumbnail Grid | CamMaster by PDFdukan</title>
+<meta name="description" content="Delete specific pages from a PDF with a visual thumbnail grid. Click to mark pages for removal, then download the cleaned PDF. Free, no upload.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/delete-pages">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.dp-toolbar {
+  display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;
+}
+.dp-count-pill {
+  background:var(--error); color:#fff; padding:4px 12px;
+  border-radius:var(--radius-pill); font-size:12px; font-weight:700;
+  display:none;
+}
+.dp-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));
+  gap:12px;
+  padding:16px;
+  background:var(--card-2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  min-height:120px;
+}
+.dp-thumb {
+  position:relative; cursor:pointer; border-radius:var(--radius-sm);
+  overflow:hidden; border:2.5px solid transparent;
+  transition:var(--t) var(--ease); background:#fff;
+  aspect-ratio:0.707; display:flex; flex-direction:column;
+}
+.dp-thumb:hover { border-color:var(--primary); }
+.dp-thumb.marked {
+  border-color:var(--error);
+  box-shadow:0 0 0 3px rgba(239,68,68,.25);
+}
+.dp-thumb canvas { width:100%; height:100%; object-fit:contain; display:block; }
+.dp-thumb .dp-page-num {
+  position:absolute; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,.6); color:#fff; font-size:10px; font-weight:700;
+  text-align:center; padding:3px 0; pointer-events:none;
+}
+.dp-thumb .dp-del-badge {
+  position:absolute; top:4px; right:4px; background:var(--error); color:#fff;
+  border-radius:50%; width:20px; height:20px; font-size:12px; font-weight:900;
+  display:none; align-items:center; justify-content:center; pointer-events:none;
+  line-height:1;
+}
+.dp-thumb.marked .dp-del-badge { display:flex; }
+.dp-hint { color:var(--text-3); font-size:12px; text-align:center; padding:24px; }
+.dp-loading { text-align:center; padding:32px; color:var(--text-3); font-size:13px; }
+</style>
+</head>
+<body data-tool="delete-pages">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <div class="lang-selector" aria-label="Language selector">
+      <button class="lang-btn" aria-haspopup="true">
+        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
+      </button>
+      <div class="lang-dropdown" role="menu"></div>
+    </div>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Delete Pages</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#bf360c,#ff5722)">🗑️</div>
+    <h1>Delete PDF Pages</h1>
+    <p>Visually select pages to remove. Click a thumbnail to mark it for deletion, then export the cleaned PDF.</p>
+  </div>
+
+  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+
+  <!-- Upload -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop PDF here or click to browse</div>
+      <div class="dz-hint">Accepts .pdf — all processing stays in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf" style="display:none">
+    </div>
+  </div>
+
+  <!-- Page grid -->
+  <div class="tool-card" id="gridCard" style="display:none">
+    <h3><span class="tc-icon">🗂️</span> Select Pages to Delete</h3>
+    <div class="dp-toolbar">
+      <button class="btn btn-sm" onclick="DP.selectAll()">Select All</button>
+      <button class="btn btn-sm" onclick="DP.clearAll()">Clear All</button>
+      <button class="btn btn-sm btn-danger" onclick="DP.invertSel()">Invert</button>
+      <span class="dp-count-pill" id="markedCount">0 marked</span>
+      <span style="flex:1"></span>
+      <span id="pageTotal" style="font-size:12px;color:var(--text-3)"></span>
+    </div>
+    <div class="dp-grid" id="dpGrid">
+      <div class="dp-hint">Loading thumbnails…</div>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:8px">
+      💡 Click a page to mark it for deletion. Marked pages show a red ✕ badge.
+    </p>
+  </div>
+
+  <!-- Action -->
+  <div class="tool-card" id="actionCard" style="display:none">
+    <div style="display:flex;gap:10px;align-items:stretch;">
+      <button class="btn btn-primary btn-lg" id="deleteBtn" onclick="DP.deleteMarked()" style="flex:1">
+        🗑️ Delete Marked Pages
+      </button>
+      <button class="btn btn-primary btn-lg" id="downloadBtn" style="display:none;flex:1">
+        ⬇️ Download Cleaned PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field-row">
+        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30"></div>
+        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      </div>
+      <div class="auth-field">
+        <label>Gender</label>
+        <select id="suGender" autocomplete="sex">
+          <option value="">&#8212; Select gender &#8212;</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other / Prefer not to say</option>
+        </select>
+      </div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field">
+        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
+        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
+      </div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+/* ── Delete Pages Engine ──────────────────────────────────────── */
+const DP = (() => {
+  let _pdfBytes = null;
+  let _numPages = 0;
+  let _marked   = new Set();
+
+  function updatePill() {
+    const pill = document.getElementById('markedCount');
+    if (_marked.size > 0) {
+      pill.style.display = 'inline-block';
+      pill.textContent   = _marked.size + ' page' + (_marked.size > 1 ? 's' : '') + ' marked';
+    } else {
+      pill.style.display = 'none';
+    }
+  }
+
+  async function load(file) {
+    const rawBuf  = await file.arrayBuffer();
+    _pdfBytes     = rawBuf.slice(0);   // immutable clone — pdfjs will consume rawBuf
+    _marked.clear();
+    document.getElementById('downloadBtn').style.display = 'none';
+
+    const pdfDoc = await pdfjsLib.getDocument({ data: new Uint8Array(rawBuf) }).promise;
+    _numPages = pdfDoc.numPages;
+    document.getElementById('pageTotal').textContent = _numPages + ' pages total';
+
+    const grid = document.getElementById('dpGrid');
+    grid.innerHTML = '<div class="dp-loading">Rendering thumbnails…</div>';
+    document.getElementById('gridCard').style.display  = 'block';
+    document.getElementById('actionCard').style.display = 'block';
+
+    // Pre-build all thumb elements in order, then render canvases in parallel batches
+    grid.innerHTML = '';
+    const thumbEls = [];
+    for (let i = 1; i <= _numPages; i++) {
+      const thumb = document.createElement('div');
+      thumb.className = 'dp-thumb';
+      thumb.dataset.page = i;
+
+      const num = document.createElement('div');
+      num.className = 'dp-page-num';
+      num.textContent = i;
+      thumb.appendChild(num);
+
+      const badge = document.createElement('div');
+      badge.className = 'dp-del-badge';
+      badge.textContent = '✕';
+      thumb.appendChild(badge);
+
+      thumb.addEventListener('click', () => togglePage(i, thumb));
+      grid.appendChild(thumb);
+      thumbEls.push(thumb);
+    }
+
+    // Render thumbnail canvases in parallel batches of 4 for maximum speed
+    const BATCH = 4;
+    for (let start = 0; start < _numPages; start += BATCH) {
+      const batchIdxs = Array.from(
+        { length: Math.min(BATCH, _numPages - start) },
+        (_, k) => start + k + 1
+      );
+      await Promise.all(batchIdxs.map(async (i) => {
+        const page   = await pdfDoc.getPage(i);
+        const vp     = page.getViewport({ scale: 0.25 });
+        const canvas = document.createElement('canvas');
+        canvas.width  = vp.width;
+        canvas.height = vp.height;
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+        thumbEls[i - 1].insertBefore(canvas, thumbEls[i - 1].firstChild);
+      }));
+    }
+    updatePill();
+  }
+
+  function togglePage(n, el) {
+    if (_marked.has(n)) { _marked.delete(n); el.classList.remove('marked'); }
+    else                { _marked.add(n);    el.classList.add('marked'); }
+    updatePill();
+  }
+
+  function selectAll() {
+    _marked.clear();
+    document.querySelectorAll('.dp-thumb').forEach(t => {
+      _marked.add(parseInt(t.dataset.page)); t.classList.add('marked');
+    });
+    updatePill();
+  }
+
+  function clearAll() {
+    _marked.clear();
+    document.querySelectorAll('.dp-thumb').forEach(t => t.classList.remove('marked'));
+    updatePill();
+  }
+
+  function invertSel() {
+    document.querySelectorAll('.dp-thumb').forEach(t => {
+      const n = parseInt(t.dataset.page);
+      if (_marked.has(n)) { _marked.delete(n); t.classList.remove('marked'); }
+      else                { _marked.add(n);    t.classList.add('marked'); }
+    });
+    updatePill();
+  }
+
+  async function deleteMarked() {
+    if (_marked.size === 0) { toast('No pages marked for deletion.'); return; }
+    if (_marked.size >= _numPages) { toast('Cannot delete all pages — at least one page must remain.'); return; }
+
+    const btn = document.getElementById('deleteBtn');
+    btn.disabled = true; btn.textContent = '⏳ Processing…';
+    try {
+      const { PDFDocument } = PDFLib;
+      const pdfDoc = await PDFDocument.load(_pdfBytes.slice(0));  // fresh slice — never reuse the same buffer
+      // Build list of pages to keep (0-indexed)
+      const toKeep = [];
+      for (let i = 1; i <= _numPages; i++) {
+        if (!_marked.has(i)) toKeep.push(i - 1);
+      }
+      // Build new PDF by copying only kept pages
+      const newDoc = await PDFDocument.create();
+      const copied = await newDoc.copyPages(pdfDoc, toKeep);
+      copied.forEach(p => newDoc.addPage(p));
+      const outBytes = await newDoc.save();
+      const blob = new Blob([outBytes], { type: 'application/pdf' });
+      var defaultName = (window._dpFileName || 'document').replace(/\.pdf$/i, '') + '_pages_deleted.pdf';
+      const dl   = document.getElementById('downloadBtn');
+      dl.style.display = 'inline-flex';
+      dl.onclick = function(e) {
+        e.preventDefault();
+        if (window.CMFilename) {
+          window.CMFilename.prompt(defaultName).then(function(chosenName) {
+            if (!chosenName) return;
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = chosenName;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            if (window.CMLogs) window.CMLogs.log({ tool: 'Delete Pages', action: 'delete', output: chosenName, size: blob.size, pages: toKeep.length });
+          });
+        } else {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob); a.download = defaultName;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+      };
+      toast('✅ Deleted ' + _marked.size + ' page(s). ' + toKeep.length + ' page(s) remaining.');
+    } catch(e) {
+      toast('❌ Error: ' + e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = '🗑️ Delete Marked Pages';
+    }
+  }
+
+  return { load, selectAll, clearAll, invertSel, deleteMarked };
+})();
+
+// Drop zone
+const dz = document.getElementById('dropZone');
+dz.addEventListener('click', () => document.getElementById('fileInput').click());
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f) handleFile(f);
+});
+document.getElementById('fileInput').addEventListener('change', e => {
+  if (e.target.files[0]) handleFile(e.target.files[0]);
+});
+
+function handleFile(f) {
+  if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  window._dpFileName = f.name;
+  DP.load(f);
+}
+</script>
+
+<!-- Brand Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      </svg>
+    </div>
+  </div>
+</div>
+</body>
+</html>

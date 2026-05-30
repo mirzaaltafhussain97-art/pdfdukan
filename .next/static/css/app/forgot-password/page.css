@@ -1,0 +1,452 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[13].oneOf[5].use[3]!./components/auth/ForgotPasswordFlow.module.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/* ── Page wrapper ─────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_page__cSy1U {
+  min-height: 100vh;
+  background-color: #0f0f0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_card__GpwTo {
+  width: 100%;
+  max-width: 440px;
+  background-color: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Logo header ──────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_logoBar__rNFpE {
+  background: linear-gradient(135deg, #ff6333, #ff9055);
+  padding: 24px 32px;
+  text-align: center;
+}
+
+.ForgotPasswordFlow_logoLink__HrH2H {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.ForgotPasswordFlow_logoTitle__0rZhO {
+  margin: 0;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.ForgotPasswordFlow_logoSub__EJNtb {
+  margin: 4px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ── Step indicator ───────────────────────────────────────────────────── */
+.ForgotPasswordFlow_steps__Lvry0 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 20px 32px 0;
+}
+
+.ForgotPasswordFlow_stepItem__mlsJn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1;
+}
+
+.ForgotPasswordFlow_stepDot__2cJqw {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #2a2a2a;
+  border: 2px solid #3a3a3a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #666666;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.ForgotPasswordFlow_stepDot__2cJqw.ForgotPasswordFlow_active__N4NNN {
+  background-color: rgba(255, 99, 51, 0.15);
+  border-color: #ff6333;
+  color: #ff6333;
+}
+
+.ForgotPasswordFlow_stepDot__2cJqw.ForgotPasswordFlow_done__4aasa {
+  background-color: #ff6333;
+  border-color: #ff6333;
+  color: #ffffff;
+}
+
+.ForgotPasswordFlow_stepLabel__7iAeB {
+  font-size: 10px;
+  font-weight: 600;
+  color: #555555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.ForgotPasswordFlow_stepLabel__7iAeB.ForgotPasswordFlow_active__N4NNN {
+  color: #ff6333;
+}
+
+.ForgotPasswordFlow_stepLabel__7iAeB.ForgotPasswordFlow_done__4aasa {
+  color: #aaaaaa;
+}
+
+.ForgotPasswordFlow_stepConnector__pNfNL {
+  flex: 1 1;
+  height: 2px;
+  background-color: #2a2a2a;
+  margin-bottom: 20px;
+  max-width: 40px;
+  transition: background-color 0.2s ease;
+}
+
+.ForgotPasswordFlow_stepConnector__pNfNL.ForgotPasswordFlow_done__4aasa {
+  background-color: #ff6333;
+}
+
+/* ── Inner content area ───────────────────────────────────────────────── */
+.ForgotPasswordFlow_body__jXyBc {
+  padding: 28px 32px 32px;
+}
+
+.ForgotPasswordFlow_stageTitle__Jj_0G {
+  margin: 0 0 6px;
+  color: #f0f0f0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ForgotPasswordFlow_stageSub__xYbBj {
+  margin: 0 0 24px;
+  color: #888888;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.ForgotPasswordFlow_emailHighlight__PoAed {
+  color: #ff6333;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+/* ── Form field ───────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_fieldWrap__fXzGk {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.ForgotPasswordFlow_fieldLabel__W8IkM {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #aaaaaa;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ForgotPasswordFlow_fieldInput__xSHlM {
+  width: 100%;
+  background-color: #242424;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 8px;
+  padding: 11px 40px 11px 14px;
+  font-size: 14px;
+  color: #f0f0f0;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ForgotPasswordFlow_fieldInput__xSHlM::placeholder {
+  color: #555555;
+}
+
+.ForgotPasswordFlow_fieldInput__xSHlM:focus {
+  border-color: #ff6333;
+  box-shadow: 0 0 0 3px rgba(255, 99, 51, 0.15);
+}
+
+.ForgotPasswordFlow_fieldInput__xSHlM.ForgotPasswordFlow_valid__W9sBs {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+}
+
+.ForgotPasswordFlow_fieldInput__xSHlM.ForgotPasswordFlow_invalid__scrK9 {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12);
+}
+
+/* Status icon inside the input */
+.ForgotPasswordFlow_fieldIcon__azTU6 {
+  position: absolute;
+  right: 12px;
+  bottom: 11px;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+/* Feedback text below the field */
+.ForgotPasswordFlow_fieldFeedback__ZOSxb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ForgotPasswordFlow_fieldFeedback__ZOSxb.ForgotPasswordFlow_success__UuxVR {
+  color: #4caf50;
+}
+
+.ForgotPasswordFlow_fieldFeedback__ZOSxb.ForgotPasswordFlow_error__tVrhu {
+  color: #ef5350;
+}
+
+/* ── OTP grid ─────────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_otpGrid__HK7Ji {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.ForgotPasswordFlow_otpCell__n9DKy {
+  width: 48px;
+  height: 56px;
+  background-color: #242424;
+  border: 1.5px solid #3a3a3a;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0f0f0;
+  caret-color: #ff6333;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.ForgotPasswordFlow_otpCell__n9DKy:focus {
+  border-color: #ff6333;
+  box-shadow: 0 0 0 3px rgba(255, 99, 51, 0.18);
+}
+
+.ForgotPasswordFlow_otpCell__n9DKy.ForgotPasswordFlow_filled__qf3X3 {
+  border-color: #ff6333;
+  background-color: rgba(255, 99, 51, 0.06);
+}
+
+.ForgotPasswordFlow_otpCell__n9DKy.ForgotPasswordFlow_error__tVrhu {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.12);
+}
+
+.ForgotPasswordFlow_otpCell__n9DKy.ForgotPasswordFlow_success__UuxVR {
+  border-color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.06);
+}
+
+/* ── Timer row ────────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_timerRow__XwyKS {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.ForgotPasswordFlow_timerText__5B5eQ {
+  color: #666666;
+}
+
+.ForgotPasswordFlow_timerValue__bHwYv {
+  color: #ff6333;
+  font-weight: 700;
+}
+
+.ForgotPasswordFlow_timerExpired__7UfkB {
+  color: #e53935;
+}
+
+.ForgotPasswordFlow_resendBtn__dTfpt {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #ff6333;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.ForgotPasswordFlow_resendBtn__dTfpt:disabled {
+  color: #555555;
+  text-decoration: none;
+  cursor: not-allowed;
+}
+
+/* ── Password strength bar ────────────────────────────────────────────── */
+.ForgotPasswordFlow_strengthWrap__OtHcA {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.ForgotPasswordFlow_strengthBar__9QAur {
+  height: 4px;
+  border-radius: 2px;
+  background-color: #2a2a2a;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.ForgotPasswordFlow_strengthFill__95Stk {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.ForgotPasswordFlow_strengthLabel__m4crp {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── General API error banner ─────────────────────────────────────────── */
+.ForgotPasswordFlow_errorBanner___6S2Q {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background-color: rgba(229, 57, 53, 0.1);
+  border: 1px solid rgba(229, 57, 53, 0.3);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #ef9a9a;
+  line-height: 1.5;
+}
+
+.ForgotPasswordFlow_errorBanner___6S2Q svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Primary button ───────────────────────────────────────────────────── */
+.ForgotPasswordFlow_btn__kyBfQ {
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ForgotPasswordFlow_btn__kyBfQ:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.ForgotPasswordFlow_btnPrimary__bXlw4 {
+  background: linear-gradient(135deg, #ff6333, #ff9055);
+  color: #ffffff;
+}
+
+.ForgotPasswordFlow_btnPrimary__bXlw4:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.ForgotPasswordFlow_btnPrimary__bXlw4:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ── Back link ────────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_backLink__wdXa4 {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #666666;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.ForgotPasswordFlow_backLink__wdXa4:hover {
+  color: #aaaaaa;
+}
+
+/* ── Success state ────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_successWrap__0O7ft {
+  text-align: center;
+  padding: 8px 0;
+}
+
+.ForgotPasswordFlow_successIcon__AHe8L {
+  width: 64px;
+  height: 64px;
+  background-color: rgba(76, 175, 80, 0.12);
+  border: 2px solid #4caf50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.ForgotPasswordFlow_successTitle__DuDON {
+  margin: 0 0 10px;
+  color: #f0f0f0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.ForgotPasswordFlow_successBody__P2qRW {
+  margin: 0 0 24px;
+  color: #888888;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ── Spinner ──────────────────────────────────────────────────────────── */
+.ForgotPasswordFlow_spinner__4Nmnt {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: ForgotPasswordFlow_spin__Xg4N2 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes ForgotPasswordFlow_spin__Xg4N2 {
+  to { transform: rotate(360deg); }
+}
+

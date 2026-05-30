@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Settings — CamMaster by PDFdukan</title>
+<meta name="description" content="Customize your CamMaster experience. Set default export format, image quality, theme preference, and more.">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.settings-grid { display: flex; flex-direction: column; gap: 14px; }
+.setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; background: var(--card-2); border-radius: var(--radius);
+  border: 1px solid var(--border); gap: 16px; flex-wrap: wrap;
+}
+.setting-label { flex: 1; min-width: 200px; }
+.setting-label .sl-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.setting-label .sl-desc  { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+.setting-control select, .setting-control input[type=text] {
+  background: var(--card); border: 1px solid var(--border); color: var(--text);
+  padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13px; outline: none;
+  min-width: 180px; transition: var(--t);
+}
+.setting-control select:focus { border-color: var(--primary); }
+
+/* Toggle switch */
+.toggle-wrap { display: flex; align-items: center; gap: 10px; }
+.toggle {
+  position: relative; display: inline-block; width: 44px; height: 24px;
+}
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: var(--card-3); border-radius: 24px; transition: var(--t);
+  border: 1px solid var(--border);
+}
+.toggle-slider:before {
+  content: ''; position: absolute;
+  width: 18px; height: 18px; background: var(--text-3);
+  border-radius: 50%; left: 3px; top: 2px; transition: var(--t);
+}
+.toggle input:checked + .toggle-slider { background: var(--primary); border-color: var(--primary); }
+.toggle input:checked + .toggle-slider:before { transform: translateX(20px); background: #fff; }
+.toggle-label { font-size: 13px; color: var(--text-2); font-weight: 500; }
+
+.settings-section-title {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 1px;
+  padding: 8px 0 4px; border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.settings-save-row {
+  display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px;
+}
+.btn-reset {
+  background: var(--card-2); border: 1px solid var(--border);
+  color: var(--text-2); padding: 10px 20px; border-radius: var(--radius);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: var(--t);
+}
+.btn-reset:hover { border-color: var(--error); color: var(--error); }
+</style>
+</head>
+<body>
+
+<header class="header" role="banner">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">📄</div>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <div class="header-actions" style="margin-left:auto">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="index.html" style="color:var(--text-3)">Home</a> › <span>Settings</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#37474f,#607d8b)">⚙️</div>
+    <h1>Settings</h1>
+    <p>Customize your CamMaster experience. All preferences are saved locally on your device.</p>
+  </div>
+
+  <!-- Appearance -->
+  <div class="tool-card">
+    <div class="settings-section-title">Appearance</div>
+    <div class="settings-grid" style="margin-top:12px">
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Theme</div>
+          <div class="sl-desc">Choose between dark and light interface</div>
+        </div>
+        <div class="setting-control toggle-wrap">
+          <span class="toggle-label" id="themeLabel">Dark</span>
+          <label class="toggle">
+            <input type="checkbox" id="themeToggle" onchange="onThemeToggle(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Light</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Export Defaults -->
+  <div class="tool-card">
+    <div class="settings-section-title">Export Defaults</div>
+    <div class="settings-grid" style="margin-top:12px">
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Default Export Format</div>
+          <div class="sl-desc">Used when exporting from the scanner</div>
+        </div>
+        <div class="setting-control">
+          <select id="exportFormat" onchange="saveSetting('exportFormat', this.value)">
+            <option value="pdf">PDF (Recommended)</option>
+            <option value="jpeg">JPEG Image</option>
+            <option value="png">PNG Image</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Image Processing Quality</div>
+          <div class="sl-desc">Trade-off between file size and image quality</div>
+        </div>
+        <div class="setting-control">
+          <select id="qualityPreset" onchange="saveSetting('quality', this.value)">
+            <option value="high">Maximum Quality (larger files)</option>
+            <option value="balanced">Balanced (recommended)</option>
+            <option value="compressed">High Compression (smaller files)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Default Scan Filter</div>
+          <div class="sl-desc">Filter applied automatically when scanning a new document</div>
+        </div>
+        <div class="setting-control">
+          <select id="scanFilter" onchange="saveSetting('scanFilter', this.value)">
+            <option value="enhance">Auto-Enhance</option>
+            <option value="magicpro">Magic Pro (AI)</option>
+            <option value="bw">Black &amp; White</option>
+            <option value="grayscale">Grayscale</option>
+            <option value="original">No Filter</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Privacy & Data -->
+  <div class="tool-card">
+    <div class="settings-section-title">Privacy &amp; Data</div>
+    <div class="settings-grid" style="margin-top:12px">
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Recent Document History</div>
+          <div class="sl-desc">Store list of recently processed documents locally</div>
+        </div>
+        <div class="setting-control toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="historyToggle" checked onchange="onHistoryToggle(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label" id="historyLabel">Enabled</span>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Clear Recent History</div>
+          <div class="sl-desc">Remove all saved recent document entries from this device</div>
+        </div>
+        <div class="setting-control">
+          <button class="btn-reset" onclick="clearHistory()">Clear History</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Transaction Log -->
+  <div class="tool-card">
+    <div class="settings-section-title">Transaction Log</div>
+    <div class="settings-grid" style="margin-top:12px">
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Download Transaction Log</div>
+          <div class="sl-desc">Export a CSV file of all tool operations (timestamps, filenames, file sizes)</div>
+        </div>
+        <div class="setting-control" style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:12px;color:var(--text-muted);font-weight:600" id="logCountLabel">0 entries</span>
+          <button class="btn-reset" style="border-color:var(--primary);color:var(--primary)" onclick="if(window.CMLogs)CMLogs.downloadCSV()">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Clear Transaction Log</div>
+          <div class="sl-desc">Permanently delete all stored transaction entries</div>
+        </div>
+        <div class="setting-control">
+          <button class="btn-reset" onclick="clearTransactionLog()">Clear Log</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="tool-card">
+    <div class="settings-section-title">About</div>
+    <div class="settings-grid" style="margin-top:12px">
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">CamMaster Version</div>
+          <div class="sl-desc">Current application version</div>
+        </div>
+        <div class="setting-control">
+          <span style="font-size:13px;color:var(--text-3);font-weight:600">v2.0.0 (May 2026)</span>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div class="setting-label">
+          <div class="sl-title">Reset All Settings</div>
+          <div class="sl-desc">Restore all preferences to factory defaults</div>
+        </div>
+        <div class="setting-control">
+          <button class="btn-reset" onclick="resetSettings()">Reset All</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item" onclick="location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
+  <button class="mob-nav-item active"><span class="mni">⚙️</span><span>Settings</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <h2>Sign in to PDFdukan</h2>
+    <p>Save and access your files from any device.</p>
+    <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="js/app.js"></script>
+<script>
+// Populate controls from SETTINGS on load
+document.addEventListener('DOMContentLoaded', () => {
+  // Theme toggle
+  const isDark = STATE.theme === 'dark';
+  document.getElementById('themeToggle').checked = !isDark;
+
+  // Export format
+  const ef = document.getElementById('exportFormat');
+  if (ef) ef.value = SETTINGS.exportFormat || 'pdf';
+
+  // Quality preset
+  const qp = document.getElementById('qualityPreset');
+  if (qp) qp.value = SETTINGS.quality || 'balanced';
+
+  // Scan filter
+  const sf = document.getElementById('scanFilter');
+  if (sf) sf.value = SETTINGS.scanFilter || 'enhance';
+
+  // History toggle
+  const histOff = localStorage.getItem('cm_history_off') === '1';
+  document.getElementById('historyToggle').checked = !histOff;
+  document.getElementById('historyLabel').textContent = histOff ? 'Disabled' : 'Enabled';
+});
+
+function onThemeToggle(isLight) {
+  applyTheme(isLight ? 'light' : 'dark');
+  toast('Theme updated ✓', 'success');
+}
+
+function onHistoryToggle(enabled) {
+  localStorage.setItem('cm_history_off', enabled ? '0' : '1');
+  document.getElementById('historyLabel').textContent = enabled ? 'Enabled' : 'Disabled';
+  toast(enabled ? 'History enabled' : 'History disabled', 'success');
+}
+
+function clearHistory() {
+  if (!confirm('Clear all recent document history? This cannot be undone.')) return;
+  localStorage.removeItem('cm_recent');
+  STATE.recentDocs = [];
+  updateStorageUI();
+  toast('History cleared ✓', 'success');
+}
+
+function resetSettings() {
+  if (!confirm('Reset all settings to defaults?')) return;
+  localStorage.removeItem('cm_settings');
+  localStorage.removeItem('cm_history_off');
+  applyTheme('dark');
+  document.getElementById('themeToggle').checked = false;
+  document.getElementById('exportFormat').value   = 'pdf';
+  document.getElementById('qualityPreset').value  = 'balanced';
+  document.getElementById('scanFilter').value     = 'enhance';
+  document.getElementById('historyToggle').checked = true;
+  document.getElementById('historyLabel').textContent = 'Enabled';
+  toast('Settings reset to defaults ✓', 'success');
+}
+
+function clearTransactionLog() {
+  if (!confirm('Clear all transaction log entries? This cannot be undone.')) return;
+  if (window.CMLogs) CMLogs.clearLog();
+  _updateLogCount();
+}
+
+function _updateLogCount() {
+  var el = document.getElementById('logCountLabel');
+  if (el && window.CMLogs) {
+    var n = CMLogs.count();
+    el.textContent = n + (n === 1 ? ' entry' : ' entries');
+  }
+}
+
+/* Update log count on load */
+document.addEventListener('DOMContentLoaded', _updateLogCount);
+</script>
+</body>
+</html>

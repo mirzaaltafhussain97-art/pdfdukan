@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Blog — Document Tools, PDF Tips &amp; Productivity | PDFdukan</title>
+<meta name="description" content="PDFdukan blog: expert tips on document scanning, PDF workflows, OCR, file compression, and productivity. Free guides from the CamMaster team.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/blog/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+/* Blog-index specific enhancements */
+.blog-hero-strip {
+  background: linear-gradient(135deg, rgba(255,99,51,.12) 0%, rgba(180,60,220,.08) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.blog-feat-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow .25s, border-color .25s;
+  margin-bottom: 32px;
+}
+.blog-feat-card:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary);
+}
+.bfc-visual {
+  background: linear-gradient(135deg,#1a0a00,#2d1200,#ff6333);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  min-height: 240px;
+  position: relative;
+  overflow: hidden;
+}
+.bfc-visual::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 60%, var(--card));
+}
+.bfc-body {
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.bfc-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.bfc-title {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.bfc-excerpt {
+  font-size: 14px;
+  color: var(--text-3);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.bfc-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.bfc-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .2s;
+  width: fit-content;
+}
+.bfc-read-btn:hover { opacity: .88; }
+
+.blog-secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+@media(max-width:900px) { .blog-secondary-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:580px) {
+  .blog-feat-card { grid-template-columns: 1fr; }
+  .bfc-visual { min-height: 160px; }
+  .bfc-visual::after { display: none; }
+  .blog-secondary-grid { grid-template-columns: 1fr; }
+}
+
+.blog-cat-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.bcat-btn {
+  background: var(--card-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: .2s;
+}
+.bcat-btn:hover, .bcat-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.blog-sidebar-tip {
+  background: linear-gradient(135deg,var(--card-2),var(--card));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.blog-sidebar-tip h3 { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
+.blog-sidebar-tip p { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+</style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lbg)"/>
+      <path d="M6 12 L6 6 L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 12 L34 6 L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M6 28 L6 34 L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 28 L34 34 L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10 L24 13 L21 13 Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html"      class="nav-item">Home</a>
+    <a href="../tools.html"      class="nav-item">Tools</a>
+    <a href="index.html"         class="nav-item active">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">▾</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">🏢</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">🔒</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">🍪</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions" style="margin-left:auto">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <a href="../index.html"  class="mnd-link">🏠 Home</a>
+  <a href="../tools.html"  class="mnd-link">🛠️ All Tools</a>
+  <a href="index.html"     class="mnd-link active">📝 Blog</a>
+  <a href="../about.html"  class="mnd-link">🏢 About</a>
+  <a href="../privacy.html" class="mnd-link">🔒 Privacy</a>
+  <a href="../contact.html" class="mnd-link">📬 Contact</a>
+</div>
+
+<!-- Hero -->
+<div class="page-hero blog-hero-strip">
+  <div style="font-size:44px;margin-bottom:10px">📝</div>
+  <h1>PDFdukan Blog</h1>
+  <p>Expert guides on document scanning, PDF workflows, OCR, and digital productivity — from the CamMaster team.</p>
+</div>
+
+<div style="max-width:960px;margin:0 auto;padding:36px 24px 60px" class="blog-content-layer">
+
+  <nav style="font-size:12px;color:var(--text-3);margin-bottom:24px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Blog</span>
+  </nav>
+
+  <!-- Category filter -->
+  <div class="blog-cat-bar">
+    <button class="bcat-btn active" onclick="filterBlog('')">All Articles</button>
+    <button class="bcat-btn" onclick="filterBlog('scanning')">Document Scanning</button>
+    <button class="bcat-btn" onclick="filterBlog('pdf')">PDF Tools</button>
+    <button class="bcat-btn" onclick="filterBlog('ocr')">OCR &amp; Text</button>
+    <button class="bcat-btn" onclick="filterBlog('compress')">Compression</button>
+    <button class="bcat-btn" onclick="filterBlog('productivity')">Productivity</button>
+  </div>
+
+  <!-- Featured article — with structured image container -->
+  <article class="blog-feat-card" onclick="location.href='document-digitization-best-practices.html'"
+           data-cat="scanning" aria-label="Document Digitization Best Practices article">
+    <div class="bfc-visual" role="img" aria-label="Document digitization concept — scanner capturing paper documents into digital format">
+      <span aria-hidden="true" style="z-index:1;position:relative">📄</span>
+      <!-- Structured image block for SEO -->
+      <figure style="position:absolute;inset:0;margin:0;overflow:hidden">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0a00,#2d1200,#ff6333);display:flex;align-items:center;justify-content:center;font-size:80px">📄</div>
+        <figcaption style="display:none">CamMaster document scanner converting a physical paper document to a digital PDF file using AI edge detection in 2026</figcaption>
+      </figure>
+    </div>
+    <div class="bfc-body">
+      <div class="bfc-tag">⭐ Featured · Document Scanning</div>
+      <h2 class="bfc-title">Document Digitization Best Practices: The Complete 2026 Guide</h2>
+      <p class="bfc-excerpt">Learn how to digitize physical documents correctly — from choosing the right scan resolution to organizing your digital archive for long-term access. Covers <a href="../scanner.html" onclick="event.stopPropagation()" style="color:var(--primary)">AI-powered scanning</a>, PDF optimization, and <a href="https://en.wikipedia.org/wiki/Document_management_system" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">document management systems</a>.</p>
+      <div class="bfc-meta">
+        <span>📅 May 20, 2026</span>
+        <span>⏱ 8 min read</span>
+        <span>👁 2.4k views</span>
+      </div>
+      <button class="bfc-read-btn">Read Article →</button>
+    </div>
+  </article>
+
+  <!-- Two-column layout: articles + sidebar -->
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
+    <!-- Articles column -->
+    <div>
+      <h2 style="font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Latest Articles</h2>
+      <div class="blog-secondary-grid" style="grid-template-columns:1fr 1fr">
+
+        <article class="blog-card" onclick="location.href='maximizing-pdf-workflows.html'" data-cat="pdf"
+                 aria-label="Maximizing PDF Workflows article">
+          <!-- Image container 1: PDF workflow visual -->
+          <figure class="bc-img" style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c,#3b82f6);margin:0"
+                  aria-label="PDF merge and split workflow diagram showing multiple documents combining into one optimized file">
+            <span aria-hidden="true">🔗</span>
+            <figcaption style="display:none">Screenshot of PDFdukan's PDF merger tool combining multiple document files — merge, split, and organize PDFs in the browser</figcaption>
+          </figure>
+          <div class="bc-body">
+            <div class="bc-tag">PDF Tools</div>
+            <h3 class="bc-title">Maximizing PDF Workflows: Merge, Split &amp; Organize Like a Pro</h3>
+            <p class="bc-excerpt">Professional techniques for merging specific pages, splitting large files, and keeping documents organized. Uses <a href="../tools/merge-pdf.html" onclick="event.stopPropagation()" style="color:var(--primary)">PDFdukan's Merge PDF</a> and <a href="https://en.wikipedia.org/wiki/PDF" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">PDF standard</a> best practices.</p>
+            <div class="bc-meta">May 22, 2026 · 6 min read</div>
+            <span class="bc-read-more">Read Article →</span>
+          </div>
+        </article>
+
+        <article class="blog-card" onclick="location.href='how-ocr-works.html'" data-cat="ocr"
+                 aria-label="How OCR Works in 2026 article">
+          <figure class="bc-img" style="background:linear-gradient(135deg,#0d2a1a,#1b5c3b,#34a853);margin:0"
+                  aria-label="OCR text extraction process — converting a handwritten note or printed receipt into editable digital text">
+            <span aria-hidden="true">🔤</span>
+            <figcaption style="display:none">Optical Character Recognition (OCR) process using Tesseract.js — CamMaster extracting text from a scanned document image</figcaption>
+          </figure>
+          <div class="bc-body">
+            <div class="bc-tag">OCR &amp; Text Extraction</div>
+            <h3 class="bc-title">How OCR Works in 2026: Extract Text from Any Image</h3>
+            <p class="bc-excerpt">From handwritten notes to typed receipts — learn how modern <a href="../tools/ocr.html" onclick="event.stopPropagation()" style="color:var(--primary)">OCR engines</a> extract text with high accuracy using <a href="https://tesseract-ocr.github.io/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">Tesseract</a>.</p>
+            <div class="bc-meta">May 23, 2026 · 5 min read</div>
+            <span class="bc-read-more">Read Article →</span>
+          </div>
+        </article>
+
+        <article class="blog-card" onclick="location.href='image-compression-guide.html'" data-cat="compress"
+                 aria-label="Image Compression Guide article">
+          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a00,#2d2d00,#f59e0b);margin:0"
+                  aria-label="Side-by-side image compression comparison showing original vs compressed file size reduction">
+            <span aria-hidden="true">🗜️</span>
+            <figcaption style="display:none">Image compression using PDFdukan's tool — reducing a JPEG file from 2MB to under 200KB while preserving visual quality using WebP conversion</figcaption>
+          </figure>
+          <div class="bc-body">
+            <div class="bc-tag">Image Compression</div>
+            <h3 class="bc-title">Compress Images Without Losing Quality: The Complete Guide</h3>
+            <p class="bc-excerpt">Target KB limits, <a href="https://developers.google.com/speed/webp" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">WebP conversion</a>, social media presets — master every technique with <a href="../tools/compress.html" onclick="event.stopPropagation()" style="color:var(--primary)">our free compressor</a>.</p>
+            <div class="bc-meta">May 24, 2026 · 4 min read</div>
+            <span class="bc-read-more">Read Article →</span>
+          </div>
+        </article>
+
+        <article class="blog-card" onclick="location.href='going-paperless-guide.html'" data-cat="productivity"
+                 aria-label="Going Paperless Guide article">
+          <figure class="bc-img" style="background:linear-gradient(135deg,#1a0d1a,#3b1a5c,#9333ea);margin:0"
+                  aria-label="Paperless office setup showing a laptop with digital documents replacing physical paper files">
+            <span aria-hidden="true">📱</span>
+            <figcaption style="display:none">Modern paperless office workflow — using CamMaster to scan, digitize, and organize all physical documents into a searchable digital archive</figcaption>
+          </figure>
+          <div class="bc-body">
+            <div class="bc-tag">Productivity</div>
+            <h3 class="bc-title">Going Paperless in 2026: A Step-by-Step Office Action Plan</h3>
+            <p class="bc-excerpt">Practical checklist for converting your office to digital — <a href="../scanner.html" onclick="event.stopPropagation()" style="color:var(--primary)">scanning</a>, filing, and retrieval workflows explained. Endorsed by <a href="https://www.iso.org/standard/61085.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">ISO document standards</a>.</p>
+            <div class="bc-meta">May 25, 2026 · 7 min read</div>
+            <span class="bc-read-more">Read Article →</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- Sidebar — solid card backdrops for readability -->
+    <div style="position:sticky;top:80px">
+      <div class="blog-sidebar-tip">
+        <h3>🛠️ Try the Tools</h3>
+        <p>Every technique in our articles is powered by CamMaster's free browser tools — no account needed for basic use.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+          <a href="../scanner.html"          style="color:var(--primary);font-size:13px;font-weight:600">📷 Document Scanner →</a>
+          <a href="../tools/merge-pdf.html"  style="color:var(--primary);font-size:13px;font-weight:600">🔗 Merge PDF →</a>
+          <a href="../tools/compress.html"   style="color:var(--primary);font-size:13px;font-weight:600">🗜️ Compress Image →</a>
+          <a href="../tools/ocr.html"        style="color:var(--primary);font-size:13px;font-weight:600">🔤 OCR Text →</a>
+          <a href="../tools/bmi-calc.html"   style="color:var(--primary);font-size:13px;font-weight:600">⚖️ BMI Calculator →</a>
+          <a href="../tools/pdf-to-word.html" style="color:var(--primary);font-size:13px;font-weight:600">📝 PDF to Word →</a>
+        </div>
+      </div>
+
+      <div class="blog-sidebar-tip">
+        <h3>📬 Stay Updated</h3>
+        <p>New articles posted weekly. Follow us for the latest document productivity tips from the CamMaster team.</p>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <a href="../contact.html" style="flex:1;text-align:center;background:var(--primary);color:#fff;padding:9px;border-radius:var(--radius);font-size:13px;font-weight:700;display:block">Contact Us</a>
+        </div>
+      </div>
+
+      <div class="blog-sidebar-tip" style="background:linear-gradient(135deg,rgba(255,99,51,.15),rgba(255,99,51,.05))">
+        <h3>💡 Quick Tip</h3>
+        <p>Use the <strong>Perspective Warp</strong> feature in the scanner to perfectly flatten skewed document photos — no OpenCV installation needed.</p>
+        <a href="../scanner.html" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--primary);font-weight:700">Try it now →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="ad-slot" style="margin-top:40px"><p>Advertisement — Google AdSense</p></div>
+
+  <section class="seo-section" style="margin-top:32px">
+    <h2>About the PDFdukan Blog</h2>
+    <p class="lead">The PDFdukan Blog is your resource for practical guides on document management, digital productivity, and PDF best practices. Written by the team that built <a href="../scanner.html" style="color:var(--primary)">CamMaster</a> — we share real-world tips based on how people actually use document tools every day. All tools described are available free at <a href="../index.html" style="color:var(--primary)">pdfdukan.com</a>. For authoritative references, we link to <a href="https://www.iso.org" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">ISO standards</a> and <a href="https://developers.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Google developer resources</a>.</p>
+  </section>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item" onclick="location.href='../tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
+</div></nav>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleBlog">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleBlog" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px">Create account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/i18n.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/particles.js"></script>
+<script>
+function filterBlog(cat) {
+  document.querySelectorAll('.bcat-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  // Future: filter article grid by data-cat attribute
+}
+</script>
+</body>
+</html>
