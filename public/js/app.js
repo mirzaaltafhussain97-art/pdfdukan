@@ -661,12 +661,19 @@ function _esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'
 
 /* ── FEATURE GATE ─────────────────────────────────────────────────
    Visitors can browse the whole site freely, but USING a tool (selecting
-   or dropping a file) requires being signed in. Universal capture-phase
-   interception means no per-tool wiring is needed. */
-function isLoggedIn() { return !!STATE.user; }
+   or dropping a file) requires being signed in WITH a verified email.
+   Google sign-in users are always considered verified. */
+function isLoggedIn() {
+  return !!(STATE.user && STATE.user.emailVerified);
+}
 function _gatePrompt() {
-  toast('Please sign in to use this tool', 'info');
-  openAuth('signin');
+  if (STATE.user && !STATE.user.emailVerified) {
+    toast('Please verify your email first — check your inbox or resend below.', 'info', 5000);
+    toggleProfileMenu();
+  } else {
+    toast('Please sign in to use this tool', 'info');
+    openAuth('signin');
+  }
 }
 function _initFeatureGate() {
   // Block file selection via any <input type="file"> when logged out.
