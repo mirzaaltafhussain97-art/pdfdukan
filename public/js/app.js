@@ -167,6 +167,54 @@ function _fmtStorageBytes(bytes) {
   return (bytes / 1048576).toFixed(2) + ' MB';
 }
 function updateStorageUI() {
+  const card = document.getElementById('storageCard');
+  const driveReady = localStorage.getItem('pdfdukan_drive_setup_done') === 'true';
+
+  if (card) {
+    if (STATE.user && driveReady) {
+      // ── DRIVE CONNECTED view ──────────────────────────────────────────
+      card.innerHTML =
+        '<div class="sc-label">' +
+          '<span style="display:flex;align-items:center;gap:5px">' +
+            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+            '☁️ Google Drive' +
+          '</span>' +
+          '<span style="color:#34a853;font-size:11px;font-weight:700">Connected</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:7px;margin:8px 0 4px">' +
+          '<span style="font-size:15px">📁</span>' +
+          '<span style="font-size:12px;color:var(--text-2);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+            'PDFdukan — CamMaster Files' +
+          '</span>' +
+        '</div>' +
+        '<div class="sc-bar"><div class="sc-fill" style="width:5%;background:linear-gradient(90deg,#34a853,#4caf50)"></div></div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">' +
+          '<span style="font-size:11px;color:var(--text-3)">Up to 5 GB available</span>' +
+          '<a href="https://drive.google.com" target="_blank" rel="noopener" ' +
+            'style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;flex-shrink:0">' +
+            'Open Drive →' +
+          '</a>' +
+        '</div>';
+      return;
+    }
+    if (STATE.user && !driveReady) {
+      // ── SIGNED IN, Drive not set up yet ─────────────────────────────
+      card.innerHTML =
+        '<div class="sc-label"><span>Storage</span><span id="storageUsage">Local</span></div>' +
+        '<div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>' +
+        '<p class="sc-hint" id="storageHint" style="color:var(--primary);font-size:11px;cursor:pointer" ' +
+          'onclick="_initGDriveStorage(_gdriveToken())">☁️ Connect Google Drive →</p>';
+      return;
+    }
+    // ── NOT SIGNED IN ───────────────────────────────────────────────────
+    card.innerHTML =
+      '<div class="sc-label"><span>Storage</span><span id="storageUsage">Local</span></div>' +
+      '<div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>' +
+      '<p class="sc-hint" id="storageHint">☁️ Sign in to connect Google Drive</p>';
+    return;
+  }
+
+  // ── Fallback: update individual elements (for pages without storageCard) ──
   let totalBytes = 0;
   try {
     Object.keys(localStorage).forEach(key => {
@@ -182,13 +230,10 @@ function updateStorageUI() {
   if (usage) usage.textContent = _fmtStorageBytes(totalBytes);
   if (hint) {
     const count = STATE.recentDocs.length;
-    const driveReady = localStorage.getItem('pdfdukan_drive_setup_done') === 'true';
-    if (STATE.user && driveReady) {
-      hint.textContent = '☁️ Google Drive connected — up to 5 GB';
-    } else if (STATE.user) {
+    if (STATE.user) {
       hint.textContent = `${count} document${count !== 1 ? 's' : ''} in local history`;
     } else {
-      hint.textContent = `☁️ Sign in to connect Google Drive storage`;
+      hint.textContent = '☁️ Sign in to connect Google Drive';
     }
   }
 }
