@@ -23,6 +23,27 @@ function saveSetting(key, val) {
   localStorage.setItem('cm_settings', JSON.stringify(SETTINGS));
 }
 
+/* ── OTP FLOW STATE ──────────────────────────────────────────── */
+let _pendingSignup = null;  // { username, gender, name, email, phone, pass }
+let _otpPurpose    = null;  // 'signup' | 'verify'
+let _otpCountdown  = null;  // countdown setInterval ref
+
+function _isOTPVerified(email) {
+  if (!email) return false;
+  try {
+    const list = JSON.parse(localStorage.getItem('cm_otp_verified') || '[]');
+    return list.includes(email.toLowerCase());
+  } catch(e) { return false; }
+}
+function _markOTPVerified(email) {
+  if (!email) return;
+  try {
+    const em = email.toLowerCase();
+    const list = JSON.parse(localStorage.getItem('cm_otp_verified') || '[]');
+    if (!list.includes(em)) { list.push(em); localStorage.setItem('cm_otp_verified', JSON.stringify(list)); }
+  } catch(e) {}
+}
+
 /* ── NOTIFICATIONS ────────────────────────────────────────────── */
 const NOTIFICATIONS_DATA = [
   { id: 1, icon: '🎉', title: 'Welcome to CamMaster!',       body: 'Scan, convert and manage documents — all free, all in your browser. No uploads, no sign-up required.',            date: '2026-05-20' },
@@ -449,7 +470,7 @@ function _onAuthChanged(user) {
     STATE.user = {
       name:  user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
       email: user.email,
-      emailVerified: user.emailVerified,
+      emailVerified: user.emailVerified || _isOTPVerified(user.email),
       uid:   user.uid,
       photoURL: user.photoURL || null,
     };
@@ -473,6 +494,7 @@ function openAuth(tab) {
 function closeAuth() {
   const el = document.getElementById('authModal');
   if (el) el.classList.remove('show');
+  _closePanelOTP();
 }
 function switchAuthTab(tab) {
   const panelIn  = document.getElementById('panelSignIn');
@@ -496,8 +518,15 @@ function switchAuthTab(tab) {
 async function signInWithGoogle() {
   toast('Opening Google sign-in…', 'info');
   if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  // Request Google Drive file access alongside sign-in
+  _googleProvider.addScope('https://www.googleapis.com/auth/drive.file');
   try {
-    await _fb.signInWithPopup(_auth, _googleProvider);
+    const result = await _fb.signInWithPopup(_auth, _googleProvider);
+    // Capture Google access token for Drive API
+    const credential = _fb.GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      try { localStorage.setItem('cm_gdrive_token', credential.accessToken); } catch(_) {}
+    }
     closeAuth();
     toast('Signed in with Google ✓', 'success');
   } catch (e) { toast(_authErr(e), 'error'); }
@@ -544,18 +573,180 @@ async function signUpEmail() {
     toast('Enter a valid phone number', 'error'); return;
   }
 
-  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  // Store form data and send OTP — account is created only after OTP verified
+  _pendingSignup = { username, gender, name, email, phone, pass };
+  _otpPurpose = 'signup';
+  await _sendSignupOTP(email);
+}
+
+/* ── OTP PANEL FUNCTIONS ──────────────────────────────────────── */
+async function _sendSignupOTP(email) {
+  const btn = document.querySelector('#panelSignUp .auth-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending code…'; }
+  try {
+    const res  = await fetch('/api/auth/send-signup-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      toast(data.message || 'Failed to send code', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Create Account'; }
+      return;
+    }
+    _showOTPPanel(email, data.expiresInMinutes || 10);
+    toast('Code sent! Check your inbox and spam/junk folder.', 'success', 6000);
+  } catch(e) {
+    toast('Network error — please check your connection.', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account'; }
+  }
+}
+
+function _showOTPPanel(email, expiryMinutes) {
+  ['panelSignIn', 'panelSignUp'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.style.display = 'none';
+  });
+  const pOTP = document.getElementById('panelOTP');
+  if (pOTP) pOTP.style.display = '';
+
+  const hint = document.getElementById('otpEmailHint');
+  if (hint) hint.textContent = email;
+
+  const inp = document.getElementById('otpCode');
+  if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 120); }
+
+  const tabs = document.querySelector('#authModal .auth-tabs');
+  if (tabs) tabs.style.visibility = 'hidden';
+
+  const modal = document.getElementById('authModal');
+  if (modal && !modal.classList.contains('show')) modal.classList.add('show');
+
+  const submitBtn = document.getElementById('otpSubmitBtn');
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = _otpPurpose === 'verify' ? 'Verify Email' : 'Verify & Create Account';
+  }
+
+  // Countdown timer
+  clearInterval(_otpCountdown);
+  const timerEl = document.getElementById('otpTimerEl');
+  let secs = expiryMinutes * 60;
+  function _tick() {
+    if (!timerEl) return;
+    if (secs <= 0) {
+      clearInterval(_otpCountdown);
+      timerEl.textContent = 'Code expired — request a new one below.';
+      timerEl.style.color = 'var(--error,#ef4444)';
+      const sb = document.getElementById('otpSubmitBtn');
+      if (sb) sb.disabled = true;
+      return;
+    }
+    const m = Math.floor(secs / 60); const s = secs % 60;
+    timerEl.textContent = 'Code expires in ' + m + ':' + String(s).padStart(2, '0');
+    timerEl.style.color = secs < 60 ? 'var(--error,#ef4444)' : 'var(--text-3,#888)';
+    secs--;
+  }
+  _tick();
+  _otpCountdown = setInterval(_tick, 1000);
+}
+
+function _closePanelOTP() {
+  clearInterval(_otpCountdown);
+  const pOTP = document.getElementById('panelOTP');
+  if (pOTP) pOTP.style.display = 'none';
+  const tabs = document.querySelector('#authModal .auth-tabs');
+  if (tabs) tabs.style.visibility = '';
+}
+
+async function submitOTPCode() {
+  const email = _otpPurpose === 'verify'
+    ? (STATE.user && STATE.user.email || '')
+    : (_pendingSignup && _pendingSignup.email || '');
+  const code = (document.getElementById('otpCode') ? document.getElementById('otpCode').value : '').trim().replace(/\s/g, '');
+
+  if (!email) { toast('Session lost — please start over.', 'error'); return; }
+  if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+    toast('Enter the 6-digit numeric code from your email.', 'error'); return;
+  }
+
+  const btn = document.getElementById('otpSubmitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Verifying…'; }
+
+  try {
+    const res  = await fetch('/api/auth/verify-signup-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      toast(data.message || 'Wrong code — try again.', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = _otpPurpose === 'verify' ? 'Verify Email' : 'Verify & Create Account'; }
+      return;
+    }
+
+    clearInterval(_otpCountdown);
+    _markOTPVerified(email);
+
+    if (_otpPurpose === 'signup') {
+      await _createAccountAfterOTP();
+    } else {
+      if (STATE.user) {
+        STATE.user.emailVerified = true;
+        try { localStorage.setItem('cm_user', JSON.stringify(STATE.user)); } catch(e) {}
+      }
+      _closePanelOTP();
+      closeAuth();
+      toast('Email verified! ✓ You can now use all tools.', 'success', 5000);
+      updateAuthUI();
+      setTimeout(() => { closeProfilePanel(); setTimeout(openProfilePanel, 50); }, 300);
+    }
+  } catch(e) {
+    toast('Network error — please try again.', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = _otpPurpose === 'verify' ? 'Verify Email' : 'Verify & Create Account'; }
+  }
+}
+
+async function _createAccountAfterOTP() {
+  if (!_pendingSignup) { toast('Signup data lost — please start again.', 'error'); return; }
+  const { username, gender, name, email, phone, pass } = _pendingSignup;
+  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
   try {
     const cred = await _fb.createUserWithEmailAndPassword(_auth, email, pass);
-    // Store the display name on the Firebase profile.
-    try { await _fb.updateProfile(cred.user, { displayName: name }); } catch (e) {}
-    // Keep extra fields (username/gender/phone) locally until we add Firestore.
-    try { localStorage.setItem('cm_profile_extra', JSON.stringify({ username, gender, phone: phone || null })); } catch (e) {}
-    // Send the verification email.
-    try { await _fb.sendEmailVerification(cred.user); } catch (e) {}
+    try { await _fb.updateProfile(cred.user, { displayName: name }); } catch(e) {}
+    try { localStorage.setItem('cm_profile_extra', JSON.stringify({ username, gender, phone: phone || null })); } catch(e) {}
+    if (STATE.user) {
+      STATE.user.emailVerified = true;
+      STATE.user.name = name;
+      try { localStorage.setItem('cm_user', JSON.stringify(STATE.user)); } catch(e) {}
+    }
+    _pendingSignup = null;
+    _closePanelOTP();
     closeAuth();
-    toast('Account created! 📧 Verification email sent — check your inbox AND spam/junk folder.', 'success', 7000);
-  } catch (e) { toast(_authErr(e), 'error'); }
+    toast('Account created! Welcome to PDFdukan ✓', 'success');
+  } catch(e) { toast(_authErr(e), 'error'); }
+}
+
+async function resendOTPCode() {
+  const email = _otpPurpose === 'verify'
+    ? (STATE.user && STATE.user.email || '')
+    : (_pendingSignup && _pendingSignup.email || '');
+  if (!email) return;
+  const lnk = document.getElementById('otpResendA');
+  if (lnk) { lnk.style.pointerEvents = 'none'; lnk.style.opacity = '0.45'; }
+  try {
+    const res  = await fetch('/api/auth/send-signup-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!data.success) toast(data.message || 'Failed to resend', 'error');
+    else {
+      _showOTPPanel(email, data.expiresInMinutes || 10);
+      toast('New code sent! Check inbox and spam/junk folder.', 'success', 5000);
+    }
+  } catch(e) { toast('Network error', 'error'); }
+  setTimeout(() => { if (lnk) { lnk.style.pointerEvents = ''; lnk.style.opacity = ''; } }, 30000);
 }
 
 async function signOut() {
@@ -655,8 +846,17 @@ function _ppEnsure() {
         '</div>' +
         '<div class="cpp-sec" id="cppVerSec">' +
           '<div class="cpp-sec-hd">Email Verification</div>' +
-          '<div class="cpp-warnbox">&#9888; Your email is not yet verified. Check your inbox and spam/junk folder.</div>' +
-          '<button class="btn btn-secondary btn-sm" id="cppResnd" style="width:100%;margin-top:10px">Resend Verification Email</button>' +
+          '<div class="cpp-warnbox">&#9888; Your email is not verified. Verify now to use all tools.</div>' +
+          '<button class="btn btn-primary btn-sm" id="cppSendOtp" style="width:100%;margin-top:10px">Send Verification Code (OTP)</button>' +
+          '<div id="cppOtpWrap" style="display:none;margin-top:12px">' +
+            '<label class="cpp-lbl">Enter 6-digit code from your email</label>' +
+            '<div class="cpp-rowf">' +
+              '<input type="text" class="cpp-inp" id="cppOtpIn" placeholder="000000" maxlength="6" inputmode="numeric" ' +
+                     'style="text-align:center;font-size:20px;letter-spacing:6px;font-weight:700">' +
+              '<button class="btn btn-primary btn-sm" id="cppOtpBtn">Confirm</button>' +
+            '</div>' +
+            '<p class="cpp-hint">Check inbox AND spam/junk folder. Code valid 10 min.</p>' +
+          '</div>' +
         '</div>' +
         '<div class="cpp-sec">' +
           '<div class="cpp-sec-hd">Security</div>' +
@@ -666,6 +866,12 @@ function _ppEnsure() {
         '<div class="cpp-sec">' +
           '<div class="cpp-sec-hd">Recent Activity</div>' +
           '<div id="cppHist" class="cpp-hist"></div>' +
+        '</div>' +
+        '<div class="cpp-sec" id="cppDriveSec" style="display:none">' +
+          '<div class="cpp-sec-hd">Google Drive</div>' +
+          '<div id="cppDriveStatus" class="cpp-warnbox" style="background:rgba(66,133,244,.08);border-color:rgba(66,133,244,.25);color:#4285f4">' +
+            '&#128196; Google Drive connected — your files can be saved to Drive.' +
+          '</div>' +
         '</div>' +
         '<div class="cpp-sec cpp-logout-sec">' +
           '<button class="btn btn-sm" id="cppOut" style="width:100%;border:1px solid var(--error,#ef4444);color:var(--error,#ef4444);background:transparent">Sign Out</button>' +
@@ -722,14 +928,16 @@ function _ppEnsure() {
     '@media(max-width:480px){.cpp-panel{width:100vw;border-left:none}}';
   document.head.appendChild(st);
 
-  document.getElementById('cppX').onclick     = closeProfilePanel;
-  document.getElementById('cppBg').onclick    = closeProfilePanel;
-  document.getElementById('cppSvNm').onclick  = _ppSaveName;
-  document.getElementById('cppNm').onkeydown  = e => { if (e.key === 'Enter') _ppSaveName(); };
-  document.getElementById('cppRsPw').onclick  = _ppResetPass;
-  document.getElementById('cppOut').onclick   = () => { closeProfilePanel(); signOut(); };
-  document.getElementById('cppResnd').onclick = resendVerification;
-  document.getElementById('cppAvIn').onchange = _ppPhotoChange;
+  document.getElementById('cppX').onclick       = closeProfilePanel;
+  document.getElementById('cppBg').onclick      = closeProfilePanel;
+  document.getElementById('cppSvNm').onclick    = _ppSaveName;
+  document.getElementById('cppNm').onkeydown    = e => { if (e.key === 'Enter') _ppSaveName(); };
+  document.getElementById('cppRsPw').onclick    = _ppResetPass;
+  document.getElementById('cppOut').onclick     = () => { closeProfilePanel(); signOut(); };
+  document.getElementById('cppSendOtp').onclick = _ppSendOTP;
+  document.getElementById('cppOtpBtn').onclick  = _ppConfirmOTP;
+  document.getElementById('cppOtpIn').onkeydown = e => { if (e.key === 'Enter') _ppConfirmOTP(); };
+  document.getElementById('cppAvIn').onchange   = _ppPhotoChange;
 }
 
 function _ppRender() {
@@ -751,6 +959,10 @@ function _ppRender() {
   }
   const nmIn = document.getElementById('cppNm');    if (nmIn) nmIn.value = u.name || '';
   const vs   = document.getElementById('cppVerSec'); if (vs) vs.style.display = u.emailVerified ? 'none' : 'block';
+
+  // Google Drive section — show only when Drive token available
+  const driveToken = (() => { try { return localStorage.getItem('cm_gdrive_token'); } catch(e) { return null; } })();
+  const ds = document.getElementById('cppDriveSec'); if (ds) ds.style.display = driveToken ? 'block' : 'none';
 
   const hist = document.getElementById('cppHist');
   if (hist) {
@@ -815,6 +1027,66 @@ function _ppPhotoChange(e) {
   img.src = url;
 }
 
+async function _ppSendOTP() {
+  const email = STATE.user && STATE.user.email;
+  if (!email) return;
+  const btn = document.getElementById('cppSendOtp');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  try {
+    const res  = await fetch('/api/auth/send-signup-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      toast(data.message || 'Failed to send code', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Send Verification Code (OTP)'; }
+      return;
+    }
+    const wrap = document.getElementById('cppOtpWrap');
+    if (wrap) wrap.style.display = 'block';
+    const inp = document.getElementById('cppOtpIn');
+    if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 100); }
+    if (btn) { btn.disabled = false; btn.textContent = 'Resend Code'; }
+    toast('Code sent! Check inbox and spam/junk folder.', 'success', 6000);
+  } catch(e) {
+    toast('Network error', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Send Verification Code (OTP)'; }
+  }
+}
+
+async function _ppConfirmOTP() {
+  const email = STATE.user && STATE.user.email;
+  const code  = (document.getElementById('cppOtpIn') ? document.getElementById('cppOtpIn').value : '').trim();
+  if (!code || code.length !== 6 || !/^\d{6}$/.test(code)) {
+    toast('Enter the 6-digit code from your email.', 'error'); return;
+  }
+  const btn = document.getElementById('cppOtpBtn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  try {
+    const res  = await fetch('/api/auth/verify-signup-otp', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code })
+    });
+    const data = await res.json();
+    if (!data.success) {
+      toast(data.message || 'Wrong code', 'error');
+      if (btn) { btn.disabled = false; btn.textContent = 'Confirm'; }
+      return;
+    }
+    _markOTPVerified(email);
+    if (STATE.user) {
+      STATE.user.emailVerified = true;
+      try { localStorage.setItem('cm_user', JSON.stringify(STATE.user)); } catch(e) {}
+    }
+    toast('Email verified! ✓ You can now use all tools.', 'success', 5000);
+    _ppRender();
+  } catch(e) {
+    toast('Network error', 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Confirm'; }
+  }
+}
+
 function openProfilePanel() {
   if (!STATE.user) return;
   _ppEnsure();
@@ -835,7 +1107,7 @@ function _esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'
    or dropping a file) requires being signed in WITH a verified email.
    Google sign-in users are always considered verified. */
 function isLoggedIn() {
-  return !!(STATE.user && STATE.user.emailVerified);
+  return !!(STATE.user && (STATE.user.emailVerified || _isOTPVerified(STATE.user.email)));
 }
 function _gatePrompt() {
   if (STATE.user && !STATE.user.emailVerified) {
@@ -1176,6 +1448,49 @@ function _closeMobileNavOutside(e) {
 function initModal() {
   const modal = document.getElementById('authModal');
   if (!modal) return;
+
+  // Inject "Forgot password?" link into the sign-in panel
+  const panelIn = document.getElementById('panelSignIn');
+  if (panelIn && !document.getElementById('cmForgotLink')) {
+    const fp = document.createElement('p');
+    fp.className = 'auth-switch';
+    fp.id = 'cmForgotLink';
+    fp.style.marginTop = '6px';
+    fp.innerHTML = '<a href="/forgot-password">Forgot password?</a>';
+    const submitBtn = panelIn.querySelector('.auth-submit');
+    if (submitBtn) submitBtn.insertAdjacentElement('afterend', fp);
+  }
+
+  // Inject OTP panel if not already present
+  if (!document.getElementById('panelOTP')) {
+    const pOTP = document.createElement('div');
+    pOTP.id = 'panelOTP';
+    pOTP.style.display = 'none';
+    pOTP.innerHTML =
+      '<div style="text-align:center;margin-bottom:20px">' +
+        '<div style="font-size:36px;margin-bottom:10px">📧</div>' +
+        '<h2 style="margin-bottom:6px;font-size:20px">Check your email</h2>' +
+        '<p style="color:var(--text-2);font-size:13px;line-height:1.5">Enter the 6-digit code sent to<br>' +
+        '<strong id="otpEmailHint" style="color:var(--text)"></strong></p>' +
+      '</div>' +
+      '<div class="auth-field">' +
+        '<label>Verification Code</label>' +
+        '<input type="text" id="otpCode" placeholder="0  0  0  0  0  0" maxlength="6" ' +
+               'inputmode="numeric" autocomplete="one-time-code" ' +
+               'onkeydown="if(event.key===\'Enter\')submitOTPCode()" ' +
+               'style="text-align:center;font-size:26px;letter-spacing:8px;font-weight:700;padding:14px">' +
+      '</div>' +
+      '<button class="auth-submit" id="otpSubmitBtn" onclick="submitOTPCode()">Verify &amp; Create Account</button>' +
+      '<p id="otpTimerEl" style="text-align:center;font-size:12px;color:var(--text-3);margin-top:10px;min-height:18px"></p>' +
+      '<p class="auth-switch" style="margin-top:8px">' +
+        '<a href="#" id="otpResendA" onclick="resendOTPCode();return false">Resend code</a>' +
+        '&nbsp;·&nbsp;' +
+        '<a href="#" onclick="_closePanelOTP();switchAuthTab(\'signup\');return false">&#8592; Back</a>' +
+      '</p>';
+    const inner = modal.querySelector('.auth-modal');
+    if (inner) inner.appendChild(pOTP);
+  }
+
   modal.addEventListener('click', e => { if (e.target === modal) closeAuth(); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
