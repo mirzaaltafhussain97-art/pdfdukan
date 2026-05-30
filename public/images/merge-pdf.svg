@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <!-- Background -->
+  <rect width="500" height="300" fill="#1e1e30"/>
+
+  <!-- PDF icon reusable helper: defined as group -->
+
+  <!-- PDF 1 (top-left, slight rotation) -->
+  <g transform="translate(20, 30) rotate(-10, 55, 75)">
+    <rect x="3" y="3" width="90" height="115" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="90" height="115" rx="6" fill="#2d2d45"/>
+    <polygon points="62,0 90,0 90,28" fill="#1a1a2e"/>
+    <polygon points="62,0 62,28 90,28" fill="#252538"/>
+    <rect y="30" width="90" height="26" fill="#cc3300"/>
+    <text x="45" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ffffff">PDF</text>
+    <rect x="10" y="66" width="70" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="77" width="60" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="88" width="70" height="5" rx="2" fill="#444466"/>
+    <text x="45" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666688">doc_01.pdf</text>
+  </g>
+
+  <!-- PDF 2 (middle-left) -->
+  <g transform="translate(40, 95) rotate(2, 55, 75)">
+    <rect x="3" y="3" width="90" height="115" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="90" height="115" rx="6" fill="#303050"/>
+    <polygon points="62,0 90,0 90,28" fill="#1a1a2e"/>
+    <polygon points="62,0 62,28 90,28" fill="#252538"/>
+    <rect y="30" width="90" height="26" fill="#cc3300"/>
+    <text x="45" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ffffff">PDF</text>
+    <rect x="10" y="66" width="70" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="77" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="88" width="70" height="5" rx="2" fill="#444466"/>
+    <text x="45" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666688">doc_02.pdf</text>
+  </g>
+
+  <!-- PDF 3 (bottom-left) -->
+  <g transform="translate(15, 160) rotate(8, 55, 75)">
+    <rect x="3" y="3" width="90" height="115" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="90" height="115" rx="6" fill="#2a2a44"/>
+    <polygon points="62,0 90,0 90,28" fill="#1a1a2e"/>
+    <polygon points="62,0 62,28 90,28" fill="#252538"/>
+    <rect y="30" width="90" height="26" fill="#cc3300"/>
+    <text x="45" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ffffff">PDF</text>
+    <rect x="10" y="66" width="70" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="77" width="65" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="88" width="70" height="5" rx="2" fill="#444466"/>
+    <text x="45" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#666688">doc_03.pdf</text>
+  </g>
+
+  <!-- Converging arrows -->
+  <!-- Top arrow -->
+  <path d="M155,80 Q220,80 240,145" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="233,143 248,148 238,158" fill="#ff6333"/>
+
+  <!-- Middle arrow (straight) -->
+  <path d="M155,148 L238,148" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="232,142 248,148 232,154" fill="#ff6333"/>
+
+  <!-- Bottom arrow -->
+  <path d="M155,210 Q220,210 240,155" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="233,153 248,148 238,163" fill="#ff6333"/>
+
+  <!-- Merge label -->
+  <rect x="195" y="128" width="64" height="22" rx="4" fill="#ff6333" opacity="0.2"/>
+  <text x="227" y="143" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="11" fill="#ff6333">MERGE</text>
+
+  <!-- Merged PDF (right side, larger) -->
+  <g transform="translate(285, 60)">
+    <!-- Shadow -->
+    <rect x="6" y="6" width="130" height="170" rx="8" fill="#0d0d1a" opacity="0.5"/>
+    <!-- Body -->
+    <rect width="130" height="170" rx="8" fill="#f5f5f5"/>
+    <!-- Fold -->
+    <polygon points="90,0 130,0 130,40" fill="#ddd"/>
+    <polygon points="90,0 90,40 130,40" fill="#ececec"/>
+    <!-- Header -->
+    <rect y="46" width="130" height="38" fill="#ff6333"/>
+    <text x="65" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="22" fill="#ffffff">PDF</text>
+    <!-- Page count badge -->
+    <circle cx="110" cy="46" r="18" fill="#1e1e30"/>
+    <text x="110" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ff9055">3</text>
+    <text x="110" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#888899">pages</text>
+    <!-- Lines -->
+    <rect x="14" y="96" width="102" height="6" rx="3" fill="#dddddd"/>
+    <rect x="14" y="109" width="85" height="6" rx="3" fill="#e5e5e5"/>
+    <rect x="14" y="122" width="102" height="6" rx="3" fill="#dddddd"/>
+    <rect x="14" y="135" width="75" height="6" rx="3" fill="#e5e5e5"/>
+    <!-- MERGED label -->
+    <rect x="12" y="150" width="106" height="12" rx="3" fill="#ff9055" opacity="0.2"/>
+    <text x="65" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="9" fill="#ff9055">MERGED</text>
+  </g>
+
+  <!-- Bottom labels -->
+  <text x="80" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">3 PDF Files</text>
+  <text x="350" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">1 Combined PDF</text>
+
+  <!-- Title -->
+  <text x="250" y="295" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="10" fill="#666688">Merge PDF — PDFdukan</text>
+</svg>

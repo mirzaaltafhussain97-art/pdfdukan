@@ -8,7 +8,6 @@
 <!-- ===== PRIMARY SEO ===== -->
 <title>CamMaster by PDFdukan — Free Online Document Scanner & PDF Tools</title>
 <meta name="description" content="CamMaster by PDFdukan is the best free online document scanner. Scan, crop, enhance documents with AI. Convert JPG to PDF, PDF to JPG, merge & split PDFs, compress images, OCR text extraction. No installation needed.">
-<meta name="keywords" content="PDFdukan, CamMaster, document scanner online, free pdf tools, scan documents, jpg to pdf, pdf to jpg, merge pdf, split pdf, compress image, ocr, camscanner alternative">
 <meta name="author" content="PDFdukan">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="theme-color" content="#ff6333">
@@ -97,8 +96,9 @@
 </script>
 
 <!-- ===== FAVICON ===== -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- ===== PRECONNECT ===== -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -339,15 +339,26 @@
 
       <!-- HERO -->
       <section class="hero-section" aria-label="Document Scanner">
-        <div style="text-align:center;position:relative;z-index:1">
-          <div class="hero-badge"><span>✨</span><span data-i18n="hero.badge">AI-Powered Document Scanner</span></div>
+        <div class="hero-layout">
+          <div class="hero-left">
+            <div style="position:relative;z-index:1">
+              <div class="hero-badge"><span>✨</span><span data-i18n="hero.badge">AI-Powered Document Scanner</span></div>
+            </div>
+            <h1 class="hero-title" data-i18n="hero.title">
+              Free Online PDF Tools &amp; Document Scanner — <span class="highlight">PDFdukan</span>
+            </h1>
+            <p class="hero-subtitle" data-i18n="hero.subtitle">
+              Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser. No installation needed.
+            </p>
+          </div>
+          <div class="hero-right" aria-hidden="false">
+            <img src="/images/hero-scanner.svg"
+                 alt="CamMaster by PDFdukan — AI-powered document scanner converting a smartphone photo to PDF"
+                 width="400" height="267"
+                 loading="eager"
+                 style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto">
+          </div>
         </div>
-        <h1 class="hero-title" data-i18n="hero.title">
-          Free Online PDF Tools &amp; Document Scanner — <span class="highlight">PDFdukan</span>
-        </h1>
-        <p class="hero-subtitle" data-i18n="hero.subtitle">
-          Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser. No installation needed.
-        </p>
 
         <div class="upload-box" id="uploadBox" role="button" tabindex="0" aria-label="Upload or scan document">
           <div class="upload-icon" aria-hidden="true">📁</div>
@@ -379,6 +390,7 @@
         <div class="tool-category-label">📷 Scanner</div>
         <div class="tools-grid" style="margin-bottom:22px">
           <div class="tool-card" onclick="openTool('scan')" role="button" tabindex="0" aria-label="Smart Scan">
+            <img src="/images/hero-scanner.svg" alt="Free online document scanner with AI edge detection" width="80" height="52" style="display:block;width:80px;height:52px;object-fit:contain;margin:0 auto 8px" loading="lazy">
             <div class="tool-icon-wrap scan">📷</div>
             <div class="tc-name">Smart Scan</div>
             <div class="tc-desc">AI edge detection</div>
@@ -390,6 +402,7 @@
         <div class="tool-category-label">📄 PDF Converters</div>
         <div class="tools-grid" style="margin-bottom:22px">
           <div class="tool-card" onclick="openTool('img-to-pdf')" role="button" tabindex="0">
+            <img src="/images/img-to-pdf.svg" alt="Free Image to PDF converter tool — JPG PNG to PDF online" width="80" height="52" style="display:block;width:80px;height:52px;object-fit:contain;margin:0 auto 8px" loading="lazy">
             <div class="tool-icon-wrap img-pdf">📑</div>
             <div class="tc-name">Image to PDF</div>
             <div class="tc-desc">JPG/PNG → PDF</div>
@@ -402,6 +415,7 @@
             <span class="tc-badge">FREE</span>
           </div>
           <div class="tool-card" onclick="openTool('merge')" role="button" tabindex="0">
+            <img src="/images/merge-pdf.svg" alt="Free PDF merger tool combining multiple PDF files into one" width="80" height="52" style="display:block;width:80px;height:52px;object-fit:contain;margin:0 auto 8px" loading="lazy">
             <div class="tool-icon-wrap merge">🔗</div>
             <div class="tc-name">Merge PDF</div>
             <div class="tc-desc">Combine PDFs</div>
@@ -508,12 +522,14 @@
         <div class="tool-category-label">🖼️ Image &amp; Scan</div>
         <div class="tools-grid" style="margin-bottom:22px">
           <div class="tool-card" onclick="openTool('img-compress')" role="button" tabindex="0">
+            <img src="/images/compress-image.svg" alt="Free image compressor reducing JPG PNG file size without quality loss" width="80" height="52" style="display:block;width:80px;height:52px;object-fit:contain;margin:0 auto 8px" loading="lazy">
             <div class="tool-icon-wrap img-compress">🗜️</div>
             <div class="tc-name">Image Compressor &amp; Resizer</div>
             <div class="tc-desc">JPG, PNG, WebP optimizer</div>
             <span class="tc-badge">FREE</span>
           </div>
           <div class="tool-card" onclick="openTool('ocr')" role="button" tabindex="0">
+            <img src="/images/ocr-tool.svg" alt="Free OCR text extraction tool converting image text to editable digital text" width="80" height="52" style="display:block;width:80px;height:52px;object-fit:contain;margin:0 auto 8px" loading="lazy">
             <div class="tool-icon-wrap ocr">🔤</div>
             <div class="tc-name">OCR Text</div>
             <div class="tc-desc">Image to text</div>
@@ -593,6 +609,13 @@
       <!-- AdSense Bottom -->
       <div class="ad-slot" aria-label="Advertisement">
         <p>Advertisement — Google AdSense</p>
+      </div>
+
+      <!-- SEO: Keyword-rich intro paragraph -->
+      <div class="page-section" style="max-width:800px;margin:0 auto 40px;padding:0 20px;text-align:center">
+        <p style="font-size:15px;line-height:1.8;color:var(--text-2)">
+          PDFdukan is a completely free online PDF converter and document scanner that works directly in your browser — no installation, no app download, and no sign-up required for basic use. Convert images to PDF, merge multiple PDFs into one, split large PDFs by page range, compress JPG and PNG images without quality loss, and extract text from scanned documents using AI-powered OCR. The <a href="scanner.html" style="color:var(--primary)">CamMaster document scanner</a> uses computer vision to automatically detect document edges, apply perspective correction, and enhance scan quality — turning any smartphone photo into a crisp, professional-quality scan. All tools work on any device including mobile phones, tablets, and desktops, and support dozens of formats including JPG, PNG, WEBP, DOCX, PPTX, and XLSX. Your files are processed entirely on your device — they never leave your browser, ensuring complete privacy for sensitive documents like contracts, IDs, and financial records.
+        </p>
       </div>
 
       <!-- FAQ -->
@@ -677,7 +700,7 @@
     <!-- SIGN IN PANEL -->
     <div id="panelSignIn">
       <h2 id="authTitle" style="margin-bottom:6px;text-align:center" data-i18n="auth.signin.title">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px;text-align:center" data-i18n="auth.signin.sub">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px;text-align:center" data-i18n="auth.signin.sub">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">
         <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continue with Google

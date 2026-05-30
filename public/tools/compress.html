@@ -6,8 +6,10 @@
 <title>Compress &amp; Resize Image — Free Online | CamMaster by PDFdukan</title>
 <meta name="description" content="Compress and resize JPG, PNG, WEBP images online for free. Set exact px dimensions, social media templates, target file size, quality slider. 100% private, no upload.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/tools/compress">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/tools/compress.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
 <style>
 /* ── Compress-tool specific styles ── */
@@ -240,6 +242,8 @@
 #compressBtn:disabled { opacity: .5; cursor: not-allowed; }
 #compressBtn:not(:disabled):hover { opacity: .88; }
 </style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Compress Images Online","description":"Reduce JPG, PNG, and WebP image file sizes without visible quality loss using PDFdukan.","step":[{"@type":"HowToStep","name":"Upload Image","text":"Drag and drop or click to upload your JPG, PNG, or WEBP image file."},{"@type":"HowToStep","name":"Adjust Quality and Settings","text":"Set your target quality level or file size. Choose output format JPG, PNG, or WebP."},{"@type":"HowToStep","name":"Download Compressed Image","text":"Click Compress to optimize your image, then download the compressed result."}]}</script>
 </head>
 <body data-tool="compress">
 
@@ -377,6 +381,13 @@
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#388e3c,#66bb6a)">🗜️</div>
     <h1>Compress &amp; Resize Image</h1>
+    <div style="text-align:center;margin:0 auto 24px;max-width:500px">
+      <img src="/images/compress-image.svg"
+           alt="Compress JPG, PNG, WebP images online without quality loss — reduce file size free"
+           width="500" height="300"
+           loading="lazy"
+           style="width:100%;max-width:500px;height:auto;border-radius:12px">
+    </div>
     <p>Reduce file size, set exact pixel dimensions, apply social media templates, and hit a target KB — all client-side, 100% private.</p>
   </div>
 
@@ -541,6 +552,25 @@
 </div></nav>
 
 <!-- Auth Modal -->
+<div style="max-width:760px;margin:32px auto;padding:0 20px">
+  <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best format for web images — JPG, PNG, or WebP?</button>
+    <div class="faq-a">WebP provides the best compression for web use — typically 25–35% smaller than JPG at the same visual quality. JPG is best for photographs and images with many colors. PNG is best for images with transparent backgrounds or sharp color boundaries like logos and screenshots. For websites, WebP is the modern standard recommendation.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How much can I compress an image without visible quality loss?</button>
+    <div class="faq-a">For photographs, 70–85% quality is generally indistinguishable from the original at normal viewing sizes, typically reducing file size by 60–75%. For document scans and text-heavy images, 80–90% is recommended to preserve text legibility. The tool shows a live preview so you can compare quality before downloading.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I resize the image dimensions as well?</button>
+    <div class="faq-a">Yes. The compression tool includes a resize option where you can set a maximum width or height in pixels. Reducing dimensions is often the most effective way to reduce file size for web use — a 4000×3000px photo resized to 1200×900px can be 85% smaller without any quality tuning.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does compression preserve PNG transparent backgrounds?</button>
+    <div class="faq-a">Yes. When you select PNG as the output format, transparency is preserved. When converting to JPG (which does not support transparency), transparent areas are replaced with a white background. WebP supports transparency like PNG while achieving better compression ratios.</div>
+  </div>
+</div>
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
@@ -550,7 +580,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>

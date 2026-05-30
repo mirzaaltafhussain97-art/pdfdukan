@@ -6,8 +6,10 @@
 <title>Excel to PDF — Convert XLSX Free Online | CamMaster by PDFdukan</title>
 <meta name="description" content="Convert Excel spreadsheets to PDF online for free. Upload XLSX, choose sheets, preview, and download as PDF. 100% private — runs in your browser.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/tools/excel-to-pdf">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/tools/excel-to-pdf.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="../css/style.css">
 <style>
@@ -73,6 +75,7 @@
 /* ── Print CSS (injected into print window) ── */
 .ep-empty { text-align:center; padding:40px; color:var(--text-3); font-size:14px; }
 </style>
+<meta name="theme-color" content="#ff6333">
 </head>
 <body data-tool="excel-to-pdf">
 <canvas id="particleCanvas"></canvas>
@@ -320,7 +323,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
@@ -592,6 +595,7 @@ body { font-family:Arial,Helvetica,sans-serif; font-size:${fontSize}pt; color:#0
 .ep-print-table tr:nth-child(even) td { background:#f5f5f5; }
 .ep-empty-note, .ep-truncate-note { font-size:${fontSize - 1}pt; color:#888; font-style:italic; }
 </style>
+<meta name="theme-color" content="#ff6333">
 </head>
 <body>
 ${sectionsHtml}

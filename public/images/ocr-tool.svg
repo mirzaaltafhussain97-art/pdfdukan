@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <!-- Background -->
+  <rect width="500" height="300" fill="#1a1a2e"/>
+
+  <!-- Left: Document with printed text (as orange lines) -->
+  <g transform="translate(30, 50)">
+    <!-- Paper shadow -->
+    <rect x="5" y="5" width="140" height="185" rx="6" fill="#0d0d1a" opacity="0.5"/>
+    <!-- Paper -->
+    <rect width="140" height="185" rx="6" fill="#f0ede0"/>
+    <!-- Fold corner -->
+    <polygon points="100,0 140,0 140,40" fill="#d8d3c0"/>
+    <polygon points="100,0 100,40 140,40" fill="#e8e4d0"/>
+    <!-- Heading line (thick orange) -->
+    <rect x="14" y="20" width="90" height="10" rx="3" fill="#ff6333" opacity="0.9"/>
+    <!-- Body text lines (orange, slightly thinner) -->
+    <rect x="14" y="46" width="112" height="7" rx="2" fill="#ff9055" opacity="0.8"/>
+    <rect x="14" y="59" width="100" height="7" rx="2" fill="#ff9055" opacity="0.7"/>
+    <rect x="14" y="72" width="112" height="7" rx="2" fill="#ff9055" opacity="0.8"/>
+    <rect x="14" y="85" width="85" height="7" rx="2" fill="#ff9055" opacity="0.65"/>
+    <!-- Paragraph gap -->
+    <rect x="14" y="104" width="112" height="7" rx="2" fill="#ff9055" opacity="0.75"/>
+    <rect x="14" y="117" width="95" height="7" rx="2" fill="#ff9055" opacity="0.7"/>
+    <rect x="14" y="130" width="112" height="7" rx="2" fill="#ff9055" opacity="0.75"/>
+    <rect x="14" y="143" width="70" height="7" rx="2" fill="#ff9055" opacity="0.6"/>
+    <!-- Bottom lines -->
+    <rect x="14" y="160" width="112" height="7" rx="2" fill="#ff9055" opacity="0.7"/>
+    <rect x="14" y="173" width="88" height="7" rx="2" fill="#ff9055" opacity="0.65"/>
+    <!-- Image label -->
+    <text x="70" y="204" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888877">Scanned Image</text>
+  </g>
+
+  <!-- Center: Scan beam / OCR processing -->
+  <g transform="translate(195, 40)">
+    <!-- Vertical scan beam column -->
+    <rect x="18" y="10" width="4" height="200" rx="2" fill="#ff6333" opacity="0.5"/>
+
+    <!-- Animated-look scan lines -->
+    <rect x="0" y="85" width="40" height="2" rx="1" fill="#ff6333" opacity="0.9"/>
+    <rect x="4" y="90" width="32" height="1" rx="1" fill="#ff9055" opacity="0.6"/>
+    <rect x="8" y="95" width="24" height="1" rx="1" fill="#ff9055" opacity="0.4"/>
+
+    <!-- OCR label -->
+    <rect x="0" y="120" width="40" height="20" rx="4" fill="#ff6333" opacity="0.15"/>
+    <text x="20" y="134" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="10" fill="#ff6333">OCR</text>
+
+    <!-- Gear/processing icon suggestion -->
+    <circle cx="20" cy="165" r="14" fill="none" stroke="#ff6333" stroke-width="2" opacity="0.5"/>
+    <circle cx="20" cy="165" r="7" fill="none" stroke="#ff9055" stroke-width="2" opacity="0.6"/>
+    <line x1="20" y1="148" x2="20" y2="153" stroke="#ff6333" stroke-width="2" opacity="0.5"/>
+    <line x1="20" y1="177" x2="20" y2="182" stroke="#ff6333" stroke-width="2" opacity="0.5"/>
+    <line x1="3" y1="165" x2="8" y2="165" stroke="#ff6333" stroke-width="2" opacity="0.5"/>
+    <line x1="32" y1="165" x2="37" y2="165" stroke="#ff6333" stroke-width="2" opacity="0.5"/>
+
+    <!-- Diagonal arrows -->
+    <path d="M-10,60 Q20,60 50,85" stroke="#ff6333" stroke-width="1.5" fill="none" stroke-dasharray="4,3" opacity="0.6"/>
+    <polygon points="45,82 53,88 44,92" fill="#ff6333" opacity="0.6"/>
+  </g>
+
+  <!-- Right: Extracted digital text -->
+  <g transform="translate(265, 50)">
+    <!-- Card shadow -->
+    <rect x="5" y="5" width="185" height="200" rx="8" fill="#0d0d1a" opacity="0.5"/>
+    <!-- Card -->
+    <rect width="185" height="200" rx="8" fill="#1e1e30"/>
+    <rect x="1" y="1" width="183" height="198" rx="7" fill="none" stroke="#333355" stroke-width="1"/>
+
+    <!-- Heading text -->
+    <rect x="14" y="18" width="120" height="11" rx="3" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Body text lines (sharp, digital) -->
+    <rect x="14" y="44" width="157" height="7" rx="2" fill="#cccccc" opacity="0.8"/>
+    <rect x="14" y="57" width="140" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="70" width="157" height="7" rx="2" fill="#cccccc" opacity="0.8"/>
+    <rect x="14" y="83" width="110" height="7" rx="2" fill="#cccccc" opacity="0.65"/>
+    <!-- Gap -->
+    <rect x="14" y="102" width="157" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="115" width="130" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <rect x="14" y="128" width="157" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="141" width="95" height="7" rx="2" fill="#cccccc" opacity="0.6"/>
+    <!-- Bottom line -->
+    <rect x="14" y="160" width="157" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+
+    <!-- Cursor blink at end of last text line -->
+    <rect x="174" y="158" width="3" height="11" rx="1" fill="#ff6333" opacity="0.9"/>
+
+    <!-- "Editable" badge -->
+    <rect x="12" y="176" width="70" height="16" rx="4" fill="#ff6333" opacity="0.15"/>
+    <text x="47" y="188" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#ff9055">Editable Text</text>
+
+    <!-- Copy icon suggestion -->
+    <rect x="150" y="176" width="22" height="16" rx="3" fill="#333355"/>
+    <rect x="147" y="173" width="18" height="14" rx="2" fill="none" stroke="#555577" stroke-width="1.5"/>
+    <rect x="150" y="176" width="18" height="14" rx="2" fill="none" stroke="#ff9055" stroke-width="1.5"/>
+
+    <!-- Label -->
+    <text x="92" y="222" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888899">Extracted Text</text>
+  </g>
+
+  <!-- Main arrow between left and right -->
+  <path d="M180,145 L197,145" stroke="#ff6333" stroke-width="2" fill="none"/>
+  <path d="M243,145 L265,145" stroke="#ff6333" stroke-width="2" fill="none"/>
+
+  <!-- Title -->
+  <text x="250" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="17" fill="#ffffff">OCR Text Extractor</text>
+  <text x="250" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666688">Extract editable text from scanned images and PDFs</text>
+</svg>

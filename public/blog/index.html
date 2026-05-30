@@ -1,13 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Blog — Document Tools, PDF Tips &amp; Productivity | PDFdukan</title>
-<meta name="description" content="PDF tips, document scanning guides, and productivity tutorials from PDFdukan. Learn how to convert, compress, merge PDFs and scan documents for free.">
+<meta name="description" content="Expert guides on PDF tools, document scanning, OCR, image compression, and going paperless. Free tutorials from the PDFdukan team, updated regularly.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/blog/">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css">
 <style>
 /* Blog-index specific enhancements */
@@ -146,6 +148,7 @@
 .blog-sidebar-tip h3 { font-size: 14px; font-weight: 800; margin-bottom: 10px; }
 .blog-sidebar-tip p { font-size: 13px; color: var(--text-3); line-height: 1.6; }
 </style>
+<meta name="theme-color" content="#ff6333">
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -216,6 +219,11 @@
     <span>Blog</span>
   </nav>
 
+  <!-- Blog intro -->
+  <p style="font-size:15px;line-height:1.8;color:var(--text-2);margin-bottom:24px">
+    Welcome to the PDFdukan blog — your go-to resource for practical guides on PDF tools, document scanning, OCR technology, image compression, and going paperless. Every article is written by the PDFdukan team and backed by real tool testing. Whether you're converting your first JPG to PDF, mastering merge and split workflows, or setting up a fully paperless home office, you'll find step-by-step guidance here. All tutorials link directly to our free, browser-based tools that you can try without signing up.
+  </p>
+
   <!-- Category filter -->
   <div class="blog-cat-bar">
     <button class="bcat-btn active" onclick="filterBlog('')">All Articles</button>
@@ -233,8 +241,8 @@
       <span aria-hidden="true" style="z-index:1;position:relative">📄</span>
       <!-- Structured image block for SEO -->
       <figure style="position:absolute;inset:0;margin:0;overflow:hidden">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0a00,#2d1200,#ff6333);display:flex;align-items:center;justify-content:center;font-size:80px">📄</div>
-        <figcaption style="display:none">CamMaster document scanner converting a physical paper document to a digital PDF file using AI edge detection in 2026</figcaption>
+        <img src="/images/blog-digitization.svg" alt="Document digitization process — scanning physical papers to create a searchable digital archive" style="width:100%;height:100%;object-fit:cover" loading="eager">
+        <figcaption style="display:none">Document digitization process — scanning physical papers to create a searchable digital archive</figcaption>
       </figure>
     </div>
     <div class="bfc-body">
@@ -262,8 +270,8 @@
           <!-- Image container 1: PDF workflow visual -->
           <figure class="bc-img" style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c,#3b82f6);margin:0"
                   aria-label="PDF merge and split workflow diagram showing multiple documents combining into one optimized file">
-            <span aria-hidden="true">🔗</span>
-            <figcaption style="display:none">Screenshot of PDFdukan's PDF merger tool combining multiple document files — merge, split, and organize PDFs in the browser</figcaption>
+            <img src="/images/blog-pdf-workflow.svg" alt="PDF workflow showing merge, split and organize steps with connected document icons" style="height:130px;width:auto" loading="lazy">
+            <figcaption style="display:none">PDF merge and split workflow diagram — multiple PDFs being combined and organized using PDFdukan tools</figcaption>
           </figure>
           <div class="bc-body">
             <div class="bc-tag">PDF Tools</div>
@@ -278,8 +286,8 @@
                  aria-label="How OCR Works in 2026 article">
           <figure class="bc-img" style="background:linear-gradient(135deg,#0d2a1a,#1b5c3b,#34a853);margin:0"
                   aria-label="OCR text extraction process — converting a handwritten note or printed receipt into editable digital text">
-            <span aria-hidden="true">🔤</span>
-            <figcaption style="display:none">Optical Character Recognition (OCR) process using Tesseract.js — CamMaster extracting text from a scanned document image</figcaption>
+            <img src="/images/blog-ocr.svg" alt="How OCR works — converting image text to editable digital text using AI recognition" style="height:130px;width:auto" loading="lazy">
+            <figcaption style="display:none">OCR text extraction process using Tesseract.js — converting scanned document image to editable text</figcaption>
           </figure>
           <div class="bc-body">
             <div class="bc-tag">OCR &amp; Text Extraction</div>
@@ -294,8 +302,8 @@
                  aria-label="Image Compression Guide article">
           <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a00,#2d2d00,#f59e0b);margin:0"
                   aria-label="Side-by-side image compression comparison showing original vs compressed file size reduction">
-            <span aria-hidden="true">🗜️</span>
-            <figcaption style="display:none">Image compression using PDFdukan's tool — reducing a JPEG file from 2MB to under 200KB while preserving visual quality using WebP conversion</figcaption>
+            <img src="/images/blog-compress.svg" alt="Image compression comparison — large original file versus compressed smaller file without quality loss" style="height:130px;width:auto" loading="lazy">
+            <figcaption style="display:none">Side-by-side image compression showing original 3.2MB file reduced to 220KB without visible quality loss</figcaption>
           </figure>
           <div class="bc-body">
             <div class="bc-tag">Image Compression</div>
@@ -310,8 +318,8 @@
                  aria-label="Going Paperless Guide article">
           <figure class="bc-img" style="background:linear-gradient(135deg,#1a0d1a,#3b1a5c,#9333ea);margin:0"
                   aria-label="Paperless office setup showing a laptop with digital documents replacing physical paper files">
-            <span aria-hidden="true">📱</span>
-            <figcaption style="display:none">Modern paperless office workflow — using CamMaster to scan, digitize, and organize all physical documents into a searchable digital archive</figcaption>
+            <img src="/images/blog-paperless.svg" alt="Going paperless — transforming physical document filing system to organized digital cloud storage" style="height:130px;width:auto" loading="lazy">
+            <figcaption style="display:none">Modern paperless office transformation — physical paper files replaced by digital cloud storage system</figcaption>
           </figure>
           <div class="bc-body">
             <div class="bc-tag">Productivity</div>
@@ -381,7 +389,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleBlog" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>

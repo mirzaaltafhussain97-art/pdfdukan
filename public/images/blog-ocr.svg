@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="#ffffff">OCR Technology: From Image to Editable Text</text>
+
+  <!-- ===== LEFT: Photograph/image of document (wavy/blurry text) ===== -->
+  <g transform="translate(35, 65)">
+    <!-- Photo frame/card -->
+    <rect x="4" y="4" width="232" height="290" rx="10" fill="#0d0d1a" opacity="0.5"/>
+    <rect width="232" height="290" rx="10" fill="#2a2a40"/>
+    <!-- Photo border (photo style) -->
+    <rect x="4" y="4" width="224" height="282" rx="7" fill="#1e1e30"/>
+
+    <!-- Photo content: document image with "blurry" curved text -->
+    <!-- Page background -->
+    <rect x="14" y="14" width="204" height="258" rx="5" fill="#e8e0d0"/>
+
+    <!-- Heading line (wavy orange — representing printed text) -->
+    <path d="M28,40 Q50,34 72,40 Q94,46 116,40 Q138,34 160,40 Q182,46 204,40" stroke="#ff6333" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+    <!-- Wavy body text lines -->
+    <path d="M28,64 Q58,58 88,64 Q118,70 148,64 Q178,58 208,64" stroke="#ff9055" stroke-width="5" fill="none" opacity="0.8"/>
+    <path d="M28,78 Q60,74 92,78 Q124,82 156,78 Q188,74 208,78" stroke="#cc7733" stroke-width="4" fill="none" opacity="0.7"/>
+    <path d="M28,92 Q55,88 82,92 Q109,96 136,92 Q163,88 208,92" stroke="#ff9055" stroke-width="5" fill="none" opacity="0.75"/>
+    <path d="M28,106 Q52,102 76,106 Q100,110 124,106 Q148,102 172,106 Q196,110 208,106" stroke="#cc7733" stroke-width="4" fill="none" opacity="0.7"/>
+
+    <!-- Paragraph gap + more wavy lines -->
+    <path d="M28,130 Q60,125 92,130 Q124,135 156,130 Q188,125 208,130" stroke="#ff9055" stroke-width="5" fill="none" opacity="0.8"/>
+    <path d="M28,144 Q58,140 88,144 Q118,148 148,144 Q178,140 208,144" stroke="#cc7733" stroke-width="4" fill="none" opacity="0.7"/>
+    <path d="M28,158 Q55,154 82,158 Q109,162 136,158 Q163,154 208,158" stroke="#ff9055" stroke-width="5" fill="none" opacity="0.75"/>
+    <path d="M28,172 Q50,168 72,172 Q94,176 116,172 Q138,168 160,172 Q182,176 200,172" stroke="#cc7733" stroke-width="4" fill="none" opacity="0.65"/>
+
+    <!-- More lines -->
+    <path d="M28,196 Q60,191 92,196 Q124,201 156,196 Q188,191 208,196" stroke="#ff9055" stroke-width="5" fill="none" opacity="0.75"/>
+    <path d="M28,210 Q55,206 82,210 Q109,214 136,210 Q163,206 208,210" stroke="#cc7733" stroke-width="4" fill="none" opacity="0.65"/>
+    <path d="M28,224 Q52,220 76,224 Q100,228 124,224 Q148,220 172,224 Q196,228 204,224" stroke="#ff9055" stroke-width="4" fill="none" opacity="0.6"/>
+
+    <!-- Blur overlay (semi-transparent to give blurry effect) -->
+    <rect x="14" y="14" width="204" height="258" rx="5" fill="#e8e0d0" opacity="0.08"/>
+
+    <!-- Photo caption -->
+    <rect x="14" y="272" width="204" height="12" rx="2" fill="#1a1a2e" opacity="0.6"/>
+    <text x="116" y="282" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#888877">Scanned Document (JPEG)</text>
+  </g>
+
+  <!-- ===== CENTER: OCR Processing indicator ===== -->
+  <g transform="translate(280, 100)">
+    <!-- Processing box -->
+    <rect x="-3" y="-3" width="246" height="220" rx="12" fill="#1e1e30"/>
+    <rect x="0" y="0" width="240" height="215" rx="10" fill="none" stroke="#333355" stroke-width="1"/>
+
+    <!-- OCR title in center panel -->
+    <text x="120" y="28" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ff6333">OCR Processing</text>
+
+    <!-- Scan beam visual: diagonal scanning effect -->
+    <!-- Document outline in process view -->
+    <rect x="20" y="40" width="120" height="150" rx="4" fill="#252538"/>
+    <!-- Scanned region (above beam - done, shown as clean) -->
+    <rect x="22" y="42" width="116" height="70" rx="3" fill="#2d3d2d" opacity="0.5"/>
+    <!-- Text in scanned region (clean) -->
+    <rect x="28" y="52" width="80" height="5" rx="2" fill="#44bb44" opacity="0.6"/>
+    <rect x="28" y="62" width="100" height="4" rx="2" fill="#44bb44" opacity="0.5"/>
+    <rect x="28" y="71" width="90" height="4" rx="2" fill="#44bb44" opacity="0.5"/>
+    <rect x="28" y="80" width="100" height="4" rx="2" fill="#44bb44" opacity="0.5"/>
+    <rect x="28" y="89" width="75" height="4" rx="2" fill="#44bb44" opacity="0.5"/>
+
+    <!-- Scan beam line (orange diagonal scan) -->
+    <line x1="20" y1="112" x2="140" y2="112" stroke="#ff6333" stroke-width="3" opacity="0.9"/>
+    <!-- Glow effect for beam -->
+    <line x1="20" y1="109" x2="140" y2="109" stroke="#ff6333" stroke-width="1.5" opacity="0.4"/>
+    <line x1="20" y1="115" x2="140" y2="115" stroke="#ff6333" stroke-width="1.5" opacity="0.4"/>
+
+    <!-- Unscanned region below beam (still blurry/orange) -->
+    <path d="M28,125 Q50,121 72,125 Q94,129 116,125 Q130,122 138,125" stroke="#ff9055" stroke-width="4" fill="none" opacity="0.5"/>
+    <path d="M28,136 Q52,132 76,136 Q100,140 124,136 Q132,133 138,136" stroke="#cc7733" stroke-width="3" fill="none" opacity="0.4"/>
+    <path d="M28,147 Q55,143 82,147 Q109,151 135,147" stroke="#ff9055" stroke-width="4" fill="none" opacity="0.5"/>
+    <path d="M28,158 Q50,154 72,158 Q94,162 116,158 Q130,155 138,158" stroke="#cc7733" stroke-width="3" fill="none" opacity="0.4"/>
+    <path d="M28,168 Q52,165 76,168 Q100,172 124,168 Q132,165 138,168" stroke="#ff9055" stroke-width="3" fill="none" opacity="0.4"/>
+    <path d="M28,178 Q55,175 80,178 Q105,181 128,178" stroke="#cc7733" stroke-width="3" fill="none" opacity="0.35"/>
+
+    <!-- Side panel: recognition results streaming -->
+    <rect x="152" y="40" width="80" height="150" rx="4" fill="#1a1a2e"/>
+    <text x="192" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">Recognized:</text>
+    <!-- Streaming text lines (appearing as recognized) -->
+    <rect x="157" y="62" width="70" height="5" rx="2" fill="#44cc44" opacity="0.7"/>
+    <rect x="157" y="72" width="62" height="5" rx="2" fill="#44cc44" opacity="0.65"/>
+    <rect x="157" y="82" width="70" height="5" rx="2" fill="#44cc44" opacity="0.7"/>
+    <rect x="157" y="92" width="58" height="5" rx="2" fill="#44cc44" opacity="0.6"/>
+    <rect x="157" y="102" width="70" height="5" rx="2" fill="#44cc44" opacity="0.65"/>
+    <rect x="157" y="112" width="66" height="5" rx="2" fill="#44cc44" opacity="0.6"/>
+    <!-- Partial line being processed -->
+    <rect x="157" y="124" width="45" height="5" rx="2" fill="#ff9055" opacity="0.6"/>
+    <!-- Cursor -->
+    <rect x="203" y="123" width="2" height="7" rx="1" fill="#ff6333" opacity="0.9"/>
+    <!-- Pending lines (dimmed) -->
+    <rect x="157" y="136" width="70" height="5" rx="2" fill="#333355" opacity="0.5"/>
+    <rect x="157" y="146" width="60" height="5" rx="2" fill="#333355" opacity="0.5"/>
+    <rect x="157" y="156" width="70" height="5" rx="2" fill="#333355" opacity="0.5"/>
+    <rect x="157" y="166" width="55" height="5" rx="2" fill="#333355" opacity="0.5"/>
+    <rect x="157" y="176" width="70" height="5" rx="2" fill="#333355" opacity="0.5"/>
+
+    <!-- Progress bar -->
+    <rect x="20" y="202" width="200" height="6" rx="3" fill="#252538"/>
+    <rect x="20" y="202" width="140" height="6" rx="3" fill="#ff6333" opacity="0.8"/>
+    <text x="120" y="216" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">70% processed...</text>
+  </g>
+
+  <!-- Arrows -->
+  <!-- Left to center -->
+  <line x1="268" y1="210" x2="278" y2="210" stroke="#ff6333" stroke-width="2.5"/>
+  <polygon points="273,204 283,210 273,216" fill="#ff6333"/>
+  <!-- Center to right -->
+  <line x1="527" y1="210" x2="537" y2="210" stroke="#ff6333" stroke-width="2.5"/>
+  <polygon points="532,204 542,210 532,216" fill="#ff6333"/>
+
+  <!-- ===== RIGHT: Clean extracted editable text ===== -->
+  <g transform="translate(545, 65)">
+    <!-- Text editor card -->
+    <rect x="4" y="4" width="214" height="290" rx="10" fill="#0d0d1a" opacity="0.5"/>
+    <rect width="214" height="290" rx="10" fill="#1e1e30"/>
+    <rect x="1" y="1" width="212" height="288" rx="9" fill="none" stroke="#333355" stroke-width="1"/>
+
+    <!-- Editor title bar -->
+    <rect x="0" y="0" width="214" height="28" rx="10" fill="#252538"/>
+    <rect x="0" y="14" width="214" height="14" fill="#252538"/>
+    <circle cx="14" cy="14" r="5" fill="#ff5555" opacity="0.7"/>
+    <circle cx="28" cy="14" r="5" fill="#ffaa00" opacity="0.7"/>
+    <circle cx="42" cy="14" r="5" fill="#44cc44" opacity="0.7"/>
+    <text x="130" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">extracted_text.txt</text>
+
+    <!-- Clean text lines -->
+    <rect x="14" y="42" width="150" height="9" rx="3" fill="#ffffff" opacity="0.9"/>
+    <rect x="14" y="58" width="186" height="7" rx="2" fill="#cccccc" opacity="0.8"/>
+    <rect x="14" y="70" width="172" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="82" width="186" height="7" rx="2" fill="#cccccc" opacity="0.8"/>
+    <rect x="14" y="94" width="145" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <!-- Gap -->
+    <rect x="14" y="112" width="186" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="124" width="165" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <rect x="14" y="136" width="186" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="148" width="130" height="7" rx="2" fill="#cccccc" opacity="0.65"/>
+    <!-- Gap -->
+    <rect x="14" y="166" width="186" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <rect x="14" y="178" width="175" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <rect x="14" y="190" width="186" height="7" rx="2" fill="#cccccc" opacity="0.75"/>
+    <rect x="14" y="202" width="140" height="7" rx="2" fill="#cccccc" opacity="0.65"/>
+    <!-- Active line being typed -->
+    <rect x="14" y="220" width="110" height="7" rx="2" fill="#cccccc" opacity="0.7"/>
+    <!-- Cursor at end -->
+    <rect x="126" y="218" width="3" height="11" rx="1" fill="#ff6333" opacity="0.9"/>
+
+    <!-- Editable text badges -->
+    <rect x="14" y="240" width="74" height="18" rx="4" fill="#ff6333" opacity="0.12"/>
+    <text x="51" y="253" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ff9055">Editable Text</text>
+
+    <rect x="96" y="240" width="66" height="18" rx="4" fill="#44bb44" opacity="0.12"/>
+    <text x="129" y="253" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#44cc44">Searchable</text>
+
+    <rect x="168" y="240" width="36" height="18" rx="4" fill="#5599ff" opacity="0.12"/>
+    <text x="186" y="253" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#88aaff">Copy</text>
+
+    <!-- File info at bottom -->
+    <rect x="10" y="265" width="194" height="16" rx="4" fill="#252538"/>
+    <text x="107" y="277" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">1,247 words extracted | 98.3% accuracy</text>
+  </g>
+
+  <!-- Bottom subtitle -->
+  <text x="400" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#666688">OCR converts scanned images into searchable, editable digital text</text>
+</svg>

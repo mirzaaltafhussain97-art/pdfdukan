@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#1a1a2e"/>
+
+  <!-- Title -->
+  <text x="400" y="32" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="19" fill="#ffffff">Going Paperless: Transform Your Workspace</text>
+
+  <!-- ===== LEFT HALF: Chaotic physical desk ===== -->
+  <rect x="0" y="45" width="370" height="355" fill="#1e1830" opacity="0.25"/>
+  <text x="185" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#888899">Before</text>
+
+  <!-- Desk surface -->
+  <rect x="10" y="290" width="360" height="20" rx="4" fill="#3d2a1a"/>
+  <rect x="0" y="306" width="380" height="94" rx="0" fill="#2d1e0e"/>
+
+  <!-- Filing cabinet (back left) -->
+  <g transform="translate(15, 145)">
+    <rect width="85" height="145" rx="4" fill="#2a2a42"/>
+    <rect y="0" width="85" height="48" rx="4" fill="#333355"/>
+    <rect y="50" width="85" height="47" fill="#2e2e4a"/>
+    <rect y="99" width="85" height="46" rx="4" fill="#282840"/>
+    <rect x="27" y="20" width="31" height="7" rx="3" fill="#444466"/>
+    <rect x="27" y="68" width="31" height="7" rx="3" fill="#444466"/>
+    <rect x="27" y="116" width="31" height="7" rx="3" fill="#444466"/>
+  </g>
+
+  <!-- Stacked folders (messy) -->
+  <!-- Bottom pile -->
+  <g transform="translate(110, 220) rotate(-5, 60, 0)">
+    <rect width="130" height="15" rx="3" fill="#c8952a"/>
+    <rect x="5" y="-10" width="70" height="14" rx="3" fill="#c8952a"/>
+  </g>
+  <g transform="translate(105, 204) rotate(3, 60, 0)">
+    <rect width="130" height="15" rx="3" fill="#b07820"/>
+    <rect x="5" y="-10" width="80" height="14" rx="3" fill="#b07820"/>
+  </g>
+  <g transform="translate(112, 188) rotate(-2, 60, 0)">
+    <rect width="130" height="15" rx="3" fill="#d4a030"/>
+    <rect x="5" y="-10" width="75" height="14" rx="3" fill="#c49022"/>
+  </g>
+
+  <!-- Papers/folder pile on desk -->
+  <g transform="translate(108, 120)">
+    <!-- Papers sticking up from folders -->
+    <rect x="20" y="-50" width="95" height="75" rx="4" fill="#f0f0f0" transform="rotate(-8, 47, 0)"/>
+    <rect x="8" y="-55" width="95" height="75" rx="4" fill="#ececec" transform="rotate(3, 47, 0)"/>
+    <rect x="15" y="-60" width="95" height="75" rx="4" fill="#ffffff"/>
+    <!-- Text on front paper -->
+    <rect x="24" y="-40" width="60" height="7" rx="2" fill="#ff6333" opacity="0.7"/>
+    <rect x="18" y="-28" width="80" height="5" rx="2" fill="#dddddd"/>
+    <rect x="18" y="-19" width="70" height="5" rx="2" fill="#dddddd"/>
+  </g>
+
+  <!-- Overflowing inbox -->
+  <g transform="translate(240, 240)">
+    <!-- Tray -->
+    <rect width="110" height="22" rx="3" fill="#333355"/>
+    <rect x="3" y="20" width="104" height="8" rx="2" fill="#2a2a42"/>
+    <!-- Papers overflowing -->
+    <rect x="-8" y="-55" width="75" height="65" rx="4" fill="#f5f5f5" transform="rotate(-15, 37, 0)"/>
+    <rect x="5" y="-60" width="80" height="70" rx="4" fill="#eeeeee" transform="rotate(-5, 40, 0)"/>
+    <rect x="15" y="-50" width="80" height="60" rx="4" fill="#ffffff" transform="rotate(8, 40, 0)"/>
+    <rect x="28" y="-48" width="75" height="60" rx="4" fill="#f8f8f8" transform="rotate(16, 37, 0)"/>
+    <text x="55" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#888899">INBOX</text>
+  </g>
+
+  <!-- Sticky notes -->
+  <rect x="120" y="140" width="40" height="40" rx="2" fill="#ffee44" opacity="0.85" transform="rotate(-12, 140, 160)"/>
+  <rect x="172" y="148" width="38" height="38" rx="2" fill="#ff9944" opacity="0.75" transform="rotate(8, 191, 167)"/>
+  <rect x="218" y="135" width="35" height="35" rx="2" fill="#44ddee" opacity="0.65" transform="rotate(-4, 235, 152)"/>
+
+  <!-- ===== TRANSFORMATION ARROW (center) ===== -->
+  <g transform="translate(348, 165)">
+    <!-- Orange gradient arrow zone -->
+    <rect x="0" y="0" width="104" height="80" rx="8" fill="#1a1a2e"/>
+    <!-- Arrow body -->
+    <polygon points="5,25 75,25 75,8 100,40 75,72 75,55 5,55" fill="#ff6333" opacity="0.9"/>
+    <!-- Sparkle effects -->
+    <circle cx="88" cy="20" r="3" fill="#ffcc44" opacity="0.7"/>
+    <circle cx="95" cy="58" r="2" fill="#ff9055" opacity="0.7"/>
+    <circle cx="80" cy="12" r="2" fill="#ffcc44" opacity="0.6"/>
+    <!-- Label -->
+    <text x="38" y="34" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#fff" font-weight="bold">DIGITAL</text>
+    <text x="38" y="47" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#fff" font-weight="bold">TRANSFORM</text>
+  </g>
+
+  <!-- ===== RIGHT HALF: Clean digital desk ===== -->
+  <rect x="452" y="45" width="348" height="355" fill="#0d1a0d" opacity="0.25"/>
+  <text x="626" y="62" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#888899">After</text>
+
+  <!-- Clean desk surface -->
+  <rect x="452" y="290" width="348" height="20" rx="4" fill="#1a2e1a"/>
+  <rect x="452" y="306" width="348" height="94" fill="#0f1f0f"/>
+
+  <!-- Laptop (clean, central) -->
+  <g transform="translate(490, 135)">
+    <!-- Screen -->
+    <rect width="240" height="155" rx="10" fill="#2d2d45"/>
+    <rect x="4" y="4" width="232" height="147" rx="7" fill="#1a1a2e"/>
+    <!-- Title bar -->
+    <rect x="4" y="4" width="232" height="20" rx="7" fill="#252538"/>
+    <circle cx="16" cy="14" r="4" fill="#ff5555" opacity="0.7"/>
+    <circle cx="28" cy="14" r="4" fill="#ffaa00" opacity="0.7"/>
+    <circle cx="40" cy="14" r="4" fill="#44cc44" opacity="0.7"/>
+    <text x="138" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">PDFdukan Drive</text>
+
+    <!-- Cloud icon on screen -->
+    <g transform="translate(82, 35)">
+      <ellipse cx="36" cy="22" rx="32" ry="22" fill="#333355"/>
+      <ellipse cx="56" cy="28" rx="22" ry="17" fill="#333355"/>
+      <ellipse cx="18" cy="28" rx="18" ry="14" fill="#333355"/>
+      <rect x="8" y="24" width="68" height="20" rx="2" fill="#333355"/>
+      <!-- Cloud highlight -->
+      <ellipse cx="36" cy="20" rx="28" ry="19" fill="#3d3d5c"/>
+      <ellipse cx="54" cy="26" rx="19" ry="15" fill="#3d3d5c"/>
+      <rect x="10" y="22" width="63" height="18" rx="2" fill="#3d3d5c"/>
+      <!-- Upload arrow in cloud -->
+      <line x1="38" y1="18" x2="38" y2="34" stroke="#ff6333" stroke-width="2.5"/>
+      <polygon points="31,22 38,12 45,22" fill="#ff6333"/>
+    </g>
+
+    <!-- Organized folder row -->
+    <g transform="translate(14, 96)">
+      <rect width="50" height="36" rx="4" fill="#ff6333" opacity="0.7"/>
+      <rect x="-2" y="-6" width="32" height="8" rx="2" fill="#ff6333" opacity="0.8"/>
+      <text x="25" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#fff">2024</text>
+      <text x="25" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#ffcc99">12</text>
+    </g>
+    <g transform="translate(72, 96)">
+      <rect width="50" height="36" rx="4" fill="#6644cc" opacity="0.7"/>
+      <rect x="-2" y="-6" width="36" height="8" rx="2" fill="#6644cc" opacity="0.8"/>
+      <text x="25" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#fff">Invoices</text>
+      <text x="25" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#ccaaff">8</text>
+    </g>
+    <g transform="translate(130, 96)">
+      <rect width="50" height="36" rx="4" fill="#2266cc" opacity="0.7"/>
+      <rect x="-2" y="-6" width="34" height="8" rx="2" fill="#2266cc" opacity="0.8"/>
+      <text x="25" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#fff">Reports</text>
+      <text x="25" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#aaccff">5</text>
+    </g>
+    <g transform="translate(188, 96)">
+      <rect width="36" height="36" rx="4" fill="#227722" opacity="0.7"/>
+      <rect x="-2" y="-6" width="28" height="8" rx="2" fill="#227722" opacity="0.8"/>
+      <text x="18" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#fff">Archive</text>
+      <text x="18" y="31" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#aaffaa">30</text>
+    </g>
+
+    <!-- Storage bar at bottom of screen -->
+    <rect x="14" y="140" width="212" height="6" rx="3" fill="#252538"/>
+    <rect x="14" y="140" width="55" height="6" rx="3" fill="#ff6333" opacity="0.7"/>
+    <text x="120" y="138" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="#888899">26% of 100GB used</text>
+
+    <!-- Laptop base -->
+    <rect y="155" width="240" height="12" rx="0" fill="#2a2a42"/>
+    <rect x="80" y="163" width="80" height="8" rx="4" fill="#222240"/>
+  </g>
+
+  <!-- Laptop base plate -->
+  <rect x="470" y="290" width="280" height="10" rx="5" fill="#1e1e30"/>
+
+  <!-- "Everything organized" badges -->
+  <g transform="translate(490, 310)">
+    <rect width="76" height="22" rx="5" fill="#1a2e1a"/>
+    <rect width="76" height="22" rx="5" fill="none" stroke="#44cc44" stroke-width="1"/>
+    <text x="38" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#44cc44">Zero clutter</text>
+  </g>
+  <g transform="translate(580, 310)">
+    <rect width="82" height="22" rx="5" fill="#1e1a2e"/>
+    <rect width="82" height="22" rx="5" fill="none" stroke="#6688ff" stroke-width="1"/>
+    <text x="41" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#8899ff">Searchable</text>
+  </g>
+  <g transform="translate(676, 310)">
+    <rect width="94" height="22" rx="5" fill="#1e1818"/>
+    <rect width="94" height="22" rx="5" fill="none" stroke="#ff6333" stroke-width="1"/>
+    <text x="47" y="15" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#ff9055">Cloud backed</text>
+  </g>
+
+  <!-- Bottom subtitle -->
+  <text x="400" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#666688">Replace filing cabinets and paper piles with organized digital documents</text>
+</svg>

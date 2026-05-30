@@ -6,8 +6,10 @@
 <title>OCR Image to Text — Free Online | CamMaster by PDFdukan</title>
 <meta name="description" content="Extract text from images and scanned documents online for free. Supports 100+ languages. AI-powered OCR via Tesseract.js. No upload, no signup. PDFdukan CamMaster.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/tools/ocr">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/tools/ocr.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 <link rel="stylesheet" href="../css/style.css">
 <style>
@@ -19,6 +21,8 @@
 }
 #imgPreview { max-width: 100%; max-height: 400px; display: none; }
 </style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Extract Text from Images Using OCR","description":"Use PDFdukan free OCR tool to extract text from any image or scanned document.","step":[{"@type":"HowToStep","name":"Upload Image","text":"Upload a JPG, PNG, or WEBP image containing text you want to extract."},{"@type":"HowToStep","name":"Select Language","text":"Choose the language of the text in your image for better recognition accuracy."},{"@type":"HowToStep","name":"Extract and Copy Text","text":"Click Extract Text and copy the recognized text or download it as a txt file."}]}</script>
 </head>
 <body data-tool="ocr">
 <canvas id="particleCanvas"></canvas>
@@ -153,6 +157,13 @@
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#f57f17,#ffca28)">🔤</div>
     <h1>OCR — Image to Text</h1>
+    <div style="text-align:center;margin:0 auto 24px;max-width:500px">
+      <img src="/images/ocr-tool.svg"
+           alt="OCR text extraction from image or scanned document — free online Tesseract OCR"
+           width="500" height="300"
+           loading="lazy"
+           style="width:100%;max-width:500px;height:auto;border-radius:12px">
+    </div>
     <p>Extract text from photos, scanned documents, and screenshots. Supports 100+ languages via AI.</p>
   </div>
 
@@ -251,6 +262,25 @@
   <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
 </div></nav>
 
+<div style="max-width:760px;margin:32px auto;padding:0 20px">
+  <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What affects OCR accuracy?</button>
+    <div class="faq-a">The main factors are image quality and contrast. For best results: use images at 300 DPI or higher, ensure strong contrast between text and background (dark text on white works best), avoid shadows or glare, and keep text not tilted more than 15 degrees. Printed text is recognized more accurately than handwriting.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What languages does the OCR tool support?</button>
+    <div class="faq-a">PDFdukan's OCR uses Tesseract.js which supports over 100 languages including English, Arabic, Urdu, Hindi, Spanish, French, German, Chinese, Japanese, Korean, Portuguese, Italian, Russian, and many more. Select your document's language from the dropdown for the best recognition results.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I OCR a PDF file?</button>
+    <div class="faq-a">The OCR tool processes image files (JPG, PNG, WEBP). For PDFs, first use the PDF to JPG tool to convert each page to an image, then run OCR on those images. We plan to add direct PDF OCR support in a future update.</div>
+  </div>
+  <div class="faq-item">
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is OCR slow?</button>
+    <div class="faq-a">OCR processing runs entirely in your browser using a neural network model (Tesseract LSTM). The first recognition is slower because the model needs to load (~8 MB). Subsequent recognitions on the same page session are much faster. Processing time also depends on image size — large, high-resolution images take longer to analyze.</div>
+  </div>
+</div>
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
@@ -260,7 +290,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>

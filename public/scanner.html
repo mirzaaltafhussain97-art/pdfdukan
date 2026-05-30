@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CamMaster Scanner — PDFdukan | Free Document Scanner</title>
-<meta name="description" content="Scan documents online with CamMaster by PDFdukan. Auto-detect edges, apply AI filters, export to PDF or JPG. Free, no installation needed.">
+<meta name="description" content="Scan documents online free with CamMaster. AI edge detection, auto-crop, Magic Pro filters, export to PDF or JPG. Works on any device. No installation needed.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/scanner">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/scanner.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/scanner.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/scanner.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- OpenCV.js -->
 <script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
@@ -72,6 +76,8 @@
   .scanner-wrap { padding: 16px 12px 90px; }
 }
 </style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Scan a Document Online","description":"Scan any document to PDF or JPG using CamMaster in 3 steps.","step":[{"@type":"HowToStep","name":"Upload Photo","text":"Take a photo of your document and upload it to CamMaster."},{"@type":"HowToStep","name":"Adjust and Filter","text":"The AI auto-detects edges and sets crop corners. Adjust if needed and choose a scan filter."},{"@type":"HowToStep","name":"Export","text":"Export as PDF or JPG and download your scanned document."}]}</script>
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -213,6 +219,13 @@
   <!-- ======== SCREEN: UPLOAD ======== -->
   <div class="scanner-screen active" id="screen-upload">
     <div class="scanner-upload">
+      <div style="text-align:center;margin:0 auto 24px;max-width:500px">
+        <img src="/images/hero-scanner.svg"
+             alt="CamMaster online document scanner with AI edge detection and auto-crop"
+             width="500" height="300"
+             loading="lazy"
+             style="width:100%;max-width:500px;height:auto;border-radius:12px">
+      </div>
       <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Upload document">
         <div class="uz-icon">📁</div>
         <h2 class="uz-title">Drop documents here or click to upload</h2>
@@ -403,6 +416,33 @@
     <button class="mob-nav-item" onclick="openAuth()"><span class="mni">👤</span><span>Account</span></button>
   </div>
 </nav>
+
+<div class="scanner-wrap" style="padding-top:0">
+  <div style="max-width:700px;margin:24px auto 0;padding:0 20px;text-align:center">
+    <p style="font-size:14px;line-height:1.7;color:var(--text-2)">
+      CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
+    </p>
+  </div>
+  <div style="max-width:700px;margin:28px auto;padding:0 20px">
+    <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the automatic edge detection?</button>
+      <div class="faq-a">CamMaster's AI edge detection (powered by OpenCV.js Canny edge detection and contour analysis) accurately finds document corners in over 95% of photos with reasonable contrast between the document and background. For best results, place documents on a dark, non-reflective surface with good, even lighting. Manual corner adjustment is always available if auto-detection misses.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
+      <div class="faq-a">Yes. After processing your first image through the crop and filter steps, you arrive at the Pages view. Click "Add More" to upload additional images or PDF pages. All pages appear as thumbnails you can drag to reorder. Export all pages as a single multi-page PDF or as individual JPG files in a ZIP archive.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the Magic Pro filter?</button>
+      <div class="faq-a">Magic Pro is CamMaster's most powerful scan enhancement filter. It applies deep shadow removal using local contrast normalization, aggressive sharpening, and adaptive thresholding to produce crisp, print-quality document scans from phone photos. It's especially effective for documents photographed in low light or with shadows from the photographer's hand.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster work on mobile phones?</button>
+      <div class="faq-a">Yes — CamMaster is fully mobile-optimized. On smartphones, you can upload images directly from your camera roll or take a new photo. The interface adapts to touch controls with larger crop handles and buttons. The entire scanning and export workflow works in mobile browsers without any app installation required.</div>
+    </div>
+  </div>
+</div>
 
 <!-- AUTH MODAL — tabbed Sign In / Sign Up -->
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleScanner">

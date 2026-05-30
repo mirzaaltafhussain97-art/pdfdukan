@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -6,8 +6,10 @@
 <title>Contact Us — PDFdukan CamMaster Support</title>
 <meta name="description" content="Contact PDFdukan support. Report bugs, suggest features, or ask questions about CamMaster document tools. We reply within 24 hours.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/contact">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/contact.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="css/style.css">
 <style>
 .contact-layout {
@@ -36,6 +38,7 @@
 .form-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
 .form-card .form-subtitle { font-size: 14px; color: var(--text-3); margin-bottom: 24px; }
 </style>
+<meta name="theme-color" content="#ff6333">
 </head>
 <body>
 
@@ -167,7 +170,7 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="js/app.js"></script>
 <script>
-function submitContact(e) {
+async function submitContact(e) {
   e.preventDefault();
   const name    = document.getElementById('cf-name').value.trim();
   const email   = document.getElementById('cf-email').value.trim();
@@ -182,16 +185,57 @@ function submitContact(e) {
   btn.textContent = '⏳ Sending…';
   btn.disabled = true;
 
-  // Compose mailto: link and open email client
-  const body = `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`;
-  const mailto = `mailto:mirzaaltafhussain97@gmail.com?subject=${encodeURIComponent('[CamMaster] ' + subject)}&body=${encodeURIComponent(body)}`;
-  window.location.href = mailto;
+  // Try our own API first, fall back to Formspree if it fails
+  let sent = false;
 
-  // After a short delay, show success state
-  setTimeout(() => {
+  try {
+    const res  = await fetch('/api/contact', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ name, email, subject, message })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) { sent = true; }
+    else if (res.status !== 502 && res.status !== 503) {
+      // Client-side error (bad input etc.) — show message, don't fall back
+      toast(data.message || 'Please check your input and try again.', 'error');
+      btn.textContent = '📬 Send Message';
+      btn.disabled = false;
+      return;
+    }
+  } catch (_) { /* network error — fall through to Formspree */ }
+
+  // Fallback: Formspree (free tier, no account needed for basic use)
+  if (!sent) {
+    try {
+      const fd = new FormData();
+      fd.append('name',    name);
+      fd.append('email',   email);
+      fd.append('subject', subject);
+      fd.append('message', message);
+      fd.append('_replyto', email);
+      fd.append('_subject', '[CamMaster] ' + subject);
+
+      const fb = await fetch('https://formspree.io/f/xdkogwqb', {
+        method: 'POST', body: fd,
+        headers: { 'Accept': 'application/json' }
+      });
+      const fd2 = await fb.json();
+      if (fb.ok) { sent = true; }
+      else { throw new Error(fd2.error || 'Formspree error'); }
+    } catch (err2) {
+      console.error('[contact fallback]', err2);
+    }
+  }
+
+  if (sent) {
     document.getElementById('contactForm').style.display = 'none';
     document.getElementById('successMsg').style.display  = 'block';
-  }, 1200);
+  } else {
+    toast('Could not send message. Please email us directly at mirzaaltafhussain97@gmail.com', 'error', 8000);
+    btn.textContent = '📬 Send Message';
+    btn.disabled = false;
+  }
 }
 
 function resetForm() {

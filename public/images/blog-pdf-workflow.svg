@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#1a1a2e"/>
+
+  <!-- Title area -->
+  <text x="400" y="38" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="20" fill="#ffffff">PDF Workflow: Merge &amp; Split</text>
+
+  <!-- ===== STEP 1: 3 Input PDFs ===== -->
+  <!-- PDF icon helper -->
+  <!-- PDF A -->
+  <g transform="translate(28, 75)">
+    <rect x="3" y="3" width="88" height="110" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="88" height="110" rx="6" fill="#2d2d45"/>
+    <polygon points="58,0 88,0 88,30" fill="#1a1a2e"/>
+    <polygon points="58,0 58,30 88,30" fill="#252538"/>
+    <rect y="32" width="88" height="24" fill="#cc2200"/>
+    <text x="44" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#fff">PDF</text>
+    <rect x="10" y="64" width="68" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="74" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="84" width="68" height="5" rx="2" fill="#444466"/>
+    <text x="44" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">doc_A.pdf</text>
+  </g>
+  <!-- PDF B -->
+  <g transform="translate(28, 195)">
+    <rect x="3" y="3" width="88" height="110" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="88" height="110" rx="6" fill="#2a2a42"/>
+    <polygon points="58,0 88,0 88,30" fill="#1a1a2e"/>
+    <polygon points="58,0 58,30 88,30" fill="#252538"/>
+    <rect y="32" width="88" height="24" fill="#cc2200"/>
+    <text x="44" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#fff">PDF</text>
+    <rect x="10" y="64" width="68" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="74" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="84" width="68" height="5" rx="2" fill="#444466"/>
+    <text x="44" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">doc_B.pdf</text>
+  </g>
+  <!-- PDF C -->
+  <g transform="translate(28, 315)">
+    <rect x="3" y="3" width="88" height="110" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="88" height="110" rx="6" fill="#303050"/>
+    <polygon points="58,0 88,0 88,30" fill="#1a1a2e"/>
+    <polygon points="58,0 58,30 88,30" fill="#252538"/>
+    <rect y="32" width="88" height="24" fill="#cc2200"/>
+    <text x="44" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#fff">PDF</text>
+    <rect x="10" y="64" width="68" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="74" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="84" width="68" height="5" rx="2" fill="#444466"/>
+    <text x="44" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">doc_C.pdf</text>
+  </g>
+
+  <!-- Input label -->
+  <text x="72" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">3 PDF Files</text>
+
+  <!-- Converging arrows to MERGE box -->
+  <!-- Top arrow -->
+  <path d="M118,130 Q165,130 175,200" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="168,197 178,206 167,212" fill="#ff6333"/>
+  <!-- Middle arrow (straight) -->
+  <line x1="118" y1="250" x2="175" y2="250" stroke="#ff6333" stroke-width="2.5"/>
+  <polygon points="169,244 180,250 169,256" fill="#ff6333"/>
+  <!-- Bottom arrow -->
+  <path d="M118,370 Q165,370 175,300" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="168,303 178,294 167,288" fill="#ff6333"/>
+
+  <!-- ===== MERGE BOX ===== -->
+  <g transform="translate(183, 210)">
+    <rect x="-3" y="-3" width="96" height="86" rx="10" fill="#ff6333" opacity="0.2"/>
+    <rect width="90" height="80" rx="8" fill="#ff6333" opacity="0.15"/>
+    <rect width="90" height="80" rx="8" fill="none" stroke="#ff6333" stroke-width="2"/>
+    <text x="45" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="11" fill="#ff6333">MERGE</text>
+    <!-- Merge icon: converging lines -->
+    <line x1="10" y1="48" x2="45" y2="60" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+    <line x1="45" y1="48" x2="45" y2="60" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+    <line x1="80" y1="48" x2="45" y2="60" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="45" cy="63" r="5" fill="#ff6333"/>
+  </g>
+
+  <!-- Arrow from MERGE to merged PDF -->
+  <line x1="275" y1="250" x2="318" y2="250" stroke="#ff6333" stroke-width="2.5"/>
+  <polygon points="313,244 325,250 313,256" fill="#ff6333"/>
+
+  <!-- ===== MERGED PDF (center) ===== -->
+  <g transform="translate(328, 185)">
+    <rect x="4" y="4" width="110" height="136" rx="8" fill="#0d0d1a" opacity="0.5"/>
+    <rect width="110" height="136" rx="8" fill="#f5f5f5"/>
+    <!-- Fold -->
+    <polygon points="75,0 110,0 110,35" fill="#ddd"/>
+    <polygon points="75,0 75,35 110,35" fill="#ececec"/>
+    <!-- Header -->
+    <rect y="38" width="110" height="30" fill="#ff6333"/>
+    <text x="55" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="18" fill="#fff">PDF</text>
+    <!-- Page count badge -->
+    <circle cx="92" cy="38" r="16" fill="#1a1a2e"/>
+    <text x="92" y="34" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#ff9055">3+</text>
+    <text x="92" y="46" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#888899">pages</text>
+    <!-- Lines -->
+    <rect x="12" y="76" width="86" height="5" rx="2" fill="#dddddd"/>
+    <rect x="12" y="86" width="70" height="5" rx="2" fill="#e5e5e5"/>
+    <rect x="12" y="96" width="86" height="5" rx="2" fill="#dddddd"/>
+    <rect x="12" y="106" width="60" height="5" rx="2" fill="#e5e5e5"/>
+    <!-- Merged label -->
+    <rect x="10" y="116" width="90" height="12" rx="3" fill="#ff9055" opacity="0.15"/>
+    <text x="55" y="126" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="8" fill="#ff9055">MERGED</text>
+  </g>
+  <text x="383" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#888899">1 Combined PDF</text>
+
+  <!-- Arrow from merged PDF to SPLIT box -->
+  <line x1="440" y1="253" x2="483" y2="253" stroke="#ff6333" stroke-width="2.5"/>
+  <polygon points="478,247 490,253 478,259" fill="#ff6333"/>
+
+  <!-- ===== SPLIT BOX ===== -->
+  <g transform="translate(493, 213)">
+    <rect x="-3" y="-3" width="96" height="86" rx="10" fill="#ff6333" opacity="0.2"/>
+    <rect width="90" height="80" rx="8" fill="#ff6333" opacity="0.15"/>
+    <rect width="90" height="80" rx="8" fill="none" stroke="#ff6333" stroke-width="2"/>
+    <text x="45" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="11" fill="#ff6333">SPLIT</text>
+    <!-- Split icon: diverging lines from center -->
+    <circle cx="45" cy="42" r="5" fill="#ff6333"/>
+    <line x1="45" y1="47" x2="15" y2="65" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+    <line x1="45" y1="47" x2="45" y2="65" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+    <line x1="45" y1="47" x2="75" y2="65" stroke="#ff9055" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Diverging arrows from SPLIT -->
+  <!-- Top -->
+  <path d="M585,253 Q620,253 640,165" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="634,170 642,157 649,168" fill="#ff6333"/>
+  <!-- Bottom -->
+  <path d="M585,253 Q620,253 640,340" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <polygon points="634,333 642,346 649,335" fill="#ff6333"/>
+
+  <!-- ===== OUTPUT: 2 Split PDFs ===== -->
+  <!-- PDF Out 1 -->
+  <g transform="translate(648, 100)">
+    <rect x="3" y="3" width="88" height="110" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="88" height="110" rx="6" fill="#2d2d45"/>
+    <polygon points="58,0 88,0 88,30" fill="#1a1a2e"/>
+    <polygon points="58,0 58,30 88,30" fill="#252538"/>
+    <rect y="32" width="88" height="24" fill="#ff6333" opacity="0.85"/>
+    <text x="44" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#fff">PDF</text>
+    <rect x="10" y="64" width="68" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="74" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="84" width="68" height="5" rx="2" fill="#444466"/>
+    <text x="44" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">part_1.pdf</text>
+  </g>
+  <!-- PDF Out 2 -->
+  <g transform="translate(648, 290)">
+    <rect x="3" y="3" width="88" height="110" rx="6" fill="#0d0d1a" opacity="0.4"/>
+    <rect width="88" height="110" rx="6" fill="#2a2a42"/>
+    <polygon points="58,0 88,0 88,30" fill="#1a1a2e"/>
+    <polygon points="58,0 58,30 88,30" fill="#252538"/>
+    <rect y="32" width="88" height="24" fill="#ff6333" opacity="0.85"/>
+    <text x="44" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#fff">PDF</text>
+    <rect x="10" y="64" width="68" height="5" rx="2" fill="#444466"/>
+    <rect x="10" y="74" width="55" height="5" rx="2" fill="#3d3d5c"/>
+    <rect x="10" y="84" width="68" height="5" rx="2" fill="#444466"/>
+    <text x="44" y="104" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888899">part_2.pdf</text>
+  </g>
+
+  <!-- Output label -->
+  <text x="692" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">2 PDF Files</text>
+
+  <!-- Bottom subtitle -->
+  <text x="400" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#666688">Automate your PDF management — merge multiple files or split large ones</text>
+</svg>

@@ -6,8 +6,10 @@
 <title>Add Page Numbers to PDF — Header &amp; Footer | CamMaster by PDFdukan</title>
 <meta name="description" content="Add automatic page numbers to any PDF. Choose position (header/footer, left/center/right), format, font size, and starting number. Free, client-side.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/tools/page-numbers">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://pdfdukan.com/tools/page-numbers.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <link rel="stylesheet" href="../css/style.css">
 <style>
@@ -29,6 +31,7 @@
   align-items:center; gap:8px; margin-top:12px;
 }
 </style>
+<meta name="theme-color" content="#ff6333">
 </head>
 <body data-tool="page-numbers">
 <canvas id="particleCanvas"></canvas>
@@ -252,7 +255,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in to save your work across devices.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>

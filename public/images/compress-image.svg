@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <!-- Background -->
+  <rect width="500" height="300" fill="#1e1e30"/>
+
+  <!-- Left: Large image icon (heavy/thick) -->
+  <g transform="translate(30, 55)">
+    <!-- Thick outer border to show "heavy" -->
+    <rect x="-4" y="-4" width="168" height="168" rx="10" fill="#444466"/>
+    <rect x="3" y="3" width="158" height="158" rx="8" fill="#0d0d1a" opacity="0.4"/>
+    <!-- Image area -->
+    <rect width="160" height="160" rx="8" fill="#2a2a42"/>
+    <!-- Sky area -->
+    <rect x="0" y="0" width="160" height="70" rx="8" fill="#1e3060"/>
+    <!-- Mountains in image -->
+    <polygon points="10,110 55,55 100,110" fill="#ff6333" opacity="0.8"/>
+    <polygon points="60,110 100,70 140,110" fill="#ff9055" opacity="0.7"/>
+    <polygon points="90,110 125,80 155,110" fill="#ff6333" opacity="0.5"/>
+    <!-- Sun -->
+    <circle cx="130" cy="30" r="18" fill="#ffcc44" opacity="0.9"/>
+    <!-- Image border highlight -->
+    <rect width="160" height="160" rx="8" fill="none" stroke="#555577" stroke-width="3"/>
+
+    <!-- Size label badge -->
+    <rect x="8" y="120" width="80" height="30" rx="5" fill="#1a1a2e" opacity="0.85"/>
+    <text x="48" y="132" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888899">Size:</text>
+    <text x="48" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ff9055">2.4 MB</text>
+
+    <!-- "Heavy" indicator dots (weight icon suggestion) -->
+    <circle cx="140" cy="135" r="12" fill="#444466"/>
+    <text x="140" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#888899">≫</text>
+
+    <text x="80" y="188" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">Original</text>
+  </g>
+
+  <!-- Center: Compression arrows (pointing inward/squeezing) -->
+  <g transform="translate(210, 100)">
+    <!-- Top compress arrow -->
+    <path d="M40,0 L40,30" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <polygon points="32,26 40,40 48,26" fill="#ff6333"/>
+
+    <!-- Bottom compress arrow -->
+    <path d="M40,100 L40,70" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <polygon points="32,74 40,60 48,74" fill="#ff6333"/>
+
+    <!-- Left compress arrow -->
+    <path d="M0,50 L25,50" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <polygon points="21,42 35,50 21,58" fill="#ff6333"/>
+
+    <!-- Right compress arrow -->
+    <path d="M80,50 L55,50" stroke="#ff6333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <polygon points="59,42 45,50 59,58" fill="#ff6333"/>
+
+    <!-- Center circle with compress icon -->
+    <circle cx="40" cy="50" r="20" fill="#ff6333" opacity="0.15"/>
+    <circle cx="40" cy="50" r="14" fill="#ff6333" opacity="0.2"/>
+    <!-- Compress symbol -->
+    <text x="40" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#ff6333">⊡</text>
+  </g>
+
+  <!-- Right: Small image icon (compressed) -->
+  <g transform="translate(315, 75)">
+    <!-- Thin outer border to show "light" -->
+    <rect x="3" y="3" width="128" height="128" rx="8" fill="#0d0d1a" opacity="0.3"/>
+    <!-- Image area (smaller) -->
+    <rect width="130" height="130" rx="8" fill="#2a2a42"/>
+    <!-- Sky area -->
+    <rect x="0" y="0" width="130" height="55" rx="8" fill="#1e3060"/>
+    <!-- Mountains (same scene, smaller) -->
+    <polygon points="8,90 42,44 76,90" fill="#ff6333" opacity="0.8"/>
+    <polygon points="46,90 78,58 110,90" fill="#ff9055" opacity="0.7"/>
+    <!-- Sun -->
+    <circle cx="106" cy="24" r="14" fill="#ffcc44" opacity="0.9"/>
+    <!-- Thin border (lightweight) -->
+    <rect width="130" height="130" rx="8" fill="none" stroke="#555577" stroke-width="1.5"/>
+
+    <!-- Size label badge -->
+    <rect x="8" y="90" width="76" height="30" rx="5" fill="#1a1a2e" opacity="0.85"/>
+    <text x="46" y="102" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#888899">Size:</text>
+    <text x="46" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#ff6333">180 KB</text>
+
+    <!-- Checkmark badge (success) -->
+    <circle cx="108" cy="108" r="16" fill="#1e1e30"/>
+    <circle cx="108" cy="108" r="14" fill="#ff6333"/>
+    <!-- Checkmark -->
+    <polyline points="100,108 106,115 118,100" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <text x="65" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#888899">Compressed</text>
+  </g>
+
+  <!-- Savings label -->
+  <rect x="168" y="228" width="165" height="26" rx="6" fill="#ff6333" opacity="0.12"/>
+  <text x="250" y="246" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#ff9055">92% smaller file size</text>
+
+  <!-- Title -->
+  <text x="250" y="274" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="17" fill="#ffffff">Image Compressor</text>
+  <text x="250" y="291" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666688">Reduce image file sizes without visible quality loss</text>
+</svg>
