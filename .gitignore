@@ -1,1 +1,25 @@
+# ── dependencies ──
 node_modules/
+
+# ── Next.js build output ──
+.next/
+out/
+build/
+
+# ── secrets / env (NEVER commit these) ──
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ── local test artifacts ──
+test-doc.png
+_*.jpg
+_*.png
+_*.html
+
+# ── editor / OS ──
+.DS_Store
+*.log
+npm-debug.log*

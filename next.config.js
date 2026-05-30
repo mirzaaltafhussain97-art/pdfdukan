@@ -2,15 +2,25 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // The existing static HTML/CSS/JS files live at the project root.
-  // Next.js takes ownership of /app routes (auth pages + API routes).
-  // All other paths fall through to the static files if you place them
-  // in /public, or you can keep a separate static server for the tools.
+  // ── Architecture ─────────────────────────────────────────────────────────
+  // This is a mostly-static site (homepage, scanner, all tool pages live in
+  // /public as plain HTML/CSS/JS). Next.js owns only the /app routes:
+  //   /forgot-password   (auth UI)
+  //   /api/auth/*        (serverless auth routes)
+  // Everything in /public is served by Next at its own path automatically:
+  //   /scanner.html, /tools/merge-pdf.html, /css/style.css, /js/app.js, ...
   //
-  // For local development: run `npm run dev` on port 3000 for auth/API,
-  // and `python -m http.server 7722` for the static tools — exactly as before.
+  // Local dev: a single `npm run dev` now serves the WHOLE site on :3000.
 
-  // Ensure the API routes are never cached by the browser.
+  // Serve /public/index.html at the site root "/" (the app router has no
+  // root page, so without this "/" would 404 — that was the deploy bug).
+  async rewrites() {
+    return [
+      { source: '/', destination: '/index.html' },
+    ];
+  },
+
+  // API routes must never be cached by the browser.
   async headers() {
     return [
       {
@@ -21,14 +31,6 @@ const nextConfig = {
         ],
       },
     ];
-  },
-
-  // If you move the static tools into /public and want them routable
-  // from the same origin, add rewrites here. Example:
-  //   { source: '/scanner', destination: '/scanner.html' }
-  // For now this is left empty — add as needed.
-  async rewrites() {
-    return [];
   },
 };
 
