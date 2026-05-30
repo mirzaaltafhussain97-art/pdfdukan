@@ -402,15 +402,73 @@ const CMLogs = (() => {
 })();
 window.CMLogs = CMLogs;
 
-/* ── AUTH ─────────────────────────────────────────────────────── */
-function openAuth(tab) {
-  if (STATE.user) {
-    if (confirm(`Signed in as ${STATE.user.email}\n\nSign out?`)) signOut();
-    return;
+/* ── AUTH (Firebase) ──────────────────────────────────────────
+   Real accounts via Firebase Authentication (loaded from CDN as ESM via
+   dynamic import, so this classic script can stay as-is). Provides:
+   • login that fails for unregistered emails / wrong passwords
+   • signup that sends a verification email
+   • Google sign-in
+   • a profile dropdown
+   • a site-wide feature-gate (browse free, sign in to USE a tool)
+   The web apiKey below is NOT a secret — it only identifies the project. */
+const firebaseConfig = {
+  apiKey: "AIzaSyDizEh7VZo10_pkvfcV6SQJLX7N2GG0uTI",
+  authDomain: "pdfdukan.firebaseapp.com",
+  projectId: "pdfdukan",
+  storageBucket: "pdfdukan.firebasestorage.app",
+  messagingSenderId: "233358066910",
+  appId: "1:233358066910:web:076f8e34d54a408a292e4f",
+  measurementId: "G-RM7DDQ4WSC"
+};
+
+let _auth = null, _fb = null, _googleProvider = null;
+const _FB_SDK = 'https://www.gstatic.com/firebasejs/12.14.0/';
+
+/* Kick off Firebase load immediately; everything awaits this promise. */
+const _firebaseReady = (async function () {
+  try {
+    const [{ initializeApp }, authMod] = await Promise.all([
+      import(_FB_SDK + 'firebase-app.js'),
+      import(_FB_SDK + 'firebase-auth.js'),
+    ]);
+    const fbApp = initializeApp(firebaseConfig);
+    _fb = authMod;
+    _auth = authMod.getAuth(fbApp);
+    _googleProvider = new authMod.GoogleAuthProvider();
+    authMod.onAuthStateChanged(_auth, _onAuthChanged);
+    return true;
+  } catch (e) {
+    console.error('Firebase init failed:', e);
+    return false;
   }
+})();
+
+/* Firebase calls this whenever the user logs in/out (and on page load). */
+function _onAuthChanged(user) {
+  if (user) {
+    STATE.user = {
+      name:  user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
+      email: user.email,
+      emailVerified: user.emailVerified,
+      uid:   user.uid,
+      photoURL: user.photoURL || null,
+    };
+  } else {
+    STATE.user = null;
+  }
+  try {
+    if (STATE.user) localStorage.setItem('cm_user', JSON.stringify(STATE.user));
+    else            localStorage.removeItem('cm_user');
+  } catch (e) {}
+  updateAuthUI();
+  if (typeof updateStorageUI === 'function') updateStorageUI();
+}
+
+function openAuth(tab) {
+  if (STATE.user) { toggleProfileMenu(); return; }
   const el = document.getElementById('authModal');
   if (el) el.classList.add('show');
-  if (tab) switchAuthTab(tab);
+  switchAuthTab(tab || 'signin');
 }
 function closeAuth() {
   const el = document.getElementById('authModal');
@@ -434,22 +492,35 @@ function switchAuthTab(tab) {
     if (tabUp) tabUp.classList.add('active');
   }
 }
-function signInWithGoogle() {
-  toast('Connecting with Google… please wait.', 'info');
-  closeAuth();
+
+async function signInWithGoogle() {
+  toast('Opening Google sign-in…', 'info');
+  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  try {
+    await _fb.signInWithPopup(_auth, _googleProvider);
+    closeAuth();
+    toast('Signed in with Google ✓', 'success');
+  } catch (e) { toast(_authErr(e), 'error'); }
 }
-function signInEmail() {
+
+async function signInEmail() {
   const email = document.getElementById('siEmail')?.value.trim();
   const pass  = document.getElementById('siPass')?.value;
   if (!email || !pass) { toast('Please fill in all fields', 'error'); return; }
   if (!_validEmail(email)) { toast('Enter a valid email address', 'error'); return; }
-  // Persist a mock session
-  const name = email.split('@')[0];
-  _saveSession({ name, email });
-  toast(`Welcome back, ${name}! ✓`, 'success');
-  closeAuth();
+  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  try {
+    const cred = await _fb.signInWithEmailAndPassword(_auth, email, pass);
+    closeAuth();
+    if (cred.user && !cred.user.emailVerified) {
+      toast('Signed in. Please verify your email — check your inbox.', 'info');
+    } else {
+      toast('Welcome back! ✓', 'success');
+    }
+  } catch (e) { toast(_authErr(e), 'error'); }
 }
-function signUpEmail() {
+
+async function signUpEmail() {
   const username = document.getElementById('suUsername')?.value.trim();
   const gender   = document.getElementById('suGender')?.value;
   const name     = document.getElementById('suName')?.value.trim();
@@ -458,7 +529,7 @@ function signUpEmail() {
   const pass     = document.getElementById('suPass')?.value;
   const passConf = document.getElementById('suPassConf')?.value;
 
-  // Validate required fields
+  // Validate required fields (same rules as before)
   if (!username)            { toast('Please enter a username', 'error'); return; }
   if (username.length < 3)  { toast('Username must be at least 3 characters', 'error'); return; }
   if (!/^[a-zA-Z0-9_.-]+$/.test(username)) { toast('Username may only contain letters, numbers, _ . -', 'error'); return; }
@@ -469,42 +540,153 @@ function signUpEmail() {
   if (!pass)                { toast('Please choose a password', 'error'); return; }
   if (pass.length < 8)      { toast('Password must be at least 8 characters', 'error'); return; }
   if (pass !== passConf)    { toast('Passwords do not match', 'error'); return; }
-  // Phone is optional — validate format only if provided
   if (phone && !/^[+\d\s\-().]{7,20}$/.test(phone)) {
     toast('Enter a valid phone number', 'error'); return;
   }
 
-  _saveSession({ username, name, email, gender, phone: phone || null });
-  toast(`Account created! Welcome, ${username} 🎉`, 'success');
-  closeAuth();
+  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  try {
+    const cred = await _fb.createUserWithEmailAndPassword(_auth, email, pass);
+    // Store the display name on the Firebase profile.
+    try { await _fb.updateProfile(cred.user, { displayName: name }); } catch (e) {}
+    // Keep extra fields (username/gender/phone) locally until we add Firestore.
+    try { localStorage.setItem('cm_profile_extra', JSON.stringify({ username, gender, phone: phone || null })); } catch (e) {}
+    // Send the verification email.
+    try { await _fb.sendEmailVerification(cred.user); } catch (e) {}
+    closeAuth();
+    toast('Account created! 📧 Verification email sent — please check your inbox.', 'success');
+  } catch (e) { toast(_authErr(e), 'error'); }
 }
+
+async function signOut() {
+  if (await _firebaseReady && _auth) { try { await _fb.signOut(_auth); } catch (e) {} }
+  STATE.user = null;
+  try { localStorage.removeItem('cm_user'); } catch (e) {}
+  updateAuthUI();
+  if (typeof updateStorageUI === 'function') updateStorageUI();
+  hideProfileMenu();
+  toast('Signed out');
+}
+
+/* Re-send the verification email for the current user. */
+async function resendVerification() {
+  if (!(await _firebaseReady) || !_auth || !_auth.currentUser) return;
+  try { await _fb.sendEmailVerification(_auth.currentUser); toast('Verification email re-sent ✓', 'success'); }
+  catch (e) { toast(_authErr(e), 'error'); }
+}
+
+/* Map Firebase error codes to friendly messages. */
+function _authErr(e) {
+  switch ((e && e.code) || '') {
+    case 'auth/invalid-credential':
+    case 'auth/wrong-password':
+    case 'auth/user-not-found':       return 'No account found with these details, or the password is wrong.';
+    case 'auth/email-already-in-use': return 'This email is already registered — please sign in instead.';
+    case 'auth/weak-password':        return 'Password is too weak.';
+    case 'auth/invalid-email':        return 'Enter a valid email address.';
+    case 'auth/popup-closed-by-user':
+    case 'auth/cancelled-popup-request': return 'Google sign-in was cancelled.';
+    case 'auth/popup-blocked':        return 'Popup blocked — allow popups and retry.';
+    case 'auth/too-many-requests':    return 'Too many attempts. Please wait and try again.';
+    case 'auth/network-request-failed': return 'Network error — check your connection.';
+    case 'auth/operation-not-allowed': return 'This sign-in method is not enabled in Firebase.';
+    case 'auth/unauthorized-domain':  return 'This domain is not authorized in Firebase Auth settings.';
+    default: return 'Authentication error: ' + ((e && e.message) || 'unknown');
+  }
+}
+
 function _validEmail(e) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 }
-function _saveSession(user) {
-  STATE.user = user;
-  try { localStorage.setItem('cm_user', JSON.stringify(user)); } catch(e) {}
-  updateAuthUI();
-  updateStorageUI();
-}
-function signOut() {
-  localStorage.removeItem('cm_user');
-  STATE.user = null;
-  updateAuthUI();
-  updateStorageUI();
-  toast('Signed out');
-}
+
 function updateAuthUI() {
   const label  = document.getElementById('authLabel');
   const avatar = document.getElementById('userAvatar');
   if (!label || !avatar) return;
   if (STATE.user) {
-    label.textContent  = STATE.user.name.split(' ')[0];
-    avatar.textContent = STATE.user.name[0].toUpperCase();
+    const nm = STATE.user.name || 'User';
+    label.textContent  = nm.split(' ')[0];
+    avatar.textContent = nm[0].toUpperCase();
   } else {
     label.textContent  = 'Sign In';
     avatar.textContent = 'U';
   }
+}
+
+/* ── PROFILE DROPDOWN ─────────────────────────────────────────── */
+function hideProfileMenu() {
+  const m = document.getElementById('cm-profile-menu');
+  if (m) m.remove();
+  document.removeEventListener('click', _profileOutside, true);
+}
+function _profileOutside(e) {
+  const m = document.getElementById('cm-profile-menu');
+  const btn = document.getElementById('authBtn');
+  if (m && !m.contains(e.target) && btn && !btn.contains(e.target)) hideProfileMenu();
+}
+function toggleProfileMenu() {
+  if (document.getElementById('cm-profile-menu')) { hideProfileMenu(); return; }
+  if (!STATE.user) return;
+  const u = STATE.user;
+  const verified = u.emailVerified;
+  const initial = (u.name || 'U')[0].toUpperCase();
+  const menu = document.createElement('div');
+  menu.id = 'cm-profile-menu';
+  menu.style.cssText =
+    'position:fixed;top:60px;right:16px;z-index:9999;width:270px;background:var(--card,#1a1a1a);' +
+    'border:1px solid var(--border,#2a2a2a);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5);' +
+    'padding:16px;color:var(--text,#f0f0f0);font-size:13px';
+  menu.innerHTML =
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
+      '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff6333,#ff9055);' +
+           'display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0">' +
+        (u.photoURL ? '<img src="'+u.photoURL+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer">' : initial) +
+      '</div>' +
+      '<div style="min-width:0">' +
+        '<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(u.name)+'</div>' +
+        '<div style="color:var(--text-2,#aaa);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(u.email)+'</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-bottom:12px;' +
+         (verified ? 'background:rgba(67,160,71,.15);color:#66bb6a">✓ Email verified'
+                   : 'background:rgba(251,140,0,.15);color:#ffa726">⚠ Email not verified · <a href="#" id="cm-resend" style="color:#ffb74d;text-decoration:underline">Resend</a>') +
+    '</div>' +
+    '<button id="cm-signout" class="btn btn-secondary btn-sm" style="width:100%">Sign out</button>';
+  document.body.appendChild(menu);
+  const so = document.getElementById('cm-signout'); if (so) so.onclick = signOut;
+  const rs = document.getElementById('cm-resend');  if (rs) rs.onclick = (ev)=>{ ev.preventDefault(); resendVerification(); };
+  setTimeout(() => document.addEventListener('click', _profileOutside, true), 0);
+}
+function _esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ── FEATURE GATE ─────────────────────────────────────────────────
+   Visitors can browse the whole site freely, but USING a tool (selecting
+   or dropping a file) requires being signed in. Universal capture-phase
+   interception means no per-tool wiring is needed. */
+function isLoggedIn() { return !!STATE.user; }
+function _gatePrompt() {
+  toast('Please sign in to use this tool', 'info');
+  openAuth('signin');
+}
+function _initFeatureGate() {
+  // Block file selection via any <input type="file"> when logged out.
+  document.addEventListener('change', function (e) {
+    const t = e.target;
+    if (t && t.tagName === 'INPUT' && t.type === 'file' && !isLoggedIn()) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      try { t.value = ''; } catch (_) {}
+      _gatePrompt();
+    }
+  }, true);
+  // Block file drag-and-drop when logged out.
+  document.addEventListener('drop', function (e) {
+    if (!isLoggedIn() && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      _gatePrompt();
+    }
+  }, true);
 }
 
 /* ── RECENT DOCS ─────────────────────────────────────────────── */
@@ -896,6 +1078,7 @@ if (!window.setLanguage) {
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(STATE.theme);
   updateAuthUI();
+  _initFeatureGate();
   renderRecent();
   initSidebarNav();
   initSearch();

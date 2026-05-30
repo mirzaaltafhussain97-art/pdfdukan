@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "cammaster",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "7720"],
-      "port": 7720
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
     }
   ]
 }

@@ -174,6 +174,7 @@ const ScannerApp = (() => {
   function _bindCropControls() {
     const btnApply      = document.getElementById('btnApplyCrop');
     const btnReset      = document.getElementById('btnResetCrop');
+    const btnFit        = document.getElementById('btnFitCrop');
     const btnRotateL    = document.getElementById('btnRotateL');
     const btnRotateR    = document.getElementById('btnRotateR');
     const btnSkip       = document.getElementById('btnSkipCrop');
@@ -181,6 +182,7 @@ const ScannerApp = (() => {
 
     if (btnApply)      btnApply.onclick      = _applyCrop;
     if (btnReset)      btnReset.onclick      = () => cropEditor.resetCorners();
+    if (btnFit)        btnFit.onclick        = () => cropEditor.fitFull();
     if (btnRotateL)    btnRotateL.onclick    = () => cropEditor.rotate(-90);
     if (btnRotateR)    btnRotateR.onclick    = () => cropEditor.rotate(90);
     if (btnBackUpload) btnBackUpload.onclick = () => showScreen('upload');

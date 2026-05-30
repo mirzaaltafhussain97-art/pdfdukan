@@ -879,6 +879,17 @@ class CropEditor {
     this.draw();
   }
 
+  /* Select the entire page at full size — corners snap to the image edges.
+     Useful when auto-detect grabbed only part of the document. */
+  fitFull() {
+    if (!this.img) return;
+    const src = this._getRotatedImg();
+    const w = src.width  || src.naturalWidth;
+    const h = src.height || src.naturalHeight;
+    this.corners = { tl:{x:0,y:0}, tr:{x:w,y:0}, br:{x:w,y:h}, bl:{x:0,y:h} };
+    this.draw();
+  }
+
   rotate(deg) {
     this.rotation = (this.rotation + deg + 360) % 360;
     const src  = this._getRotatedImg();
