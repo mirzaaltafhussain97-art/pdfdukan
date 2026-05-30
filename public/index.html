@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -47,8 +47,8 @@
       "@id": "https://pdfdukan.com/#organization",
       "name": "PDFdukan",
       "url": "https://pdfdukan.com",
-      "logo": { "@type": "ImageObject", "url": "https://pdfdukan.com/logo.png" },
-      "sameAs": ["https://facebook.com/pdfdukan","https://twitter.com/pdfdukan"]
+      "logo": "https://pdfdukan.com/og-image.jpg",
+      "contactPoint": { "@type": "ContactPoint", "contactType": "customer support", "url": "https://pdfdukan.com/contact.html" }
     },
     {
       "@type": "WebApplication",
@@ -71,7 +71,7 @@
       "publisher": { "@id": "https://pdfdukan.com/#organization" },
       "potentialAction": {
         "@type": "SearchAction",
-        "target": { "@type": "EntryPoint", "urlTemplate": "https://pdfdukan.com/search?q={search_term_string}" },
+        "target": "https://pdfdukan.com/tools.html?q={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     },
@@ -79,11 +79,17 @@
       "@type": "FAQPage",
       "mainEntity": [
         { "@type": "Question", "name": "What is CamMaster by PDFdukan?",
-          "acceptedAnswer": { "@type": "Answer", "text": "CamMaster is a free online document scanner by PDFdukan. It lets you scan, crop, enhance, and convert documents to PDF directly in your web browser." } },
-        { "@type": "Question", "name": "Is PDFdukan free?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Yes, all basic features on PDFdukan are 100% free forever." } },
-        { "@type": "Question", "name": "Are my files safe?",
-          "acceptedAnswer": { "@type": "Answer", "text": "All file processing happens locally in your browser. Files never leave your device." } }
+          "acceptedAnswer": { "@type": "Answer", "text": "CamMaster is a free online document scanner by PDFdukan. It lets you scan, crop, enhance, and convert documents to PDF directly in your web browser — no installation needed." } },
+        { "@type": "Question", "name": "Is PDFdukan really free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every tool on PDFdukan — scanning, PDF conversion, OCR, merging, splitting, image compression — is 100% free forever. No hidden fees, no credit card required." } },
+        { "@type": "Question", "name": "Are my files safe on PDFdukan?",
+          "acceptedAnswer": { "@type": "Answer", "text": "All file processing happens entirely inside your web browser using JavaScript. Your files never leave your device and are never uploaded to any server." } },
+        { "@type": "Question", "name": "Why should I sign in with Google?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sign-in is optional. Signing in with Google lets you save documents to your Google Drive, access them from any device, and sync your settings. We never access your existing Drive files." } },
+        { "@type": "Question", "name": "How accurate is the auto edge detection?",
+          "acceptedAnswer": { "@type": "Answer", "text": "CamMaster uses OpenCV.js computer vision algorithms and accurately detects document edges in over 95% of cases, even on tilted or angled papers. You can always manually adjust corners." } },
+        { "@type": "Question", "name": "What file formats does PDFdukan support?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Input formats: JPG, JPEG, PNG, WEBP, and PDF. Output formats: PDF (single or multi-page), JPG, PNG, and ZIP archives." } }
       ]
     }
   ]
@@ -337,7 +343,7 @@
           <div class="hero-badge"><span>✨</span><span data-i18n="hero.badge">AI-Powered Document Scanner</span></div>
         </div>
         <h1 class="hero-title" data-i18n="hero.title">
-          Scan & Convert Documents with <span class="highlight">CamMaster</span>
+          Free Online PDF Tools &amp; Document Scanner — <span class="highlight">PDFdukan</span>
         </h1>
         <p class="hero-subtitle" data-i18n="hero.subtitle">
           Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser. No installation needed.
@@ -464,7 +470,7 @@
             <div class="tool-icon-wrap pdf-editor">✏️</div>
             <div class="tc-name">PDF Editor</div>
             <div class="tc-desc">Edit text &amp; objects</div>
-            <span class="tc-badge" style="background:#8e24aa">PRO</span>
+            <span class="tc-badge" style="background:var(--success,#22c55e)">FREE</span>
           </div>
           <div class="tool-card" onclick="openTool('fill-sign')" role="button" tabindex="0">
             <div class="tool-icon-wrap fill-sign">✍️</div>
@@ -611,13 +617,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images. Trusted by millions worldwide.</p>
-        <div class="social-links">
-          <a href="#" aria-label="Facebook">📘</a>
-          <a href="#" aria-label="Twitter/X">🐦</a>
-          <a href="#" aria-label="Instagram">📷</a>
-          <a href="#" aria-label="YouTube">▶️</a>
-        </div>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images. Trusted by document professionals worldwide.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>
@@ -716,17 +716,6 @@
           <label>Full Name</label>
           <input type="text" id="suName" placeholder="Your full name" autocomplete="name">
         </div>
-      </div>
-
-      <!-- Row 2: Gender -->
-      <div class="auth-field">
-        <label>Gender</label>
-        <select id="suGender" autocomplete="sex">
-          <option value="">— Select gender —</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other / Prefer not to say</option>
-        </select>
       </div>
 
       <!-- Row 3: Email -->

@@ -551,7 +551,6 @@ async function signInEmail() {
 
 async function signUpEmail() {
   const username = document.getElementById('suUsername')?.value.trim();
-  const gender   = document.getElementById('suGender')?.value;
   const name     = document.getElementById('suName')?.value.trim();
   const email    = document.getElementById('suEmail')?.value.trim();
   const phone    = document.getElementById('suPhone')?.value.trim();   // optional
@@ -563,7 +562,6 @@ async function signUpEmail() {
   if (username.length < 3)  { toast('Username must be at least 3 characters', 'error'); return; }
   if (!/^[a-zA-Z0-9_.-]+$/.test(username)) { toast('Username may only contain letters, numbers, _ . -', 'error'); return; }
   if (!name)                { toast('Please enter your full name', 'error'); return; }
-  if (!gender || gender === '') { toast('Please select your gender', 'error'); return; }
   if (!email)               { toast('Please enter your email address', 'error'); return; }
   if (!_validEmail(email))  { toast('Enter a valid email address', 'error'); return; }
   if (!pass)                { toast('Please choose a password', 'error'); return; }
@@ -574,7 +572,7 @@ async function signUpEmail() {
   }
 
   // Store form data and send OTP — account is created only after OTP verified
-  _pendingSignup = { username, gender, name, email, phone, pass };
+  _pendingSignup = { username, name, email, phone, pass };
   _otpPurpose = 'signup';
   await _sendSignupOTP(email);
 }
@@ -709,7 +707,7 @@ async function submitOTPCode() {
 
 async function _createAccountAfterOTP() {
   if (!_pendingSignup) { toast('Signup data lost — please start again.', 'error'); return; }
-  const { username, gender, name, email, phone, pass } = _pendingSignup;
+  const { username, name, email, phone, pass } = _pendingSignup;
   if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
   try {
     const cred = await _fb.createUserWithEmailAndPassword(_auth, email, pass);
@@ -1568,6 +1566,45 @@ if (!window.setLanguage) {
   };
 }
 
+/* ── COOKIE CONSENT BANNER ────────────────────────────────────── */
+function _initCookieBanner() {
+  if (localStorage.getItem('cm_cookie_consent') === '1') return;
+  const p = window.location.pathname;
+  const base = p.split('/').filter(Boolean).length > 1 ? '../' : '';
+  const banner = document.createElement('div');
+  banner.id = 'cmCookieBanner';
+  banner.innerHTML =
+    '<span class="ccb-text">We use cookies for basic functionality and to show relevant ads. ' +
+    'By continuing, you agree to our <a href="' + base + 'cookies.html">Cookie Policy</a>.</span>' +
+    '<div class="ccb-btns">' +
+      '<a href="' + base + 'cookies.html" class="ccb-more">Learn More</a>' +
+      '<button class="ccb-accept" onclick="_acceptCookies()">Accept</button>' +
+    '</div>';
+  const st = document.createElement('style');
+  st.textContent =
+    '#cmCookieBanner{position:fixed;bottom:0;left:0;right:0;z-index:8888;background:var(--card,#1a1a2e);' +
+    'border-top:1px solid var(--border,#2a2a3e);padding:14px 24px;display:flex;align-items:center;' +
+    'justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,.3);' +
+    'animation:ccbUp .3s ease}' +
+    '@keyframes ccbUp{from{transform:translateY(100%)}to{transform:translateY(0)}}' +
+    '.ccb-text{font-size:13px;color:var(--text-2,#ccc);flex:1;min-width:200px;line-height:1.5}' +
+    '.ccb-text a{color:var(--primary,#ff6333);text-decoration:underline}' +
+    '.ccb-btns{display:flex;gap:10px;align-items:center;flex-shrink:0}' +
+    '.ccb-more{font-size:13px;color:var(--text-3,#888);padding:8px 14px;border-radius:7px;' +
+    'text-decoration:none;border:1px solid var(--border,#333);background:transparent;white-space:nowrap}' +
+    '.ccb-accept{font-size:13px;font-weight:700;color:#fff;background:#ff6333;border:none;' +
+    'padding:9px 22px;border-radius:7px;cursor:pointer;white-space:nowrap}' +
+    '.ccb-accept:hover{opacity:.85}' +
+    '@media(max-width:540px){#cmCookieBanner{flex-direction:column;align-items:flex-start}}';
+  document.head.appendChild(st);
+  document.body.appendChild(banner);
+}
+function _acceptCookies() {
+  try { localStorage.setItem('cm_cookie_consent', '1'); } catch(e) {}
+  const b = document.getElementById('cmCookieBanner'); if (b) b.remove();
+}
+window._acceptCookies = _acceptCookies;
+
 /* ── INIT ─────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(STATE.theme);
@@ -1595,5 +1632,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('img:not([loading])').forEach(img => img.setAttribute('loading', 'lazy'));
   }
 
+  _initCookieBanner();
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });

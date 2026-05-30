@@ -4,50 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>How OCR Works in 2026: Extract Text from Any Image | PDFdukan Blog</title>
-<meta name="description" content="A complete guide to Optical Character Recognition — how modern OCR engines convert printed text, handwriting, and receipts into editable digital content using Tesseract and AI.">
+<meta name="description" content="Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/blog/how-ocr-works">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23ff6333'/%3E%3Ctext y='75' x='50' text-anchor='middle' font-size='65'%3E📄%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../css/style.css">
 <style>
-.article-hero{background:linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#43a047 100%);padding:60px 24px;text-align:center}
-.article-hero h1{font-size:32px;font-weight:900;color:#fff;max-width:700px;margin:0 auto 12px;line-height:1.3}
-.article-hero p{color:rgba(255,255,255,0.85);font-size:16px;max-width:560px;margin:0 auto}
-.article-meta{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:24px 0 32px;padding-bottom:24px;border-bottom:1px solid var(--border)}
-.am-tag{font-size:11px;font-weight:700;color:var(--primary);background:var(--primary-soft);padding:4px 10px;border-radius:var(--radius-pill);text-transform:uppercase}
-.am-date{font-size:13px;color:var(--text-3)}
-.article-cta{background:var(--primary-soft);border:1px solid rgba(255,99,51,0.3);border-radius:var(--radius);padding:20px 24px;margin:32px 0}
-.article-cta h3{color:var(--primary);margin-bottom:8px;font-size:16px}
-.article-cta p{color:var(--text-2);font-size:14px;margin:0}
-.tip-box{background:var(--card-2);border-left:3px solid var(--success);padding:14px 18px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:20px 0}
-.tip-box strong{color:var(--success)}
-.warn-box{background:var(--card-2);border-left:3px solid var(--warning);padding:14px 18px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:20px 0}
-.warn-box strong{color:var(--warning)}
-.ocr-pipeline{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin:24px 0}
-.pip-step{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;text-align:center}
-.pip-num{font-size:28px;font-weight:900;color:#43a047;line-height:1;margin-bottom:8px}
-.pip-title{font-size:13px;font-weight:700;margin-bottom:5px}
-.pip-desc{font-size:11px;color:var(--text-3);line-height:1.5}
-.lang-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13px}
-.lang-table th{background:var(--card-3);padding:10px 14px;text-align:left;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3);border-bottom:1px solid var(--border)}
-.lang-table td{padding:9px 14px;border-bottom:1px solid var(--border);color:var(--text-2)}
-.lang-table tr:hover td{background:var(--card-2);color:var(--text)}
-.acc-bar{display:flex;align-items:center;gap:10px}
-.acc-fill{height:8px;border-radius:4px;background:linear-gradient(90deg,#43a047,#81c784)}
-.figure-block{margin:28px 0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
-.figure-block .fig-visual{display:flex;align-items:center;justify-content:center;font-size:64px;height:180px;background:linear-gradient(135deg,#0d2a1a,#1b5c3b,#34a853)}
-.figure-block figcaption{background:var(--card-2);padding:10px 16px;font-size:12px;color:var(--text-3);text-align:center}
+.article-hero { background: linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#66bb6a 100%); padding: 60px 24px; text-align: center; }
+.article-hero h1 { font-size: 32px; font-weight: 900; color: #fff; max-width: 700px; margin: 0 auto 12px; line-height: 1.3; }
+.article-hero p { color: rgba(255,255,255,0.85); font-size: 16px; max-width: 560px; margin: 0 auto; }
+.article-meta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 24px 0 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.am-tag { font-size: 11px; font-weight: 700; color: var(--primary); background: var(--primary-soft); padding: 4px 10px; border-radius: var(--radius-pill); text-transform: uppercase; }
+.am-date { font-size: 13px; color: var(--text-3); }
+.am-read { font-size: 13px; color: var(--text-3); }
+.article-cta { background: var(--primary-soft); border: 1px solid rgba(255,99,51,0.3); border-radius: var(--radius); padding: 20px 24px; margin: 32px 0; }
+.article-cta h3 { color: var(--primary); margin-bottom: 8px; font-size: 16px; }
+.article-cta p { color: var(--text-2); font-size: 14px; margin: 0; }
+.tip-box { background: var(--card-2); border-left: 3px solid var(--success); padding: 14px 18px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 20px 0; }
+.tip-box strong { color: var(--success); }
+.warn-box { background: var(--card-2); border-left: 3px solid var(--warning); padding: 14px 18px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 20px 0; }
+.warn-box strong { color: var(--warning); }
+.pipeline-steps { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px,1fr)); gap: 12px; margin: 22px 0; }
+.pip-step { background: var(--card-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 12px; text-align: center; }
+.pip-num { font-size: 26px; font-weight: 900; color: #388e3c; line-height: 1; margin-bottom: 8px; }
+.pip-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.pip-desc { font-size: 11px; color: var(--text-3); line-height: 1.5; }
+.accuracy-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 13px; }
+.accuracy-table th { background: var(--card-3); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-3); border-bottom: 1px solid var(--border); }
+.accuracy-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text-2); }
+.accuracy-table tr:hover td { background: var(--card-2); color: var(--text); }
+.bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-fill { height: 8px; border-radius: 4px; background: linear-gradient(90deg,#388e3c,#81c784); }
 </style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "How OCR Works in 2026: Extract Text from Any Image",
-  "description": "A complete guide to Optical Character Recognition — how modern OCR converts printed text, handwriting, and receipts into editable digital content.",
-  "datePublished": "2026-05-23",
-  "dateModified": "2026-05-27",
-  "author": {"@type":"Organization","name":"PDFdukan"},
-  "publisher": {"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"},
+  "description": "Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.",
+  "datePublished": "2026-05-30",
+  "dateModified": "2026-05-30",
+  "author": { "@type": "Organization", "name": "PDFdukan" },
+  "publisher": { "@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com" },
   "image": "https://pdfdukan.com/og-image.jpg",
   "url": "https://pdfdukan.com/blog/how-ocr-works"
 }
@@ -90,15 +88,15 @@
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
   <a href="../index.html" class="mnd-link">🏠 Home</a>
   <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
-  <a href="index.html" class="mnd-link">📝 Blog</a>
-  <a href="../about.html" class="mnd-link">🏢 About</a>
+  <a href="index.html" class="mnd-link active">📝 Blog</a>
   <a href="../tools/ocr.html" class="mnd-link">🔤 OCR Tool</a>
+  <a href="../scanner.html" class="mnd-link">📷 Scanner</a>
 </div>
 
-<div class="article-hero article-shield">
-  <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px">OCR &amp; Text Extraction · 5 min read</p>
+<div class="article-hero">
+  <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px">OCR &amp; Text Extraction · 6 min read</p>
   <h1>How OCR Works in 2026: Extract Text from Any Image</h1>
-  <p>From handwritten notes to printed receipts — modern OCR engines can extract editable text from virtually any image with remarkable accuracy.</p>
+  <p>From handwritten receipts to printed contracts — understand the technology that converts images of text into editable, searchable digital content.</p>
 </div>
 
 <article class="page-prose article-shield">
@@ -110,209 +108,161 @@
 
   <div class="article-meta">
     <span class="am-tag">OCR &amp; Text Extraction</span>
-    <span class="am-date">📅 May 23, 2026</span>
-    <span class="am-read">⏱️ 5 min read</span>
+    <span class="am-date">📅 May 30, 2026</span>
+    <span class="am-read">⏱️ 6 min read</span>
     <span class="am-date">By PDFdukan Team</span>
   </div>
 
-  <p>Optical Character Recognition — OCR — is the technology that bridges the physical and digital worlds of text. It lets a computer read printed words, handwritten notes, or scanned receipts and convert them into searchable, editable characters. In 2026, OCR accuracy has reached near-human levels for printed text, and AI-powered models can even decode difficult handwriting in multiple languages. This guide explains how OCR works, what affects accuracy, and how to get the best results using <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster's free OCR tool</a>.</p>
+  <p>Optical Character Recognition — OCR — is the technology that reads printed or handwritten text from images and converts it into machine-readable characters. In 2026, OCR accuracy for clean printed text is effectively perfect. Modern engines handle multiple scripts, degraded photocopies, and even difficult handwriting with remarkable reliability. Understanding how OCR works helps you get better results, troubleshoot failures, and choose the right settings for your documents. This guide explains the full pipeline, from pixel to text, and provides actionable tips for using <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster's free OCR tool</a> effectively.</p>
 
-  <!-- Figure 1 -->
-  <figure class="figure-block" aria-label="OCR text extraction pipeline diagram">
-    <div class="fig-visual">🔤</div>
-    <figcaption>Figure 1 — OCR Pipeline: a scanned image is preprocessed, segmented into character regions, classified by a neural network, and assembled into readable text output.</figcaption>
-  </figure>
+  <h2>1. A Brief History of OCR</h2>
 
-  <h2>1. The Classic OCR Pipeline</h2>
-  <p>Traditional OCR (the kind powering tools like <a href="https://tesseract-ocr.github.io/" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Tesseract</a>) works in a sequence of discrete stages:</p>
+  <p>OCR technology dates to 1914 when Emanuel Goldberg developed a machine that read characters and converted them to telegraph code. Commercial OCR systems emerged in the 1950s to automate postal sorting and bank cheque processing. These early systems used optical template matching — a physical stencil of each character was compared against the scanned image pixel-by-pixel.</p>
 
-  <div class="ocr-pipeline">
+  <p>The modern era began with Tesseract, originally developed at Hewlett-Packard in the 1980s and open-sourced by Google in 2005. Tesseract 4 (2018) introduced LSTM neural networks, pushing accuracy from around 85% to above 99% for clean printed Latin-script documents. Today, browser-based OCR using Tesseract.js — a WebAssembly compilation of Tesseract — brings professional-grade text extraction to any device without installing software or uploading files.</p>
+
+  <h2>2. The OCR Processing Pipeline</h2>
+
+  <p>Every OCR engine, regardless of vendor, performs the same fundamental sequence of operations. Understanding each stage tells you exactly where problems occur when results are poor.</p>
+
+  <div class="pipeline-steps">
     <div class="pip-step">
       <div class="pip-num">1</div>
-      <div class="pip-title">Image Preprocessing</div>
-      <div class="pip-desc">Deskew, denoise, binarize (convert to black &amp; white), adjust contrast.</div>
+      <div class="pip-title">Preprocessing</div>
+      <div class="pip-desc">Deskew, denoise, binarize to black &amp; white, normalize contrast and brightness.</div>
     </div>
     <div class="pip-step">
       <div class="pip-num">2</div>
       <div class="pip-title">Layout Analysis</div>
-      <div class="pip-desc">Detect text regions, columns, paragraphs, tables — separate from images.</div>
+      <div class="pip-desc">Detect text regions, columns, tables, images. Separate text blocks from graphics.</div>
     </div>
     <div class="pip-step">
       <div class="pip-num">3</div>
-      <div class="pip-title">Line Segmentation</div>
-      <div class="pip-desc">Split text blocks into individual lines using horizontal profile analysis.</div>
+      <div class="pip-title">Line Detection</div>
+      <div class="pip-desc">Split text regions into individual lines using horizontal projection profile analysis.</div>
     </div>
     <div class="pip-step">
       <div class="pip-num">4</div>
-      <div class="pip-title">Word &amp; Character Split</div>
-      <div class="pip-desc">Identify word boundaries by white-space gaps; then isolate each character.</div>
+      <div class="pip-title">Word Segmentation</div>
+      <div class="pip-desc">Identify word boundaries by measuring whitespace gaps between character clusters.</div>
     </div>
     <div class="pip-step">
       <div class="pip-num">5</div>
-      <div class="pip-title">Character Classification</div>
-      <div class="pip-desc">Neural network or template-matching assigns each glyph to a character.</div>
+      <div class="pip-title">Character Recognition</div>
+      <div class="pip-desc">LSTM neural network reads character sequences. Outputs probability scores per character.</div>
     </div>
     <div class="pip-step">
       <div class="pip-num">6</div>
       <div class="pip-title">Post-Processing</div>
-      <div class="pip-desc">Language model corrects errors — "rn" mis-read as "m", common OCR mistakes.</div>
+      <div class="pip-desc">Language model corrects common errors (rn→m, l→1). Outputs final text with confidence scores.</div>
     </div>
   </div>
 
-  <h2>2. How Tesseract OCR Works</h2>
-  <p><a href="https://tesseract-ocr.github.io/" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Tesseract</a> — originally developed by HP and open-sourced by Google — is the most widely deployed OCR engine in the world. CamMaster uses Tesseract.js, a WebAssembly port that runs entirely in your browser with no server upload needed.</p>
+  <h3>Preprocessing: The Most Important Stage</h3>
+  <p>Preprocessing is where OCR success or failure is determined. A poorly preprocessed image — skewed, low contrast, noisy background — will produce poor results no matter how sophisticated the recognition engine. The key preprocessing operations are: <strong>deskewing</strong> (rotating the image to make text lines horizontal), <strong>binarization</strong> (converting to pure black and white using adaptive thresholding so text stands out from background), and <strong>denoising</strong> (removing speckles, compression artifacts, and paper texture that the engine might confuse with ink).</p>
 
-  <p>Tesseract 4+ uses an <strong>LSTM (Long Short-Term Memory)</strong> neural network trained on millions of document images. Instead of recognizing individual characters, LSTM reads sequences of characters at once — which dramatically improves accuracy on ligatures, cursive fonts, and partially obscured text.</p>
+  <p>CamMaster's scanner applies all of these automatically at capture time. The perspective correction warp handles the keystone distortion from off-angle photography, and the Magic filter boosts ink contrast while suppressing paper grain — both critical preprocessing steps before any OCR pass.</p>
+
+  <h3>LSTM-Based Character Recognition</h3>
+  <p>Modern Tesseract uses a Long Short-Term Memory (LSTM) recurrent neural network that reads sequences of characters rather than recognizing each character in isolation. This is a significant architectural advantage: the letter "l" in isolation is easily confused with "1" or "I", but in the context of the word "letter," the LSTM's sequence model resolves the ambiguity correctly. The network was trained on millions of document images across all supported languages and produces not just a character guess but a probability distribution — the confidence score you see highlighted in OCR output.</p>
+
+  <h2>3. How Browser-Based OCR Works with Tesseract.js</h2>
+
+  <p>Traditional OCR required server infrastructure — you uploaded your document, a server processed it, and returned the result. This created privacy concerns (your documents left your device), latency issues, and bandwidth costs. Tesseract.js solves this by compiling the entire Tesseract engine to WebAssembly, which runs natively inside your browser at near-native speed.</p>
+
+  <p>When you use the <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster OCR tool</a>, the following happens entirely on your device: the Tesseract.js WASM module loads once (cached by your browser for future visits), your image is preprocessed in a canvas element, the LSTM model runs in a Web Worker to avoid blocking the UI, and the extracted text is returned directly to your browser session. Your document never touches any external server. This is meaningful privacy protection for sensitive documents like medical records, contracts, and financial statements.</p>
 
   <div class="tip-box">
-    <strong>💡 Pro Tip:</strong> Tesseract performs best when input images are at least 300 DPI. Scanning at 200 DPI or below causes a measurable drop in character recognition accuracy, especially for small font sizes (below 10pt).
+    <strong>💡 Language Selection:</strong> Always choose the correct language before running OCR. The LSTM model uses language-specific character frequency data and common word patterns to resolve ambiguous characters. Selecting "English" for an Arabic document will produce garbage output — the engine will attempt to interpret Arabic glyphs as Latin characters.
   </div>
 
-  <h2>3. What Determines OCR Accuracy</h2>
-  <p>OCR accuracy depends heavily on the quality of the input image. Here are the most critical factors:</p>
+  <h2>4. What Affects OCR Accuracy</h2>
 
-  <table class="lang-table">
+  <p>Understanding these factors lets you diagnose poor results and fix them at the source rather than spending time correcting output manually.</p>
+
+  <table class="accuracy-table">
     <thead>
-      <tr><th>Factor</th><th>Impact on Accuracy</th><th>Best Practice</th></tr>
+      <tr><th>Factor</th><th>Impact</th><th>Recommended Setting</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td>Scan Resolution</td>
-        <td>
-          <div class="acc-bar">
-            <div class="acc-fill" style="width:90px"></div>
-            <span style="font-size:11px;color:var(--text-3)">Very High</span>
-          </div>
-        </td>
-        <td>Use 300 DPI minimum; 600 DPI for small text</td>
+        <td><strong>Scan Resolution</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:88px"></div><span style="font-size:11px;color:var(--text-3)">Very High</span></div></td>
+        <td>300 DPI minimum; 600 DPI for small fonts</td>
       </tr>
       <tr>
-        <td>Image Contrast</td>
-        <td>
-          <div class="acc-bar">
-            <div class="acc-fill" style="width:80px;background:linear-gradient(90deg,#fb8c00,#ffd54f)"></div>
-            <span style="font-size:11px;color:var(--text-3)">High</span>
-          </div>
-        </td>
-        <td>Dark ink on white/cream background — avoid colored paper</td>
+        <td><strong>Contrast</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:76px;background:linear-gradient(90deg,#f59e0b,#fde68a)"></div><span style="font-size:11px;color:var(--text-3)">High</span></div></td>
+        <td>Dark ink on white/light background; avoid colored paper</td>
       </tr>
       <tr>
-        <td>Skew / Rotation</td>
-        <td>
-          <div class="acc-bar">
-            <div class="acc-fill" style="width:72px;background:linear-gradient(90deg,#e53935,#ef9a9a)"></div>
-            <span style="font-size:11px;color:var(--text-3)">High</span>
-          </div>
-        </td>
-        <td>Deskew before OCR; CamMaster auto-corrects with perspective warp</td>
+        <td><strong>Skew / Tilt</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:70px;background:linear-gradient(90deg,#f59e0b,#fde68a)"></div><span style="font-size:11px;color:var(--text-3)">High</span></div></td>
+        <td>Deskew before OCR — CamMaster auto-corrects on capture</td>
       </tr>
       <tr>
-        <td>Font Type</td>
-        <td>
-          <div class="acc-bar">
-            <div class="acc-fill" style="width:60px;background:linear-gradient(90deg,#fb8c00,#ffd54f)"></div>
-            <span style="font-size:11px;color:var(--text-3)">Medium</span>
-          </div>
-        </td>
-        <td>Serif and sans-serif print fonts are near-perfect; handwriting varies</td>
+        <td><strong>Language Model</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:60px;background:linear-gradient(90deg,#3b82f6,#93c5fd)"></div><span style="font-size:11px;color:var(--text-3)">Medium-High</span></div></td>
+        <td>Select the document's primary language explicitly</td>
       </tr>
       <tr>
-        <td>Noise &amp; Stains</td>
-        <td>
-          <div class="acc-bar">
-            <div class="acc-fill" style="width:50px;background:linear-gradient(90deg,#757575,#bdbdbd)"></div>
-            <span style="font-size:11px;color:var(--text-3)">Medium</span>
-          </div>
-        </td>
-        <td>Apply denoising filter; CamMaster's Magic Pro filter removes background noise</td>
+        <td><strong>Font Type</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:44px;background:linear-gradient(90deg,#6b7280,#d1d5db)"></div><span style="font-size:11px;color:var(--text-3)">Medium</span></div></td>
+        <td>Serif and sans-serif print fonts near-perfect; decorative fonts struggle</td>
+      </tr>
+      <tr>
+        <td><strong>Background Noise</strong></td>
+        <td><div class="bar-wrap"><div class="bar-fill" style="width:44px;background:linear-gradient(90deg,#6b7280,#d1d5db)"></div><span style="font-size:11px;color:var(--text-3)">Medium</span></div></td>
+        <td>Apply denoising filter before OCR; avoid scanning on colored surfaces</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>4. Multi-Language OCR</h2>
-  <p>Tesseract supports over 100 languages through <strong>traineddata</strong> model files. CamMaster's OCR tool lets you select your document language before processing. Choosing the correct language model significantly improves accuracy because the underlying LSTM network is trained on that language's specific glyph shapes and character frequencies.</p>
+  <h2>5. Getting the Best OCR Results: Practical Tips</h2>
 
-  <p>For Arabic, Urdu, Persian, and Hebrew — right-to-left scripts — Tesseract has dedicated RTL-aware models. For mixed-language documents (e.g., an English invoice with some Arabic text), Tesseract supports <strong>multi-language mode</strong> (e.g., <code>eng+ara</code>) which processes both simultaneously.</p>
+  <h3>Lighting and Capture Technique</h3>
+  <p>Even illumination is the most controllable factor in OCR quality. A shadow band across the middle of a page caused by holding a phone at an angle can drop OCR accuracy by 30–40% in that region. When photographing with a phone, use overhead lighting (not a desk lamp at an angle), hold the camera directly above the document (not at an angle), and make sure the entire page is within the frame with at least 1 cm of margin on all sides. Flat surfaces produce better results than curved ones — if scanning a book, press the binding flat or use a book holder.</p>
 
-  <!-- Figure 2 -->
-  <figure class="figure-block" aria-label="Multi-language OCR comparison showing English, Arabic, and Hindi scripts being processed">
-    <div class="fig-visual" style="background:linear-gradient(135deg,#0d1b2a,#1b3a5c,#3b82f6);gap:20px;flex-wrap:wrap">
-      <span>🔤</span><span>🌐</span><span>📄</span>
-    </div>
-    <figcaption>Figure 2 — Multi-language OCR: CamMaster processes documents in English, Arabic, Urdu, Hindi, French, Spanish, German, and Turkish simultaneously.</figcaption>
-  </figure>
+  <h3>Use the Scanner Before OCR</h3>
+  <p>Running OCR directly on a raw camera photo is less effective than first processing it through <a href="../scanner.html" style="color:var(--primary)">CamMaster's document scanner</a>. The scanner applies perspective correction, contrast normalization, and binarization — the exact preprocessing steps that most improve OCR accuracy. Scan first, then OCR on the processed output.</p>
 
-  <h2>5. AI-Powered OCR vs. Traditional OCR</h2>
-  <p>The latest generation of OCR uses <strong>end-to-end neural networks</strong> — no explicit pipeline stages. Instead, the entire image is processed by a transformer-based model (similar to GPT architecture) that reads the document as a whole and outputs structured text. This approach handles:</p>
-
-  <ul style="margin:16px 0;padding-left:24px;display:flex;flex-direction:column;gap:10px">
-    <li><strong>Handwriting recognition</strong> — cursive, mixed print-and-cursive, poor penmanship</li>
-    <li><strong>Tables &amp; forms</strong> — preserving row/column structure in output</li>
-    <li><strong>Rotated or perspective-warped text</strong> — text photographed at angles</li>
-    <li><strong>Mixed scripts</strong> — pages with multiple languages on the same line</li>
-    <li><strong>Mathematical formulas</strong> — rendering LaTeX-compatible output</li>
-    <li><strong>Low-quality scans</strong> — faded photocopies, water-damaged documents</li>
-  </ul>
-
-  <div class="warn-box">
-    <strong>⚠️ Limitation:</strong> Even the best OCR engines in 2026 struggle with highly stylized fonts (calligraphy, decorative scripts), text overlaid on complex backgrounds, and extremely small text under 6pt. For critical documents, always proofread the extracted text.
+  <div class="tip-box">
+    <strong>💡 Two-Step Workflow:</strong> (1) Capture with CamMaster Scanner and export as PDF. (2) Open the PDF in the <a href="../tools/ocr.html" style="color:var(--primary)">OCR tool</a> and extract text. This two-step approach consistently outperforms running OCR directly on raw photos.
   </div>
 
-  <h2>6. Practical OCR Workflow with CamMaster</h2>
-  <p>Here's the recommended step-by-step workflow to get the best OCR results from the <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster OCR tool</a>:</p>
+  <h3>Resolution vs. File Size Trade-off</h3>
+  <p>Higher resolution improves OCR accuracy but increases processing time and file size. In practice: use 300 DPI for standard office documents (letters, invoices, contracts with 10pt+ text), 600 DPI for documents with small print (legal footnotes, nutritional labels, engineering drawings), and 150 DPI only for very large-print documents where storage size is a hard constraint. Never scan below 150 DPI for any document intended for OCR.</p>
 
-  <ol style="margin:16px 0;padding-left:24px;display:flex;flex-direction:column;gap:12px">
-    <li><strong>Capture or scan at high resolution.</strong> Use the <a href="../scanner.html" style="color:var(--primary)">CamMaster Scanner</a> to photograph documents — it automatically applies perspective correction and contrast enhancement.</li>
-    <li><strong>Apply preprocessing filters.</strong> Use the Magic Pro filter to maximize ink contrast and remove background noise before OCR processing.</li>
-    <li><strong>Select the correct language.</strong> In the OCR tool, choose your document's primary language from the language selector. For multi-language documents, enable multi-lang mode.</li>
-    <li><strong>Choose the output format.</strong> Options include plain text (.txt), structured text (.docx), or searchable PDF. The searchable PDF embeds the extracted text invisibly under the original scanned image — perfect for archival.</li>
-    <li><strong>Review and correct.</strong> OCR output includes a confidence score per word. Low-confidence words are highlighted — review those first.</li>
-    <li><strong>Export.</strong> Copy to clipboard, download as text, or open directly in the <a href="../tools/pdf-editor.html" style="color:var(--primary)">PDF Editor</a> to annotate.</li>
-  </ol>
-
-  <div class="article-cta">
-    <h3>🔤 Try CamMaster OCR — Free</h3>
-    <p>Extract text from images, PDFs, and scanned documents. Supports 100+ languages, runs entirely in your browser, no file uploads to any server.</p>
-    <a href="../tools/ocr.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Open OCR Tool →</a>
-  </div>
-
-  <!-- Figure 3 -->
-  <figure class="figure-block" aria-label="Before and after OCR: a scanned receipt on the left, extracted structured text on the right">
-    <div class="fig-visual" style="background:linear-gradient(135deg,#1a0a00,#2d1200,#ff6333)">
-      <span>🧾</span>
-    </div>
-    <figcaption>Figure 3 — A scanned receipt (left input) converted into structured editable text by CamMaster OCR. Total, line items, date, and vendor name are all extracted accurately.</figcaption>
-  </figure>
-
-  <h2>7. OCR for Specific Use Cases</h2>
+  <h2>6. OCR Use Cases: Invoices, Receipts, Contracts, and Books</h2>
 
   <h3>Invoices and Receipts</h3>
-  <p>OCR is the foundation of automated expense management. Modern receipt OCR can identify structured fields like vendor name, date, total amount, and line items by combining Tesseract text extraction with a secondary <strong>key-value extraction model</strong>. For businesses processing hundreds of receipts, this eliminates manual data entry entirely.</p>
+  <p>Expense management is the most common OCR use case for individuals and small businesses. A thermal receipt photo run through CamMaster OCR extracts vendor name, date, line items, and total — which can then be copied directly into expense spreadsheets or accounting software. Key tip: photograph receipts immediately after receiving them, before the thermal ink fades (thermal ink fades significantly within 6–12 months).</p>
 
-  <h3>Legal and Medical Documents</h3>
-  <p>Dense legal contracts and medical records require high-confidence OCR. The recommended approach: scan at 600 DPI, use a high-quality scanner (not a smartphone), and enable Tesseract's <strong>OEM 3</strong> (LSTM + legacy) mode for maximum accuracy. Always cross-reference with the physical original for critical fields.</p>
+  <h3>Contracts and Legal Documents</h3>
+  <p>Making signed contracts searchable is essential for legal teams. A PDF portfolio of signed contracts with an OCR text layer allows instant full-text search — find every contract referencing a specific client name, clause, or date in seconds. Use the <a href="../tools/merge-pdf.html" style="color:var(--primary)">Merge PDF tool</a> to combine all contracts into an indexed archive after adding the OCR layer to each.</p>
 
-  <h3>Historical Archives</h3>
-  <p>Digitizing historical documents — handwritten letters, old newspapers, census records — is one of OCR's hardest challenges. Organizations like <a href="https://www.loc.gov/collections/chronicling-america/" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">the Library of Congress</a> use specialized historical OCR models trained on period-specific typefaces. For personal use, CamMaster's high-contrast preprocessing makes older documents significantly more readable before OCR processing.</p>
+  <h3>Books and Long Documents</h3>
+  <p>Digitizing physical books for personal reference is legal under most jurisdictions' fair use provisions for personal use. For long documents, process chapter by chapter rather than the entire book at once — this keeps individual file sizes manageable and lets you correct OCR errors in focused batches rather than facing a single enormous document to review.</p>
 
-  <h2>Summary: OCR Best Practices Checklist</h2>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin:20px 0">
-    <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px">
-      <li>✅ <strong>Scan at 300 DPI minimum</strong> — 600 DPI for small text or complex scripts</li>
-      <li>✅ <strong>Use high contrast</strong> — dark ink on white/off-white paper</li>
-      <li>✅ <strong>Deskew and correct perspective</strong> — CamMaster auto-corrects on capture</li>
-      <li>✅ <strong>Choose the correct language model</strong> — major accuracy boost</li>
-      <li>✅ <strong>Apply the Magic Pro filter</strong> — removes shadows, boosts ink</li>
-      <li>✅ <strong>Review low-confidence words</strong> — highlighted automatically</li>
-      <li>✅ <strong>Export as searchable PDF</strong> — for archival and search indexing</li>
-    </ul>
+  <div class="warn-box">
+    <strong>⚠️ Always Proofread Critical Documents:</strong> OCR accuracy for clean printed text is above 99%, meaning roughly 1 error per 100 characters — about 5–8 errors per A4 page. For documents where accuracy is critical (legal contracts, medical records, financial data), always proofread the extracted text before relying on it.
   </div>
 
-  <p>OCR technology has matured to the point where it handles the vast majority of real-world scanning tasks reliably. With CamMaster's built-in preprocessing pipeline feeding into Tesseract.js, you get professional-grade text extraction directly in your browser — for free, with no data leaving your device.</p>
+  <h2>7. Multi-Language OCR</h2>
+
+  <p>CamMaster's OCR tool supports over 100 languages through Tesseract's trained model files. For right-to-left scripts (Arabic, Urdu, Hebrew, Persian), the engine uses RTL-aware text assembly that correctly handles bidirectional text. For mixed-language documents — an English contract with Arabic annotations, for example — select both languages in the multi-language mode and Tesseract processes both scripts simultaneously on the same page.</p>
+
+  <p>Language model selection has a larger impact than most users expect. Running Arabic text through an English language model does not just produce wrong characters — it produces structurally invalid output because the engine tries to segment the script as if it were Latin. Always match the language model to your document.</p>
+
+  <div class="article-cta">
+    <h3>🔤 Try Free OCR — 100+ Languages</h3>
+    <p>Extract text from scanned documents, images, and PDFs. Runs entirely in your browser — your files never leave your device.</p>
+    <a href="https://pdfdukan.com/tools/ocr.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Try Free OCR Tool →</a>
+  </div>
 
   <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap">
-    <a href="document-digitization-best-practices.html" style="color:var(--primary);font-size:13px;font-weight:600">← Document Digitization Guide</a>
-    <a href="maximizing-pdf-workflows.html" style="color:var(--primary);font-size:13px;font-weight:600;margin-left:auto">Maximize PDF Workflows →</a>
+    <a href="pdf-workflows.html" style="color:var(--primary);font-size:13px;font-weight:600">← PDF Workflows</a>
+    <a href="compress-images-guide.html" style="color:var(--primary);font-size:13px;font-weight:600;margin-left:auto">Image Compression Guide →</a>
   </div>
 </article>
 
@@ -338,6 +288,7 @@
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
       <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
@@ -348,6 +299,7 @@
       <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
       <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
     </div>
   </div>
 </div>
