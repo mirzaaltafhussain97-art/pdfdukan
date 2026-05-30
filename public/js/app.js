@@ -162,8 +162,8 @@ function updateStorageUI() {
   if (hint) {
     const count = STATE.recentDocs.length;
     hint.textContent = STATE.user
-      ? `${count} document${count !== 1 ? 's' : ''} in history`
-      : `${count} local doc${count !== 1 ? 's' : ''} · Sign in to sync`;
+      ? `${count} document${count !== 1 ? 's' : ''} in local history`
+      : `${count} local doc${count !== 1 ? 's' : ''}`;
   }
 }
 
@@ -465,7 +465,7 @@ function _onAuthChanged(user) {
 }
 
 function openAuth(tab) {
-  if (STATE.user) { toggleProfileMenu(); return; }
+  if (STATE.user) { openProfilePanel(); return; }
   const el = document.getElementById('authModal');
   if (el) el.classList.add('show');
   switchAuthTab(tab || 'signin');
@@ -554,7 +554,7 @@ async function signUpEmail() {
     // Send the verification email.
     try { await _fb.sendEmailVerification(cred.user); } catch (e) {}
     closeAuth();
-    toast('Account created! 📧 Verification email sent — please check your inbox.', 'success');
+    toast('Account created! 📧 Verification email sent — check your inbox AND spam/junk folder.', 'success', 7000);
   } catch (e) { toast(_authErr(e), 'error'); }
 }
 
@@ -605,58 +605,229 @@ function updateAuthUI() {
   if (!label || !avatar) return;
   if (STATE.user) {
     const nm = STATE.user.name || 'User';
-    label.textContent  = nm.split(' ')[0];
-    avatar.textContent = nm[0].toUpperCase();
+    label.textContent = nm.split(' ')[0];
+    const photo = (() => { try { return localStorage.getItem('cm_profile_photo'); } catch(e) { return null; } })() || STATE.user.photoURL;
+    if (photo) {
+      avatar.innerHTML = '<img src="' + _esc(photo) + '" style="width:100%;height:100%;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer">';
+    } else {
+      avatar.textContent = nm[0].toUpperCase();
+    }
   } else {
     label.textContent  = 'Sign In';
     avatar.textContent = 'U';
   }
 }
 
-/* ── PROFILE DROPDOWN ─────────────────────────────────────────── */
-function hideProfileMenu() {
-  const m = document.getElementById('cm-profile-menu');
-  if (m) m.remove();
-  document.removeEventListener('click', _profileOutside, true);
+/* ── PROFILE PANEL ─────────────────────────────────────────────
+   Full slide-in profile panel. Replaces the old small dropdown. */
+let _ppEl = null;
+
+function _ppEnsure() {
+  if (_ppEl) return;
+  const outer = document.createElement('div');
+  outer.id = 'cmPP';
+  outer.innerHTML =
+    '<div class="cpp-bg" id="cppBg"></div>' +
+    '<div class="cpp-panel" role="dialog" aria-label="Your Profile">' +
+      '<div class="cpp-head">' +
+        '<div class="cpp-av-wrap">' +
+          '<div class="cpp-av" id="cppAv">U</div>' +
+          '<label class="cpp-av-btn" for="cppAvIn" title="Change photo">' +
+            '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>' +
+          '</label>' +
+          '<input type="file" id="cppAvIn" accept="image/*" style="display:none">' +
+        '</div>' +
+        '<div class="cpp-meta">' +
+          '<div class="cpp-uname" id="cppUname">User</div>' +
+          '<div class="cpp-uemail" id="cppUemail"></div>' +
+          '<span class="cpp-vbadge" id="cppVbadge"></span>' +
+        '</div>' +
+        '<button class="cpp-x" id="cppX" aria-label="Close">&#10005;</button>' +
+      '</div>' +
+      '<div class="cpp-body">' +
+        '<div class="cpp-sec">' +
+          '<div class="cpp-sec-hd">Edit Profile</div>' +
+          '<label class="cpp-lbl">Display Name</label>' +
+          '<div class="cpp-rowf">' +
+            '<input type="text" class="cpp-inp" id="cppNm" placeholder="Your name">' +
+            '<button class="btn btn-primary btn-sm" id="cppSvNm">Save</button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="cpp-sec" id="cppVerSec">' +
+          '<div class="cpp-sec-hd">Email Verification</div>' +
+          '<div class="cpp-warnbox">&#9888; Your email is not yet verified. Check your inbox and spam/junk folder.</div>' +
+          '<button class="btn btn-secondary btn-sm" id="cppResnd" style="width:100%;margin-top:10px">Resend Verification Email</button>' +
+        '</div>' +
+        '<div class="cpp-sec">' +
+          '<div class="cpp-sec-hd">Security</div>' +
+          '<button class="btn btn-secondary btn-sm" id="cppRsPw" style="width:100%">Send Password Reset Email</button>' +
+          '<p class="cpp-hint">A password reset link will be sent to your registered email address.</p>' +
+        '</div>' +
+        '<div class="cpp-sec">' +
+          '<div class="cpp-sec-hd">Recent Activity</div>' +
+          '<div id="cppHist" class="cpp-hist"></div>' +
+        '</div>' +
+        '<div class="cpp-sec cpp-logout-sec">' +
+          '<button class="btn btn-sm" id="cppOut" style="width:100%;border:1px solid var(--error,#ef4444);color:var(--error,#ef4444);background:transparent">Sign Out</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(outer);
+  _ppEl = outer;
+
+  const st = document.createElement('style');
+  st.textContent =
+    '#cmPP{position:fixed;inset:0;z-index:9998;pointer-events:none}' +
+    '#cmPP.open{pointer-events:all}' +
+    '.cpp-bg{position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .25s ease}' +
+    '#cmPP.open .cpp-bg{background:rgba(0,0,0,.5)}' +
+    '.cpp-panel{position:absolute;top:0;right:0;bottom:0;width:340px;max-width:100vw;background:var(--card);' +
+      'border-left:1px solid var(--border);transform:translateX(100%);transition:transform .27s cubic-bezier(.4,0,.2,1);' +
+      'display:flex;flex-direction:column;overflow:hidden}' +
+    '#cmPP.open .cpp-panel{transform:translateX(0)}' +
+    '.cpp-head{display:flex;align-items:center;gap:12px;padding:18px 14px;border-bottom:1px solid var(--border);flex-shrink:0}' +
+    '.cpp-av-wrap{position:relative;flex-shrink:0}' +
+    '.cpp-av{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#ff6333,#ff9055);' +
+      'display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;overflow:hidden}' +
+    '.cpp-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}' +
+    '.cpp-av-btn{position:absolute;bottom:-1px;right:-1px;width:20px;height:20px;border-radius:50%;' +
+      'background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;' +
+      'border:2px solid var(--card)}' +
+    '.cpp-meta{flex:1;min-width:0}' +
+    '.cpp-uname{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.cpp-uemail{font-size:11px;color:var(--text-2,#aaa);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}' +
+    '.cpp-vbadge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:4px}' +
+    '.cpp-vbadge.ok{background:rgba(67,160,71,.15);color:#66bb6a}' +
+    '.cpp-vbadge.no{background:rgba(251,140,0,.15);color:#ffa726}' +
+    '.cpp-x{background:none;border:none;color:var(--text-3,#888);font-size:16px;cursor:pointer;padding:6px 8px;border-radius:6px;flex-shrink:0}' +
+    '.cpp-x:hover{background:var(--border)}' +
+    '.cpp-body{flex:1;overflow-y:auto;padding-bottom:20px}' +
+    '.cpp-sec{padding:16px 14px;border-bottom:1px solid var(--border)}' +
+    '.cpp-logout-sec{border-bottom:none;padding-top:20px}' +
+    '.cpp-sec-hd{font-size:10px;font-weight:700;color:var(--text-3,#888);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}' +
+    '.cpp-lbl{display:block;font-size:12px;color:var(--text-2);font-weight:600;margin-bottom:6px}' +
+    '.cpp-rowf{display:flex;gap:8px;align-items:center}' +
+    '.cpp-inp{flex:1;padding:8px 10px;background:var(--surface,#161625);border:1px solid var(--border);border-radius:7px;' +
+      'color:var(--text);font-size:13px;outline:none;transition:border-color .15s}' +
+    '.cpp-inp:focus{border-color:var(--primary)}' +
+    '.cpp-hint{font-size:11px;color:var(--text-3,#888);margin:7px 0 0;line-height:1.5}' +
+    '.cpp-warnbox{padding:9px 11px;background:rgba(251,140,0,.08);border:1px solid rgba(251,140,0,.25);' +
+      'border-radius:7px;font-size:12px;color:#ffa726;line-height:1.5}' +
+    '.cpp-hist{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow-y:auto;margin-top:2px}' +
+    '.cpp-hi{display:flex;align-items:center;gap:8px;padding:7px 8px;background:var(--surface,#161625);border-radius:7px;font-size:12px}' +
+    '.cpp-hi-ico{font-size:15px;flex-shrink:0}' +
+    '.cpp-hi-nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}' +
+    '.cpp-hi-dt{color:var(--text-3,#888);font-size:11px;white-space:nowrap}' +
+    '.cpp-hi-empty{color:var(--text-3,#888);font-size:12px;padding:4px 0}' +
+    '@media(max-width:480px){.cpp-panel{width:100vw;border-left:none}}';
+  document.head.appendChild(st);
+
+  document.getElementById('cppX').onclick     = closeProfilePanel;
+  document.getElementById('cppBg').onclick    = closeProfilePanel;
+  document.getElementById('cppSvNm').onclick  = _ppSaveName;
+  document.getElementById('cppNm').onkeydown  = e => { if (e.key === 'Enter') _ppSaveName(); };
+  document.getElementById('cppRsPw').onclick  = _ppResetPass;
+  document.getElementById('cppOut').onclick   = () => { closeProfilePanel(); signOut(); };
+  document.getElementById('cppResnd').onclick = resendVerification;
+  document.getElementById('cppAvIn').onchange = _ppPhotoChange;
 }
-function _profileOutside(e) {
-  const m = document.getElementById('cm-profile-menu');
-  const btn = document.getElementById('authBtn');
-  if (m && !m.contains(e.target) && btn && !btn.contains(e.target)) hideProfileMenu();
-}
-function toggleProfileMenu() {
-  if (document.getElementById('cm-profile-menu')) { hideProfileMenu(); return; }
-  if (!STATE.user) return;
+
+function _ppRender() {
   const u = STATE.user;
-  const verified = u.emailVerified;
-  const initial = (u.name || 'U')[0].toUpperCase();
-  const menu = document.createElement('div');
-  menu.id = 'cm-profile-menu';
-  menu.style.cssText =
-    'position:fixed;top:60px;right:16px;z-index:9999;width:270px;background:var(--card,#1a1a1a);' +
-    'border:1px solid var(--border,#2a2a2a);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.5);' +
-    'padding:16px;color:var(--text,#f0f0f0);font-size:13px';
-  menu.innerHTML =
-    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">' +
-      '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#ff6333,#ff9055);' +
-           'display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0">' +
-        (u.photoURL ? '<img src="'+u.photoURL+'" style="width:100%;height:100%;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer">' : initial) +
-      '</div>' +
-      '<div style="min-width:0">' +
-        '<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(u.name)+'</div>' +
-        '<div style="color:var(--text-2,#aaa);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_esc(u.email)+'</div>' +
-      '</div>' +
-    '</div>' +
-    '<div style="padding:7px 10px;border-radius:7px;font-size:11px;font-weight:600;margin-bottom:12px;' +
-         (verified ? 'background:rgba(67,160,71,.15);color:#66bb6a">✓ Email verified'
-                   : 'background:rgba(251,140,0,.15);color:#ffa726">⚠ Email not verified · <a href="#" id="cm-resend" style="color:#ffb74d;text-decoration:underline">Resend</a>') +
-    '</div>' +
-    '<button id="cm-signout" class="btn btn-secondary btn-sm" style="width:100%">Sign out</button>';
-  document.body.appendChild(menu);
-  const so = document.getElementById('cm-signout'); if (so) so.onclick = signOut;
-  const rs = document.getElementById('cm-resend');  if (rs) rs.onclick = (ev)=>{ ev.preventDefault(); resendVerification(); };
-  setTimeout(() => document.addEventListener('click', _profileOutside, true), 0);
+  if (!u) return;
+  const savedPhoto = (() => { try { return localStorage.getItem('cm_profile_photo'); } catch(e) { return null; } })();
+  const photo = savedPhoto || u.photoURL;
+  const init = (u.name || 'U')[0].toUpperCase();
+
+  const avEl = document.getElementById('cppAv');
+  if (avEl) avEl.innerHTML = photo ? '<img src="' + _esc(photo) + '" referrerpolicy="no-referrer">' : init;
+
+  const unEl = document.getElementById('cppUname');  if (unEl) unEl.textContent = u.name || 'User';
+  const emEl = document.getElementById('cppUemail'); if (emEl) emEl.textContent = u.email || '';
+  const vbEl = document.getElementById('cppVbadge');
+  if (vbEl) {
+    vbEl.textContent = u.emailVerified ? '✓ Verified' : '⚠ Not verified';
+    vbEl.className   = 'cpp-vbadge ' + (u.emailVerified ? 'ok' : 'no');
+  }
+  const nmIn = document.getElementById('cppNm');    if (nmIn) nmIn.value = u.name || '';
+  const vs   = document.getElementById('cppVerSec'); if (vs) vs.style.display = u.emailVerified ? 'none' : 'block';
+
+  const hist = document.getElementById('cppHist');
+  if (hist) {
+    const docs = STATE.recentDocs || [];
+    hist.innerHTML = docs.length
+      ? docs.slice(0, 10).map(d =>
+          '<div class="cpp-hi">' +
+          '<span class="cpp-hi-ico">' + (d.type === 'PDF' ? '📄' : '🖼️') + '</span>' +
+          '<span class="cpp-hi-nm">' + _esc(d.name) + '</span>' +
+          '<span class="cpp-hi-dt">' + _esc(d.date || '') + '</span>' +
+          '</div>').join('')
+      : '<div class="cpp-hi-empty">No recent activity yet</div>';
+  }
 }
+
+async function _ppSaveName() {
+  const inp = document.getElementById('cppNm');
+  const name = (inp ? inp.value : '').trim();
+  if (!name) { toast('Enter a name', 'error'); return; }
+  if (!(await _firebaseReady) || !_auth || !_auth.currentUser) { toast('Not connected', 'error'); return; }
+  try {
+    await _fb.updateProfile(_auth.currentUser, { displayName: name });
+    STATE.user.name = name;
+    try { localStorage.setItem('cm_user', JSON.stringify(STATE.user)); } catch(e) {}
+    const unEl = document.getElementById('cppUname'); if (unEl) unEl.textContent = name;
+    const al   = document.getElementById('authLabel'); if (al)   al.textContent  = name.split(' ')[0];
+    toast('Name updated ✓', 'success');
+  } catch (e) { toast('Failed to update name', 'error'); }
+}
+
+async function _ppResetPass() {
+  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
+  const email = STATE.user && STATE.user.email;
+  if (!email) { toast('No email on file', 'error'); return; }
+  try {
+    await _fb.sendPasswordResetEmail(_auth, email);
+    toast('Password reset email sent ✓ — check inbox and spam.', 'success');
+  } catch (e) { toast(_authErr(e), 'error'); }
+}
+
+function _ppPhotoChange(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = async () => {
+    URL.revokeObjectURL(url);
+    const c = document.createElement('canvas'); c.width = 128; c.height = 128;
+    const ctx = c.getContext('2d');
+    const s = Math.min(img.width, img.height);
+    ctx.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 128, 128);
+    const dataURL = c.toDataURL('image/jpeg', 0.85);
+    try { localStorage.setItem('cm_profile_photo', dataURL); } catch(_) {}
+    if (_auth && _auth.currentUser) {
+      try { await _fb.updateProfile(_auth.currentUser, { photoURL: dataURL }); } catch(_) {}
+    }
+    _ppRender();
+    updateAuthUI();
+    toast('Profile photo updated ✓', 'success');
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); toast('Failed to load image', 'error'); };
+  img.src = url;
+}
+
+function openProfilePanel() {
+  if (!STATE.user) return;
+  _ppEnsure();
+  _ppRender();
+  _ppEl.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfilePanel() {
+  if (_ppEl) _ppEl.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 function _esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
 /* ── FEATURE GATE ─────────────────────────────────────────────────
@@ -1009,6 +1180,7 @@ function initModal() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       closeAuth();
+      closeProfilePanel();
       const no = document.getElementById('notifOverlay');
       if (no) no.classList.remove('show');
     }

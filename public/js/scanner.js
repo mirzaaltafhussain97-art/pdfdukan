@@ -33,10 +33,13 @@ const ScannerApp = (() => {
 
     // Consume any file that was pre-loaded from the homepage unified drop UX
     if (typeof consumePendingFiles === 'function') {
-      const pending = consumePendingFiles();
-      if (pending && pending.length) {
-        // Small delay to ensure UI is fully rendered
-        setTimeout(() => handleFiles(pending), 100);
+      if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+        try { sessionStorage.removeItem('cm_pending_files'); } catch(_) {}
+      } else {
+        const pending = consumePendingFiles();
+        if (pending && pending.length) {
+          setTimeout(() => handleFiles(pending), 100);
+        }
       }
     }
 
@@ -88,6 +91,10 @@ const ScannerApp = (() => {
 
   function handleFiles(files) {
     if (!files.length) return;
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+      if (typeof _gatePrompt === 'function') _gatePrompt();
+      return;
+    }
     state.queue = files.map(f => ({ file: f, type: f.type }));
     state.queueIndex = 0;
     state.editingIndex = -1;
