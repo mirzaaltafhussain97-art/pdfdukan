@@ -120,10 +120,28 @@ function detectDocumentCorners(img) {
 
   if (best) {
     console.log(`✓ Document detected — method score: ${bestScore.toFixed(3)}`);
+    _showDetectionBadge(bestScore);
     return best;
   }
   console.log('⚠ All detection methods failed — using fallback corners');
+  _showDetectionBadge(0);
   return getFallbackCorners(img);
+}
+
+function _showDetectionBadge(score) {
+  const badge = document.getElementById('detectionBadge');
+  if (!badge) return;
+  if (score >= 0.55) {
+    badge.textContent = '✓ Document Detected';
+    badge.className = 'detect-badge good';
+  } else if (score >= 0.2) {
+    badge.textContent = '⚠ Adjust Corners Manually';
+    badge.className = 'detect-badge warn';
+  } else {
+    badge.textContent = '✕ Not Detected — Adjust Manually';
+    badge.className = 'detect-badge bad';
+  }
+  badge.style.display = 'inline-block';
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -895,8 +913,22 @@ class CropEditor {
     const src  = this._getRotatedImg();
     const w    = src.width  || src.naturalWidth;
     const h    = src.height || src.naturalHeight;
-    const px   = Math.round(Math.min(w, h) * 0.05);
-    this.corners = { tl:{x:px,y:px}, tr:{x:w-px,y:px}, br:{x:w-px,y:h-px}, bl:{x:px,y:h-px} };
+
+    // Re-run smart detection on the rotated image instead of plain fallback
+    if (window.cvReady) {
+      const tmpImg = new Image();
+      const tmpCanvas = document.createElement('canvas');
+      tmpCanvas.width = w; tmpCanvas.height = h;
+      tmpCanvas.getContext('2d').drawImage(src, 0, 0);
+      tmpImg.width = w; tmpImg.height = h;
+      tmpImg.naturalWidth = w; tmpImg.naturalHeight = h;
+      // Use canvas as image source for detection
+      const detected = _detectFromCanvas(tmpCanvas, w, h);
+      this.corners = detected || getFallbackCorners({ naturalWidth: w, naturalHeight: h, width: w, height: h });
+    } else {
+      const px = Math.round(Math.min(w, h) * 0.05);
+      this.corners = { tl:{x:px,y:px}, tr:{x:w-px,y:px}, br:{x:w-px,y:h-px}, bl:{x:px,y:h-px} };
+    }
     this.draw();
   }
 
@@ -1119,6 +1151,24 @@ function ensureCornerOrder(pts) {
   };
 }
 
+/* ── DETECT FROM CANVAS (used by rotate re-detection) ──────── */
+function _detectFromCanvas(canvas, W, H) {
+  const dArea = W * H;
+  let best = null, bestScore = 0;
+  const cannyParams = [
+    { blur:5, lo:50,  hi:150, dilate:1, close:2 },
+    { blur:7, lo:30,  hi:100, dilate:2, close:3 },
+    { blur:3, lo:80,  hi:220, dilate:1, close:1 },
+  ];
+  for (const p of cannyParams) {
+    const r = _methodCanny(canvas, p, dArea);
+    if (r && r.score > bestScore) { bestScore = r.score; best = r.corners; }
+  }
+  const rB = _methodAdaptive(canvas, dArea);
+  if (rB && rB.score > bestScore) { bestScore = rB.score; best = rB.corners; }
+  return best || null;
+}
+
 /* ── GLOBAL EXPORTS ───────────────────────────────────────── */
 window.CropEditor            = CropEditor;
 window.detectDocumentCorners = detectDocumentCorners;
@@ -1127,3 +1177,4 @@ window.ensureCornerOrder     = ensureCornerOrder;
 window.onOpenCvReady         = onOpenCvReady;
 window._perspectiveWarpCanvas = _perspectiveWarpCanvas;
 window._computeHomography    = _computeHomography;
+window._detectFromCanvas     = _detectFromCanvas;

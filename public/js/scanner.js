@@ -116,14 +116,31 @@ const ScannerApp = (() => {
     }
   }
 
+  const MAX_IMAGE_PX = 16_000_000; // 16MP — above this we resize before processing
+
   function _processImageFile(file) {
     showProcessing('Loading image…');
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
-        hideProcessing();
-        _startCropScreen(img);
+        const px = (img.naturalWidth || img.width) * (img.naturalHeight || img.height);
+        if (px > MAX_IMAGE_PX) {
+          // Downscale to fit within MAX_IMAGE_PX, preserving aspect ratio
+          showProcessing('Resizing large image…');
+          const scale = Math.sqrt(MAX_IMAGE_PX / px);
+          const nW = Math.round((img.naturalWidth  || img.width)  * scale);
+          const nH = Math.round((img.naturalHeight || img.height) * scale);
+          const c  = document.createElement('canvas');
+          c.width = nW; c.height = nH;
+          c.getContext('2d').drawImage(img, 0, 0, nW, nH);
+          const resized = new Image();
+          resized.onload = () => { hideProcessing(); _startCropScreen(resized); };
+          resized.src = c.toDataURL('image/jpeg', 0.95);
+        } else {
+          hideProcessing();
+          _startCropScreen(img);
+        }
       };
       img.onerror = () => { hideProcessing(); toast('Failed to load image', 'error'); };
       img.src = e.target.result;

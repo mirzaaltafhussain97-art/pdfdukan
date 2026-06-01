@@ -34,6 +34,20 @@
 .cv-badge { display: none !important; }
 .cv-badge.ready { display: none !important; }
 
+/* Detection confidence badge */
+.detect-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin: 6px 0 0;
+  letter-spacing: 0.02em;
+}
+.detect-badge.good  { background: #d1fae5; color: #065f46; }
+.detect-badge.warn  { background: #fef3c7; color: #92400e; }
+.detect-badge.bad   { background: #fee2e2; color: #991b1b; }
+
 /* Crop layout */
 .crop-layout { display: grid; grid-template-columns: 1fr; gap: 16px; }
 .crop-canvas-outer {
@@ -263,6 +277,7 @@
       </div>
       <div class="crop-controls">
         <div class="crop-info">Drag the 4 <strong>corner handles</strong> individually, or the <strong>edge handles</strong> to move an entire edge</div>
+        <div id="detectionBadge" class="detect-badge" style="display:none"></div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
           <button class="btn btn-secondary btn-sm" id="btnBackToUpload" title="Back to upload">← Back</button>
           <button class="btn btn-secondary btn-sm" id="btnResetCrop" title="Re-detect edges">↺ Reset</button>

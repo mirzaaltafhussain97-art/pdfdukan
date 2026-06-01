@@ -279,7 +279,7 @@
     </div>
 
     <p style="margin-top:14px;font-size:12px;color:var(--text-muted);line-height:1.6">
-      💡 <strong>Tip:</strong> The .doc file is a Word-compatible format with full extracted text. Open it in Microsoft Word, Google Docs, or LibreOffice for further editing.
+      💡 <strong>Tip:</strong> The .docx keeps your text layout, reconstructs <strong>tables</strong> as editable Word tables, and embeds <strong>logos &amp; images</strong> found in the PDF. Open it in Microsoft Word, Google Docs, or LibreOffice for further editing.
     </p>
   </div>
 
@@ -295,7 +295,7 @@
     </div>
     <div class="tool-card" style="margin-top:24px">
       <h3>⚠️ Important Note</h3>
-      <p style="color:var(--text-2);font-size:14px;line-height:1.7">This tool extracts text content from PDF files. Scanned PDFs (image-based) require OCR first — use our <a href="ocr.html" style="color:var(--primary)">OCR Text Extraction</a> tool. Complex layouts with tables, columns, or embedded fonts may have minor formatting differences in the output.</p>
+      <p style="color:var(--text-2);font-size:14px;line-height:1.7">This tool extracts text, detects and rebuilds <strong>tables</strong>, and embeds <strong>images/logos</strong> from PDF files. Fully scanned PDFs (pure image, no text layer) still need OCR first — use our <a href="ocr.html" style="color:var(--primary)">OCR Text Extraction</a> tool. Very complex multi-column magazine layouts may still have minor differences.</p>
     </div>
   </section>
 
@@ -370,9 +370,10 @@
    - Geometric text extraction preserving layout coordinates
 ══════════════════════════════════════════════════════════════ */
 const PDFToWord = (() => {
-  let _pages    = [];   // [{ num, text, items: [{str,x,y,w,h,fontSize,fontName}] }]
+  let _pages    = [];   // [{ num, text, items: [...], images: [...] }]
   let _fullText = '';
   let _fileName = 'document';
+  let _mediaList = [];  // [{ fileName, base64, rId }] collected during doc build
 
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -468,7 +469,11 @@ const PDFToWord = (() => {
           lastEndX = it.x + (it.w || it.str.length * (it.fontSize || 11) * 0.5);
         }
 
-        _pages.push({ num: p, text: pageText.trim(), items, pageW: vp.width, pageH: vp.height });
+        /* Extract embedded images/logos (best-effort, never blocks text) */
+        let images = [];
+        try { images = await _extractPageImages(page, vp); } catch (e) { console.warn('Image extract skipped:', e); }
+
+        _pages.push({ num: p, text: pageText.trim(), items, images, pageW: vp.width, pageH: vp.height });
       }
 
       _fullText = _pages.map(pg => pg.text).join('\n\n');
@@ -500,6 +505,217 @@ const PDFToWord = (() => {
   }
 
   /* ══════════════════════════════════════════════════════
+     IMAGE EXTRACTION — pull embedded images/logos from a page
+     Tracks the graphics-state CTM so each image gets correct
+     size + position, then converts the raw pixel buffer to PNG.
+  ══════════════════════════════════════════════════════ */
+  function _mulMatrix(m1, m2) {
+    return [
+      m1[0]*m2[0] + m1[2]*m2[1],
+      m1[1]*m2[0] + m1[3]*m2[1],
+      m1[0]*m2[2] + m1[2]*m2[3],
+      m1[1]*m2[2] + m1[3]*m2[3],
+      m1[0]*m2[4] + m1[2]*m2[5] + m1[4],
+      m1[1]*m2[4] + m1[3]*m2[5] + m1[5],
+    ];
+  }
+
+  function _imgObjToCanvas(imgObj) {
+    const w = imgObj.width, h = imgObj.height;
+    if (!w || !h) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+
+    /* Newer pdf.js returns a ready ImageBitmap for some images */
+    if (imgObj.bitmap) { try { ctx.drawImage(imgObj.bitmap, 0, 0); return canvas; } catch (e) { return null; } }
+
+    const src = imgObj.data;
+    if (!src) return null;
+    const out = ctx.createImageData(w, h);
+    const d = out.data;
+
+    if (imgObj.kind === 3) {            // RGBA_32BPP
+      d.set(src.subarray(0, d.length));
+    } else if (imgObj.kind === 2) {     // RGB_24BPP
+      for (let i = 0, j = 0; i < src.length; i += 3, j += 4) {
+        d[j] = src[i]; d[j+1] = src[i+1]; d[j+2] = src[i+2]; d[j+3] = 255;
+      }
+    } else if (imgObj.kind === 1) {     // GRAYSCALE_1BPP (packed bits)
+      const rowBytes = Math.ceil(w / 8);
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          const bit = (src[y*rowBytes + (x>>3)] >> (7 - (x & 7))) & 1;
+          const v = bit ? 255 : 0;
+          const j = (y*w + x) * 4;
+          d[j] = d[j+1] = d[j+2] = v; d[j+3] = 255;
+        }
+      }
+    } else { return null; }
+
+    ctx.putImageData(out, 0, 0);
+    return canvas;
+  }
+
+  /* Race a promise against a timeout so a stuck render can never hang
+     the whole conversion. On timeout we resolve to `fallback`. */
+  function _withTimeout(promise, ms, fallback) {
+    return Promise.race([
+      promise,
+      new Promise(res => setTimeout(() => res(fallback), ms)),
+    ]);
+  }
+
+  async function _extractPageImages(page, vp) {
+    const OPS = pdfjsLib.OPS;
+    let opList;
+    try { opList = await _withTimeout(page.getOperatorList(), 8000, null); } catch (e) { return []; }
+    if (!opList) return [];
+
+    /* Quick scan: does this page contain any image paint op at all? */
+    let hasImage = false;
+    for (let i = 0; i < opList.fnArray.length; i++) {
+      const fn = opList.fnArray[i];
+      if (fn === OPS.paintImageXObject || fn === OPS.paintJpegXObject || fn === OPS.paintInlineImageXObject) { hasImage = true; break; }
+    }
+    if (!hasImage) return [];
+
+    /* Render once so page.objs resolves the image buffers.
+       Capped with a timeout: if the renderer stalls we still return
+       whatever image objects are already resolved (text/tables unaffected). */
+    let renderTask = null;
+    try {
+      const oc = document.createElement('canvas');
+      oc.width  = Math.max(1, Math.floor(vp.width));
+      oc.height = Math.max(1, Math.floor(vp.height));
+      renderTask = page.render({ canvasContext: oc.getContext('2d'), viewport: vp });
+      await _withTimeout(renderTask.promise, 10000, 'timeout');
+    } catch (e) { /* render failed — image objs may still be available */ }
+    finally { try { if (renderTask && renderTask.cancel) renderTask.cancel(); } catch (e) {} }
+
+    const out = [];
+    let ctm = [1, 0, 0, 1, 0, 0];
+    const stack = [];
+
+    for (let i = 0; i < opList.fnArray.length; i++) {
+      const fn = opList.fnArray[i], args = opList.argsArray[i];
+      if (fn === OPS.save)            stack.push(ctm.slice());
+      else if (fn === OPS.restore)  { if (stack.length) ctm = stack.pop(); }
+      else if (fn === OPS.transform) ctm = _mulMatrix(ctm, args);
+      else if (fn === OPS.paintImageXObject || fn === OPS.paintJpegXObject) {
+        const name = args[0];
+        let imgObj = null;
+        try { imgObj = page.objs.get(name); } catch (e) { imgObj = null; }
+        if (!imgObj) continue;
+
+        const canvas = _imgObjToCanvas(imgObj);
+        if (!canvas) continue;
+        /* Skip tiny decorative slivers (icons under ~8px) */
+        if (canvas.width < 8 || canvas.height < 8) continue;
+
+        const wPt = Math.abs(ctm[0]) || canvas.width;
+        const hPt = Math.abs(ctm[3]) || canvas.height;
+        const topY = vp.height - (ctm[5] + hPt);  // flip to top-down
+
+        out.push({
+          dataUrl: canvas.toDataURL('image/png'),
+          wPt, hPt,
+          y: isFinite(topY) ? topY : 0,
+          x: isFinite(ctm[4]) ? ctm[4] : 0,
+        });
+      }
+    }
+    return out;
+  }
+
+  /* ══════════════════════════════════════════════════════
+     TABLE DETECTION — cluster aligned multi-column lines
+     into a real Word table instead of jumbled text.
+  ══════════════════════════════════════════════════════ */
+  function _splitCells(line) {
+    const cells = [];
+    let cur = [];
+    let prevEnd = null;
+    for (let k = 0; k < line.items.length; k++) {
+      const it = line.items[k];
+      const fs = it.fontSize || 11;
+
+      /* Many PDFs fill the space between columns with a single wide
+         whitespace glyph (e.g. " " with width 190pt) instead of leaving
+         a positional gap. Treat such wide blanks as a column boundary
+         and drop them — this is the #1 reason tables flatten to text. */
+      const isWideSpace = /^\s*$/.test(it.str) && (it.w || 0) > Math.max(fs * 1.2, 14);
+      if (isWideSpace) {
+        if (cur.length) { cells.push(cur); cur = []; }
+        prevEnd = null;   // the gap has been consumed
+        continue;
+      }
+
+      /* Otherwise split on a genuine positional gap (> ~1.4 em) */
+      if (cur.length && prevEnd !== null) {
+        const gap = it.x - prevEnd;
+        if (gap > Math.max(fs * 1.4, 16)) { cells.push(cur); cur = []; }
+      }
+      cur.push(it);
+      prevEnd = it.x + (it.w || it.str.length * fs * 0.5);
+    }
+    if (cur.length) cells.push(cur);
+    return cells.map(c => ({
+      x: c[0].x,
+      text: c.map(t => t.str).join('').replace(/\s+/g, ' ').trim(),
+      items: c,
+    }));
+  }
+
+  function _colsAlign(cols, cells) {
+    let matches = 0;
+    for (const c of cells) if (cols.some(cx => Math.abs(cx - c.x) < 28)) matches++;
+    return matches >= Math.min(2, cells.length);
+  }
+
+  function _mergeCols(cols, xs) {
+    const out = cols.slice();
+    for (const x of xs) if (!out.some(cx => Math.abs(cx - x) < 28)) out.push(x);
+    return out;
+  }
+
+  function _tryTable(lines, start) {
+    const first = _splitCells(lines[start]);
+    if (first.length < 2) return null;
+
+    let rows = [first];
+    let cols = first.map(c => c.x);
+    let end  = start + 1;
+
+    for (let j = start + 1; j < lines.length; j++) {
+      const gap = lines[j].y - lines[j-1].y;
+      const lh  = Math.max(...lines[j].items.map(it => it.fontSize || 12));
+      if (gap > lh * 2.4) break;            // big vertical gap → table ended
+      const cells = _splitCells(lines[j]);
+      if (cells.length < 2) break;          // single-column line → table ended
+      if (!_colsAlign(cols, cells)) break;  // columns no longer line up
+      rows.push(cells);
+      cols = _mergeCols(cols, cells.map(c => c.x));
+      end = j + 1;
+    }
+
+    if (rows.length < 2) return null;       // need ≥2 rows to be a table
+
+    const colXs = cols.slice().sort((a, b) => a - b);
+    const norm = rows.map(cells => {
+      const rowCells = colXs.map(() => '');
+      for (const c of cells) {
+        let bi = 0, bd = Infinity;
+        colXs.forEach((cx, ci) => { const d = Math.abs(cx - c.x); if (d < bd) { bd = d; bi = ci; } });
+        rowCells[bi] = rowCells[bi] ? rowCells[bi] + ' ' + c.text : c.text;
+      }
+      return rowCells;
+    });
+
+    return { rows: norm, end };
+  }
+
+  /* ══════════════════════════════════════════════════════
      DOCX GENERATOR — Strict OpenXML via JSZip
   ══════════════════════════════════════════════════════ */
   function _escXml(s) {
@@ -515,59 +731,131 @@ const PDFToWord = (() => {
   /** Convert PDF points to twentieths-of-a-point (twips, 1pt = 20 twips) */
   function _ptToTwips(pt) { return Math.round(pt * 20); }
 
+  function _buildTableXml(rows) {
+    const ncols = Math.max(...rows.map(r => r.length), 1);
+    const colW = Math.floor(9360 / ncols);
+    const border = b => '<w:' + b + ' w:val="single" w:sz="4" w:space="0" w:color="auto"/>';
+    let xml = '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>' +
+      border('top') + border('left') + border('bottom') + border('right') +
+      border('insideH') + border('insideV') + '</w:tblBorders></w:tblPr>';
+    xml += '<w:tblGrid>' + Array.from({ length: ncols }).map(() => '<w:gridCol w:w="' + colW + '"/>').join('') + '</w:tblGrid>';
+    for (const r of rows) {
+      xml += '<w:tr>';
+      for (let c = 0; c < ncols; c++) {
+        const txt = r[c] || '';
+        xml += '<w:tc><w:tcPr><w:tcW w:w="' + colW + '" w:type="dxa"/></w:tcPr>' +
+          '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr>' +
+          '<w:r><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri"/><w:sz w:val="20"/><w:szCs w:val="20"/></w:rPr>' +
+          '<w:t xml:space="preserve">' + _escXml(txt) + '</w:t></w:r></w:p></w:tc>';
+      }
+      xml += '</w:tr>';
+    }
+    xml += '</w:tbl><w:p><w:pPr><w:spacing w:after="0"/></w:pPr></w:p>';  // trailing para (Word requires)
+    return xml;
+  }
+
+  function _emu(pt) { return Math.max(1, Math.min(6858000, Math.round(pt * 12700))); }
+
+  function _buildImageXml(img) {
+    /* Register the image in the media list and get its relationship id */
+    const idx = _mediaList.length;
+    const rId = 'rIdImg' + idx;
+    _mediaList.push({
+      fileName: 'image' + (idx + 1) + '.png',
+      base64: img.dataUrl.split(',')[1],
+      rId,
+    });
+    const docId = 1000 + idx;
+    let cx = _emu(img.wPt), cy = _emu(img.hPt);
+    return '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="80" w:after="80"/></w:pPr>' +
+      '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0">' +
+      '<wp:extent cx="' + cx + '" cy="' + cy + '"/>' +
+      '<wp:effectExtent l="0" t="0" r="0" b="0"/>' +
+      '<wp:docPr id="' + docId + '" name="Picture ' + docId + '"/>' +
+      '<wp:cNvGraphicFramePr><a:graphicFrameLocks xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" noChangeAspect="1"/></wp:cNvGraphicFramePr>' +
+      '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">' +
+      '<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">' +
+      '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture">' +
+      '<pic:nvPicPr><pic:cNvPr id="' + docId + '" name="Picture ' + docId + '"/><pic:cNvPicPr/></pic:nvPicPr>' +
+      '<pic:blipFill><a:blip r:embed="' + rId + '"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>' +
+      '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>' +
+      '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr>' +
+      '</pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>';
+  }
+
   function _buildDocumentXml() {
     let body = '';
+    _mediaList = [];
 
     for (let pi = 0; pi < _pages.length; pi++) {
       const pg = _pages[pi];
 
       /* Group items into lines by Y coordinate proximity */
-      const lines = [];
+      const rawLines = [];
       let currentLine = [];
       let currentY = null;
 
       for (const it of pg.items) {
         if (currentY !== null && Math.abs(it.y - currentY) > 3) {
-          if (currentLine.length > 0) lines.push(currentLine);
+          if (currentLine.length > 0) rawLines.push(currentLine);
           currentLine = [];
         }
         currentLine.push(it);
         currentY = it.y;
       }
-      if (currentLine.length > 0) lines.push(currentLine);
+      if (currentLine.length > 0) rawLines.push(currentLine);
 
-      /* Group consecutive lines into paragraphs (gap > 1.8× line height = new para) */
-      const paragraphs = [];
-      let currentPara = [];
-      let prevLineBottom = null;
+      /* Wrap each line with its y + items for table/paragraph logic */
+      const lines = rawLines.map(items => ({ y: items[0].y, items }));
 
-      for (const line of lines) {
-        const lineY = line[0].y;
-        const lineH = Math.max(...line.map(it => it.fontSize || 12));
-        if (prevLineBottom !== null) {
-          const gap = lineY - prevLineBottom;
-          if (gap > lineH * 0.8) {
-            /* Significant gap → new paragraph */
-            if (currentPara.length > 0) paragraphs.push(currentPara);
-            currentPara = [];
+      /* ── Build ordered blocks: tables, paragraphs and images ──
+         First detect table runs, then group remaining lines into paragraphs. */
+      const blocks = [];   // { type:'table'|'para'|'image', y, ... }
+      let i = 0;
+      while (i < lines.length) {
+        const tbl = _tryTable(lines, i);
+        if (tbl) {
+          blocks.push({ type: 'table', y: lines[i].y, rows: tbl.rows });
+          i = tbl.end;
+        } else {
+          /* Accumulate consecutive non-table lines into a paragraph */
+          const paraLines = [lines[i].items];
+          let prevBottom = lines[i].y + Math.max(...lines[i].items.map(it => it.fontSize || 12));
+          let j = i + 1;
+          while (j < lines.length && !_tryTable(lines, j)) {
+            const lineY = lines[j].y;
+            const lineH = Math.max(...lines[j].items.map(it => it.fontSize || 12));
+            if (lineY - prevBottom > lineH * 0.8) break;  // big gap → new paragraph
+            paraLines.push(lines[j].items);
+            prevBottom = lineY + lineH;
+            j++;
           }
+          blocks.push({ type: 'para', y: lines[i].y, lines: paraLines });
+          i = j;
         }
-        currentPara.push(line);
-        prevLineBottom = lineY + lineH;
       }
-      if (currentPara.length > 0) paragraphs.push(currentPara);
 
-      /* If no structured items, fall back to plain text */
-      if (paragraphs.length === 0 && pg.text) {
+      /* Fallback to plain text if no structured items were found */
+      if (blocks.length === 0 && pg.text) {
         const textParas = pg.text.split(/\n\s*\n/).filter(s => s.trim());
         for (const tp of textParas) {
           const textLines = tp.split('\n').filter(s => s.trim());
-          paragraphs.push(textLines.map(l => [{ str: l, fontSize: 11, x: 72, fontName: 'default' }]));
+          blocks.push({ type: 'para', y: 0, lines: textLines.map(l => [{ str: l, fontSize: 11, x: 72, fontName: 'default' }]) });
         }
       }
 
-      /* Render each paragraph to OOXML */
-      for (const para of paragraphs) {
+      /* Insert image blocks in reading order by their y position */
+      for (const img of (pg.images || [])) {
+        blocks.push({ type: 'image', y: img.y, img });
+      }
+      blocks.sort((a, b) => a.y - b.y);
+
+      /* ── Render blocks ── */
+      for (const block of blocks) {
+        if (block.type === 'table') { body += _buildTableXml(block.rows); continue; }
+        if (block.type === 'image') { body += _buildImageXml(block.img); continue; }
+
+        const para = block.lines;
         /* Calculate left indent from minimum X in paragraph (convert from PDF pt to twips) */
         let minX = Infinity;
         let dominantSize = 11;
@@ -706,6 +994,7 @@ const PDFToWord = (() => {
       '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
       '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
       '<Default Extension="xml" ContentType="application/xml"/>' +
+      '<Default Extension="png" ContentType="image/png"/>' +
       '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
       '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>' +
       '</Types>';
@@ -719,14 +1008,20 @@ const PDFToWord = (() => {
   }
 
   function _buildDocRelsXml() {
+    let rels = '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>';
+    for (const m of _mediaList) {
+      rels += '<Relationship Id="' + m.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/' + m.fileName + '"/>';
+    }
     return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
       '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
-      '</Relationships>';
+      rels + '</Relationships>';
   }
 
   async function _generateDocx() {
     const zip = new JSZip();
+
+    /* Build document.xml FIRST — this populates _mediaList with any images */
+    const documentXml = _buildDocumentXml();
 
     /* Root-level content types & relationships */
     zip.file('[Content_Types].xml', _buildContentTypesXml());
@@ -734,9 +1029,17 @@ const PDFToWord = (() => {
 
     /* word/ folder */
     const wordFolder = zip.folder('word');
-    wordFolder.file('document.xml', _buildDocumentXml());
+    wordFolder.file('document.xml', documentXml);
     wordFolder.file('styles.xml', _buildStylesXml());
     wordFolder.folder('_rels').file('document.xml.rels', _buildDocRelsXml());
+
+    /* Embed extracted images into word/media/ */
+    if (_mediaList.length) {
+      const mediaFolder = wordFolder.folder('media');
+      for (const m of _mediaList) {
+        mediaFolder.file(m.fileName, m.base64, { base64: true });
+      }
+    }
 
     /* Generate the ZIP blob */
     return await zip.generateAsync({
