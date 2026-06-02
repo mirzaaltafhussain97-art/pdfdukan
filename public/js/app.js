@@ -1460,6 +1460,15 @@ const TOOL_PAGES = {
   'ai-summarize':  'tools/ai-summarize.html',
   'inheritance':   'tools/inheritance-calc.html',
   'warasat':       'tools/inheritance-calc.html',
+  /* ── PDF utilities & generators (Part 5) ── */
+  'rotate-pdf':         'tools/rotate-pdf.html',
+  'reorder-pdf':        'tools/reorder-pdf.html',
+  'unlock-pdf':         'tools/unlock-pdf.html',
+  'pdf-metadata':       'tools/pdf-metadata.html',
+  'pdf-text-extractor': 'tools/pdf-text-extractor.html',
+  'searchable-pdf':     'tools/searchable-pdf.html',
+  'qr-generator':       'tools/qr-generator.html',
+  'barcode-generator':  'tools/barcode-generator.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');
