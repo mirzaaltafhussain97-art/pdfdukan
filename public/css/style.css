@@ -3,6 +3,21 @@
    Dark mode default | Light mode via [data-theme="light"]
 ================================================================ */
 
+/* ── MOBILE OVERFLOW GUARD (Part 1.11) ─────────────────────────
+   Prevents horizontal scroll at 320–375px on every page. */
+html, body { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
+*, *::before, *::after { box-sizing: inherit; }
+img { max-width: 100%; height: auto; }
+table { max-width: 100%; }
+@media (max-width: 640px) {
+  .tools-grid, .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  .tool-card { min-width: 0; }
+}
+
 /* ── CSS VARIABLES ─────────────────────────────────────────── */
 :root {
   --primary:        #ff6333;
