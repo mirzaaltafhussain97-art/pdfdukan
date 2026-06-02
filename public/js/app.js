@@ -1787,6 +1787,30 @@ if (!window.setLanguage) {
 }
 
 /* ── COOKIE CONSENT BANNER ────────────────────────────────────── */
+/* ── ANALYTICS TOOL-USAGE TRACKING (Part 8.2) ──────────────────
+   Fires a GA4 'tool_used' event (once per page) when the user clicks
+   a primary action button. Label = current page name. Works on every
+   tool page without editing each file. */
+function trackToolUse(label) {
+  if (typeof gtag === 'undefined') return;
+  gtag('event', 'tool_used', { event_category: 'Tools', event_label: label || location.pathname });
+}
+window.trackToolUse = trackToolUse;
+(function _autoTrackTool() {
+  let fired = false;
+  document.addEventListener('click', e => {
+    if (fired) return;
+    const btn = e.target.closest('button, .btn, a.cta-btn, .ptw-btn');
+    if (!btn) return;
+    const sig = ((btn.id || '') + ' ' + (btn.className || '') + ' ' + (btn.getAttribute('onclick') || '')).toLowerCase();
+    if (/download|convert|process|merge|split|compress|scan|generate|extract|apply|export|summari|rotate|protect|unlock/.test(sig)) {
+      const page = (location.pathname.split('/').pop() || 'home').replace('.html', '');
+      trackToolUse(page);
+      fired = true;
+    }
+  }, true);
+})();
+
 /* ── XSS SANITIZER (Part 0.1) ──────────────────────────────────
    Escape user-typed text before inserting it into the DOM. */
 function sanitizeInput(str) {
