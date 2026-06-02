@@ -20,6 +20,18 @@
     const canvas = document.getElementById('particleCanvas');
     if (!canvas) return; // page doesn't have the bg canvas
 
+    /* Performance: skip the heavy 3D WebGL background on phones and for
+       users who prefer reduced motion. It is purely decorative and barely
+       visible on small screens. Skipping avoids a ~600KB Three.js download
+       + a continuous render loop — sharply improves mobile PageSpeed and
+       saves battery. */
+    var _skip3D = false;
+    try {
+      _skip3D = window.matchMedia('(max-width: 768px)').matches
+             || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (e) {}
+    if (_skip3D) { canvas.style.display = 'none'; return; }
+
     // Apply fixed-background styles before Three.js touches the canvas
     const s = canvas.style;
     s.position      = 'fixed';
