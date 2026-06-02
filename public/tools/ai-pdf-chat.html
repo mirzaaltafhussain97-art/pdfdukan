@@ -8,13 +8,13 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Chat with PDF — Ask Questions About Your PDF Free | PDFdukan</title>
-<meta name="description" content="Free AI Chat with PDF. Upload a PDF and ask any question about its content, powered by Gemini.">
+<meta name="description" content="Free AI Chat with PDF. Upload a PDF and ask questions about its content, in your browser.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/tools/ai-pdf-chat.html">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<script src="../js/gemini-config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>if(typeof pdfjsLib!=="undefined"){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}</script><script src="../js/gemini-config.js"></script>
 
 <link rel="stylesheet" href="../css/style.css">
 <style>
@@ -234,7 +234,7 @@
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="../index.html" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Chat with PDF</span></nav>
   <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">&#128172;</div><h1>Chat with PDF</h1><p>Upload a PDF and ask questions about it. Get answers based on the document.</p></div>
-  <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:14px;color:#5d4037">&#9888;&#65039; <strong>Privacy Note:</strong> Your uploaded PDF is sent to Google's Gemini API for processing. Google's <a href="https://ai.google.dev/terms" target="_blank" rel="noopener">terms</a> apply. Do not upload sensitive or confidential documents.</div>
+  <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:14px;color:#5d4037">&#9888;&#65039; <strong>Privacy Note:</strong> The text from your PDF is sent to an AI API for processing. Please do not upload sensitive or confidential documents.</div>
   <div class="tool-card">
     <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
     <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
@@ -249,21 +249,21 @@
     <div id="out" style="white-space:pre-wrap;line-height:1.7;font-size:14px;color:var(--text)"></div>
   </div>
   <section class="seo-section" style="margin-top:24px">
-    <h2>About This Tool</h2><p>Have a long PDF and a quick question? This free tool lets you upload a PDF and ask anything about it. The AI reads the document and answers based on its content &mdash; handy for contracts, manuals, and reports.</p>
+    <h2>About This Tool</h2><p>Have a long PDF and a quick question? Upload a PDF and ask anything about it. The text is read in your browser, then the AI answers based on its content &mdash; handy for contracts, manuals, and reports.</p>
     <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Type your question.</li><li>Click <strong>Ask</strong>.</li><li>Read the answer.</li></ol>
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my PDF private?</button><div class="faq-a">Your PDF and question go to Google''s Gemini API. Do not upload sensitive documents.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I ask many questions?</button><div class="faq-a">Yes, ask as many as you like (within the rate limit).</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on scanned PDFs?</button><div class="faq-a">Only if the PDF has real text. For scans, run OCR first.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my PDF private?</button><div class="faq-a">The extracted text and your question go to an AI API. Avoid sensitive documents.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are answers always right?</button><div class="faq-a">The AI answers from the document, but always double-check important details.</div></div>
     <h2>Related Tools</h2><p><a href="ai-pdf-summarizer.html" style="color:var(--primary)">PDF Summarizer</a> &middot; <a href="pdf-text-extractor.html" style="color:var(--primary)">Text Extractor</a></p>
   </section>
 </div>
 <script>
 (function(){
-  var b64=null;
-  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } document.getElementById('fileInfo').textContent='Loaded: '+f.name; fileToBase64(f).then(function(d){ b64=d; document.getElementById('askArea').style.display=''; }); }
-  async function go(){ if(!b64){ if(window.toast) toast('Upload a PDF first','error'); return; } var q=document.getElementById('q').value.trim(); if(!q){ if(window.toast) toast('Type a question','error'); return; } var btn=document.getElementById('goBtn'); if(window.setButtonLoading) setButtonLoading(btn,true); try{ var res=await callGemini('Based only on the attached document, answer this question clearly. If the document does not contain the answer, say so.\n\nQuestion: '+q,{fileData:b64,mimeType:'application/pdf',maxTokens:1500}); document.getElementById('out').textContent=res||'No response.'; document.getElementById('outCard').style.display=''; if(window.trackToolUse) trackToolUse('ai-pdf-chat'); }catch(e){ if(window.toast) toast(e.message||'Failed','error'); } finally{ if(window.setButtonLoading) setButtonLoading(btn,false,'Ask'); } }
+  var pdfText='';
+  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } document.getElementById('fileInfo').textContent='Reading '+f.name+'…'; var r=new FileReader(); r.onload=async function(e){ try{ var pdf=await pdfjsLib.getDocument({data:e.target.result}).promise; var t=''; for(var p=1;p<=pdf.numPages;p++){ var pg=await pdf.getPage(p); var tc=await pg.getTextContent(); t+=tc.items.map(function(i){return i.str;}).join(' ')+'\n'; } pdfText=t.trim(); if(!pdfText){ document.getElementById('fileInfo').textContent='No text found — this looks like a scanned PDF. Try OCR first.'; return; } document.getElementById('fileInfo').textContent='Loaded: '+f.name; document.getElementById('askArea').style.display=''; }catch(err){ document.getElementById('fileInfo').textContent=''; if(window.toast) toast('Could not read PDF','error'); } }; r.readAsArrayBuffer(f); }
+  async function go(){ if(!pdfText){ if(window.toast) toast('Upload a PDF first','error'); return; } var q=document.getElementById('q').value.trim(); if(!q){ if(window.toast) toast('Type a question','error'); return; } var btn=document.getElementById('goBtn'); if(window.setButtonLoading) setButtonLoading(btn,true); try{ var res=await callGemini('Using only the document below, answer the question clearly. If the answer is not in the document, say so.\n\nDocument:\n'+pdfText.slice(0,12000)+'\n\nQuestion: '+q,{maxTokens:1500}); document.getElementById('out').textContent=res||'No response.'; document.getElementById('outCard').style.display=''; if(window.trackToolUse) trackToolUse('ai-pdf-chat'); }catch(e){ if(window.toast) toast(e.message||'Failed','error'); } finally{ if(window.setButtonLoading) setButtonLoading(btn,false,'Ask'); } }
   document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('goBtn').onclick=go; document.getElementById('q').addEventListener('keydown',function(e){if(e.key==='Enter')go();}); });
 })();
 </script>
