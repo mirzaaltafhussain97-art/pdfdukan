@@ -332,7 +332,7 @@ const CMFilename = (() => {
       '.cm-fname-x:hover{background:var(--border,#333)}' +
       '.cm-fname-label{display:block;font-size:12px;font-weight:700;color:var(--text-muted,#999);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}' +
       '.cm-fname-row{display:flex;align-items:center;gap:0;margin-bottom:20px}' +
-      '.cm-fname-input{flex:1;padding:10px 12px;border:1px solid var(--border,#444);border-right:none;border-radius:8px 0 0 8px;background:var(--surface,#161625);color:var(--text,#eee);font-size:14px;font-weight:600;outline:none;transition:border-color .15s}' +
+      '.cm-fname-input{flex:1;padding:10px 12px;border:1px solid var(--border,#444);border-right:none;border-radius:8px 0 0 8px;background:var(--card-2,#f2f2f5);color:var(--text,#111);font-size:14px;font-weight:600;outline:none;transition:border-color .15s}' +
       '.cm-fname-input:focus{border-color:var(--primary,#ff6333)}' +
       '.cm-fname-ext{padding:10px 14px;background:var(--border,#333);color:var(--text-muted,#aaa);font-size:14px;font-weight:700;border-radius:0 8px 8px 0;white-space:nowrap;border:1px solid var(--border,#444);border-left:none}' +
       '.cm-fname-actions{display:flex;gap:10px}' +
