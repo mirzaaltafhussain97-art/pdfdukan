@@ -12,13 +12,38 @@ header('Content-Type: application/json; charset=utf-8');
 /* ---- Locate the secret key (try a few common spots) ---- */
 $GEMINI_API_KEY = '';
 $model = 'gemini-1.5-flash';
+$docroot = isset($_SERVER['DOCUMENT_ROOT']) ? rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') : '';
 $candidates = [
-  __DIR__ . '/../secret-config.php',     // public_html/secret-config.php
-  __DIR__ . '/../../secret-config.php',  // one level above public_html (most private)
-  __DIR__ . '/secret-config.php',        // public_html/api/secret-config.php
+  __DIR__ . '/secret-config.php',          // same folder as this proxy
+  __DIR__ . '/../secret-config.php',       // one level up
+  __DIR__ . '/../../secret-config.php',    // two levels up
+  __DIR__ . '/../../../secret-config.php', // three levels up (Next.js build nesting)
 ];
+if ($docroot) {
+  $candidates[] = $docroot . '/secret-config.php';        // web root (public_html)
+  $candidates[] = $docroot . '/../secret-config.php';     // above web root (most private)
+}
+/* Common Hostinger absolute fallbacks */
+$candidates[] = '/home/' . get_current_user() . '/public_html/secret-config.php';
+$candidates[] = '/home/' . get_current_user() . '/domains/secret-config.php';
+
+$loadedFrom = '';
 foreach ($candidates as $f) {
-  if (is_file($f)) { include $f; break; }
+  if (@is_file($f)) { include $f; $loadedFrom = $f; break; }
+}
+
+/* Safe diagnostic: /api/gemini.php?diag=1 — shows where it looked (NO key shown) */
+if (isset($_GET['diag'])) {
+  $checked = [];
+  foreach ($candidates as $f) { $checked[$f] = @is_file($f); }
+  echo json_encode([
+    'document_root' => $docroot,
+    'proxy_dir'     => __DIR__,
+    'loaded_from'   => $loadedFrom ?: 'NONE FOUND',
+    'key_present'   => !empty($GEMINI_API_KEY) && $GEMINI_API_KEY !== 'PASTE_YOUR_AIzaSy_KEY_HERE',
+    'checked_paths' => $checked,
+  ], JSON_PRETTY_PRINT);
+  exit;
 }
 /* Allow a real server environment variable to override, if set */
 if (getenv('GEMINI_API_KEY')) { $GEMINI_API_KEY = getenv('GEMINI_API_KEY'); }
