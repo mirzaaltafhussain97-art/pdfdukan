@@ -1,0 +1,29 @@
+PDFdukan — SEO Submission Guide
+================================
+
+1. GOOGLE SEARCH CONSOLE
+   - Go to https://search.google.com/search-console
+   - Add property: pdfdukan.com
+   - Verify ownership (HTML file upload or DNS TXT record via Netlify DNS)
+   - Submit sitemap: https://pdfdukan.com/sitemap.xml
+   - Request indexing for: homepage, all blog posts, help.html, tools.html
+
+2. BING WEBMASTER TOOLS
+   - Go to https://www.bing.com/webmasters
+   - Add site pdfdukan.com (or import from Google Search Console)
+   - Submit sitemap: https://pdfdukan.com/sitemap.xml
+
+3. ALTERNATIVETO
+   - Go to https://alternativeto.net
+   - Submit PDFdukan as a free alternative to CamScanner / SmallPDF / iLovePDF
+   - Category: Productivity / PDF Tools
+
+4. PRODUCT HUNT
+   - Go to https://www.producthunt.com
+   - Create a launch: name, tagline, screenshots, link to pdfdukan.com
+   - Best launch day: Tuesday–Thursday
+
+5. ONGOING
+   - Check Search Console weekly for coverage + performance
+   - Run pagespeed.web.dev for key pages (target 80+ mobile)
+   - Build backlinks via blog guest posts and tool directories
