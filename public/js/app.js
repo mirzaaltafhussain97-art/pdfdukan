@@ -5,8 +5,23 @@
 ================================================================ */
 
 /* ── STATE ───────────────────────────────────────────────────── */
+/* Auto theme by local time-of-day: 6:00–17:59 = light (day), else dark (night).
+   Used whenever the user hasn't manually picked a theme (mode = 'auto'). */
+function autoThemeByTime() {
+  const h = new Date().getHours();
+  return (h >= 6 && h < 18) ? 'light' : 'dark';
+}
+
 const STATE = {
-  theme: localStorage.getItem('cm_theme') || 'dark',
+  /* Default = auto (time-based, light in daytime). A manual toggle locks it. */
+  theme: (() => {
+    const mode = localStorage.getItem('cm_theme_mode') || 'auto';
+    if (mode === 'manual') {
+      const saved = localStorage.getItem('cm_theme');
+      if (saved) return saved;
+    }
+    return autoThemeByTime();
+  })(),
   user: (() => { try { return JSON.parse(localStorage.getItem('cm_user')); } catch(e) { return null; } })(),
   recentDocs: (() => { try { return JSON.parse(localStorage.getItem('cm_recent')) || []; } catch(e) { return []; } })(),
 };
@@ -247,8 +262,19 @@ function applyTheme(theme) {
   localStorage.setItem('cm_theme', theme);
 }
 function toggleTheme() {
+  /* Manual override — stop following the clock from now on. */
+  localStorage.setItem('cm_theme_mode', 'manual');
   applyTheme(STATE.theme === 'dark' ? 'light' : 'dark');
 }
+
+/* While in auto mode, re-check the clock periodically so the theme flips
+   on its own when day turns to night (and vice-versa). */
+function refreshAutoTheme() {
+  if ((localStorage.getItem('cm_theme_mode') || 'auto') !== 'auto') return;
+  const t = autoThemeByTime();
+  if (t !== STATE.theme) applyTheme(t);
+}
+setInterval(refreshAutoTheme, 5 * 60 * 1000);
 
 /* ── TOAST ────────────────────────────────────────────────────── */
 let _toastTimer;
