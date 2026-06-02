@@ -120,14 +120,16 @@ function _applyEnhance(data, w, h) {
  *      gray body text into dashes — the sigmoid keeps it solid & readable.
  * ────────────────────────────────────────────────────────────────── */
 function _applyMagicProCV(ctx, w, h) {
-  let src, gray, ds, bgSmall, bgUp, grayF, bgF, normF, normalized,
-      blurred, edges, lines, output, rotated, M;
+  let src, gray, ds, bgSmall, bgUp, blurred, edges, lines, recolored, rotated, M;
   try {
     src  = cv.imread(ctx.canvas);
     gray = new cv.Mat();
     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
 
-    /* ── Step 1: Background estimation via downsample → blur → upsample ── */
+    /* ── Step 1: Background (illumination) estimation ──
+       downsample → blur → upsample gives a smooth per-pixel "paper brightness"
+       map. We use the luminance for this; the correction below is applied to
+       the COLOUR channels so the document keeps its real colours. */
     const bgScale = 4;
     const bW = Math.max(8, Math.round(w / bgScale));
     const bH = Math.max(8, Math.round(h / bgScale));
@@ -135,25 +137,53 @@ function _applyMagicProCV(ctx, w, h) {
     bgSmall = new cv.Mat();
     bgUp    = new cv.Mat();
     cv.resize(gray, ds, new cv.Size(bW, bH), 0, 0, cv.INTER_AREA);
-    cv.GaussianBlur(ds, bgSmall, new cv.Size(21, 21), 0);
+    /* Wide blur (≈82px window) so large solid colour blocks don't pull the
+       background estimate down and get over-brightened (hue shift). */
+    cv.GaussianBlur(ds, bgSmall, new cv.Size(41, 41), 0);
     cv.resize(bgSmall, bgUp, new cv.Size(w, h), 0, 0, cv.INTER_LINEAR);
 
-    /* ── Step 2: Normalise illumination: norm = gray / bgUp × 220 ──
-       Shadow paper (gray=130, bg=160) → 130/160×220 ≈ 179 → white
-       Lit paper   (gray=220, bg=220) → 220/220×220 = 220 → white
-       Ink         (gray=30,  bg=180) →  30/180×220 ≈ 37  → black  */
-    grayF      = new cv.Mat();
-    bgF        = new cv.Mat();
-    normF      = new cv.Mat();
-    normalized = new cv.Mat();
-    gray.convertTo(grayF, cv.CV_32F);
-    bgUp.convertTo(bgF,   cv.CV_32F);
-    cv.divide(grayF, bgF, normF, 220.0);
-    normF.convertTo(normalized, cv.CV_8U);  // values >255 clamp automatically
+    /* ── Step 2: COLOUR-preserving enhancement (the fix) ──
+       For each pixel: gain = TARGET / localBackground.
+       • Shadowed paper (bg low)  → gain high → lifts to white
+       • Lit paper      (bg high) → gain ~1   → stays white
+       • Coloured ink/logo        → multiplied by same gain → brightened
+         but its HUE is preserved (we never collapse to grey).
+       Then a saturation + gentle contrast boost gives the punchy,
+       CamScanner "Magic Colour" look — colour documents stay colour. */
+    const bg = bgUp.data;                 // CV_8U single channel, length w*h
+    const img = ctx.getImageData(0, 0, w, h);
+    const d   = img.data;
+    const TARGET = 235, SAT = 1.15, CONTR = 1.06, GAIN_CAP = 2.6;
 
-    /* ── Step 3: Detect text-line skew on the normalised image ── */
+    for (let px = 0, i = 0; px < w * h; px++, i += 4) {
+      const gain = Math.min(GAIN_CAP, TARGET / Math.max(bg[px], 35));
+      let r = d[i] * gain, g = d[i + 1] * gain, b = d[i + 2] * gain;
+
+      /* saturation boost (neutral paper unaffected: r≈g≈b → luma≈channel) */
+      const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+      r = luma + (r - luma) * SAT;
+      g = luma + (g - luma) * SAT;
+      b = luma + (b - luma) * SAT;
+
+      /* gentle contrast around mid-grey */
+      r = (r - 128) * CONTR + 128;
+      g = (g - 128) * CONTR + 128;
+      b = (b - 128) * CONTR + 128;
+
+      r = r < 0 ? 0 : r > 255 ? 255 : r;
+      g = g < 0 ? 0 : g > 255 ? 255 : g;
+      b = b < 0 ? 0 : b > 255 ? 255 : b;
+
+      /* snap near-white paper to pure white for a clean scan background */
+      if (r > 236 && g > 236 && b > 236) { r = g = b = 255; }
+
+      d[i] = r; d[i + 1] = g; d[i + 2] = b;
+    }
+    ctx.putImageData(img, 0, 0);
+
+    /* ── Step 3: Deskew (detect on luminance, rotate the COLOUR result) ── */
     blurred = new cv.Mat();
-    cv.GaussianBlur(normalized, blurred, new cv.Size(3, 3), 0);
+    cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
     edges = new cv.Mat();
     lines = new cv.Mat();
     cv.Canny(blurred, edges, 50, 150, 3, false);
@@ -168,48 +198,17 @@ function _applyMagicProCV(ctx, w, h) {
       const ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
       if (Math.abs(ang) < 20) { angleSum += ang; angleCount++; }
     }
-
-    /* ── Step 4: Deskew the normalised GRAYSCALE image (not a binary one) ── */
-    let toShow = normalized;
     if (angleCount > 0) {
       const skew = angleSum / angleCount;
       if (Math.abs(skew) > 0.4 && Math.abs(skew) < 20) {
-        rotated = new cv.Mat();
-        const center = new cv.Point(w / 2, h / 2);
-        M = cv.getRotationMatrix2D(center, skew, 1.0);
-        cv.warpAffine(normalized, rotated, M, new cv.Size(w, h),
+        recolored = cv.imread(ctx.canvas);
+        rotated   = new cv.Mat();
+        M = cv.getRotationMatrix2D(new cv.Point(w / 2, h / 2), skew, 1.0);
+        cv.warpAffine(recolored, rotated, M, new cv.Size(w, h),
           cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar(255, 255, 255, 255));
-        toShow = rotated;
+        cv.imshow(ctx.canvas, rotated);
       }
     }
-
-    /* ── Step 5: Render the normalised grayscale to the canvas ── */
-    output = new cv.Mat();
-    cv.cvtColor(toShow, output, cv.COLOR_GRAY2RGBA);
-    cv.imshow(ctx.canvas, output);
-
-    /* ── Step 6: Sigmoid tone-curve (THE key step) ──
-       A hard threshold (Otsu/adaptive) makes a per-pixel black/white decision;
-       on faint gray body text that pixel is ambiguous, so strokes shatter into
-       dashes (the bug the user reported). Instead we apply a steep but SMOOTH
-       S-curve: paper → pure white, ink → near-black, and crucially the strokes
-       stay CONTINUOUS (anti-aliased grayscale). Faint text becomes solid and
-       readable. Centre 190 / steepness 0.09; extremes snapped for a clean scan
-       look. Built as a 256-entry LUT for speed (cv.LUT isn't in this build). */
-    const idata = ctx.getImageData(0, 0, w, h);
-    const dd    = idata.data;
-    const curve = new Uint8ClampedArray(256);
-    for (let v = 0; v < 256; v++) {
-      let o = 255 / (1 + Math.exp(-0.09 * (v - 190)));
-      if (o < 22)  o = 0;     // snap deep ink to pure black
-      if (o > 225) o = 255;   // snap bright paper to pure white
-      curve[v] = o;
-    }
-    for (let i = 0; i < dd.length; i += 4) {
-      const o = curve[dd[i]];
-      dd[i] = dd[i + 1] = dd[i + 2] = o;
-    }
-    ctx.putImageData(idata, 0, 0);
 
   } catch (err) {
     console.error('Magic Pro (OpenCV) error — falling back to JS:', err);
@@ -217,8 +216,7 @@ function _applyMagicProCV(ctx, w, h) {
     _applyMagicPro(imgData.data, w, h);
     ctx.putImageData(imgData, 0, 0);
   } finally {
-    [src, gray, ds, bgSmall, bgUp, grayF, bgF, normF, normalized,
-     blurred, edges, lines, output, rotated, M]
+    [src, gray, ds, bgSmall, bgUp, blurred, edges, lines, recolored, rotated, M]
       .forEach(m => { if (m && m.delete) try { m.delete(); } catch(e) {} });
   }
 }
@@ -228,67 +226,37 @@ function _applyMagicProCV(ctx, w, h) {
  *   • Large-radius mean (big window) → remove page-level shadow/gradient
  *   • Small-radius mean (tight window) → detect individual ink strokes
  *
- * Tuned to match OpenCV path quality:
- *   • Background → pure #ffffff  (was leaving grayish remnants)
- *   • Ink/text   → near #000000  (was only 70% dark — now 88%)
- *   • Final binary snap: >210 → 255 (white), <40 → 0 (black)
+ * COLOUR-PRESERVING (matches the OpenCV path): removes shadows and whitens
+ * the paper while keeping the document's real colours. Coloured text, logos
+ * and highlights stay coloured — it is NOT a black-and-white filter.
  * ────────────────────────────────────────────────────────────────── */
 function _applyMagicPro(data, w, h) {
-  /* Large radius: captures full illumination gradient across the page.
-     Increased from /12 to /8 so shadows are more completely captured. */
-  const rLarge = Math.max(40, Math.round(Math.min(w, h) / 8));
-  /* Small radius: tight local neighbourhood for crisp ink detection. */
-  const rSmall = Math.max(6,  Math.round(Math.min(w, h) / 50));
+  /* Large radius captures the full page illumination gradient (shadows). */
+  const rLarge = Math.max(60, Math.round(Math.min(w, h) / 4));
+  const bg = _buildLocalMean(data, w, h, rLarge);   // luminance-based background
 
-  const largeMean = _buildLocalMean(data, w, h, rLarge);
-  const smallMean = _buildLocalMean(data, w, h, rSmall);
-
+  const TARGET = 235, SAT = 1.15, CONTR = 1.06, GAIN_CAP = 2.6;
   for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+    const gain = Math.min(GAIN_CAP, TARGET / Math.max(bg[px], 35));
+    let r = data[i] * gain, g = data[i+1] * gain, b = data[i+2] * gain;
 
-    /* Normalise against large-scale illumination so shadow areas are
-       treated the same as well-lit areas. Target brightness = 220. */
-    const normIllum = gray * (220 / Math.max(largeMean[px], 35));
+    /* saturation boost (neutral paper unaffected) */
+    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+    r = luma + (r - luma) * SAT;
+    g = luma + (g - luma) * SAT;
+    b = luma + (b - luma) * SAT;
 
-    /* Ink detection: how much darker is this pixel vs its tight neighbourhood?
-       Lower threshold (12 + 0.04×mean) catches lighter pencil/faded ink
-       that the old (18 + 0.06×mean) was missing. */
-    const localContrast = smallMean[px] - gray;
-    const inkThreshold  = 12 + smallMean[px] * 0.04;
+    /* gentle contrast around mid-grey */
+    r = (r - 128) * CONTR + 128;
+    g = (g - 128) * CONTR + 128;
+    b = (b - 128) * CONTR + 128;
 
-    let out;
-    if (localContrast > inkThreshold) {
-      /* Ink stroke — push toward near-black.
-         88% darkening (was 70%) gives proper black text, not gray. */
-      const strength = Math.min(1.0, (localContrast - inkThreshold) / 28);
-      out = _clamp(gray * (1 - strength * 0.88));
+    r = _clamp(r); g = _clamp(g); b = _clamp(b);
 
-    } else if (normIllum > 130) {
-      /* Paper / background — ramp aggressively to pure white.
-         Was 150 threshold; lowered to 130 so light shadows are removed too. */
-      out = _clamp(200 + (normIllum - 130) * (55 / 125));
+    /* snap near-white paper to pure white for a clean background */
+    if (r > 236 && g > 236 && b > 236) { r = g = b = 255; }
 
-    } else if (normIllum > 65) {
-      /* Mid-tone zone (residual shadow) — push strongly toward white. */
-      out = _clamp(110 + (normIllum - 65) * (90 / 65));
-
-    } else {
-      /* Very dark pixel (thick pen, stamp) — keep dark. */
-      out = _clamp(normIllum * 0.5);
-    }
-
-    data[i] = data[i+1] = data[i+2] = out;
-  }
-
-  /* ── Final binary snap pass ──────────────────────────────────────
-     Anything still grayish after the main pass gets snapped to pure
-     black or pure white. This is what gives the crisp "printed page"
-     look that CamScanner Magic Pro produces. */
-  for (let i = 0; i < data.length; i += 4) {
-    const v = data[i];
-    if      (v > 205) { data[i] = data[i+1] = data[i+2] = 255; }  // paper → white
-    else if (v <  45) { data[i] = data[i+1] = data[i+2] = 0;   }  // ink → black
-    // mid-range (45–205) is left as-is — these are legitimately semi-dark areas
+    data[i] = r; data[i+1] = g; data[i+2] = b;
   }
 }
 
