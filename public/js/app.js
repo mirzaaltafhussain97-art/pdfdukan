@@ -39,7 +39,7 @@ function saveSetting(key, val) {
 }
 
 /* ── OTP FLOW STATE ──────────────────────────────────────────── */
-let _pendingSignup = null;  // { username, gender, name, email, phone, pass }
+let _pendingSignup = null;  // { name, email, pass }
 let _otpPurpose    = null;  // 'signup' | 'verify'
 let _otpCountdown  = null;  // countdown setInterval ref
 
@@ -754,29 +754,21 @@ async function signInEmail() {
 }
 
 async function signUpEmail() {
-  const username = document.getElementById('suUsername')?.value.trim();
   const name     = document.getElementById('suName')?.value.trim();
   const email    = document.getElementById('suEmail')?.value.trim();
-  const phone    = document.getElementById('suPhone')?.value.trim();   // optional
   const pass     = document.getElementById('suPass')?.value;
   const passConf = document.getElementById('suPassConf')?.value;
 
-  // Validate required fields (same rules as before)
-  if (!username)            { toast('Please enter a username', 'error'); return; }
-  if (username.length < 3)  { toast('Username must be at least 3 characters', 'error'); return; }
-  if (!/^[a-zA-Z0-9_.-]+$/.test(username)) { toast('Username may only contain letters, numbers, _ . -', 'error'); return; }
+  // Validate required fields (Full Name, Email, Password, Confirm)
   if (!name)                { toast('Please enter your full name', 'error'); return; }
   if (!email)               { toast('Please enter your email address', 'error'); return; }
   if (!_validEmail(email))  { toast('Enter a valid email address', 'error'); return; }
   if (!pass)                { toast('Please choose a password', 'error'); return; }
   if (pass.length < 8)      { toast('Password must be at least 8 characters', 'error'); return; }
   if (pass !== passConf)    { toast('Passwords do not match', 'error'); return; }
-  if (phone && !/^[+\d\s\-().]{7,20}$/.test(phone)) {
-    toast('Enter a valid phone number', 'error'); return;
-  }
 
   // Store form data and send OTP — account is created only after OTP verified
-  _pendingSignup = { username, name, email, phone, pass };
+  _pendingSignup = { name, email, pass };
   _otpPurpose = 'signup';
   await _sendSignupOTP(email);
 }
@@ -911,12 +903,11 @@ async function submitOTPCode() {
 
 async function _createAccountAfterOTP() {
   if (!_pendingSignup) { toast('Signup data lost — please start again.', 'error'); return; }
-  const { username, name, email, phone, pass } = _pendingSignup;
+  const { name, email, pass } = _pendingSignup;
   if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
   try {
     const cred = await _fb.createUserWithEmailAndPassword(_auth, email, pass);
     try { await _fb.updateProfile(cred.user, { displayName: name }); } catch(e) {}
-    try { localStorage.setItem('cm_profile_extra', JSON.stringify({ username, gender, phone: phone || null })); } catch(e) {}
     if (STATE.user) {
       STATE.user.emailVerified = true;
       STATE.user.name = name;

@@ -222,12 +222,9 @@
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or fill in below</span></div>
-      <div class="auth-field-row">
-        <div class="auth-field"><label>Username</label><input type="text" id="suUsername" placeholder="john_doe" maxlength="30"></div>
-        <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name"></div>
-      </div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
       <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Phone <span class="auth-field-opt">Optional</span></label><input type="tel" id="suPhone" placeholder="+1 555 000 0000"></div>
+      
       <div class="auth-field-row">
         <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 chars" oninput="updatePwStrength(this.value)"><div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div></div>
         <div class="auth-field"><label>Confirm</label><input type="password" id="suPassConf" placeholder="Repeat password"></div>

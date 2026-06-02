@@ -716,15 +716,10 @@
       <div class="auth-divider"><span>or fill in below</span></div>
 
       <!-- Row 1: Username + Full Name -->
-      <div class="auth-field-row">
-        <div class="auth-field">
-          <label>Username</label>
-          <input type="text" id="suUsername" placeholder="e.g. john_doe" autocomplete="username" maxlength="30">
-        </div>
-        <div class="auth-field">
-          <label>Full Name</label>
-          <input type="text" id="suName" placeholder="Your full name" autocomplete="name">
-        </div>
+      <!-- Full Name -->
+      <div class="auth-field">
+        <label>Full Name</label>
+        <input type="text" id="suName" placeholder="Your full name" autocomplete="name">
       </div>
 
       <!-- Row 3: Email -->
@@ -734,10 +729,7 @@
       </div>
 
       <!-- Row 4: Phone (optional) -->
-      <div class="auth-field">
-        <label>Phone Number <span class="auth-field-opt">Optional</span></label>
-        <input type="tel" id="suPhone" placeholder="+1 555 000 0000" autocomplete="tel">
-      </div>
+      
 
       <!-- Row 5: Passwords -->
       <div class="auth-field-row">
