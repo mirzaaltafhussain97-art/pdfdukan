@@ -23,6 +23,10 @@ const ScannerApp = (() => {
   function init() {
     cropEditor = new CropEditor('cropCanvas');
 
+    /* Warm up the AI corner-detection model in the background so the
+       first scan isn't slowed by the one-time model download. */
+    if (window.MLDetector) { window.MLDetector.load().catch(() => {}); }
+
     _bindUploadZone();
     _bindCropControls();
     _bindFilterControls();
@@ -188,8 +192,9 @@ const ScannerApp = (() => {
   /* ── CROP SCREEN ──────────────────────────────────────────── */
   function _startCropScreen(img) {
     showProcessing('Detecting document edges…');
-    setTimeout(() => {
-      cropEditor.setImage(img);
+    setTimeout(async () => {
+      try { await cropEditor.setImageAsync(img); }
+      catch (e) { cropEditor.setImage(img); }   // hard fallback
       hideProcessing();
       showScreen('crop');
     }, 100);

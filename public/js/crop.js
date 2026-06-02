@@ -55,6 +55,97 @@ function onOpenCvReady() {
 })();
 
 /* ═══════════════════════════════════════════════════════════════
+   ML DETECTOR — DocAligner (point-regression LCNet050) via ONNX Runtime
+   ─────────────────────────────────────────────────────────────────
+   Deep-learning corner detection, CamScanner-style. Runs 100% in the
+   browser (no upload). Model: 4.9MB, input [1,3,256,256] BGR /255,
+   outputs points[1,8] (normalised) + has_obj[1,1].
+   Falls back silently to the 4-method OpenCV pipeline on any failure.
+═══════════════════════════════════════════════════════════════ */
+const MLDetector = (() => {
+  const MODEL_URL  = 'models/docaligner.onnx';
+  const WASM_PATHS = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/';
+  const S = 256;                 // model input side
+
+  let _session = null, _loading = null, _failed = false;
+
+  async function load() {
+    if (_session) return _session;
+    if (_failed)  return null;
+    if (_loading) return _loading;
+    _loading = (async () => {
+      try {
+        if (typeof ort === 'undefined') { _failed = true; return null; }
+        ort.env.wasm.wasmPaths  = WASM_PATHS;
+        ort.env.wasm.numThreads = 1;       // single-thread → no worker dependency
+        _session = await ort.InferenceSession.create(MODEL_URL, { executionProviders: ['wasm'] });
+        console.log('✓ DocAligner ML model loaded');
+        return _session;
+      } catch (e) {
+        console.warn('ML model load failed, using OpenCV fallback:', e);
+        _failed = true;
+        return null;
+      }
+    })();
+    return _loading;
+  }
+
+  /* Returns ordered corners {tl,tr,br,bl} in ORIGINAL image pixels, or null. */
+  async function detect(img) {
+    const session = await load();
+    if (!session) return null;
+
+    const W = img.naturalWidth  || img.width;
+    const H = img.naturalHeight || img.height;
+    if (!W || !H) return null;
+
+    /* Resize whole image to 256×256 (matches DocAligner preprocess) */
+    const c = document.createElement('canvas');
+    c.width = S; c.height = S;
+    c.getContext('2d').drawImage(img, 0, 0, S, S);
+    const px = c.getContext('2d').getImageData(0, 0, S, S).data;
+
+    /* Build NCHW float32 tensor, BGR order, /255 */
+    const plane = S * S;
+    const f = new Float32Array(3 * plane);
+    for (let i = 0; i < plane; i++) {
+      f[i]             = px[i*4 + 2] / 255;  // B
+      f[plane + i]     = px[i*4 + 1] / 255;  // G
+      f[2*plane + i]   = px[i*4]     / 255;  // R
+    }
+
+    let out;
+    try {
+      const tensor = new ort.Tensor('float32', f, [1, 3, S, S]);
+      out = await session.run({ img: tensor });
+    } catch (e) { console.warn('ML inference failed:', e); return null; }
+
+    const pts    = out.points  && out.points.data;
+    const hasObj = out.has_obj && out.has_obj.data ? out.has_obj.data[0] : 0;
+    if (!pts || pts.length < 8 || hasObj <= 0.5) return null;
+
+    /* Map normalised coords → original pixels */
+    const raw = [];
+    for (let k = 0; k < 4; k++) raw.push({ x: pts[k*2] * W, y: pts[k*2+1] * H });
+
+    /* Reject degenerate quads (area < 5% of image) */
+    const area = Math.abs(
+      raw[0].x*(raw[1].y-raw[3].y) + raw[1].x*(raw[2].y-raw[0].y) +
+      raw[2].x*(raw[3].y-raw[1].y) + raw[3].x*(raw[0].y-raw[2].y)
+    ) / 2;
+    if (area < 0.05 * W * H) return null;
+
+    const o = ensureCornerOrder({ tl: raw[0], tr: raw[1], br: raw[2], bl: raw[3] });
+    return {
+      tl: { x: o.tl.x, y: o.tl.y }, tr: { x: o.tr.x, y: o.tr.y },
+      br: { x: o.br.x, y: o.br.y }, bl: { x: o.bl.x, y: o.bl.y },
+    };
+  }
+
+  return { load, detect };
+})();
+
+/* ═══════════════════════════════════════════════════════════════
    MASTER ENTRY — runs all 4 methods, returns highest-confidence result
 ═══════════════════════════════════════════════════════════════ */
 function detectDocumentCorners(img) {
@@ -126,6 +217,14 @@ function detectDocumentCorners(img) {
   console.log('⚠ All detection methods failed — using fallback corners');
   _showDetectionBadge(0);
   return getFallbackCorners(img);
+}
+
+function _showMLBadge() {
+  const badge = document.getElementById('detectionBadge');
+  if (!badge) return;
+  badge.textContent = '🤖 AI Detected';
+  badge.className = 'detect-badge good';
+  badge.style.display = 'inline-block';
 }
 
 function _showDetectionBadge(score) {
@@ -598,6 +697,27 @@ class CropEditor {
     this.img     = img;
     this.rotation = 0;
     this.corners = detectDocumentCorners(img);
+    this.draw();
+  }
+
+  /* Async variant: try the DocAligner ML model first (CamScanner-style),
+     fall back to the 4-method OpenCV pipeline if it is unavailable or
+     returns nothing. Updates the detection badge to reflect which ran. */
+  async setImageAsync(img) {
+    this.img      = img;
+    this.rotation = 0;
+
+    let mlCorners = null;
+    try {
+      mlCorners = window.MLDetector ? await window.MLDetector.detect(img) : null;
+    } catch (e) { mlCorners = null; }
+
+    if (mlCorners) {
+      this.corners = mlCorners;
+      _showMLBadge();
+    } else {
+      this.corners = detectDocumentCorners(img);   // shows its own badge
+    }
     this.draw();
   }
 
@@ -1172,6 +1292,7 @@ function _detectFromCanvas(canvas, W, H) {
 /* ── GLOBAL EXPORTS ───────────────────────────────────────── */
 window.CropEditor            = CropEditor;
 window.detectDocumentCorners = detectDocumentCorners;
+window.MLDetector            = MLDetector;
 window.getFallbackCorners    = getFallbackCorners;
 window.ensureCornerOrder     = ensureCornerOrder;
 window.onOpenCvReady         = onOpenCvReady;
