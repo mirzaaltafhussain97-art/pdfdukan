@@ -15,6 +15,8 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <link rel="stylesheet" href="../css/style.css">
 <style>
 /* ── Sheet Selector ── */
@@ -624,13 +626,47 @@ ${sectionsHtml}
       document.getElementById('progressLabel').style.display = 'none';
     }, 1200);
 
-    const win = window.open('', '_blank', 'width=900,height=700');
-    if (!win) {
-      toast('Pop-up blocked. Please allow pop-ups for this site and try again.');
-      return;
+    /* Build a real, downloadable PDF with jsPDF + autotable (no print pop-up,
+       so nothing gets blocked). The download triggers the Save-As rename popup. */
+    setProgress(92, 'Building PDF…');
+    try {
+      const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+      const fmt = ({ 'A4':'a4','Letter':'letter','A3':'a3','Legal':'legal' })[pageSize] || 'a4';
+      const doc = new JsPDFCtor({ orientation: (orient === 'landscape' ? 'landscape' : 'portrait'), unit: 'mm', format: fmt });
+      let first = true;
+      checked.forEach(function (sheetName) {
+        const ws = _wb.Sheets[sheetName];
+        if (!ws || !ws['!ref']) return;
+        const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: false });
+        if (!aoa.length) return;
+        const rows = aoa.slice(0, maxRowsVal);
+        const head = [ (rows[0] || []).map(function (c) { return String(c == null ? '' : c); }) ];
+        const body = rows.slice(1).map(function (r) { return r.map(function (c) { return String(c == null ? '' : c); }); });
+        if (!first) doc.addPage();
+        first = false;
+        doc.setFontSize(fontSize + 4); doc.setTextColor(27, 94, 32);
+        doc.text(String(sheetName), margin, margin + 4);
+        doc.autoTable({
+          head: head, body: body, startY: margin + 8,
+          margin: { left: margin, right: margin, top: margin, bottom: margin },
+          styles: { fontSize: fontSize, cellPadding: 1.5, overflow: 'linebreak' },
+          headStyles: headerStyle === 'bold-bg' ? { fillColor: [27,94,32], textColor: 255, fontStyle: 'bold' }
+                    : (headerStyle === 'none' ? { fillColor: false, textColor: 20, fontStyle: 'normal' }
+                                              : { fillColor: false, textColor: 20, fontStyle: 'bold' }),
+          alternateRowStyles: { fillColor: [245,245,245] },
+        });
+      });
+      const blob = doc.output('blob');
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = (_fileName || 'spreadsheet') + '.pdf';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 10000);
+      if (window.toast) toast('PDF created!', 'success');
+    } catch (err) {
+      console.error(err);
+      if (window.toast) toast('Could not build PDF: ' + err.message, 'error');
     }
-    win.document.write(printHtml);
-    win.document.close();
   }
 
   /* ── Clear ── */
