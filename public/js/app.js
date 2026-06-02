@@ -359,11 +359,13 @@ const CMFilename = (() => {
     var name = (_input.value || '').trim();
     if (!name) { _input.focus(); return; }
     _modal.classList.remove('open');
+    window.__cmfOpen = false; window.__cmfRecent = Date.now();
     if (_resolve) { _resolve(name + _ext); _resolve = null; }
   }
 
   function _dismiss() {
     _modal.classList.remove('open');
+    window.__cmfOpen = false; window.__cmfRecent = Date.now();
     if (_resolve) { _resolve(null); _resolve = null; }
   }
 
@@ -387,6 +389,7 @@ const CMFilename = (() => {
     _input.value = baseName;
     document.getElementById('cmFnameExt').textContent = extPart;
     _modal.classList.add('open');
+    window.__cmfOpen = true;
     setTimeout(function() { _input.focus(); _input.select(); }, 60);
     return new Promise(function(resolve) { _resolve = resolve; });
   }
@@ -394,6 +397,44 @@ const CMFilename = (() => {
   return { prompt: prompt };
 })();
 window.CMFilename = CMFilename;
+
+/* ── GLOBAL SAVE-AS ─────────────────────────────────────────────
+   Adds the "Save As / rename" popup to EVERY generated-file download
+   across all tools, in one place. Catches clicks on <a download> that
+   point to a blob:/data: URL, shows the filename popup, then downloads
+   with the chosen name. Tools that already call CMFilename are skipped
+   (via __cmfRecent) to avoid a double popup. */
+(function _globalSaveAs() {
+  /* Keep blob URLs alive while the rename popup is open (tools often
+     revokeObjectURL right after click, which would break the deferred
+     download). */
+  try {
+    var _origRevoke = URL.revokeObjectURL.bind(URL);
+    URL.revokeObjectURL = function (u) {
+      if (window.__cmfOpen) { setTimeout(function () { _origRevoke(u); }, 10000); }
+      else { _origRevoke(u); }
+    };
+  } catch (e) {}
+
+  document.addEventListener('click', function (e) {
+    var a = (e.target && e.target.closest) ? e.target.closest('a[download]') : null;
+    if (!a) return;
+    if (a.dataset && a.dataset.cmf === '1') return;                 // already renamed
+    var href = a.getAttribute('href') || '';
+    if (href.indexOf('blob:') !== 0 && href.indexOf('data:') !== 0) return; // only generated files
+    if (window.__cmfRecent && (Date.now() - window.__cmfRecent) < 4000) return; // tool already popped
+    if (!window.CMFilename) return;
+
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+    var fname = a.getAttribute('download') || 'download';
+    CMFilename.prompt(fname).then(function (name) {
+      if (!name) return;
+      var dl = document.createElement('a');
+      dl.href = href; dl.download = name; dl.dataset.cmf = '1';
+      document.body.appendChild(dl); dl.click(); document.body.removeChild(dl);
+    });
+  }, true);
+})();
 
 /* ── CSV TRANSACTION LOG ─────────────────────────────────────── */
 const CMLogs = (() => {
