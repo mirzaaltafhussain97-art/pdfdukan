@@ -160,13 +160,6 @@
   <div class="header-actions">
     <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
-    <div class="lang-selector" aria-label="Language selector">
-      <button class="lang-btn" aria-haspopup="true">
-        <svg class="lang-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span class="lang-flag-current">&#127482;&#127480;</span><span class="lang-label">EN</span>
-      </button>
-      <div class="lang-dropdown" role="menu"></div>
-    </div>
     <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
       <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
     </button>
@@ -210,7 +203,7 @@
     <p>Upload an Excel spreadsheet, choose which sheets to include, preview the data, and export to PDF. Works entirely in your browser — no server upload.</p>
   </div>
 
-  <div class="ad-slot"><p>Advertisement — Google AdSense</p></div>
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
   <!-- Upload -->
   <div class="tool-card">

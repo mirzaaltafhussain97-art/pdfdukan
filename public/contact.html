@@ -116,7 +116,7 @@
         <div class="ci-icon">📧</div>
         <div>
           <div class="ci-label">Email</div>
-          <div class="ci-val"><a href="mailto:mirzaaltafhussain97@gmail.com">mirzaaltafhussain97@gmail.com</a></div>
+          <div class="ci-val"><a href="#contact-form">Use the contact form below</a></div>
         </div>
       </div>
 
@@ -232,7 +232,7 @@ async function submitContact(e) {
     document.getElementById('contactForm').style.display = 'none';
     document.getElementById('successMsg').style.display  = 'block';
   } else {
-    toast('Could not send message. Please email us directly at mirzaaltafhussain97@gmail.com', 'error', 8000);
+    toast('Could not send message. Please try again in a moment.', 'error', 8000);
     btn.textContent = '📬 Send Message';
     btn.disabled = false;
   }
