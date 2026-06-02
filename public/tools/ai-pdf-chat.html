@@ -7,14 +7,14 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Free Barcode Generator — CODE128, EAN-13, UPC | PDFdukan</title>
-<meta name="description" content="Free online barcode generator. Create CODE128, EAN-13, UPC, CODE39 barcodes and download as SVG. No signup, runs in your browser.">
+<title>Chat with PDF — Ask Questions About Your PDF Free | PDFdukan</title>
+<meta name="description" content="Free AI Chat with PDF. Upload a PDF and ask any question about its content, powered by Gemini.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://pdfdukan.com/tools/barcode-generator.html">
+<link rel="canonical" href="https://pdfdukan.com/tools/ai-pdf-chat.html">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+<script src="../js/gemini-config.js"></script>
 
 <link rel="stylesheet" href="../css/style.css">
 <style>
@@ -103,7 +103,7 @@
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Merge PDF Files Online","description":"Combine multiple PDF files into one using PDFdukan free Merge PDF tool.","step":[{"@type":"HowToStep","name":"Upload PDF Files","text":"Click Add PDFs or drag your PDF files onto the upload area."},{"@type":"HowToStep","name":"Select Pages and Order","text":"Drag files to reorder them. Select specific pages from each file using the page checkboxes."},{"@type":"HowToStep","name":"Download Merged PDF","text":"Click Merge PDFs to combine all selected pages into one PDF and download."}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Barcode Generator","item":"https://pdfdukan.com/tools/barcode-generator.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Chat with PDF","item":"https://pdfdukan.com/tools/ai-pdf-chat.html"}]}</script>
 <!-- Google Analytics 4 (replace G-XXXXXXXXXX with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
@@ -113,7 +113,7 @@
   gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 </head>
-<body data-tool="barcode-generator">
+<body data-tool="ai-pdf-chat">
 <canvas id="particleCanvas"></canvas>
 
 <header class="header" role="banner">
@@ -232,53 +232,39 @@
 </div>
 
 <div class="tool-page">
-  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="../index.html" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Barcode Generator</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#455a64,#78909c)">&#128290;</div><h1>Barcode Generator</h1><p>Create barcodes for products, labels, and inventory. Download as SVG. Runs fully in your browser.</p></div>
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="../index.html" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Chat with PDF</span></nav>
+  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">&#128172;</div><h1>Chat with PDF</h1><p>Upload a PDF and ask questions about it. Get answers based on the document.</p></div>
+  <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin:0 0 18px;font-size:14px;color:#5d4037">&#9888;&#65039; <strong>Privacy Note:</strong> Your uploaded PDF is sent to Google's Gemini API for processing. Google's <a href="https://ai.google.dev/terms" target="_blank" rel="noopener">terms</a> apply. Do not upload sensitive or confidential documents.</div>
   <div class="tool-card">
-    <h3><span class="tc-icon">&#9999;&#65039;</span> Enter Value</h3>
-    <input id="bcText" type="text" placeholder="e.g. 123456789012" style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card-2);color:var(--text);font-size:14px">
-    <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:14px;align-items:center">
-      <label style="font-size:13px;color:var(--text-3)">Format:
-        <select id="bcFormat" style="padding:8px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)">
-          <option value="CODE128" selected>CODE128</option><option value="EAN13">EAN-13</option><option value="UPC">UPC</option><option value="CODE39">CODE39</option><option value="ITF14">ITF-14</option>
-        </select>
-      </label>
-      <button class="btn btn-primary" id="bcGenBtn">Generate Barcode</button>
+    <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
+    <p id="fileInfo" style="font-size:13px;color:var(--text-3);margin-top:10px"></p>
+    <div id="askArea" style="display:none;margin-top:14px">
+      <input id="q" type="text" placeholder="Ask a question about the PDF…" style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card-2);color:var(--text);font-size:14px">
+      <button class="btn btn-primary" id="goBtn" style="margin-top:12px">Ask</button>
     </div>
   </div>
-  <div class="tool-card" id="bcResultCard" style="display:none;text-align:center">
-    <h3><span class="tc-icon">&#9989;</span> Your Barcode</h3>
-    <div style="background:#fff;display:inline-block;padding:16px;border-radius:var(--radius);margin:10px auto"><svg id="bcSvg"></svg></div>
-    <div><button class="btn btn-primary" id="bcDownloadBtn">&#11015;&#65039; Download SVG</button></div>
+  <div class="tool-card" id="outCard" style="display:none">
+    <h3><span class="tc-icon">&#9989;</span> Answer</h3>
+    <div id="out" style="white-space:pre-wrap;line-height:1.7;font-size:14px;color:var(--text)"></div>
   </div>
   <section class="seo-section" style="margin-top:24px">
-    <h2>About This Tool</h2><p>This free barcode generator creates standard barcodes for retail, inventory, and shipping. Choose a format like CODE128 or EAN-13, enter your value, and download a crisp SVG. It all happens in your browser, so your data stays private.</p>
-    <h2>How to Use</h2><ol><li>Enter the value or number.</li><li>Choose the barcode format.</li><li>Click <strong>Generate Barcode</strong>.</li><li>Download the SVG file.</li></ol>
+    <h2>About This Tool</h2><p>Have a long PDF and a quick question? This free tool lets you upload a PDF and ask anything about it. The AI reads the document and answers based on its content &mdash; handy for contracts, manuals, and reports.</p>
+    <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Type your question.</li><li>Click <strong>Ask</strong>.</li><li>Read the answer.</li></ol>
     <h2>Frequently Asked Questions</h2>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Which format should I pick?</button><div class="faq-a">CODE128 works for most text and numbers. Use EAN-13 or UPC for retail products.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes, completely free with no signup.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Why did my barcode fail?</button><div class="faq-a">Some formats need an exact number of digits (EAN-13 needs 12-13). Check your value.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my data uploaded?</button><div class="faq-a">No. The barcode is made in your browser only.</div></div>
-    <h2>Related Tools</h2><p><a href="qr-generator.html" style="color:var(--primary)">QR Code Generator</a> &middot; <a href="img-to-pdf.html" style="color:var(--primary)">Image to PDF</a></p>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my PDF private?</button><div class="faq-a">Your PDF and question go to Google''s Gemini API. Do not upload sensitive documents.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I ask many questions?</button><div class="faq-a">Yes, ask as many as you like (within the rate limit).</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are answers always right?</button><div class="faq-a">The AI answers from the document, but always double-check important details.</div></div>
+    <h2>Related Tools</h2><p><a href="ai-pdf-summarizer.html" style="color:var(--primary)">PDF Summarizer</a> &middot; <a href="pdf-text-extractor.html" style="color:var(--primary)">Text Extractor</a></p>
   </section>
 </div>
 <script>
 (function(){
-  function gen(){
-    var val=document.getElementById('bcText').value.trim();
-    if(!val){ if(window.toast) toast('Please enter a value','error'); return; }
-    var fmt=document.getElementById('bcFormat').value;
-    try{ JsBarcode('#bcSvg',val,{format:fmt,displayValue:true,width:2,height:80,margin:10}); document.getElementById('bcResultCard').style.display=''; if(window.trackToolUse) trackToolUse('barcode-generator'); }
-    catch(e){ if(window.toast) toast('Invalid value for this format','error'); }
-  }
-  function dl(){
-    var svg=document.getElementById('bcSvg');
-    if(!svg||!svg.innerHTML){ if(window.toast) toast('Generate a barcode first','error'); return; }
-    var data=new XMLSerializer().serializeToString(svg);
-    var blob=new Blob([data],{type:'image/svg+xml'}); var url=URL.createObjectURL(blob);
-    var a=document.createElement('a'); a.href=url; a.download='barcode.svg'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000);
-  }
-  document.addEventListener('DOMContentLoaded',function(){ document.getElementById('bcGenBtn').onclick=gen; document.getElementById('bcDownloadBtn').onclick=dl; });
+  var b64=null;
+  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } document.getElementById('fileInfo').textContent='Loaded: '+f.name; fileToBase64(f).then(function(d){ b64=d; document.getElementById('askArea').style.display=''; }); }
+  async function go(){ if(!b64){ if(window.toast) toast('Upload a PDF first','error'); return; } var q=document.getElementById('q').value.trim(); if(!q){ if(window.toast) toast('Type a question','error'); return; } var btn=document.getElementById('goBtn'); if(window.setButtonLoading) setButtonLoading(btn,true); try{ var res=await callGemini('Based only on the attached document, answer this question clearly. If the document does not contain the answer, say so.\n\nQuestion: '+q,{fileData:b64,mimeType:'application/pdf',maxTokens:1500}); document.getElementById('out').textContent=res||'No response.'; document.getElementById('outCard').style.display=''; if(window.trackToolUse) trackToolUse('ai-pdf-chat'); }catch(e){ if(window.toast) toast(e.message||'Failed','error'); } finally{ if(window.setButtonLoading) setButtonLoading(btn,false,'Ask'); } }
+  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('goBtn').onclick=go; document.getElementById('q').addEventListener('keydown',function(e){if(e.key==='Enter')go();}); });
 })();
 </script>
 <nav class="mobile-nav"><div class="mob-nav-items">
@@ -286,7 +272,6 @@
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
   <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
 </div></nav>
-
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>

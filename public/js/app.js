@@ -1469,6 +1469,18 @@ const TOOL_PAGES = {
   'searchable-pdf':     'tools/searchable-pdf.html',
   'qr-generator':       'tools/qr-generator.html',
   'barcode-generator':  'tools/barcode-generator.html',
+  /* ── AI tools (Part 6, Gemini) ── */
+  'ai-pdf-summarizer':     'tools/ai-pdf-summarizer.html',
+  'ai-pdf-chat':           'tools/ai-pdf-chat.html',
+  'notes-generator':       'tools/notes-generator.html',
+  'mcq-generator':         'tools/mcq-generator.html',
+  'essay-writer':          'tools/essay-writer.html',
+  'assignment-writer':     'tools/assignment-writer.html',
+  'ai-humanizer':          'tools/ai-humanizer.html',
+  'ai-detector':           'tools/ai-detector.html',
+  'research-summarizer':   'tools/research-summarizer.html',
+  'resume-analyzer':       'tools/resume-analyzer.html',
+  'cover-letter-generator':'tools/cover-letter-generator.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');

@@ -7,6 +7,8 @@ out/
 build/
 
 # ── secrets / env (NEVER commit these) ──
+secret-config.php
+**/secret-config.php
 .env
 .env.local
 .env.development.local
