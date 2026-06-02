@@ -1787,6 +1787,39 @@ if (!window.setLanguage) {
 }
 
 /* ── COOKIE CONSENT BANNER ────────────────────────────────────── */
+/* ── XSS SANITIZER (Part 0.1) ──────────────────────────────────
+   Escape user-typed text before inserting it into the DOM. */
+function sanitizeInput(str) {
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(String(str == null ? '' : str)));
+  return div.innerHTML;
+}
+window.sanitizeInput = sanitizeInput;
+
+/* ── GLOBAL ERROR HANDLER (Part 0.6) ───────────────────────────
+   Injects a hidden #global-error banner on every page and shows a
+   friendly message on unhandled promise rejections / runtime errors. */
+function _initGlobalError() {
+  let box = document.getElementById('global-error');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'global-error';
+    box.setAttribute('role', 'alert');
+    box.style.cssText = 'display:none;color:#b91c1c;padding:10px 14px;background:#fff5f5;' +
+      'border:1px solid #fecaca;border-radius:8px;margin:10px;position:fixed;top:70px;' +
+      'left:50%;transform:translateX(-50%);z-index:99998;max-width:90%;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.12)';
+    document.body.appendChild(box);
+  }
+  const show = () => {
+    box.textContent = 'Something went wrong. Please refresh the page and try again.';
+    box.style.display = 'block';
+    clearTimeout(box._t);
+    box._t = setTimeout(() => { box.style.display = 'none'; }, 6000);
+  };
+  window.addEventListener('unhandledrejection', e => { console.error('Unhandled rejection:', e.reason); show(); });
+  window.addEventListener('error', e => { console.error('Runtime error:', e.message); });
+}
+
 function _initCookieBanner() {
   if (localStorage.getItem('cm_cookie_consent') === '1') return;
   const p = window.location.pathname;
@@ -1853,5 +1886,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   _initCookieBanner();
+  _initGlobalError();
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });

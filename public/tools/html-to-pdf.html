@@ -2,6 +2,10 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://docs.opencv.org">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>HTML to PDF — Convert HTML &amp; CSS to PDF | CamMaster by PDFdukan</title>
 <meta name="description" content="Convert raw HTML and CSS into a downloadable PDF. Paste your code, preview in real-time, and print to PDF. Free, 100% client-side, no server upload.">
@@ -409,6 +413,10 @@ function updatePreview() {
   const doc   = frame.contentDocument || frame.contentWindow.document;
   doc.open();
   doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://docs.opencv.org">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <style>body{font-family:Arial,sans-serif;line-height:1.5;padding:16px;}</style>
     <meta name="theme-color" content="#ff6333">
 </head><body>${html}</body></html>`);
@@ -432,6 +440,10 @@ function printToPDF() {
 <html>
 <head>
   <meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://docs.opencv.org">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
   <title>HTML to PDF</title>
   <style>
     @page {
