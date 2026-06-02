@@ -55,6 +55,41 @@ if (!$GEMINI_API_KEY) {
   exit;
 }
 
+/* ---- Helper: call a Gemini model, return [httpCode, decodedBody] ---- */
+function _gcall($model, $key, $payload) {
+  $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($model) . ':generateContent?key=' . urlencode($key);
+  $ch = curl_init($url);
+  curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_POSTFIELDS     => json_encode($payload),
+    CURLOPT_TIMEOUT        => 60,
+  ]);
+  $resp = curl_exec($ch);
+  $code = ($resp === false) ? 0 : curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  $err  = curl_error($ch);
+  curl_close($ch);
+  return [$code, ($resp === false ? null : json_decode($resp, true)), $err, $resp];
+}
+
+/* Models tried in order (newest first) — handles deprecated model names */
+$MODELS = array_values(array_unique([$model, 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-flash-latest', 'gemini-pro']));
+
+/* ---- TEST MODE: /api/gemini.php?test=1 — diagnoses key/model via browser ---- */
+if (isset($_GET['test'])) {
+  $p = ['contents' => [['parts' => [['text' => 'Say hello in 3 words.']]]]];
+  $out = [];
+  foreach ($MODELS as $mm) {
+    list($code, $body, $err) = _gcall($mm, $GEMINI_API_KEY, $p);
+    $msg = isset($body['error']['message']) ? $body['error']['message'] : ($err ?: 'OK');
+    $out[$mm] = ['http' => $code, 'result' => ($code === 200 ? 'WORKS' : $msg)];
+    if ($code === 200) break;
+  }
+  echo json_encode(['key_length' => strlen($GEMINI_API_KEY), 'models' => $out], JSON_PRETTY_PRINT);
+  exit;
+}
+
 /* ---- Only POST allowed ---- */
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   http_response_code(405);
@@ -87,34 +122,21 @@ $payload = [
   'generationConfig' => ['maxOutputTokens' => $maxTokens, 'temperature' => 0.7],
 ];
 
-/* ---- Call Gemini ---- */
-$url = 'https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($model) . ':generateContent?key=' . urlencode($GEMINI_API_KEY);
-$ch = curl_init($url);
-curl_setopt_array($ch, [
-  CURLOPT_RETURNTRANSFER => true,
-  CURLOPT_POST           => true,
-  CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
-  CURLOPT_POSTFIELDS     => json_encode($payload),
-  CURLOPT_TIMEOUT        => 60,
-]);
-$resp = curl_exec($ch);
-$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-if ($resp === false) {
-  http_response_code(502);
-  echo json_encode(['error' => 'Upstream request failed: ' . curl_error($ch)]);
-  curl_close($ch);
-  exit;
-}
-curl_close($ch);
-
-if ($code < 200 || $code >= 300) {
-  http_response_code($code);
-  echo json_encode(['error' => 'Gemini API error', 'detail' => json_decode($resp, true)]);
-  exit;
+/* ---- Call Gemini, with automatic model fallback ---- */
+$data = null; $code = 0; $lastMsg = '';
+foreach ($MODELS as $mm) {
+  list($code, $body, $err) = _gcall($mm, $GEMINI_API_KEY, $payload);
+  if ($code === 200) { $data = $body; break; }
+  $lastMsg = isset($body['error']['message']) ? $body['error']['message'] : ($err ?: ('HTTP ' . $code));
+  /* If it's a key/permission/quota problem, stop trying other models */
+  if (in_array($code, [400, 401, 403, 429])) { break; }
 }
 
-/* ---- Extract the text and return a clean response ---- */
-$data = json_decode($resp, true);
+if ($data === null) {
+  http_response_code($code ?: 502);
+  echo json_encode(['error' => $lastMsg ?: 'Gemini API error']);
+  exit;
+}
 $text = '';
 if (isset($data['candidates'][0]['content']['parts'])) {
   foreach ($data['candidates'][0]['content']['parts'] as $p) {
