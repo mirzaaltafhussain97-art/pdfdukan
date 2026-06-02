@@ -295,7 +295,7 @@
       <div class="nav-dropdown legal" role="menu">
         <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
         <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
-        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
         <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
         <div class="nd-divider"></div>
         <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
@@ -369,7 +369,7 @@
         % Find Discount
       </button>
       <button class="mode-tab" data-mode="tax" onclick="DiscountCalc.switchMode(this)" role="tab" aria-selected="false">
-        🧾 Add Tax / GST
+        🧾 Add Tax / VAT / GST
       </button>
     </div>
 
@@ -411,7 +411,7 @@
       <button class="dc-calc-btn" onclick="DiscountCalc.calculate()">% Find Discount %</button>
     </div>
 
-    <!-- Mode 3: Tax / GST -->
+    <!-- Mode 3: Tax / VAT / GST -->
     <div id="panelTax" style="display:none" role="tabpanel">
       <div class="dc-group">
         <label>Pre-Tax Price</label>
@@ -421,7 +421,7 @@
         </div>
       </div>
       <div class="dc-group">
-        <label>Tax / GST Rate</label>
+        <label>Tax / VAT / GST Rate</label>
         <div class="dc-input-row">
           <input type="number" id="t_taxRate" placeholder="e.g. 18" min="0" max="200" step="0.01" autocomplete="off">
           <div class="dc-suffix">%</div>
@@ -460,7 +460,7 @@
       </div>
       <div class="feature-card">
         <div class="fc-icon">🧾</div>
-        <div class="fc-title">Add Tax / GST</div>
+        <div class="fc-title">Add Tax / VAT / GST</div>
         <div class="fc-desc">Calculate tax amounts and the total price including GST, VAT, or any custom percentage rate.</div>
       </div>
     </div>
