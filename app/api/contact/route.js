@@ -161,7 +161,19 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Message is too long (max 5000 characters).' }, { status: 400 });
     }
 
-    const resend        = new Resend(process.env.RESEND_API_KEY);
+    // If the email service isn't configured on this host (e.g. RESEND_API_KEY
+    // not set in the deployment env), don't throw a 500 — return 503 so the
+    // client falls back to Formspree and the message still gets delivered.
+    const apiKey = (process.env.RESEND_API_KEY ?? '').trim();
+    if (!apiKey) {
+      console.warn('[contact] RESEND_API_KEY not configured — signalling client fallback (503).');
+      return NextResponse.json(
+        { success: false, message: 'Primary email service unavailable — using fallback.' },
+        { status: 503 }
+      );
+    }
+
+    const resend        = new Resend(apiKey);
     const fromEmail     = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
     const fromName      = process.env.RESEND_FROM_NAME  ?? 'PDFdukan';
     const from          = `${fromName} <${fromEmail}>`;
@@ -173,13 +185,23 @@ export async function POST(request) {
     const deliverTo    = (isTestSender && redirectTo) ? redirectTo : ownerEmail;
 
     // 1. Send message to site owner
-    const { error: ownerErr } = await resend.emails.send({
-      from,
-      to:      [deliverTo],
-      replyTo: email,
-      subject: `[CamMaster Contact] ${subject} — from ${name}`,
-      html:    buildOwnerEmail(name, email, subject, message),
-    });
+    let ownerErr = null;
+    try {
+      ({ error: ownerErr } = await resend.emails.send({
+        from,
+        to:      [deliverTo],
+        replyTo: email,
+        subject: `[CamMaster Contact] ${subject} — from ${name}`,
+        html:    buildOwnerEmail(name, email, subject, message),
+      }));
+    } catch (sendErr) {
+      // SDK/network threw — fall back on the client (503) rather than dead-end.
+      console.error('[contact] Resend send threw:', sendErr);
+      return NextResponse.json(
+        { success: false, message: 'Primary email service error — using fallback.' },
+        { status: 503 }
+      );
+    }
 
     if (ownerErr) {
       console.error('[contact] Resend owner email error:', ownerErr);
