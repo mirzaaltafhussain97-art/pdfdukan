@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0c241a"/>
+      <stop offset="0.55" stop-color="#0f3d29"/>
+      <stop offset="1" stop-color="#155c3c"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fd1ff"/>
+      <stop offset="1" stop-color="#d8f3ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="400" fill="url(#bg)"/>
+
+  <!-- Title -->
+  <text x="400" y="52" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="28" fill="#ffffff">Convert JPG to PDF</text>
+
+  <!-- ===== LEFT: stack of JPG photos ===== -->
+  <!-- back photo -->
+  <g transform="translate(96, 150) rotate(-9)">
+    <rect x="5" y="6" width="150" height="118" rx="10" fill="#000000" opacity="0.25"/>
+    <rect width="150" height="118" rx="10" fill="#ffffff"/>
+    <rect x="8" y="8" width="134" height="78" rx="5" fill="#bfe6cf"/>
+  </g>
+  <!-- middle photo -->
+  <g transform="translate(80, 138) rotate(-3)">
+    <rect x="5" y="6" width="150" height="118" rx="10" fill="#000000" opacity="0.3"/>
+    <rect width="150" height="118" rx="10" fill="#ffffff"/>
+    <rect x="8" y="8" width="134" height="78" rx="5" fill="#9fdcff"/>
+  </g>
+  <!-- front photo (full landscape illustration) -->
+  <g transform="translate(70, 132)">
+    <rect x="6" y="7" width="156" height="124" rx="11" fill="#000000" opacity="0.35"/>
+    <rect width="156" height="124" rx="11" fill="#ffffff"/>
+    <!-- photo viewport -->
+    <clipPath id="ph"><rect x="9" y="9" width="138" height="82" rx="6"/></clipPath>
+    <g clip-path="url(#ph)">
+      <rect x="9" y="9" width="138" height="82" fill="url(#sky)"/>
+      <circle cx="120" cy="34" r="13" fill="#ffd166"/>
+      <polygon points="9,91 55,45 92,91" fill="#3aa76d"/>
+      <polygon points="62,91 104,52 147,91" fill="#2e8c59"/>
+    </g>
+    <!-- caption bar -->
+    <text x="78" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="15" fill="#1f6b45">JPG</text>
+  </g>
+  <text x="150" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#a9d8c0">Images</text>
+
+  <!-- ===== CENTER: convert arrow ===== -->
+  <g transform="translate(330, 188)">
+    <circle cx="60" cy="12" r="44" fill="#ff6333" opacity="0.16"/>
+    <line x1="8" y1="12" x2="96" y2="12" stroke="#ff6333" stroke-width="6" stroke-linecap="round"/>
+    <polygon points="92,-6 116,12 92,30" fill="#ff6333"/>
+  </g>
+  <text x="390" y="248" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="13" fill="#ff8a5c">in browser</text>
+
+  <!-- ===== RIGHT: clean PDF document ===== -->
+  <g transform="translate(560, 120)">
+    <rect x="6" y="8" width="172" height="170" rx="12" fill="#000000" opacity="0.35"/>
+    <rect width="172" height="170" rx="12" fill="#f7f7fa"/>
+    <!-- folded corner -->
+    <polygon points="128,0 172,0 172,44" fill="#dfe0e6"/>
+    <polygon points="128,0 128,44 172,44" fill="#eceef3"/>
+    <!-- header -->
+    <rect y="50" width="172" height="38" fill="#ff6333"/>
+    <text x="86" y="77" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="22" fill="#ffffff">PDF</text>
+    <!-- thumbnail of merged image -->
+    <rect x="18" y="100" width="60" height="44" rx="4" fill="#9fdcff"/>
+    <circle cx="66" cy="114" r="6" fill="#ffd166"/>
+    <polygon points="18,144 40,124 60,144" fill="#3aa76d"/>
+    <!-- text lines -->
+    <rect x="90" y="104" width="66" height="7" rx="3" fill="#d7d9e0"/>
+    <rect x="90" y="118" width="52" height="7" rx="3" fill="#e2e3ea"/>
+    <rect x="90" y="132" width="66" height="7" rx="3" fill="#d7d9e0"/>
+    <rect x="18" y="156" width="138" height="7" rx="3" fill="#e2e3ea"/>
+  </g>
+  <text x="646" y="306" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#a9d8c0">One clean PDF</text>
+
+  <!-- Subtitle -->
+  <text x="400" y="372" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#7fb89c">Combine photos into a single PDF — free, no upload, no app</text>
+</svg>
