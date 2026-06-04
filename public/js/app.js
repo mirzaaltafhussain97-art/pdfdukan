@@ -1353,24 +1353,10 @@ function _gatePrompt() {
   }
 }
 function _initFeatureGate() {
-  // Block file selection via any <input type="file"> when logged out.
-  document.addEventListener('change', function (e) {
-    const t = e.target;
-    if (t && t.tagName === 'INPUT' && t.type === 'file' && !isLoggedIn()) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      try { t.value = ''; } catch (_) {}
-      _gatePrompt();
-    }
-  }, true);
-  // Block file drag-and-drop when logged out.
-  document.addEventListener('drop', function (e) {
-    if (!isLoggedIn() && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
-      e.stopImmediatePropagation();
-      e.preventDefault();
-      _gatePrompt();
-    }
-  }, true);
+  // Signup is OPTIONAL. Every tool works without an account — we no longer
+  // block file selection or drag-and-drop for logged-out visitors. Sign-in
+  // stays available (for Drive storage / sync) but is never required.
+  // (Intentionally a no-op; kept so existing init call sites don't break.)
 }
 
 /* ── RECENT DOCS ─────────────────────────────────────────────── */

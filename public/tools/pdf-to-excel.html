@@ -11,6 +11,24 @@
 <meta name="description" content="Extract text and table data from PDF files and export to Excel XLSX format. Free, 100% client-side, no upload required. Powered by PDF.js and SheetJS.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-to-excel.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-to-excel.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-to-excel.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/pdf-to-excel.html">
+<meta property="og:title" content="PDF to Excel — Extract Tables from PDF to XLSX | CamMaster">
+<meta property="og:description" content="Extract text and table data from PDF files and export to Excel XLSX format. Free, 100% client-side, no upload required. Powered by PDF.js and SheetJS.">
+<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="PDF to Excel — Extract Tables from PDF to XLSX | CamMaster">
+<meta name="twitter:description" content="Extract text and table data from PDF files and export to Excel XLSX format. Free, 100% client-side, no upload required. Powered by PDF.js and SheetJS.">
+<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -173,7 +191,8 @@
       <div class="option-group">
         <label>Delimiter (column separator)</label>
         <select id="delimSel">
-          <option value="space" selected>Whitespace (auto)</option>
+          <option value="auto" selected>Smart columns (layout-aware) ★</option>
+          <option value="space">Whitespace (2+ spaces)</option>
           <option value="tab">Tab</option>
           <option value="pipe">Pipe |</option>
           <option value="comma">Comma ,</option>
@@ -270,6 +289,82 @@ const PX = (() => {
     });
   }
 
+  /* ══════════════════════════════════════════════════════
+     SMART COLUMN EXTRACTION (layout-aware)
+     Uses each glyph's real X/Y position to rebuild the table
+     grid instead of guessing columns from whitespace. This is
+     what makes financial statements, invoices and reports come
+     out as proper rows × columns in Excel.
+       1. Group glyphs into lines by Y proximity (tolerant).
+       2. Split each line into cells on real positional gaps.
+       3. Cluster every cell's start-X into global column anchors.
+       4. Drop each cell into its nearest column → clean grid.
+  ══════════════════════════════════════════════════════ */
+  function extractSmartRows(content) {
+    const items = content.items
+      .filter(it => it.str && it.str.trim() !== '')
+      .map(it => {
+        const tx = it.transform;
+        const fs = Math.sqrt(tx[0]*tx[0] + tx[1]*tx[1]) || 11;
+        return { str: it.str, x: tx[4], y: tx[5], w: it.width || it.str.length*fs*0.5, fs };
+      });
+    if (!items.length) return [];
+
+    // 1) lines by Y (top-to-bottom), tolerance = half the font height
+    items.sort((a, b) => (b.y - a.y) || (a.x - b.x));
+    const lines = [];
+    let cur = [], curY = null;
+    for (const it of items) {
+      if (curY === null || Math.abs(it.y - curY) <= Math.max(it.fs * 0.5, 2.5)) {
+        cur.push(it); if (curY === null) curY = it.y;
+      } else { lines.push(cur); cur = [it]; curY = it.y; }
+    }
+    if (cur.length) lines.push(cur);
+    lines.forEach(l => l.sort((a, b) => a.x - b.x));
+
+    // 2) split each line into cells on genuine gaps
+    const lineCells = lines.map(line => {
+      const cells = []; let c = []; let prevEnd = null;
+      for (const it of line) {
+        const wideBlank = /^\s*$/.test(it.str) && it.w > it.fs * 1.2;
+        if (wideBlank) { if (c.length) { cells.push(c); c = []; } prevEnd = null; continue; }
+        if (c.length && prevEnd !== null && (it.x - prevEnd) > Math.max(it.fs * 1.1, 11)) {
+          cells.push(c); c = [];
+        }
+        c.push(it); prevEnd = it.x + it.w;
+      }
+      if (c.length) cells.push(c);
+      return cells.map(cc => ({ x: cc[0].x, text: cc.map(t => t.str).join('').replace(/\s+/g, ' ').trim() }))
+                  .filter(cc => cc.text !== '');
+    }).filter(cells => cells.length);
+
+    // 3) global column anchors (cluster start-X within tolerance)
+    const tol = 22;
+    const xs = [];
+    lineCells.forEach(cells => cells.forEach(cc => xs.push(cc.x)));
+    xs.sort((a, b) => a - b);
+    const anchors = [];
+    for (const x of xs) {
+      const last = anchors[anchors.length - 1];
+      if (last == null || x - last > tol) anchors.push(x);
+    }
+
+    // 4) map cells to nearest anchor → grid
+    const rows = lineCells.map(cells => {
+      const row = anchors.map(() => '');
+      for (const cc of cells) {
+        let bi = 0, bd = Infinity;
+        anchors.forEach((ax, ai) => { const d = Math.abs(ax - cc.x); if (d < bd) { bd = d; bi = ai; } });
+        row[bi] = row[bi] ? row[bi] + ' ' + cc.text : cc.text;
+      }
+      return row;
+    });
+
+    // 5) drop columns that are empty across every row
+    const keep = anchors.map((_, ci) => rows.some(r => (r[ci] || '').trim() !== ''));
+    return rows.map(r => r.filter((_, ci) => keep[ci]));
+  }
+
   async function loadAndPreview(file) {
     _pdfFile  = file;
     _pageData = [];
@@ -283,18 +378,23 @@ const PX = (() => {
     for (let i = 1; i <= numP; i++) {
       const page    = await doc.getPage(i);
       const content = await page.getTextContent();
-      // Group items by Y coordinate to reconstruct lines
-      const byY = {};
-      content.items.forEach(item => {
-        const y = Math.round(item.transform[5]);
-        if (!byY[y]) byY[y] = [];
-        byY[y].push({ x: item.transform[4], str: item.str });
-      });
-      const lines = Object.keys(byY).sort((a,b) => b-a)
-        .map(y => byY[y].sort((a,b)=>a.x-b.x).map(i=>i.str).join(' '));
-      const text = lines.join('\n');
-      let rows   = splitToRows(text, delim);
-      if (trimEmpty) rows = rows.filter(r => r.some(c => c.trim()));
+      let rows;
+      if (delim === 'auto') {
+        // Layout-aware: rebuild columns from real glyph positions
+        rows = extractSmartRows(content);
+      } else {
+        // Legacy delimiter mode — reconstruct lines then split
+        const byY = {};
+        content.items.forEach(item => {
+          const y = Math.round(item.transform[5]);
+          if (!byY[y]) byY[y] = [];
+          byY[y].push({ x: item.transform[4], str: item.str });
+        });
+        const lines = Object.keys(byY).sort((a,b) => b-a)
+          .map(y => byY[y].sort((a,b)=>a.x-b.x).map(i=>i.str).join(' '));
+        rows = splitToRows(lines.join('\n'), delim);
+      }
+      if (trimEmpty) rows = rows.filter(r => r.some(c => (c||'').trim()));
       _pageData.push(rows);
     }
 
