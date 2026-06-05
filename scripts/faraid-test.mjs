@@ -17,7 +17,7 @@ function computeFaraid(I){
   let fBro=I.fBro||0,fSis=I.fSis||0,pBro=I.pBro||0,pSis=I.pSis||0,ut=I.uSib||0;
   if (maleDesc || father || gfather){ fBro=0;fSis=0;pBro=0;pSis=0; }
   if (fBro>0){ pBro=0;pSis=0; }
-  if (fSis>=2 && fBro===0){ pBro=0;pSis=0; }
+  if (fSis>=2 && fBro===0 && pBro===0){ pSis=0; }  // 2 full sisters block paternal SISTERS (not the paternal brother, who takes residue)
   if (anyDesc || father || gfather) ut=0;   // uterine blocked by any descendant + father + grandfather
 
   const rows=[]; let fixedSum=0;
@@ -134,3 +134,18 @@ run('Mother + 2 daughters (RADD, no spouse)', {E:1,gender:'male',mother:true,dau
 run('Husband + mother + 1 full sister', {E:1,gender:'female',husband:true,mother:true,fSis:1}, 'husband 1/2, mother 1/3, full sister 1/2 -> AUL 6/8,? actually sum=1/2+1/3+1/2=4/3 aul');
 run('Wife + 2 uterine siblings + 1 full brother', {E:1,gender:'male',wives:1,uSib:2,fBro:1}, 'wife 1/4, uterine 1/3, full brother residue 5/12');
 run('Father + mother + 1 son (no spouse)', {E:1,gender:'female',father:true,mother:true,sons:1}, 'father 1/6, mother 1/6, son residue 2/3');
+
+console.log('\n--- DEEP AUDIT CASES ---');
+run('Wife + 2 daughters (RADD)', {E:1,gender:'male',wives:1,daughters:2}, 'wife 1/8=12.5, daughters 7/8 (43.75 each)');
+run('Husband ALONE (no other heir)', {E:1,gender:'female',husband:true}, 'husband 1/2, rest 1/2 unassigned (no radd to spouse)');
+run('2 sons only', {E:1,gender:'male',sons:2}, 'each son 1/2');
+run('Father + mother + 2 full brothers (blocked, mother still 1/6)', {E:1,gender:'male',father:true,mother:true,fBro:2}, 'mother 1/6, father 5/6, brothers BLOCKED (nothing)');
+run('1 daughter + 1 son-daughter (granddaughter completes 2/3 then RADD)', {E:1,gender:'male',daughters:1,gdaughters:1}, 'daughter 3/4, son-daughter 1/4 (after radd)');
+run('2 daughters + 1 son-daughter (granddaughter BLOCKED)', {E:1,gender:'male',daughters:2,gdaughters:1}, 'daughters get all (each 1/2), granddaughter 0');
+run('1 daughter + 1 son-son (grandson)', {E:1,gender:'male',daughters:1,gsons:1}, 'daughter 1/2, grandson 1/2');
+run('Son-son + son-daughter only', {E:1,gender:'male',gsons:1,gdaughters:1}, 'grandson 2/3, granddaughter 1/3');
+run('Wife + mother + 2 uterine (RADD)', {E:1,gender:'male',wives:1,mother:true,uSib:2}, 'wife 1/4, mother 1/4, uterine 1/2 (after radd)');
+run('Husband + 2 full sisters (AUL)', {E:1,gender:'female',husband:true,fSis:2}, 'husband 1/2 + sisters 2/3 = 7/6 aul -> husband 3/7, sisters 4/7');
+run('Mother + father (no spouse, no kids) — mother 1/3 of WHOLE', {E:1,gender:'male',mother:true,father:true}, 'mother 1/3, father 2/3 (NOT umariyyatayn, no spouse)');
+run('BUG CHECK: 2 full sisters + 1 paternal brother', {E:1,gender:'male',fSis:2,pBro:1}, 'full sisters 2/3 (each 1/3), paternal brother residue 1/3');
+run('BUG CHECK: 2 full sisters + 1 paternal sister (no pat brother)', {E:1,gender:'male',fSis:2,pSis:1}, 'full sisters get all via radd; paternal sister BLOCKED (0)');

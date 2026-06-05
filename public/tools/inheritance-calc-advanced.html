@@ -247,7 +247,7 @@ const IC = (() => {
     let fBro=I.fBro,fSis=I.fSis,pBro=I.pBro,pSis=I.pSis,ut=I.uSib;
     if(maleDesc||father||gfather){ fBro=0;fSis=0;pBro=0;pSis=0; }
     if(fBro>0){ pBro=0;pSis=0; }
-    if(fSis>=2 && fBro===0){ pBro=0;pSis=0; }
+    if(fSis>=2 && fBro===0 && pBro===0){ pSis=0; }  /* 2 full sisters block paternal SISTERS only; paternal brother still takes residue */
     if(anyDesc||father||gfather) ut=0;
 
     const rows=[]; let fixedSum=0;
