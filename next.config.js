@@ -20,10 +20,49 @@ const nextConfig = {
     ];
   },
 
-  // API routes must never be cached by the browser.
+  // Security + caching headers.
   async headers() {
+    // CSP shipped in Report-Only mode first: it does NOT block anything, it only
+    // reports violations. The site has pervasive inline scripts/handlers, WASM
+    // (OpenCV/Tesseract), blob workers, Google Drive + GA + (future) AdSense, so a
+    // strict enforced CSP would risk breaking tools on a site that deploys straight
+    // to live. Verify the browser console shows no real violations, then rename the
+    // key to 'Content-Security-Policy' to enforce.
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.googleadservices.com https://adservice.google.com https://*.google.com https://cdnjs.cloudflare.com https://apis.google.com https://accounts.google.com blob:",
+      "worker-src 'self' blob:",
+      "child-src 'self' blob:",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
+      "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:",
+      "img-src 'self' data: blob: https:",
+      "media-src 'self' blob: data:",
+      "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googleapis.com https://*.google.com https://pagead2.googlesyndication.com blob: data:",
+      "frame-src 'self' https://accounts.google.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests",
+    ].join('; ');
+
+    const securityHeaders = [
+      { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      { key: 'Permissions-Policy', value: 'camera=(self), microphone=(), geolocation=(), interest-cohort=()' },
+      { key: 'X-DNS-Prefetch-Control', value: 'on' },
+      { key: 'Content-Security-Policy-Report-Only', value: csp },
+    ];
+
     return [
       {
+        // Apply security headers site-wide.
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+      {
+        // API routes must never be cached by the browser.
         source: '/api/:path*',
         headers: [
           { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
