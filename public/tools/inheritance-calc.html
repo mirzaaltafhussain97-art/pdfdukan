@@ -1,14 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Islamic Inheritance Calculator — Warasat Intikal | CamMaster by PDFdukan</title>
-<meta name="description" content="Free Islamic Inheritance Calculator (Warasat Intikal). Calculate estate distribution according to Sharia law — mother's share, brothers and sisters portions, 2:1 ratio distribution.">
+<title>Islamic Inheritance Calculator (Warasat) — Free | PDFdukan</title>
+<meta name="description" content="Free Islamic inheritance calculator (Warasat / faraid). Works out each heir's individual share — wife, husband, mother, father, sons, daughters — by Quranic rules, with percentages. No signup.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/tools/inheritance-calc.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/inheritance-calc.html">
@@ -17,8 +14,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/inheritance-calc.html">
-<meta property="og:title" content="Islamic Inheritance Calculator — Warasat Intikal | CamMaster by PDFdukan">
-<meta property="og:description" content="Free Islamic Inheritance Calculator (Warasat Intikal). Calculate estate distribution according to Sharia law — mother's share, brothers and sisters portions, 2:1 ratio distribution.">
+<meta property="og:title" content="Islamic Inheritance Calculator (Warasat) — Free | PDFdukan">
+<meta property="og:description" content="Work out each heir's individual share — wife, husband, mother, father, sons, daughters — by Quranic rules, with percentages. Free, private, no signup.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,385 +23,40 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Islamic Inheritance Calculator — Warasat Intikal | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Free Islamic Inheritance Calculator (Warasat Intikal). Calculate estate distribution according to Sharia law — mother's share, brothers and sisters portions, 2:1 ratio distribution.">
+<meta name="twitter:title" content="Islamic Inheritance Calculator (Warasat) — Free">
+<meta name="twitter:description" content="Each heir's individual Quranic share with percentages — free and private in your browser.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css?v=20260605b">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Islamic Inheritance Calculator","item":"https://pdfdukan.com/tools/inheritance-calc.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What share does a wife get?","acceptedAnswer":{"@type":"Answer","text":"A wife receives 1/8 of the estate if the deceased left children, and 1/4 if there are none. Multiple wives share that portion equally."}},{"@type":"Question","name":"What share does a mother get?","acceptedAnswer":{"@type":"Answer","text":"A mother receives 1/6 if the deceased left children or two or more siblings, otherwise 1/3."}},{"@type":"Question","name":"How are children's shares divided?","acceptedAnswer":{"@type":"Answer","text":"When sons are present, the remaining estate is split among sons and daughters in a 2:1 ratio — each son receives twice a daughter's share. Daughters with no son receive 1/2 (one) or 2/3 (two or more)."}},{"@type":"Question","name":"Is this calculator a substitute for a scholar?","acceptedAnswer":{"@type":"Answer","text":"No. It estimates common cases. Complex estates (siblings, grandparents, special adjustments) should be confirmed by a qualified Mufti or inheritance lawyer."}}]}</script>
 <style>
-/* ══════════════════════════════════════════════
-   ISLAMIC INHERITANCE CALCULATOR STYLES
-══════════════════════════════════════════════ */
-
-/* Islamic geometric header decoration */
-.ic-hero {
-  background: linear-gradient(135deg, #1a4a1a 0%, #2d7a2d 40%, #1b5e20 100%);
-  border-radius: var(--radius-lg);
-  padding: 36px 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 24px;
-}
-.ic-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image:
-    repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 20px),
-    repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 20px);
-  pointer-events: none;
-}
-.ic-hero-arabic {
-  font-size: 26px;
-  color: rgba(255,255,255,.90);
-  letter-spacing: 3px;
-  margin-bottom: 8px;
-  font-weight: 800;
-  direction: rtl;
-}
-.ic-hero-title {
-  font-size: 24px;
-  font-weight: 900;
-  color: #fff;
-  margin-bottom: 6px;
-}
-.ic-hero-sub {
-  font-size: 14px;
-  color: rgba(255,255,255,.75);
-  max-width: 500px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-.ic-crescent { font-size: 48px; margin-bottom: 12px; display: block; }
-.ic-bismillah {
-  font-size: 34px; color: rgba(255,255,255,.95); direction: rtl;
-  font-family: 'Traditional Arabic','Simplified Arabic','Noto Naskh Arabic',serif;
-  letter-spacing: 2px; margin-bottom: 6px; line-height: 1.4;
-  text-shadow: 0 2px 10px rgba(0,0,0,.35);
-}
-.ic-net-estate {
-  background: linear-gradient(135deg, rgba(45,122,45,.1), rgba(76,175,80,.08));
-  border: 1.5px solid rgba(76,175,80,.3);
-  border-radius: var(--radius);
-  padding: 16px 20px; text-align: center; margin-top: 16px;
-}
-.ic-ne-label {
-  font-size: 11px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: .8px; color: var(--text-3); margin-bottom: 4px;
-}
-.ic-ne-amount { font-size: 28px; font-weight: 900; color: #4caf50; }
-.ic-ne-detail { font-size: 12px; color: var(--text-3); margin-top: 4px; }
-.ic-total-input {
-  width: 100%; padding: 16px 20px; border: 2px solid var(--border);
-  border-radius: var(--radius); background: var(--card-2); color: var(--text);
-  font-size: 24px; font-weight: 800; transition: border-color var(--t);
-  text-align: center;
-}
-.ic-total-input:focus { outline: none; border-color: var(--primary); }
-.ic-total-input::placeholder { font-size: 16px; font-weight: 600; }
-
-/* Formula cards */
-.ic-formula-grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-@media(max-width:600px){ .ic-formula-grid { grid-template-columns:1fr; } }
-.ic-formula-card {
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
-  text-align: center;
-}
-.ic-formula-card .ifc-icon { font-size: 24px; margin-bottom: 6px; }
-.ic-formula-card .ifc-label { font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 4px; }
-.ic-formula-card .ifc-formula { font-size: 13px; color: var(--primary); font-weight: 700; }
-
-/* Input grid */
-.ic-input-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-@media(max-width:500px){ .ic-input-grid { grid-template-columns:1fr; } }
-.ic-field { display: flex; flex-direction: column; gap: 6px; }
-.ic-field label { font-size: 13px; font-weight: 700; color: var(--text-2); }
-.ic-field .ic-input-wrap { display: flex; gap: 8px; align-items: center; }
-.ic-field input[type=number],
-.ic-field select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card-2);
-  color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
-  transition: border-color var(--t);
-}
-.ic-field input[type=number]:focus,
-.ic-field select:focus {
-  outline: none;
-  border-color: var(--primary);
-}
-.ic-field .ic-hint { font-size: 11px; color: var(--text-3); }
-.ic-currency-select {
-  min-width: 80px;
-  padding: 10px 8px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--card-2);
-  color: var(--text);
-  font-size: 14px;
-  font-weight: 700;
-}
-.ic-full { grid-column: 1 / -1; }
-
-/* Calc button */
-.ic-calc-btn {
-  width: 100%;
-  padding: 16px;
-  border-radius: var(--radius);
-  border: none;
-  background: linear-gradient(135deg, #2d7a2d, #43a047);
-  color: #fff;
-  font-size: 17px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: var(--t);
-  letter-spacing: .3px;
-  margin-top: 8px;
-}
-.ic-calc-btn:hover { opacity: .88; transform: translateY(-1px); }
-.ic-reset-btn {
-  width: 100%;
-  padding: 10px;
-  border-radius: var(--radius);
-  border: 2px solid var(--border);
-  background: transparent;
-  color: var(--text-2);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: var(--t);
-  margin-top: 6px;
-}
-.ic-reset-btn:hover { border-color: var(--primary); color: var(--text); }
-
-/* ── Results Section ── */
-.ic-results-wrap { animation: fadeInUp .35s var(--ease) both; }
-@keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-
-.ic-result-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-.ic-result-header .ic-rh-icon { font-size: 22px; }
-.ic-result-header h3 { font-size: 16px; font-weight: 800; }
-.ic-result-header .ic-total-badge {
-  margin-left: auto;
-  background: var(--primary-soft);
-  color: var(--primary);
-  padding: 4px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-/* Recipient cards */
-.ic-recipient-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
-  gap: 14px;
-  margin-bottom: 20px;
-}
-.ic-recipient-card {
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 16px;
-  position: relative;
-  overflow: hidden;
-}
-.ic-recipient-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
-.ic-recipient-card.mother::before { background: linear-gradient(90deg, #7b1fa2, #ab47bc); }
-.ic-recipient-card.brother::before { background: linear-gradient(90deg, #1565c0, #42a5f5); }
-.ic-recipient-card.sister::before  { background: linear-gradient(90deg, #c62828, #ef5350); }
-
-.ic-rc-icon { font-size: 28px; margin-bottom: 8px; }
-.ic-rc-who  { font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
-.ic-rc-amount {
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--text);
-  margin-bottom: 2px;
-}
-.ic-rc-pct { font-size: 13px; color: var(--text-3); font-weight: 600; }
-.ic-rc-sub { font-size: 12px; color: var(--text-3); margin-top: 6px; border-top: 1px solid var(--border); padding-top: 6px; }
-
-/* Breakdown table */
-.ic-breakdown-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-.ic-breakdown-table th {
-  background: var(--card-2);
-  padding: 8px 12px;
-  text-align: left;
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--text-3);
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  border-bottom: 1px solid var(--border);
-}
-.ic-breakdown-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text-2);
-}
-.ic-breakdown-table tr:last-child td { border-bottom: none; }
-.ic-breakdown-table .td-name { font-weight: 700; color: var(--text); }
-.ic-breakdown-table .td-amount { font-weight: 700; color: var(--primary); font-size: 14px; }
-.ic-breakdown-table .td-pct { color: var(--text-3); }
-.ic-breakdown-table tr.total-row td {
-  background: var(--primary-soft);
-  font-weight: 800;
-  color: var(--text);
-  border-top: 2px solid var(--primary);
-}
-
-/* Pie chart */
-.ic-pie-wrap {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding: 16px 0;
-}
-.ic-pie-canvas { flex-shrink: 0; }
-.ic-pie-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.ic-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-2);
-}
-.ic-legend-dot {
-  width: 12px; height: 12px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
-/* Sharia reference */
-.ic-sharia-ref {
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-left: 3px solid #2d7a2d;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 14px 16px;
-  font-size: 13px;
-  color: var(--text-2);
-  line-height: 1.7;
-}
-.ic-sharia-ref strong { color: var(--text); }
-.ic-quran-ref {
-  display: inline-block;
-  background: rgba(45,122,45,.18);
-  color: #4caf50;
-  border-radius: var(--radius-pill);
-  padding: 2px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  margin-left: 6px;
-}
-
-/* Dynamic person rows */
-.ic-persons-section { margin-top: 20px; }
-.ic-persons-group { margin-bottom: 16px; }
-.ic-persons-group-header {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 13px; font-weight: 800; color: var(--text-2);
-  text-transform: uppercase; letter-spacing: .5px;
-  margin-bottom: 10px; padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
-}
-.ic-person-row {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px; padding: 10px 12px;
-  background: var(--card-2); border: 1px solid var(--border);
-  border-radius: var(--radius); transition: border-color .15s;
-}
-.ic-person-row:hover { border-color: #555; }
-.ic-person-row .ic-pr-num {
-  min-width: 30px; height: 30px; display: flex; align-items: center;
-  justify-content: center; border-radius: 50%; font-size: 12px;
-  font-weight: 800; color: #fff; flex-shrink: 0;
-}
-.ic-pr-num.mother-bg { background: #7b1fa2; }
-.ic-pr-num.brother-bg { background: #1565c0; }
-.ic-pr-num.sister-bg { background: #c62828; }
-.ic-person-row .ic-pr-name-input {
-  flex: 1; min-width: 0; padding: 8px 10px;
-  border: 1px solid var(--border); border-radius: 6px;
-  background: var(--bg); color: var(--text);
-  font-size: 14px; font-weight: 600; transition: border-color .15s;
-}
-.ic-person-row .ic-pr-name-input:focus {
-  outline: none; border-color: var(--primary);
-}
-.ic-person-row .ic-pr-share {
-  min-width: 155px; padding: 8px 12px;
-  background: rgba(79,142,247,.08); border: 1px solid rgba(79,142,247,.2);
-  border-radius: 6px; text-align: right;
-  font-size: 14px; font-weight: 800; color: var(--primary);
-}
-.ic-pr-share-label {
-  font-size: 9px; color: var(--text-3); text-transform: uppercase;
-  letter-spacing: .4px; display: block; margin-bottom: 2px;
-}
-@media(max-width:500px){
-  .ic-person-row { flex-wrap: wrap; }
-  .ic-person-row .ic-pr-share { min-width: 100%; }
-}
-
-/* Error state */
-.ic-error {
-  background: rgba(239,68,68,.1);
-  border: 1px solid rgba(239,68,68,.3);
-  border-radius: var(--radius);
-  padding: 12px 16px;
-  font-size: 13px;
-  color: #ef4444;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.ic-wrap{max-width:760px;margin:0 auto;padding:24px 20px 0}
+.ic-hero{background:linear-gradient(135deg,#1b5e20,#2e7d32 55%,#66bb6a);border-radius:var(--radius-xl);padding:26px 22px;text-align:center;color:#fff;margin-bottom:18px}
+.ic-bismillah{font-size:20px;margin-bottom:8px;opacity:.95}
+.ic-hero h1{font-size:24px;font-weight:800;margin:0 0 6px;color:#fff}
+.ic-hero p{font-size:14px;color:rgba(255,255,255,.9);margin:0}
+.ic-field{margin-bottom:14px}
+.ic-field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:var(--text-2)}
+.ic-field input,.ic-field select{width:100%;padding:11px 12px;font-size:15px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--text);box-sizing:border-box}
+.ic-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ic-hint{font-size:11px;color:var(--text-3);margin-top:4px}
+.ic-btn{width:100%;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;margin-top:6px}
+.ic-btn:hover{opacity:.9}
+.ic-res-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.ic-res-row:last-child{border:none}
+.ic-res-who{font-size:14px;font-weight:600;color:var(--text)}
+.ic-res-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+.ic-res-amt{font-size:14px;font-weight:700;color:var(--primary);text-align:right;white-space:nowrap}
+.ic-res-pct{font-size:11px;color:var(--text-3);text-align:right}
+.ic-total{display:flex;justify-content:space-between;padding:12px 0 2px;font-weight:800;color:var(--text);border-top:2px solid var(--primary);margin-top:4px}
+.ic-disclaimer{background:var(--card-2);border-left:4px solid var(--warning);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:12.5px;line-height:1.6;color:var(--text-2);margin:14px 0}
+.ic-err{background:rgba(239,68,68,.12);border:1px solid var(--error);color:var(--error);padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-top:12px}
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"' + String.fromCodePoint(0x262A, 0xFE0F) + ' Islamic Inheritance Distribution Report","item":"https://pdfdukan.com/tools/inheritance-calc.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
+<!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -419,328 +71,171 @@
 <header class="header" role="banner">
   <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
-      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
-      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lbg)"/>
       <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
-      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
       <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
       <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
       <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
-      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
-      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
-      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
-      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
-      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
-      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
-      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
     </svg>
     <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
   </a>
   <nav class="nav-links" aria-label="Site navigation">
     <a href="../index.html" class="nav-item">Home</a>
-    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
-      Tools <span class="nav-chevron">&#9662;</span>
-      <div class="nav-dropdown mega" role="menu">
-        <div class="nd-col">
-          <span class="nd-section-head">&#128196; PDF Converters</span>
-          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
-          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
-          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
-          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
-          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div></div></a>
-          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div></div></a>
-          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div></div></a>
-          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div></div></a>
-        </div>
-        <div class="nd-col">
-          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
-          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; annotate</div></div></a>
-          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
-          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
-          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
-          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
-          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div></div></a>
-          <div class="nd-divider"></div>
-          <span class="nd-section-head">&#128295; Calculators</span>
-          <a href="../tools/inheritance-calc.html" class="nd-link"><span class="nd-link-icon">&#9775;</span><div class="nd-link-body"><div class="nd-link-name">Inheritance Calc</div><div class="nd-link-desc">Warasat Intikal Islamic</div></div></a>
-          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
-          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
-          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calculator</div></div></a>
-        </div>
-      </div>
-    </div>
+    <a href="../tools.html" class="nav-item">Tools</a>
     <a href="../blog/index.html" class="nav-item">Blog</a>
-    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
-      Legal <span class="nav-chevron">&#9662;</span>
-      <div class="nav-dropdown legal" role="menu">
-        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
-        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
-        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
-        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
-      </div>
-    </div>
   </nav>
-  <div class="header-actions">
-    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+  <div class="header-actions" style="margin-left:auto">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
-    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
-      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
-    </button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn"><span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span></button>
   </div>
 </header>
 
-<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
-  <a href="../index.html"              class="mnd-link">Home</a>
-  <div class="mnd-section">PDF Tools</div>
-  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
-  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
-  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
-  <div class="mnd-section">Calculators</div>
-  <a href="../tools/inheritance-calc.html" class="mnd-link">&#9775; Islamic Inheritance</a>
-  <a href="../tools/age-calc.html"     class="mnd-link">Age Calculator</a>
-  <a href="../tools/bmi-calc.html"     class="mnd-link">BMI Calculator</a>
-  <a href="../tools/discount-calc.html" class="mnd-link">Discount Calculator</a>
-  <div class="mnd-section">More</div>
-  <a href="../blog/index.html" class="mnd-link">Blog</a>
-  <a href="../about.html"      class="mnd-link">About</a>
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <a href="../index.html" class="mnd-link">🏠 Home</a>
+  <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
+  <a href="../blog/index.html" class="mnd-link">📝 Blog</a>
+  <a href="../scanner.html" class="mnd-link">📷 Scanner</a>
 </div>
 
-<div class="tool-page">
-  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
-    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
-    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
-    <span>Islamic Inheritance Calculator</span>
+<div class="ic-wrap">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:12px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Islamic Inheritance Calculator</span>
   </nav>
 
-  <!-- Hero -->
   <div class="ic-hero">
-    <div class="ic-bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
-    <span class="ic-crescent">☪️</span>
-    <div class="ic-hero-arabic">وَارَثَت اِنتِقَال — حِسَاب المِيرَاث الإِسلَامِي</div>
-    <div class="ic-hero-title">Islamic Inheritance Calculator</div>
-    <div class="ic-hero-sub">Warasat Intikal — Calculate estate distribution according to Islamic Sharia law. Precise mathematical allocation based on Quran & Sunnah principles.</div>
+    <div class="ic-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <h1>☪️ Islamic Inheritance Calculator</h1>
+    <p>Warasat / faraid — each heir's individual share by Quranic rules (An-Nisa 4:11–12).</p>
   </div>
 
-  <!-- Sharia Law Reference -->
   <div class="tool-card">
-    <div class="ic-sharia-ref">
-      <strong>Quranic Basis:</strong> "Allah commands you regarding your children: for the male a share equal to that of two females."
-      <span class="ic-quran-ref">Surah An-Nisa 4:11</span>
-      <br><br>
-      This calculator applies the standard hierarchical Sharia distribution: <strong>Mother receives 1/8 (12.5%)</strong> of the total estate first. The remaining balance is then distributed among children in a <strong>2:1 ratio</strong> (each brother receives double a sister's portion).
-    </div>
-  </div>
+    <h3><span class="tc-icon">📋</span> Enter Estate &amp; Heirs</h3>
 
-  <!-- Formula Reference -->
-  <div class="tool-card">
-    <h3><span class="tc-icon">📐</span> Distribution Formula</h3>
-    <div class="ic-formula-grid">
-      <div class="ic-formula-card">
-        <div class="ifc-icon">👩</div>
-        <div class="ifc-label">Mother Pool</div>
-        <div class="ifc-formula">Total × 1/8 ÷ # Mothers</div>
+    <div class="ic-row">
+      <div class="ic-field">
+        <label for="icCurrency">Currency</label>
+        <select id="icCurrency">
+          <option value="PKR">PKR ₨</option><option value="USD">USD $</option>
+          <option value="GBP">GBP £</option><option value="EUR">EUR €</option>
+          <option value="SAR">SAR ﷼</option><option value="AED">AED د.إ</option>
+          <option value="INR">INR ₹</option><option value="BDT">BDT ৳</option>
+        </select>
       </div>
-      <div class="ic-formula-card">
-        <div class="ifc-icon">👦</div>
-        <div class="ifc-label">Each Brother</div>
-        <div class="ifc-formula">2 × Base Share Unit</div>
-      </div>
-      <div class="ic-formula-card">
-        <div class="ifc-icon">👧</div>
-        <div class="ifc-label">Each Sister</div>
-        <div class="ifc-formula">1 × Base Share Unit</div>
+      <div class="ic-field">
+        <label for="icTotal">Total Estate Value</label>
+        <input type="number" id="icTotal" min="0" step="any" placeholder="e.g. 3500000" value="3500000">
       </div>
     </div>
+
+    <div class="ic-field">
+      <label for="icDeductions">Deductions — funeral, debts &amp; wasiyyah (optional)</label>
+      <input type="number" id="icDeductions" min="0" step="any" placeholder="e.g. 0" value="0">
+      <div class="ic-hint">Subtracted first. Wasiyyah (bequest) may be up to 1/3 of the estate.</div>
+    </div>
+
+    <div class="ic-row">
+      <div class="ic-field">
+        <label for="icGender">Deceased is</label>
+        <select id="icGender" onchange="IC.toggleSpouse()">
+          <option value="male">Male (husband died)</option>
+          <option value="female">Female (wife died)</option>
+        </select>
+      </div>
+      <div class="ic-field" id="icWivesField">
+        <label for="icWives">Number of Wives</label>
+        <input type="number" id="icWives" min="0" max="4" step="1" value="1">
+      </div>
+      <div class="ic-field" id="icHusbandField" style="display:none">
+        <label for="icHusband">Husband alive?</label>
+        <select id="icHusband"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="ic-row">
+      <div class="ic-field">
+        <label for="icMother">Mother alive?</label>
+        <select id="icMother"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+      <div class="ic-field">
+        <label for="icFather">Father alive?</label>
+        <select id="icFather"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="ic-row">
+      <div class="ic-field">
+        <label for="icSons">Number of Sons</label>
+        <input type="number" id="icSons" min="0" step="1" value="5">
+      </div>
+      <div class="ic-field">
+        <label for="icDaughters">Number of Daughters</label>
+        <input type="number" id="icDaughters" min="0" step="1" value="3">
+      </div>
+    </div>
+
+    <button class="ic-btn" onclick="IC.calculate()">☪️ Calculate Shares</button>
+    <div id="icError" style="display:none"></div>
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <!-- Input Matrix -->
-  <div class="tool-card">
-    <h3><span class="tc-icon">📋</span> Estate Input Matrix</h3>
-    <p style="font-size:13px;color:var(--text-3);margin-bottom:18px">Enter the total estate value and the number of surviving heirs. All fields are required except currency (defaults to PKR).</p>
-    <div class="ic-input-grid">
-      <!-- Gross Estate Amount (large prominent input) -->
-      <div class="ic-field ic-full">
-        <label for="icTotal">💰 Gross Value of Inheritance Estate / Property</label>
-        <div class="ic-input-wrap" style="gap:10px">
-          <select class="ic-currency-select" id="icCurrency" style="min-width:90px">
-            <option value="PKR">PKR ₨</option>
-            <option value="USD">USD $</option>
-            <option value="GBP">GBP £</option>
-            <option value="EUR">EUR €</option>
-            <option value="SAR">SAR ﷼</option>
-            <option value="AED">AED د.إ</option>
-            <option value="INR">INR ₹</option>
-            <option value="BDT">BDT ৳</option>
-          </select>
-          <input type="number" id="icTotal" class="ic-total-input" placeholder="e.g. 10,000,000" min="0" step="any"
-            oninput="IC.liveCalc()" aria-label="Total estate value">
-        </div>
-        <div class="ic-hint">Enter the total monetary value of all assets (property, cash, gold, investments) left by the deceased.</div>
-      </div>
-
-      <!-- Expense Deductions -->
-      <div class="ic-field ic-full">
-        <label for="icDeductions">📝 Deductions — Funeral Expenses, Debts &amp; Wasiyyah (Bequests)</label>
-        <div class="ic-input-wrap">
-          <input type="number" id="icDeductions" placeholder="e.g. 200,000" min="0" step="any"
-            style="flex:1" oninput="IC.liveCalc()" aria-label="Total deductions">
-        </div>
-        <div class="ic-hint">Optional — Subtract funeral costs (Tajheez-o-Takfeen), outstanding debts, and any wasiyyah bequests (max 1/3 of estate) before inheritance distribution.</div>
-      </div>
-
-      <!-- Net Distributable Estate Display -->
-      <div class="ic-field ic-full">
-        <div id="icNetEstate" class="ic-net-estate" style="display:none">
-          <div class="ic-ne-label">Net Distributable Estate (After Deductions)</div>
-          <div class="ic-ne-amount" id="icNetAmount">—</div>
-          <div class="ic-ne-detail" id="icNetDetail"></div>
-        </div>
-      </div>
-      <!-- Mothers -->
-      <div class="ic-field">
-        <label for="icMothers">👩 Number of Surviving Mothers</label>
-        <input type="number" id="icMothers" placeholder="1" min="0" max="4" step="1" value="1"
-          oninput="IC.onCountChange()" aria-label="Number of mothers">
-        <div class="ic-hint">Typically 1. Includes biological mother of the deceased.</div>
-      </div>
-      <!-- Brothers -->
-      <div class="ic-field">
-        <label for="icBrothers">👦 Number of Surviving Brothers</label>
-        <input type="number" id="icBrothers" placeholder="0" min="0" max="50" step="1" value="0"
-          oninput="IC.onCountChange()" aria-label="Number of brothers">
-        <div class="ic-hint">Include all living male children of the deceased.</div>
-      </div>
-      <!-- Sisters -->
-      <div class="ic-field">
-        <label for="icSisters">👧 Number of Surviving Sisters</label>
-        <input type="number" id="icSisters" placeholder="0" min="0" max="50" step="1" value="0"
-          oninput="IC.onCountChange()" aria-label="Number of sisters">
-        <div class="ic-hint">Include all living female children of the deceased.</div>
-      </div>
-    </div>
-
-    <!-- Dynamic Individual Heir Rows -->
-    <div id="icPersonRows" class="ic-persons-section"></div>
-
-    <!-- Validation error display -->
-    <div id="icError" style="display:none;margin-top:12px"></div>
-
-    <button class="ic-calc-btn" onclick="IC.calculate()" style="margin-top:16px">
-      ☪️ Calculate Islamic Inheritance Distribution
-    </button>
-    <button class="ic-reset-btn" onclick="IC.reset()">↺ Reset All Fields</button>
+  <div class="tool-card" id="icResults" style="display:none">
+    <h3><span class="tc-icon">📊</span> Distribution — each heir's share</h3>
+    <div id="icResList"></div>
+    <div class="ic-disclaimer"><strong>Disclaimer:</strong> This is an estimate for common cases (spouse, parents, sons, daughters) and applies <em>Aul</em> proportional reduction when fixed shares exceed the estate. It does not cover every case (siblings, grandparents, grandchildren, full Radd, and special situations). For a binding distribution, confirm with a qualified Islamic scholar (Mufti) or inheritance lawyer. Learn more in our <a href="../blog/islamic-inheritance-calculator-guide.html" style="color:var(--primary)">Islamic inheritance guide</a>.</div>
   </div>
 
-  <!-- Results section (hidden until calculated) -->
-  <div id="icResults" style="display:none">
-
-    <!-- Summary cards -->
-    <div class="tool-card">
-      <div class="ic-result-header">
-        <span class="ic-rh-icon">📊</span>
-        <h3>Inheritance Distribution Breakdown</h3>
-        <div class="ic-total-badge" id="icTotalBadge">Total: —</div>
-      </div>
-      <div class="ic-recipient-grid" id="icRecipientGrid"></div>
-    </div>
-
-    <!-- Pie Chart visualization -->
-    <div class="tool-card">
-      <h3><span class="tc-icon">🥧</span> Visual Distribution Chart</h3>
-      <div class="ic-pie-wrap">
-        <canvas id="icPieChart" width="200" height="200" class="ic-pie-canvas" aria-label="Inheritance distribution pie chart"></canvas>
-        <div class="ic-pie-legend" id="icPieLegend"></div>
-      </div>
-    </div>
-
-    <!-- Full breakdown table -->
-    <div class="tool-card">
-      <h3><span class="tc-icon">📋</span> Detailed Heir-by-Heir Breakdown</h3>
-      <div style="overflow-x:auto">
-        <table class="ic-breakdown-table" id="icBreakdownTable">
-          <thead>
-            <tr>
-              <th>Heir</th>
-              <th>Shares</th>
-              <th>Amount</th>
-              <th>% of Total</th>
-            </tr>
-          </thead>
-          <tbody id="icTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Print button -->
-    <div class="tool-card" style="text-align:center">
-      <button class="btn btn-primary" onclick="IC.printResults()" style="margin-right:12px">
-        🖨️ Print / Save as PDF
-      </button>
-      <button class="btn" style="border:1px solid var(--border);background:var(--card-2)" onclick="IC.copyResults()">
-        📋 Copy Summary
-      </button>
-    </div>
-  </div>
-
-  <!-- Educational FAQ -->
-  <div class="tool-card">
-    <h3><span class="tc-icon">📖</span> About Islamic Inheritance Law (Fara'id)</h3>
-    <div style="color:var(--text-2);font-size:13px;line-height:1.8">
-      <p style="margin-bottom:12px"><strong>Fara'id</strong> is the Islamic law of inheritance derived from the Quran (Surah An-Nisa, 4:11-12, 4:176), Hadith, and scholarly consensus (Ijma). It establishes fixed fractional shares for specific heirs.</p>
-      <p style="margin-bottom:12px"><strong>Mother's mandatory share (1/8):</strong> When the deceased leaves children, the mother receives one-eighth (1/8) of the total estate. This is a fixed Quranic obligation that must be deducted first before distributing the remainder.</p>
-      <p style="margin-bottom:12px"><strong>2:1 Male-to-Female ratio:</strong> Among children, sons (brothers) receive double the share of daughters (sisters). This reflects the greater financial obligation placed on men under Islamic law to support women financially.</p>
-      <p style="margin-bottom:12px"><strong>Note on scope:</strong> This calculator implements the core distribution between Mother, Brothers, and Sisters. A complete Fara'id calculation may also consider the Father (1/6), Husband/Wife, paternal grandparents, and other heirs. Consult a qualified Islamic scholar for complex estate situations.</p>
-      <p><strong>Disclaimer:</strong> This tool is for educational and reference purposes only. Always verify with a qualified Islamic scholar (Mufti) and legal estate attorney for official proceedings.</p>
-    </div>
-  </div>
+  <section class="seo-section" style="margin-top:8px">
+    <h2>Islamic Inheritance Calculator (Warasat / Fara'id)</h2>
+    <p>This free calculator works out each heir's <strong>individual</strong> share of an estate according to the fixed Quranic shares (faraid) in <a href="https://quran.com/4/11" target="_blank" rel="noopener">Surah An-Nisa 4:11–12</a>. It handles the most common family situations — a spouse, parents, sons and daughters — and shows the exact amount and percentage for each person. Everything runs in your browser, so your figures stay private.</p>
+    <h2>How shares are worked out</h2>
+    <ol>
+      <li>Funeral costs, debts and any valid bequest (up to 1/3) are deducted first.</li>
+      <li>Fixed-share heirs are paid: wife 1/8 (or 1/4 with no children); husband 1/4 (or 1/2); mother 1/6 (or 1/3); father 1/6 when there are children.</li>
+      <li>The remaining estate goes to the children — sons and daughters split it in a 2:1 ratio. With no son, daughters take 1/2 (one) or 2/3 (two or more).</li>
+    </ol>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What share does a wife get?</button><div class="faq-a">1/8 of the estate if the deceased left children, and 1/4 if there are none. Multiple wives share that portion equally.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What share does a mother get?</button><div class="faq-a">1/6 if the deceased left children or two or more siblings, otherwise 1/3.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">How are children's shares divided?</button><div class="faq-a">When sons are present, the residue is split among sons and daughters 2:1 — each son gets twice a daughter's share. Daughters with no son get 1/2 (one) or 2/3 (two+).</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it a substitute for a scholar?</button><div class="faq-a">No. It estimates common cases. Complex estates should be confirmed by a qualified Mufti or inheritance lawyer.</div></div>
+  </section>
 </div>
 
-<!-- Auth Modal -->
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><h2>About This Tool</h2><p>This free tool lets you calculate Islamic inheritance shares fairly and quickly. It is fast, easy, and works in your browser with no installation. There is no signup needed for basic use, and your privacy is respected.</p><h2>How to Use</h2><ol><li>Enter your values in the fields.</li><li>Adjust any options if needed.</li><li>See the instant result.</li><li>Use or share the answer.</li></ol><h2>Frequently Asked Questions</h2><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is this tool free?</button><div class="faq-a">Yes. It is completely free to use with no hidden charges.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Do I need to sign up?</button><div class="faq-a">No. You can use it right away without an account.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my data saved?</button><div class="faq-a">No. All calculations run in your browser. Nothing is stored or uploaded.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on mobile?</button><div class="faq-a">Yes. It works in any modern browser on phone, tablet, or computer.</div></div></section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is completely free to use with no hidden charges."}},{"@type":"Question","name":"Do I need to sign up?","acceptedAnswer":{"@type":"Answer","text":"No. You can use it right away without an account."}},{"@type":"Question","name":"Is my data saved?","acceptedAnswer":{"@type":"Answer","text":"No. All calculations run in your browser. Nothing is stored or uploaded."}},{"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"Yes. It works in any modern browser on phone, tablet, or computer."}}]}</script>
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
-    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
     <div class="auth-tabs">
       <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
       <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
       <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
     </div>
     <div id="panelSignUp" style="display:none">
-      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <h2 style="margin-bottom:6px">Create account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
-      <div class="auth-divider"><span>or fill in below</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
-      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
-      
-      <div class="auth-field-row">
-        <div class="auth-field">
-          <label>Password</label>
-          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
-          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
-        </div>
-        <div class="auth-field">
-          <label>Confirm Password</label>
-          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
-        </div>
-      </div>
-      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
       <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
     </div>
   </div>
@@ -750,570 +245,131 @@
 <script src="../js/app.js?v=20260605b"></script>
 <script src="../js/particles.js?v=20260605b"></script>
 <script>
-/* ══════════════════════════════════════════════
-   ISLAMIC INHERITANCE CALCULATOR ENGINE v2.0
-   Warasat Intikal — Dynamic Heir Row Generator
-   with per-person share display + named heir entries
-══════════════════════════════════════════════ */
+/* Islamic Inheritance Calculator engine — common-case faraid with Aul. */
 const IC = (() => {
+  const SYM = { PKR:'₨', USD:'$', GBP:'£', EUR:'€', SAR:'﷼', AED:'د.إ', INR:'₹', BDT:'৳' };
+  const $ = id => document.getElementById(id);
 
-  /* ── Currency symbols ── */
-  const CURRENCY_SYMBOLS = {
-    PKR: '₨', USD: '$', GBP: '£', EUR: '€',
-    SAR: '﷼', AED: 'د.إ', INR: '₹', BDT: '৳'
-  };
+  function fmt(n, cur){ return (SYM[cur] || cur+' ') + Number(n).toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+  function showErr(m){ const e=$('icError'); e.innerHTML='<div class="ic-err">⚠️ '+m+'</div>'; e.style.display='block'; }
+  function clearErr(){ const e=$('icError'); e.style.display='none'; e.innerHTML=''; }
 
-  /* ── Pie chart colors ── */
-  const PIE_COLORS = {
-    mother:   '#9c27b0',
-    brothers: '#1976d2',
-    sisters:  '#e53935',
-  };
-
-  /* ── Format number with commas ── */
-  function fmtRaw(n, currency) {
-    const sym = CURRENCY_SYMBOLS[currency] || currency + ' ';
-    return sym + n.toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function toggleSpouse(){
+    const male = $('icGender').value === 'male';
+    $('icWivesField').style.display    = male ? '' : 'none';
+    $('icHusbandField').style.display  = male ? 'none' : '';
   }
 
-  /* ── Show/clear error ── */
-  function showError(msg) {
-    const el = document.getElementById('icError');
-    el.innerHTML = '<div class="ic-error">' + String.fromCodePoint(0x26A0, 0xFE0F) + ' ' + msg + '</div>';
-    el.style.display = 'block';
-  }
-  function clearError() {
-    const el = document.getElementById('icError');
-    el.style.display = 'none'; el.innerHTML = '';
-  }
+  function calculate(){
+    clearErr();
+    const cur   = $('icCurrency').value;
+    const gross = parseFloat($('icTotal').value);
+    const ded   = parseFloat($('icDeductions').value) || 0;
+    const gender = $('icGender').value;
+    const wives  = Math.max(0, Math.min(4, parseInt($('icWives').value,10) || 0));
+    const husband = $('icHusband').value === 'yes';
+    const mother = $('icMother').value === 'yes';
+    const father = $('icFather').value === 'yes';
+    const sons   = Math.max(0, parseInt($('icSons').value,10) || 0);
+    const daughters = Math.max(0, parseInt($('icDaughters').value,10) || 0);
 
-  /* ── Read count inputs ── */
-  function _getCounts() {
-    return {
-      mothers:  Math.max(0, parseInt(document.getElementById('icMothers').value, 10) || 0),
-      brothers: Math.max(0, parseInt(document.getElementById('icBrothers').value, 10) || 0),
-      sisters:  Math.max(0, parseInt(document.getElementById('icSisters').value, 10) || 0),
-    };
-  }
+    if (!gross || gross <= 0) { showErr('Please enter a valid total estate value.'); return; }
+    if (ded < 0) { showErr('Deductions cannot be negative.'); return; }
+    if (ded >= gross) { showErr('Deductions cannot be equal to or more than the estate.'); return; }
 
-  /* ══════════════════════════════════════════════════════
-     DYNAMIC ROW GENERATOR
-     Renders name-input + share-display for each heir
-  ══════════════════════════════════════════════════════ */
-  function generateRows() {
-    const container = document.getElementById('icPersonRows');
-    const { mothers, brothers, sisters } = _getCounts();
-    const totalPeople = mothers + brothers + sisters;
+    const E = gross - ded;                 // net distributable estate
+    const hasChildren = (sons > 0 || daughters > 0);
 
-    if (totalPeople === 0) {
-      container.innerHTML = '';
+    // Fixed-share fractions
+    let fSpouse = 0, spouseLabel = '', spouseCount = 1;
+    if (gender === 'male' && wives > 0) {
+      fSpouse = hasChildren ? 1/8 : 1/4; spouseLabel = wives>1 ? 'Each wife' : 'Wife'; spouseCount = wives;
+    } else if (gender === 'female' && husband) {
+      fSpouse = hasChildren ? 1/4 : 1/2; spouseLabel = 'Husband'; spouseCount = 1;
+    }
+    const fMother = mother ? (hasChildren ? 1/6 : 1/3) : 0;
+    const fFatherFixed = (father && hasChildren) ? 1/6 : 0;
+    let fDaughtersFixed = 0;
+    if (sons === 0 && daughters > 0) fDaughtersFixed = (daughters === 1) ? 1/2 : 2/3;
+
+    let sumFixed = fSpouse + fMother + fFatherFixed + fDaughtersFixed;
+
+    const rows = [];   // {who, sub, amount}
+    let distributed = 0;
+    const push = (who, sub, amount) => { rows.push({who, sub, amount}); distributed += amount; };
+
+    if (sumFixed > 1) {
+      // Aul — scale all fixed shares down proportionally (no residuaries here, since sons==0 in this path)
+      const k = sumFixed;
+      if (fSpouse > 0)        push(spouseLabel, 'Aul-adjusted ('+frac(fSpouse)+')', (E*(fSpouse/k))/spouseCount);
+      if (fMother > 0)        push('Mother', 'Aul-adjusted ('+frac(fMother)+')', E*(fMother/k));
+      if (fFatherFixed > 0)   push('Father', 'Aul-adjusted (1/6)', E*(fFatherFixed/k));
+      if (fDaughtersFixed > 0){
+        const tot = E*(fDaughtersFixed/k);
+        push(daughters>1?'Each daughter':'Daughter', daughters+' daughter(s), Aul-adjusted', tot/daughters);
+      }
+      render(rows, E, cur, true, spouseCount, daughters, 0);
       return;
     }
 
+    // Normal case
+    if (fSpouse > 0) push(spouseLabel, spouseCount>1 ? (spouseCount+' wives share '+frac(fSpouse)) : frac(fSpouse), (E*fSpouse)/spouseCount);
+    if (fMother > 0) push('Mother', frac(fMother), E*fMother);
+
+    const residue = E * (1 - sumFixed);
+
+    if (sons > 0) {
+      if (fFatherFixed > 0) push('Father', '1/6 (with children)', E*fFatherFixed);
+      const units = sons*2 + daughters;
+      const perUnit = residue / units;
+      push(sons>1?'Each son':'Son', sons+' son(s), residue 2:1', perUnit*2);
+      if (daughters > 0) push(daughters>1?'Each daughter':'Daughter', daughters+' daughter(s), residue 2:1', perUnit);
+    } else if (daughters > 0) {
+      // daughters fixed already counted; father (if present) takes 1/6 + residue as residuary
+      push(daughters>1?'Each daughter':'Daughter', frac(fDaughtersFixed)+' shared', (E*fDaughtersFixed)/daughters);
+      if (father) push('Father', '1/6 + residue (residuary)', E*fFatherFixed + residue);
+      else if (residue > 0.01) push('Other heirs / Radd', 'No son or father — see a scholar', residue);
+    } else {
+      // no children
+      if (father) push('Father', 'Residuary (takes the rest)', residue);
+      else if (residue > 0.01) push('Other heirs', 'No children or father — see a scholar', residue);
+    }
+
+    render(rows, E, cur, false, spouseCount, daughters, sons);
+  }
+
+  function frac(f){
+    const map = [[1/8,'1/8'],[1/4,'1/4'],[1/2,'1/2'],[1/6,'1/6'],[1/3,'1/3'],[2/3,'2/3']];
+    for (const [v,s] of map) if (Math.abs(f-v) < 1e-9) return s;
+    return (f*100).toFixed(2)+'%';
+  }
+
+  function render(rows, E, cur, isAul, spouseCount, daughters, sons){
+    const list = $('icResList');
+    let total = 0;
     let html = '';
-
-    /* ── Mother rows ── */
-    if (mothers > 0) {
-      html += '<div class="ic-persons-group">';
-      html += '<div class="ic-persons-group-header">' + String.fromCodePoint(0x1F469) + ' Mothers (' + mothers + ')</div>';
-      for (let i = 1; i <= mothers; i++) {
-        const defaultName = mothers === 1 ? 'Mother' : 'Mother ' + i + ' Name';
-        html += '<div class="ic-person-row">';
-        html += '  <div class="ic-pr-num mother-bg">' + i + '</div>';
-        html += '  <input type="text" class="ic-pr-name-input" data-role="mother" data-idx="' + i + '" value="' + defaultName + '" placeholder="Enter name">';
-        html += '  <div class="ic-pr-share" id="share-mother-' + i + '"><span class="ic-pr-share-label">Calculated Share</span>—</div>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    /* ── Brother rows ── */
-    if (brothers > 0) {
-      html += '<div class="ic-persons-group">';
-      html += '<div class="ic-persons-group-header">' + String.fromCodePoint(0x1F466) + ' Brothers (' + brothers + ')</div>';
-      for (let i = 1; i <= brothers; i++) {
-        html += '<div class="ic-person-row">';
-        html += '  <div class="ic-pr-num brother-bg">' + i + '</div>';
-        html += '  <input type="text" class="ic-pr-name-input" data-role="brother" data-idx="' + i + '" value="Brother ' + i + ' Name" placeholder="Enter name">';
-        html += '  <div class="ic-pr-share" id="share-brother-' + i + '"><span class="ic-pr-share-label">Calculated Share</span>—</div>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    /* ── Sister rows ── */
-    if (sisters > 0) {
-      html += '<div class="ic-persons-group">';
-      html += '<div class="ic-persons-group-header">' + String.fromCodePoint(0x1F467) + ' Sisters (' + sisters + ')</div>';
-      for (let i = 1; i <= sisters; i++) {
-        html += '<div class="ic-person-row">';
-        html += '  <div class="ic-pr-num sister-bg">' + i + '</div>';
-        html += '  <input type="text" class="ic-pr-name-input" data-role="sister" data-idx="' + i + '" value="Sister ' + i + ' Name" placeholder="Enter name">';
-        html += '  <div class="ic-pr-share" id="share-sister-' + i + '"><span class="ic-pr-share-label">Calculated Share</span>—</div>';
-        html += '</div>';
-      }
-      html += '</div>';
-    }
-
-    container.innerHTML = html;
-  }
-
-  /* ══════════════════════════════════════════════════════
-     CORE CALCULATION
-  ══════════════════════════════════════════════════════ */
-  function _calculate(grossTotal, mothers, brothers, sisters, currency, deductions) {
-    deductions = deductions || 0;
-    /* Net estate after funeral expenses, debts, and bequests */
-    const netEstate = Math.max(0, grossTotal - deductions);
-
-    /* Step 1: Total Mother Share Pool = Net Estate × 1/8 */
-    const totalMotherPool = netEstate * (1 / 8);
-
-    /* Step 2: Remaining Estate Balance */
-    const remaining = netEstate - totalMotherPool;
-
-    /* Step 3: Total Fractional Factor Units = (Brothers × 2) + (Sisters × 1) */
-    const totalFractionalUnits = (brothers * 2) + (sisters * 1);
-
-    /* Step 4: Single Fractional Unit Value */
-    let singleUnitValue = 0;
-    let brotherIndividual = 0;
-    let sisterIndividual  = 0;
-    let allBrothers       = 0;
-    let allSisters        = 0;
-
-    if (totalFractionalUnits > 0) {
-      singleUnitValue   = remaining / totalFractionalUnits;
-      brotherIndividual = singleUnitValue * 2;
-      sisterIndividual  = singleUnitValue * 1;
-      allBrothers       = brotherIndividual * brothers;
-      allSisters        = sisterIndividual  * sisters;
-    }
-
-    /* Each mother's individual share */
-    const motherIndividual = mothers > 0 ? totalMotherPool / mothers : 0;
-
-    return {
-      grossTotal, deductions, total: netEstate, currency,
-      mothers, brothers, sisters,
-      totalMotherPool, motherIndividual,
-      motherPct:           netEstate > 0 ? (totalMotherPool / netEstate) * 100 : 0,
-      remaining, totalFractionalUnits, singleUnitValue,
-      brotherIndividual, sisterIndividual,
-      allBrothers, allSisters,
-      allBrothersPct:      netEstate > 0 ? (allBrothers / netEstate) * 100 : 0,
-      allSistersPct:       netEstate > 0 ? (allSisters  / netEstate) * 100 : 0,
-    };
-  }
-
-  /* ── Fill share amounts into person rows ── */
-  function _fillShareDisplays(r) {
-    const currency = r.currency;
-    for (let i = 1; i <= r.mothers; i++) {
-      const el = document.getElementById('share-mother-' + i);
-      if (el) el.innerHTML = '<span class="ic-pr-share-label">Calculated Share</span>' + fmtRaw(r.motherIndividual, currency);
-    }
-    for (let i = 1; i <= r.brothers; i++) {
-      const el = document.getElementById('share-brother-' + i);
-      if (el) el.innerHTML = '<span class="ic-pr-share-label">Calculated Share</span>' + fmtRaw(r.brotherIndividual, currency);
-    }
-    for (let i = 1; i <= r.sisters; i++) {
-      const el = document.getElementById('share-sister-' + i);
-      if (el) el.innerHTML = '<span class="ic-pr-share-label">Calculated Share</span>' + fmtRaw(r.sisterIndividual, currency);
-    }
-  }
-
-  /* ── Render recipient cards ── */
-  function renderCards(r) {
-    const currency = r.currency;
-    const grid = document.getElementById('icRecipientGrid');
-    let html = '';
-
-    /* Mother card */
-    html += '<div class="ic-recipient-card mother">';
-    html += '  <div class="ic-rc-icon">' + String.fromCodePoint(0x1F469) + '</div>';
-    html += '  <div class="ic-rc-who">Mothers (' + r.mothers + ' × Umm)</div>';
-    html += '  <div class="ic-rc-amount">' + fmtRaw(r.totalMotherPool, currency) + '</div>';
-    html += '  <div class="ic-rc-pct">' + r.motherPct.toFixed(4) + '% of total estate</div>';
-    html += '  <div class="ic-rc-sub">Each mother: ' + fmtRaw(r.motherIndividual, currency) + ' | Mandatory 1/8 share (Quranic)</div>';
-    html += '</div>';
-
-    /* Brothers collective card */
-    if (r.brothers > 0) {
-      html += '<div class="ic-recipient-card brother">';
-      html += '  <div class="ic-rc-icon">' + String.fromCodePoint(0x1F466) + '</div>';
-      html += '  <div class="ic-rc-who">All Brothers (' + r.brothers + ' × Bhai)</div>';
-      html += '  <div class="ic-rc-amount">' + fmtRaw(r.allBrothers, currency) + '</div>';
-      html += '  <div class="ic-rc-pct">' + r.allBrothersPct.toFixed(4) + '% of total estate</div>';
-      html += '  <div class="ic-rc-sub">Each brother: ' + fmtRaw(r.brotherIndividual, currency) + '</div>';
-      html += '</div>';
-    }
-
-    /* Sisters collective card */
-    if (r.sisters > 0) {
-      html += '<div class="ic-recipient-card sister">';
-      html += '  <div class="ic-rc-icon">' + String.fromCodePoint(0x1F467) + '</div>';
-      html += '  <div class="ic-rc-who">All Sisters (' + r.sisters + ' × Behen)</div>';
-      html += '  <div class="ic-rc-amount">' + fmtRaw(r.allSisters, currency) + '</div>';
-      html += '  <div class="ic-rc-pct">' + r.allSistersPct.toFixed(4) + '% of total estate</div>';
-      html += '  <div class="ic-rc-sub">Each sister: ' + fmtRaw(r.sisterIndividual, currency) + '</div>';
-      html += '</div>';
-    }
-
-    if (r.brothers === 0 && r.sisters === 0) {
-      html += '<div class="ic-recipient-card" style="grid-column:1/-1;text-align:center;padding:24px">';
-      html += '  <div style="font-size:14px;color:var(--text-3)">' + String.fromCodePoint(0x26A0, 0xFE0F) + ' No children specified. The remaining ' + fmtRaw(r.remaining, currency) + ' would be distributed to the next eligible heirs under Fara\'id rules. Consult a Mufti for guidance.</div>';
-      html += '</div>';
-    }
-
-    grid.innerHTML = html;
-  }
-
-  /* ── Render breakdown table ── */
-  function renderTable(r) {
-    const tbody = document.getElementById('icTableBody');
-    const currency = r.currency;
-    let rows = '';
-
-    /* Read custom names from the person-row inputs */
-    function _getName(role, idx) {
-      const input = document.querySelector('.ic-pr-name-input[data-role="' + role + '"][data-idx="' + idx + '"]');
-      return input ? input.value : (role.charAt(0).toUpperCase() + role.slice(1) + ' ' + idx);
-    }
-
-    /* Mother rows */
-    for (let i = 1; i <= r.mothers; i++) {
-      const name = _getName('mother', i);
-      rows += '<tr>';
-      rows += '  <td class="td-name">' + String.fromCodePoint(0x1F469) + ' ' + name + '</td>';
-      rows += '  <td>1/8 ÷ ' + r.mothers + ' (Quranic)</td>';
-      rows += '  <td class="td-amount">' + fmtRaw(r.motherIndividual, currency) + '</td>';
-      rows += '  <td class="td-pct">' + ((r.motherIndividual / r.total) * 100).toFixed(4) + '%</td>';
-      rows += '</tr>';
-    }
-
-    /* Individual brothers */
-    for (let i = 1; i <= r.brothers; i++) {
-      const name = _getName('brother', i);
-      rows += '<tr>';
-      rows += '  <td class="td-name">' + String.fromCodePoint(0x1F466) + ' ' + name + '</td>';
-      rows += '  <td>2 shares (2:1 ratio)</td>';
-      rows += '  <td class="td-amount">' + fmtRaw(r.brotherIndividual, currency) + '</td>';
-      rows += '  <td class="td-pct">' + ((r.brotherIndividual / r.total) * 100).toFixed(4) + '%</td>';
-      rows += '</tr>';
-    }
-
-    /* Individual sisters */
-    for (let i = 1; i <= r.sisters; i++) {
-      const name = _getName('sister', i);
-      rows += '<tr>';
-      rows += '  <td class="td-name">' + String.fromCodePoint(0x1F467) + ' ' + name + '</td>';
-      rows += '  <td>1 share (2:1 ratio)</td>';
-      rows += '  <td class="td-amount">' + fmtRaw(r.sisterIndividual, currency) + '</td>';
-      rows += '  <td class="td-pct">' + ((r.sisterIndividual / r.total) * 100).toFixed(4) + '%</td>';
-      rows += '</tr>';
-    }
-
-    /* Total verification row */
-    const verTotal = r.totalMotherPool + r.allBrothers + r.allSisters;
-    rows += '<tr class="total-row">';
-    rows += '  <td class="td-name" colspan="2">' + String.fromCodePoint(0x2713) + ' Total Distributed</td>';
-    rows += '  <td class="td-amount">' + fmtRaw(verTotal, currency) + '</td>';
-    rows += '  <td class="td-pct">100.00%</td>';
-    rows += '</tr>';
-
-    tbody.innerHTML = rows;
-  }
-
-  /* ── Render pie chart ── */
-  function renderPie(r) {
-    const canvas = document.getElementById('icPieChart');
-    const ctx    = canvas.getContext('2d');
-    const cx = 100, cy = 100, radius = 88;
-    ctx.clearRect(0, 0, 200, 200);
-
-    const slices = [];
-    if (r.mothers > 0)  slices.push({ label: 'Mother(s)', value: r.totalMotherPool, color: PIE_COLORS.mother });
-    if (r.brothers > 0) slices.push({ label: 'Brothers (' + String.fromCodePoint(0xD7) + r.brothers + ')', value: r.allBrothers, color: PIE_COLORS.brothers });
-    if (r.sisters  > 0) slices.push({ label: 'Sisters ('  + String.fromCodePoint(0xD7) + r.sisters  + ')', value: r.allSisters,  color: PIE_COLORS.sisters });
-
-    const total = slices.reduce((s, x) => s + x.value, 0);
-    if (total <= 0) return;
-    let startAngle = -Math.PI / 2;
-
-    slices.forEach(sl => {
-      const angle = (sl.value / total) * 2 * Math.PI;
-      ctx.beginPath(); ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, radius, startAngle, startAngle + angle);
-      ctx.closePath(); ctx.fillStyle = sl.color; ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = 2; ctx.stroke();
-      startAngle += angle;
+    rows.forEach(r => {
+      // For "Each son/daughter/wife" rows, the stored amount is per-person; show count toward total
+      let count = 1;
+      if (/Each son/i.test(r.who)) count = sons;
+      else if (/Each daughter/i.test(r.who)) count = daughters;
+      else if (/Each wife/i.test(r.who)) count = spouseCount;
+      total += r.amount * count;
+      const pct = E>0 ? (r.amount/E)*100 : 0;
+      html += '<div class="ic-res-row"><div><div class="ic-res-who">'+r.who+'</div><div class="ic-res-sub">'+r.sub+'</div></div>'+
+              '<div><div class="ic-res-amt">'+fmt(r.amount,cur)+'</div><div class="ic-res-pct">'+pct.toFixed(2)+'% each</div></div></div>';
     });
-
-    /* Centre hole */
-    ctx.beginPath(); ctx.arc(cx, cy, 44, 0, 2 * Math.PI);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--card').trim() || '#1a1a1a';
-    ctx.fill();
-
-    /* Centre text */
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f0f0f0';
-    ctx.font = 'bold 11px Inter, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('Distribution', cx, cy - 8);
-    ctx.font = '10px Inter, sans-serif';
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-3').trim() || '#888';
-    ctx.fillText((r.mothers + r.brothers + r.sisters) + ' heirs', cx, cy + 8);
-
-    /* Legend */
-    const legend = document.getElementById('icPieLegend');
-    legend.innerHTML = slices.map(sl =>
-      '<div class="ic-legend-item"><div class="ic-legend-dot" style="background:' + sl.color + '"></div>' +
-      '<span>' + sl.label + ': <strong>' + ((sl.value / total) * 100).toFixed(1) + '%</strong></span></div>'
-    ).join('');
+    html += '<div class="ic-total"><span>Total distributed</span><span>'+fmt(total,cur)+'</span></div>';
+    if (isAul) html = '<div class="ic-res-sub" style="margin-bottom:8px">Fixed shares exceeded the estate, so all shares were reduced proportionally (Aul).</div>' + html;
+    list.innerHTML = html;
+    const box = $('icResults');
+    box.style.display = 'block';
+    setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'start'}), 80);
   }
 
-  /* ── Store last result for print/copy ── */
-  let _lastResult = null;
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: onCountChange — regenerate rows + live-calc
-  ═══════════════════════════════════════════ */
-  function onCountChange() {
-    generateRows();
-    liveCalc();
-  }
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: liveCalc — runs on every input change
-  ═══════════════════════════════════════════ */
-  function liveCalc() {
-    const grossTotal  = parseFloat(document.getElementById('icTotal').value);
-    const deductions  = parseFloat(document.getElementById('icDeductions').value) || 0;
-    const currency    = document.getElementById('icCurrency').value;
-    const { mothers, brothers, sisters } = _getCounts();
-    if (!grossTotal || grossTotal <= 0) return;
-
-    /* Update net estate display */
-    const netEl = document.getElementById('icNetEstate');
-    if (deductions > 0) {
-      const net = Math.max(0, grossTotal - deductions);
-      document.getElementById('icNetAmount').textContent = fmtRaw(net, currency);
-      document.getElementById('icNetDetail').textContent = fmtRaw(grossTotal, currency) + ' (gross) − ' + fmtRaw(deductions, currency) + ' (deductions) = ' + fmtRaw(net, currency);
-      netEl.style.display = '';
-    } else {
-      netEl.style.display = 'none';
-    }
-
-    const r = _calculate(grossTotal, mothers, brothers, sisters, currency, deductions);
-    _lastResult = r;
-    _fillShareDisplays(r);
-    document.getElementById('icTotalBadge').textContent = 'Net Estate: ' + fmtRaw(r.total, currency);
-  }
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: calculate — full calculation + results
-  ═══════════════════════════════════════════ */
-  function calculate() {
-    clearError();
-    const totalRaw   = document.getElementById('icTotal').value.trim();
-    const grossTotal = parseFloat(totalRaw);
-    const deductions = parseFloat(document.getElementById('icDeductions').value) || 0;
-    const currency   = document.getElementById('icCurrency').value;
-    const { mothers, brothers, sisters } = _getCounts();
-
-    /* Validation */
-    if (!totalRaw || isNaN(grossTotal) || grossTotal <= 0) {
-      showError('Please enter a valid total estate value greater than zero.');
-      return;
-    }
-    if (deductions < 0) {
-      showError('Deductions cannot be negative.');
-      return;
-    }
-    if (deductions >= grossTotal) {
-      showError('Deductions (' + fmtRaw(deductions, currency) + ') exceed the gross estate. Nothing remains for distribution.');
-      return;
-    }
-    if (mothers < 0 || brothers < 0 || sisters < 0) {
-      showError('Number of heirs cannot be negative.');
-      return;
-    }
-    if (mothers > 4) {
-      showError('Maximum 4 mothers supported.');
-      return;
-    }
-    if (brothers > 50 || sisters > 50) {
-      showError('Maximum 50 brothers or sisters supported.');
-      return;
-    }
-    if (mothers === 0 && brothers === 0 && sisters === 0) {
-      showError('Please specify at least one heir (mother, brother, or sister).');
-      return;
-    }
-
-    /* Ensure rows exist */
-    generateRows();
-
-    const r = _calculate(grossTotal, mothers, brothers, sisters, currency, deductions);
-    _lastResult = r;
-
-    /* Update net estate display */
-    const netEl = document.getElementById('icNetEstate');
-    if (deductions > 0) {
-      document.getElementById('icNetAmount').textContent = fmtRaw(r.total, currency);
-      document.getElementById('icNetDetail').textContent = fmtRaw(grossTotal, currency) + ' (gross) − ' + fmtRaw(deductions, currency) + ' (deductions) = ' + fmtRaw(r.total, currency);
-      netEl.style.display = '';
-    } else {
-      netEl.style.display = 'none';
-    }
-
-    /* Fill individual share amounts in person rows */
-    _fillShareDisplays(r);
-
-    /* Update total badge */
-    document.getElementById('icTotalBadge').textContent = 'Net Estate: ' + fmtRaw(r.total, currency);
-
-    /* Render all result sections */
-    renderCards(r);
-    renderTable(r);
-    renderPie(r);
-
-    /* Show results */
-    const results = document.getElementById('icResults');
-    results.style.display = 'block';
-    setTimeout(() => results.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-
-    toast('Calculation complete — distribution breakdown ready.', 'success');
-  }
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: reset
-  ═══════════════════════════════════════════ */
-  function reset() {
-    document.getElementById('icTotal').value      = '';
-    document.getElementById('icDeductions').value  = '';
-    document.getElementById('icMothers').value    = '1';
-    document.getElementById('icBrothers').value   = '0';
-    document.getElementById('icSisters').value    = '0';
-    document.getElementById('icCurrency').value   = 'PKR';
-    document.getElementById('icResults').style.display    = 'none';
-    document.getElementById('icNetEstate').style.display  = 'none';
-    document.getElementById('icPersonRows').innerHTML     = '';
-    clearError();
-    _lastResult = null;
-  }
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: printResults
-  ═══════════════════════════════════════════ */
-  function printResults() {
-    if (!_lastResult) { toast('Please calculate first.', 'error'); return; }
-    const r = _lastResult;
-    const currency = r.currency;
-    const sym = CURRENCY_SYMBOLS[currency] || currency + ' ';
-
-    function _getName(role, idx) {
-      const input = document.querySelector('.ic-pr-name-input[data-role="' + role + '"][data-idx="' + idx + '"]');
-      return input ? input.value : (role.charAt(0).toUpperCase() + role.slice(1) + ' ' + idx);
-    }
-
-    let motherRows = '';
-    for (let i = 1; i <= r.mothers; i++) {
-      motherRows += '<tr><td>' + String.fromCodePoint(0x1F469) + ' ' + _getName('mother', i) + '</td><td>Quranic 1/8 ' + String.fromCodePoint(0xF7) + ' ' + r.mothers + '</td>';
-      motherRows += '<td>' + sym + r.motherIndividual.toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>';
-      motherRows += '<td>' + ((r.motherIndividual/r.total)*100).toFixed(4) + '%</td></tr>';
-    }
-    let brotherRows = '';
-    for (let i = 1; i <= r.brothers; i++) {
-      brotherRows += '<tr><td>' + String.fromCodePoint(0x1F466) + ' ' + _getName('brother', i) + '</td><td>2 shares (2:1)</td>';
-      brotherRows += '<td>' + sym + r.brotherIndividual.toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>';
-      brotherRows += '<td>' + ((r.brotherIndividual/r.total)*100).toFixed(4) + '%</td></tr>';
-    }
-    let sisterRows = '';
-    for (let i = 1; i <= r.sisters; i++) {
-      sisterRows += '<tr><td>' + String.fromCodePoint(0x1F467) + ' ' + _getName('sister', i) + '</td><td>1 share (2:1)</td>';
-      sisterRows += '<td>' + sym + r.sisterIndividual.toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>';
-      sisterRows += '<td>' + ((r.sisterIndividual/r.total)*100).toFixed(4) + '%</td></tr>';
-    }
-
-    const win = window.open('', '_blank', 'width=800,height=700');
-    win.document.write('<!DOCTYPE html><html><head><title>Islamic Inheritance Report</title>' +
-      '<style>body{font-family:Arial,sans-serif;margin:30px;color:#111;background:#fff}' +
-      'h1{font-size:22px;color:#2d7a2d;border-bottom:2px solid #2d7a2d;padding-bottom:8px}' +
-      'h2{font-size:15px;color:#444;margin-top:20px}' +
-      'table{width:100%;border-collapse:collapse;margin-top:10px}' +
-      'th{background:#f0f0f0;padding:8px 10px;text-align:left;font-size:12px;font-weight:700;border-bottom:2px solid #ccc}' +
-      'td{padding:8px 10px;border-bottom:1px solid #e5e5e5;font-size:13px}' +
-      '.total-row td{background:#ffe8e0;font-weight:bold;border-top:2px solid #ff6333}' +
-      '.footer{margin-top:30px;font-size:11px;color:#999;border-top:1px solid #e5e5e5;padding-top:10px}</style><meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"' + String.fromCodePoint(0x262A, 0xFE0F) + ' Islamic Inheritance Distribution Report","item":"https://pdfdukan.com/tools/inheritance-calc.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
-</head><body>' +
-      '<h1>' + String.fromCodePoint(0x262A, 0xFE0F) + ' Islamic Inheritance Distribution Report</h1>' +
-      '<p>Generated by PDFdukan CamMaster</p>' +
-      '<p><strong>Gross Estate:</strong> ' + sym + r.grossTotal.toLocaleString() + '</p>' +
-      (r.deductions > 0 ? '<p><strong>Deductions (Funeral/Debts/Wasiyyah):</strong> ' + sym + r.deductions.toLocaleString() + '</p>' : '') +
-      '<p><strong>Net Distributable Estate:</strong> ' + sym + r.total.toLocaleString() + '</p>' +
-      '<h2>Distribution Summary</h2>' +
-      '<table><thead><tr><th>Heir</th><th>Basis</th><th>Amount (' + currency + ')</th><th>% of Total</th></tr></thead><tbody>' +
-      motherRows + brotherRows + sisterRows +
-      '<tr class="total-row"><td colspan="2">' + String.fromCodePoint(0x2713) + ' Total Distributed</td>' +
-      '<td>' + sym + (r.totalMotherPool+r.allBrothers+r.allSisters).toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2}) + '</td>' +
-      '<td>100.00%</td></tr></tbody></table>' +
-      '<div class="footer">Quranic Reference: Surah An-Nisa 4:11 &amp; 4:176 — PDFdukan ' + String.fromCodePoint(0xA9) + ' 2026</div>' +
-      '<script>window.onload=function(){window.print();}<\/script></body></html>');
-    win.document.close();
-  }
-
-  /* ═══════════════════════════════════════════
-     PUBLIC: copyResults
-  ═══════════════════════════════════════════ */
-  function copyResults() {
-    if (!_lastResult) { toast('Please calculate first.', 'error'); return; }
-    const r = _lastResult;
-    const currency = r.currency;
-    const sym = CURRENCY_SYMBOLS[currency] || currency + ' ';
-
-    function _getName(role, idx) {
-      const input = document.querySelector('.ic-pr-name-input[data-role="' + role + '"][data-idx="' + idx + '"]');
-      return input ? input.value : (role.charAt(0).toUpperCase() + role.slice(1) + ' ' + idx);
-    }
-
-    const lines = [
-      'ISLAMIC INHERITANCE DISTRIBUTION (Warasat Intikal)',
-      '='.repeat(50),
-      'Gross Estate: ' + sym + r.grossTotal.toLocaleString(),
-    ];
-    if (r.deductions > 0) {
-      lines.push('Deductions (Funeral/Debts/Wasiyyah): ' + sym + r.deductions.toLocaleString());
-    }
-    lines.push('Net Distributable Estate: ' + sym + r.total.toLocaleString());
-    lines.push('');
-    for (let i = 1; i <= r.mothers; i++) {
-      lines.push(_getName('mother', i) + ' (Mother): ' + sym + r.motherIndividual.toLocaleString('en',{maximumFractionDigits:2}) + '  (' + ((r.motherIndividual/r.total)*100).toFixed(2) + '%)');
-    }
-    for (let i = 1; i <= r.brothers; i++) {
-      lines.push(_getName('brother', i) + ' (Brother): ' + sym + r.brotherIndividual.toLocaleString('en',{maximumFractionDigits:2}) + '  (' + ((r.brotherIndividual/r.total)*100).toFixed(2) + '%)');
-    }
-    for (let i = 1; i <= r.sisters; i++) {
-      lines.push(_getName('sister', i) + ' (Sister): ' + sym + r.sisterIndividual.toLocaleString('en',{maximumFractionDigits:2}) + '  (' + ((r.sisterIndividual/r.total)*100).toFixed(2) + '%)');
-    }
-    lines.push('');
-    lines.push('Calculated by PDFdukan CamMaster — pdfdukan.com');
-    lines.push('Reference: Surah An-Nisa 4:11 (Quran)');
-    navigator.clipboard.writeText(lines.join('\n'))
-      .then(() => toast('Summary copied to clipboard!', 'success'))
-      .catch(() => toast('Copy failed — please manually select and copy.', 'error'));
-  }
-
-  return { calculate, reset, liveCalc, onCountChange, printResults, copyResults };
+  return { calculate, toggleSpouse };
 })();
+window.IC = IC;
 </script>
 </body>
 </html>
