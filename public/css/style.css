@@ -704,9 +704,13 @@ ul{list-style:none}
 .tool-hero{
   background:linear-gradient(135deg,var(--card),var(--bg-2));
   border:1px solid var(--border);border-radius:var(--radius-xl);
-  padding:32px;margin-bottom:24px;text-align:center;
+  padding:20px 24px;margin-bottom:16px;text-align:center;
   position:relative;overflow:hidden;
 }
+/* On tool pages the big decorative hero image pushed the actual tool far below
+   the fold. Hide it so the tool (upload area) is visible at the top; SEO copy
+   + FAQ below the tool still carry the indexable content. */
+.tool-hero img{display:none}
 .tool-hero::before{
   content:'';position:absolute;inset:0;
   background:radial-gradient(ellipse at 50% 0%,var(--primary-soft) 0%,transparent 60%);
