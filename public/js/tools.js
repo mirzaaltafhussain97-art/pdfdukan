@@ -110,7 +110,7 @@ const ImageToPDF = (() => {
     if (genBtn) genBtn.disabled = !images.length;
 
     const bar = document.getElementById('imgSortBar');
-    if (bar) bar.style.display = images.length > 1 ? 'flex' : 'none';
+    if (bar) bar.style.display = images.length > 0 ? 'flex' : 'none';
   }
 
   function remove(id) {
@@ -255,6 +255,13 @@ const PDFToImages = (() => {
           const info = document.createElement('div');
           info.className = 'pt-info';
           info.innerHTML = `<div class="page-num">Page ${p}</div>`;
+          const dlBtn = document.createElement('button');
+          dlBtn.type = 'button';
+          dlBtn.textContent = '⬇ JPG';
+          dlBtn.style.cssText = 'margin-top:6px;font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
+          const pageIdx = p - 1;
+          dlBtn.onclick = () => downloadOne(pageIdx);
+          info.appendChild(dlBtn);
           thumb.appendChild(tc); thumb.appendChild(info);
           previewWrap.appendChild(thumb);
         }
@@ -274,6 +281,13 @@ const PDFToImages = (() => {
     }
   }
 
+  function downloadOne(i) {
+    const pg = renderedPages[i];
+    if (!pg) return;
+    _downloadBlob(pg.blob, `page_${pg.page}.jpg`, 'PDF to JPG', 'convert');
+    toast(`Page ${pg.page} downloaded ✓`, 'success');
+  }
+
   async function downloadZIP() {
     if (!renderedPages.length) return;
     _showProgress(10, 'Zipping…');
@@ -289,7 +303,7 @@ const PDFToImages = (() => {
     toast('ZIP downloaded! ✓', 'success');
   }
 
-  return { init, loadPDF, downloadZIP };
+  return { init, loadPDF, downloadZIP, downloadOne };
 })();
 
 /* ================================================================
@@ -381,7 +395,7 @@ const MergePDF = (() => {
     if (mergeBtn) mergeBtn.disabled = pdfFiles.length < 2;
 
     const sortBar = document.getElementById('mergeSortBar');
-    if (sortBar) sortBar.style.display = pdfFiles.length > 1 ? 'flex' : 'none';
+    if (sortBar) sortBar.style.display = pdfFiles.length > 0 ? 'flex' : 'none';
 
     // Re-init Sortable after DOM rebuild
     if (window.Sortable) {
