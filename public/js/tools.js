@@ -108,10 +108,23 @@ const ImageToPDF = (() => {
 
     const genBtn = document.getElementById('generateBtn');
     if (genBtn) genBtn.disabled = !images.length;
+
+    const bar = document.getElementById('imgSortBar');
+    if (bar) bar.style.display = images.length > 1 ? 'flex' : 'none';
   }
 
   function remove(id) {
     images = images.filter(img => img.id != id);
+    renderImageList();
+  }
+
+  // Sort the image list by file name. dir = 'asc' | 'desc'. Uses natural
+  // (numeric-aware) ordering so img2 comes before img10.
+  function sort(dir) {
+    images.sort((a, b) => {
+      const cmp = a.file.name.localeCompare(b.file.name, undefined, { numeric: true, sensitivity: 'base' });
+      return dir === 'desc' ? -cmp : cmp;
+    });
     renderImageList();
   }
 
@@ -179,7 +192,7 @@ const ImageToPDF = (() => {
     toast('PDF downloaded! ✓', 'success');
   }
 
-  return { init, addImages, generate, remove, download };
+  return { init, addImages, generate, remove, sort, download };
 })();
 
 /* ================================================================
@@ -367,6 +380,9 @@ const MergePDF = (() => {
     const mergeBtn = document.getElementById('mergeBtn');
     if (mergeBtn) mergeBtn.disabled = pdfFiles.length < 2;
 
+    const sortBar = document.getElementById('mergeSortBar');
+    if (sortBar) sortBar.style.display = pdfFiles.length > 1 ? 'flex' : 'none';
+
     // Re-init Sortable after DOM rebuild
     if (window.Sortable) {
       if (list._sortable) { try { list._sortable.destroy(); } catch(e){} }
@@ -448,6 +464,17 @@ const MergePDF = (() => {
     renderList();
   }
 
+  // Sort merged files. by = 'name' | 'size'; dir = 'asc' | 'desc'.
+  function sort(by, dir) {
+    pdfFiles.sort((a, b) => {
+      let cmp;
+      if (by === 'size') cmp = a.size - b.size;
+      else cmp = a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+      return dir === 'desc' ? -cmp : cmp;
+    });
+    renderList();
+  }
+
   async function merge() {
     if (pdfFiles.length < 2) { toast('Add at least 2 PDFs', 'error'); return; }
     const totalSelected = pdfFiles.reduce((s, f) => s + f.pageChecks.filter(Boolean).length, 0);
@@ -496,7 +523,7 @@ const MergePDF = (() => {
     toast('Merged PDF downloaded! ✓', 'success');
   }
 
-  return { init, addPDFs, merge, remove, reorder, togglePage, selectAll, promptRange, download };
+  return { init, addPDFs, merge, remove, reorder, sort, togglePage, selectAll, promptRange, download };
 })();
 
 /* ================================================================

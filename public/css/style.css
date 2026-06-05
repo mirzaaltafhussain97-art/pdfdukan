@@ -519,6 +519,11 @@ ul{list-style:none}
    :empty and the slot shows again. */
 .ad-slot:empty,
 .ad-slot:has(> .adsense-slot:empty){ display:none !important; }
+/* File-list sort controls (Image→PDF, Merge PDF). Hidden until JS shows it. */
+.file-sort-bar{display:none;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.file-sort-bar .fsb-label{font-size:12px;color:var(--text-2)}
+.sort-chip{font-size:12px;padding:5px 11px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text-2);cursor:pointer;transition:border-color .15s,color .15s}
+.sort-chip:hover{border-color:var(--primary);color:var(--primary)}
 
 /* ── SCANNER UI ──────────────────────────────────────────────── */
 

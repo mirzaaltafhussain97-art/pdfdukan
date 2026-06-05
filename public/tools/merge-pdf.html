@@ -287,6 +287,13 @@
       <input type="file" id="fileInput" accept=".pdf,application/pdf" multiple>
     </div>
 
+    <div class="file-sort-bar" id="mergeSortBar">
+      <span class="fsb-label">Sort:</span>
+      <button type="button" class="sort-chip" onclick="MergePDF.sort('name','asc')">Name A → Z</button>
+      <button type="button" class="sort-chip" onclick="MergePDF.sort('name','desc')">Name Z → A</button>
+      <button type="button" class="sort-chip" onclick="MergePDF.sort('size','asc')">Size ↑</button>
+      <button type="button" class="sort-chip" onclick="MergePDF.sort('size','desc')">Size ↓</button>
+    </div>
     <!-- File cards (populated by MergePDF.renderList) -->
     <div id="fileList" style="margin-top:14px"></div>
 

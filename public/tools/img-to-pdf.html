@@ -199,6 +199,11 @@
       <span class="dz-btn">Choose Images</span>
       <input type="file" id="fileInput" accept="image/*" multiple>
     </div>
+    <div class="file-sort-bar" id="imgSortBar">
+      <span class="fsb-label">Sort by name:</span>
+      <button type="button" class="sort-chip" onclick="ImageToPDF.sort('asc')">A → Z ↑</button>
+      <button type="button" class="sort-chip" onclick="ImageToPDF.sort('desc')">Z → A ↓</button>
+    </div>
     <div class="file-list" id="fileList" style="margin-top:12px"></div>
   </div>
 
