@@ -513,6 +513,12 @@ ul{list-style:none}
   align-items:center;justify-content:center;
 }
 .ad-slot p{color:var(--text-muted);font-size:11px}
+/* Collapse ad slots while they are empty (e.g. AdSense not active yet) so an
+   empty dashed box never reserves space and pushes the actual tool below the
+   fold. When a real ad (<ins>/<iframe>) fills .adsense-slot it stops matching
+   :empty and the slot shows again. */
+.ad-slot:empty,
+.ad-slot:has(> .adsense-slot:empty){ display:none !important; }
 
 /* ── SCANNER UI ──────────────────────────────────────────────── */
 
