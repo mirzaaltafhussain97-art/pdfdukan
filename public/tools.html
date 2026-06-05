@@ -235,6 +235,8 @@
     </p>
   </div>
 
+  <p id="toolSearchEmpty" style="display:none;max-width:680px;margin:0 auto 24px;padding:0 20px;text-align:center;color:var(--text-2);font-size:15px">No tools match &ldquo;<span id="toolSearchTerm"></span>&rdquo;. Try a different keyword like <em>merge</em>, <em>compress</em>, or <em>OCR</em>.</p>
+
   <!-- Scanner -->
   <div class="category-section" id="cat-scanner">
     <h2 class="category-title">Free Online Document Scanner</h2>
@@ -512,14 +514,32 @@
 <script src="js/app.js"></script>
 <script src="js/particles.js"></script>
 <script>
-// Tool search filter
-document.getElementById('toolSearch').addEventListener('input', function() {
-  const q = this.value.toLowerCase().trim();
-  document.querySelectorAll('.big-tool-card').forEach(card => {
-    const text = card.textContent.toLowerCase();
-    card.style.display = (!q || text.includes(q)) ? '' : 'none';
+// Tool search filter — hides non-matching cards, empty category sections, and shows a no-results note.
+(function(){
+  var input = document.getElementById('toolSearch');
+  if (!input) return;
+  var cards = [].slice.call(document.querySelectorAll('.big-tool-card'));
+  var sections = [].slice.call(document.querySelectorAll('.category-section'));
+  var empty = document.getElementById('toolSearchEmpty');
+  var term = document.getElementById('toolSearchTerm');
+  input.addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    var anyMatch = false;
+    cards.forEach(function(card){
+      var match = !q || card.textContent.toLowerCase().indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) anyMatch = true;
+    });
+    sections.forEach(function(sec){
+      var hasVisible = [].slice.call(sec.querySelectorAll('.big-tool-card')).some(function(c){ return c.style.display !== 'none'; });
+      sec.style.display = (!q || hasVisible) ? '' : 'none';
+    });
+    if (empty) {
+      empty.style.display = (q && !anyMatch) ? 'block' : 'none';
+      if (term) term.textContent = this.value;
+    }
   });
-});
+})();
 </script>
 </body>
 </html>
