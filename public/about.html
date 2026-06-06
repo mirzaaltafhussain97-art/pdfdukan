@@ -32,15 +32,55 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css?v=20260606a">
+<link rel="stylesheet" href="css/style.css?v=20260606b">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "AboutPage",
-  "name": "About PDFdukan",
-  "url": "https://pdfdukan.com/about",
-  "description": "PDFdukan is a free, privacy-first document scanning and PDF tools platform.",
-  "publisher": { "@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com" }
+  "@graph": [
+    {
+      "@type": "AboutPage",
+      "@id": "https://pdfdukan.com/about.html",
+      "name": "About PDFdukan",
+      "url": "https://pdfdukan.com/about.html",
+      "description": "PDFdukan is a free, privacy-first document scanning and PDF tools platform built in Pakistan, serving users globally.",
+      "publisher": { "@id": "https://pdfdukan.com/#organization" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://pdfdukan.com/#organization",
+      "name": "PDFdukan",
+      "alternateName": "CamMaster by PDFdukan",
+      "url": "https://pdfdukan.com",
+      "logo": "https://pdfdukan.com/og-image.jpg",
+      "foundingDate": "2025",
+      "description": "PDFdukan provides 40+ free browser-based PDF tools and CamMaster — an AI-powered document scanner. All processing is 100% client-side. No file uploads. No account required for basic tools.",
+      "areaServed": ["PK", "IN", "BD", "Worldwide"],
+      "knowsLanguage": ["en", "ur"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://pdfdukan.com/contact.html",
+        "email": "contact@pdfdukan.com"
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Sher Azam Khan",
+        "jobTitle": "Founder, PDFdukan",
+        "nationality": "PK"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "PK"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/" },
+        { "@type": "ListItem", "position": 2, "name": "About PDFdukan", "item": "https://pdfdukan.com/about.html" }
+      ]
+    }
+  ]
 }
 </script>
 <meta name="theme-color" content="#ff6333">
@@ -230,49 +270,83 @@
 
   <p class="page-meta"><a href="index.html">Home</a> › About PDFdukan</p>
 
-  <h2>Our Story</h2>
-  <p><strong>PDFdukan</strong> was founded with a single belief: essential document tools should be free, fast, and completely private. Too many people are forced to upload sensitive documents — pay stubs, contracts, IDs — to unknown servers just to perform a basic conversion. We built PDFdukan to change that.</p>
-  <p>Everything on PDFdukan runs entirely inside your web browser. Your files never leave your device. We built the entire processing stack — scanning, cropping, enhancement, PDF generation, merging, splitting, OCR — using browser-native APIs and open-source libraries. No server ever sees your data.</p>
+  <!-- ── WHAT IS PDFDUKAN (AEO: direct answer first) ── -->
+  <h2>What is PDFdukan?</h2>
+  <p><strong>PDFdukan</strong> is a free, browser-based platform of 40+ PDF tools and an AI-powered document scanner called <strong>CamMaster</strong>. It is built in Pakistan and used by students, professionals, and businesses across South Asia and worldwide. Every tool runs entirely inside your web browser — no file uploads, no signup required for basic use.</p>
 
-  <h2>CamMaster — Our Flagship Scanner</h2>
-  <p><strong>CamMaster</strong> is our AI-powered document scanner. It uses OpenCV.js computer vision to automatically detect document edges, apply perspective correction, and enhance scan quality in real time — all inside your browser. Think CamScanner, but private and free forever.</p>
-
-  <h2>What We Offer</h2>
+  <!-- ── WHO NEEDS IT / PROBLEM IT SOLVES ── -->
+  <h2>Who is PDFdukan built for?</h2>
+  <p>PDFdukan is built for anyone who needs to work with PDFs or scanned documents without paying for expensive software or uploading sensitive files to unknown servers. This includes:</p>
   <ul>
-    <li><strong>📷 Smart Scan</strong> — AI edge detection, perspective warp, shadow removal</li>
-    <li><strong>📑 Image to PDF</strong> — Convert JPG, PNG, WEBP to multi-page PDFs</li>
-    <li><strong>🖼️ PDF to JPG</strong> — Extract every page as a high-quality image</li>
-    <li><strong>🔗 Merge PDF</strong> — Combine PDFs, choose specific pages per file</li>
-    <li><strong>✂️ Split PDF</strong> — Visual breakpoint splitting and custom ranges</li>
-    <li><strong>🗜️ Compress Image</strong> — Reduce file sizes without noticeable quality loss</li>
-    <li><strong>🔤 OCR Text</strong> — Extract text from images using Tesseract.js</li>
-    <li><strong>📅 Age Calculator</strong> — Precise age computation in multiple units</li>
+    <li><strong>Students in Pakistan</strong> — scanning CNIC, assignments, and university documents</li>
+    <li><strong>Office workers</strong> — merging, splitting, and compressing PDFs for email and portals</li>
+    <li><strong>Freelancers</strong> — converting and signing documents quickly without subscriptions</li>
+    <li><strong>Small businesses</strong> — processing invoices, contracts, and forms for free</li>
   </ul>
 
+  <!-- ── FOUNDER / ENTITY ── -->
+  <h2>Who built PDFdukan?</h2>
+  <p>PDFdukan was founded in 2025 by <strong>Sher Azam Khan</strong>, a developer based in Pakistan. The project was created after observing that most online PDF tools either charge a fee, require an account, or upload your files to a third-party server. PDFdukan was built to solve all three problems at once.</p>
+
+  <!-- ── WHAT PROBLEM IT SOLVES ── -->
+  <h2>What problem does PDFdukan solve?</h2>
+  <p>Traditional document tools force users to choose between convenience and privacy. Cloud-based tools upload your files — sometimes permanently. Desktop software costs money and requires installation. PDFdukan processes everything inside the browser using WebAssembly and JavaScript, so:</p>
+  <ul>
+    <li>Your files <strong>never leave your device</strong></li>
+    <li>There is <strong>no installation</strong> required</li>
+    <li>There is <strong>no subscription</strong> or hidden fee</li>
+    <li>It works on any device — phone, tablet, or computer</li>
+  </ul>
+
+  <!-- ── FLAGSHIP PRODUCT ── -->
+  <h2>CamMaster — Our AI Document Scanner</h2>
+  <p><strong>CamMaster</strong> is PDFdukan's flagship product. It uses <strong>OpenCV.js computer vision</strong> to automatically detect document edges, correct perspective, remove shadows, and enhance scan quality — all in real time inside your browser. It is the free alternative to CamScanner and Adobe Scan, with no upload and no account required.</p>
+  <p>Key features of CamMaster:</p>
+  <ul>
+    <li>Auto edge detection and corner adjustment</li>
+    <li>Magic Pro AI enhancement filters</li>
+    <li>Export to PDF or JPG</li>
+    <li>Optional Google Drive save (requires sign-in)</li>
+    <li>Works from phone camera or uploaded photo</li>
+  </ul>
+
+  <!-- ── TOOLS OVERVIEW ── -->
+  <h2>What tools does PDFdukan offer?</h2>
+  <p>PDFdukan offers 40+ tools across these categories:</p>
+  <ul>
+    <li><strong>PDF Conversion:</strong> <a href="tools/img-to-pdf.html">Image to PDF</a>, <a href="tools/pdf-to-img.html">PDF to JPG</a>, <a href="tools/word-to-pdf.html">Word to PDF</a>, <a href="tools/pdf-to-word.html">PDF to Word</a></li>
+    <li><strong>PDF Management:</strong> <a href="tools/merge-pdf.html">Merge PDF</a>, <a href="tools/split-pdf.html">Split PDF</a>, <a href="tools/compress-pdf.html">Compress PDF</a>, <a href="tools/rotate-pdf.html">Rotate PDF</a></li>
+    <li><strong>AI &amp; OCR:</strong> <a href="tools/ocr.html">OCR Text Extraction</a>, <a href="tools/ai-pdf-summarizer.html">AI PDF Summarizer</a>, <a href="tools/ai-pdf-chat.html">AI PDF Chat</a></li>
+    <li><strong>Utilities:</strong> <a href="tools/qr-generator.html">QR Generator</a>, <a href="tools/barcode-generator.html">Barcode Generator</a>, <a href="tools/inheritance-calc.html">Islamic Inheritance Calculator</a></li>
+  </ul>
+
+  <!-- ── PRIVACY PROMISE ── -->
   <h2>Our Privacy Promise</h2>
   <blockquote>
-    <strong>Zero file uploads — your documents never leave your device.</strong> All file processing happens 100% in your browser using JavaScript. We do not have the ability to access, store, or view any document you process through PDFdukan.
+    <strong>Zero file uploads — your documents never leave your device.</strong> All file processing happens 100% in your browser using JavaScript and WebAssembly. We do not have the ability to access, store, or view any document you process through PDFdukan.
   </blockquote>
-  <p>For your files we use only essential cookies (theme preference, recent docs list stored in <em>your</em> localStorage). For website traffic we use privacy-friendly, anonymized analytics (aggregate page views with IP anonymization) — never your document contents. Ads, when shown, are served by Google AdSense. Full details are in our <a href="privacy.html">Privacy Policy</a> and <a href="cookies.html">Cookie Policy</a>.</p>
+  <p>We use only essential cookies (theme preference, recent docs list in <em>your</em> localStorage). Website traffic is measured with anonymized Google Analytics 4 (IP anonymization enabled) — never your document contents. Full details: <a href="privacy.html">Privacy Policy</a> and <a href="cookies.html">Cookie Policy</a>.</p>
 
+  <!-- ── TECH STACK ── -->
   <h2>Open Technology Stack</h2>
-  <p>PDFdukan is built on industry-standard open-source libraries:</p>
+  <p>PDFdukan is built entirely on industry-standard open-source libraries — no proprietary backend:</p>
   <ul>
-    <li><strong>PDF-lib</strong> — PDF creation, merge, and split</li>
+    <li><strong>PDF-lib</strong> — PDF creation, merge, split</li>
     <li><strong>PDF.js</strong> — PDF rendering and page preview</li>
-    <li><strong>OpenCV.js</strong> — Computer vision for edge detection</li>
+    <li><strong>OpenCV.js</strong> — Computer vision for edge detection (CamMaster)</li>
     <li><strong>Tesseract.js</strong> — Optical Character Recognition</li>
     <li><strong>jsPDF</strong> — Image-to-PDF generation</li>
     <li><strong>JSZip</strong> — Client-side ZIP creation</li>
   </ul>
 
+  <!-- ── CONTACT ── -->
   <h2>Contact &amp; Support</h2>
-  <p>Have questions, suggestions, or found a bug? We'd love to hear from you.</p>
-  <p>📬 <a href="contact.html">Contact us via our contact form</a><br>
-     ❓ <a href="help.html">Help &amp; FAQ</a></p>
+  <p>Have questions, feature suggestions, or found a bug?</p>
+  <p>📬 <a href="contact.html">Contact us via our contact form</a> — we respond within 24–48 hours.<br>
+     ❓ <a href="help.html">Help &amp; FAQ</a> — common questions answered</p>
 
   <hr>
-  <p style="font-size:13px;color:var(--text-3)">© 2026 PDFdukan. CamMaster™ is a trademark of PDFdukan. All rights reserved.</p>
+  <p style="font-size:13px;color:var(--text-3)">© 2026 PDFdukan. Founded 2025 in Pakistan. CamMaster™ is a trademark of PDFdukan. All rights reserved.</p>
 
 </article>
 
@@ -392,8 +466,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="js/app.js?v=20260606a"></script>
-<script src="js/header.js?v=20260606a"></script>
-<script src="js/particles.js?v=20260606a"></script>
+<script src="js/app.js?v=20260606b"></script>
+<script src="js/header.js?v=20260606b"></script>
+<script src="js/particles.js?v=20260606b"></script>
 </body>
 </html>
