@@ -69,6 +69,38 @@ const nextConfig = {
           { key: 'Pragma', value: 'no-cache' },
         ],
       },
+      // Versioned static assets — immutable 1-year cache.
+      // All /js/*.js and /css/*.css files include ?v=... query strings,
+      // so changing the version instantly busts the cache.
+      {
+        source: '/js/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/css/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/images/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/favicon:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/apple-touch-icon:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      // HTML pages — short cache so content updates reach users within an hour.
+      {
+        source: '/:path*.html',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' }],
+      },
     ];
   },
 };

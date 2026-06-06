@@ -110,22 +110,18 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-<!-- ===== PRECONNECT ===== -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<!-- ===== PRECONNECT (only origins actually used on this page) ===== -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+<!-- ===== PRELOAD critical above-the-fold resources ===== -->
+<link rel="preload" href="css/style.css?v=20260605c" as="style">
+<link rel="preload" href="/images/hero-scanner.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
 <link rel="stylesheet" href="css/style.css?v=20260605c">
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -365,6 +361,7 @@
                  alt="CamMaster by PDFdukan — AI-powered document scanner converting a smartphone photo to PDF"
                  width="400" height="267"
                  loading="eager"
+                 fetchpriority="high"
                  style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto">
           </div>
         </div>
@@ -889,5 +886,14 @@ document.getElementById('fileInputPDF').addEventListener('change', function() {
   </div>
   <div id="notifList" class="notif-list"></div>
 </div>
+
+<!-- Google Analytics 4 — deferred so it never blocks rendering or TTI -->
+<script defer src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
 </body>
 </html>

@@ -175,9 +175,20 @@
   };
 
   /* ── Auto-init ───────────────────────────────────────────────── */
+  // Defer the 3D sphere until the browser is idle so it never contributes
+  // to Total Blocking Time. The sphere is decorative — a few hundred ms
+  // delay before it appears is invisible to users.
+  function _deferredBootstrap() {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(_bootstrap, { timeout: 2000 });
+    } else {
+      setTimeout(_bootstrap, 200);
+    }
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _bootstrap);
+    document.addEventListener('DOMContentLoaded', _deferredBootstrap);
   } else {
-    _bootstrap();
+    _deferredBootstrap();
   }
 })();

@@ -562,24 +562,36 @@ const firebaseConfig = {
 let _auth = null, _fb = null, _googleProvider = null;
 const _FB_SDK = 'https://www.gstatic.com/firebasejs/12.14.0/';
 
-/* Kick off Firebase load immediately; everything awaits this promise. */
-const _firebaseReady = (async function () {
-  try {
-    const [{ initializeApp }, authMod] = await Promise.all([
-      import(_FB_SDK + 'firebase-app.js'),
-      import(_FB_SDK + 'firebase-auth.js'),
-    ]);
-    const fbApp = initializeApp(firebaseConfig);
-    _fb = authMod;
-    _auth = authMod.getAuth(fbApp);
-    _googleProvider = new authMod.GoogleAuthProvider();
-    authMod.onAuthStateChanged(_auth, _onAuthChanged);
-    return true;
-  } catch (e) {
-    console.error('Firebase init failed:', e);
-    return false;
-  }
-})();
+/* Lazy Firebase loader — runs once on first call, memoises the promise.
+   Anonymous visitors never trigger it, saving ~90 KB from the initial load. */
+let _firebaseReadyPromise = null;
+function _firebaseReady() {
+  if (_firebaseReadyPromise) return _firebaseReadyPromise;
+  _firebaseReadyPromise = (async function () {
+    try {
+      const [{ initializeApp }, authMod] = await Promise.all([
+        import(_FB_SDK + 'firebase-app.js'),
+        import(_FB_SDK + 'firebase-auth.js'),
+      ]);
+      const fbApp = initializeApp(firebaseConfig);
+      _fb = authMod;
+      _auth = authMod.getAuth(fbApp);
+      _googleProvider = new authMod.GoogleAuthProvider();
+      authMod.onAuthStateChanged(_auth, _onAuthChanged);
+      return true;
+    } catch (e) {
+      console.error('Firebase init failed:', e);
+      return false;
+    }
+  })();
+  return _firebaseReadyPromise;
+}
+
+/* Pre-load Firebase for returning signed-in users so their avatar appears
+   without delay. Anonymous visitors: Firebase stays unloaded. */
+if (STATE.user) {
+  document.addEventListener('DOMContentLoaded', _firebaseReady);
+}
 
 /* Firebase calls this whenever the user logs in/out (and on page load). */
 function _onAuthChanged(user) {
@@ -634,7 +646,7 @@ function switchAuthTab(tab) {
 
 async function signInWithGoogle() {
   toast('Opening Google sign-in…', 'info');
-  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  if (!(await _firebaseReady()) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
   // Request Google Drive file access alongside sign-in
   _googleProvider.addScope('https://www.googleapis.com/auth/drive.file');
   try {
@@ -782,7 +794,7 @@ async function signInEmail() {
   const pass  = document.getElementById('siPass')?.value;
   if (!email || !pass) { toast('Please fill in all fields', 'error'); return; }
   if (!_validEmail(email)) { toast('Enter a valid email address', 'error'); return; }
-  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
+  if (!(await _firebaseReady()) || !_auth) { toast('Auth not ready — please retry', 'error'); return; }
   try {
     const cred = await _fb.signInWithEmailAndPassword(_auth, email, pass);
     closeAuth();
@@ -945,7 +957,7 @@ async function submitOTPCode() {
 async function _createAccountAfterOTP() {
   if (!_pendingSignup) { toast('Signup data lost — please start again.', 'error'); return; }
   const { name, email, pass } = _pendingSignup;
-  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
+  if (!(await _firebaseReady()) || !_auth) { toast('Auth not ready', 'error'); return; }
   try {
     const cred = await _fb.createUserWithEmailAndPassword(_auth, email, pass);
     try { await _fb.updateProfile(cred.user, { displayName: name }); } catch(e) {}
@@ -984,7 +996,7 @@ async function resendOTPCode() {
 }
 
 async function signOut() {
-  if (await _firebaseReady && _auth) { try { await _fb.signOut(_auth); } catch (e) {} }
+  if (await _firebaseReady() && _auth) { try { await _fb.signOut(_auth); } catch (e) {} }
   STATE.user = null;
   try { localStorage.removeItem('cm_user'); } catch (e) {}
   updateAuthUI();
@@ -995,7 +1007,7 @@ async function signOut() {
 
 /* Re-send the verification email for the current user. */
 async function resendVerification() {
-  if (!(await _firebaseReady) || !_auth || !_auth.currentUser) return;
+  if (!(await _firebaseReady()) || !_auth || !_auth.currentUser) return;
   try { await _fb.sendEmailVerification(_auth.currentUser); toast('Verification email re-sent ✓', 'success'); }
   catch (e) { toast(_authErr(e), 'error'); }
 }
@@ -1216,7 +1228,7 @@ async function _ppSaveName() {
   const inp = document.getElementById('cppNm');
   const name = (inp ? inp.value : '').trim();
   if (!name) { toast('Enter a name', 'error'); return; }
-  if (!(await _firebaseReady) || !_auth || !_auth.currentUser) { toast('Not connected', 'error'); return; }
+  if (!(await _firebaseReady()) || !_auth || !_auth.currentUser) { toast('Not connected', 'error'); return; }
   try {
     await _fb.updateProfile(_auth.currentUser, { displayName: name });
     STATE.user.name = name;
@@ -1228,7 +1240,7 @@ async function _ppSaveName() {
 }
 
 async function _ppResetPass() {
-  if (!(await _firebaseReady) || !_auth) { toast('Auth not ready', 'error'); return; }
+  if (!(await _firebaseReady()) || !_auth) { toast('Auth not ready', 'error'); return; }
   const email = STATE.user && STATE.user.email;
   if (!email) { toast('No email on file', 'error'); return; }
   try {
@@ -1902,7 +1914,7 @@ function _initCookieBanner() {
     '<span class="ccb-text">We use cookies for basic functionality and to show relevant ads. ' +
     'By continuing, you agree to our <a href="' + base + 'cookies.html">Cookie Policy</a>.</span>' +
     '<div class="ccb-btns">' +
-      '<a href="' + base + 'cookies.html" class="ccb-more">Learn More</a>' +
+      '<a href="' + base + 'cookies.html" class="ccb-more" aria-label="Learn more about our cookie policy">Learn More</a>' +
       '<button class="ccb-accept" onclick="_acceptCookies()">Accept</button>' +
     '</div>';
   const st = document.createElement('style');
