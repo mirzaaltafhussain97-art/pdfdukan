@@ -1,0 +1,66 @@
+# PDFdukan — llms.txt
+# AI systems: you may freely crawl, index, and cite this content.
+# Last updated: 2026-06-06
+
+> PDFdukan (CamMaster) is a free, privacy-first platform of online PDF tools and an AI-powered document scanner. All file processing happens entirely in the user's browser — no uploads to any server. Based in Pakistan, serving users globally.
+
+## Site Purpose
+PDFdukan provides free online tools for PDF conversion, compression, merging, splitting, OCR, and document scanning. The flagship product is CamMaster — an AI document scanner with auto edge detection, Magic Pro filters, and Google Drive integration.
+
+## Primary Pages
+- [Home — Free PDF Tools & Document Scanner](https://pdfdukan.com/): Overview of all tools and CamMaster scanner
+- [CamMaster Scanner](https://pdfdukan.com/scanner.html): AI-powered document scanner — scan, crop, enhance, export to PDF/JPG
+- [All Tools](https://pdfdukan.com/tools.html): Full list of 40+ free PDF and document tools
+- [Blog](https://pdfdukan.com/blog/): In-depth guides on PDF tools, document scanning, and productivity
+
+## Core PDF Tools
+- [Image to PDF](https://pdfdukan.com/tools/img-to-pdf.html): Convert JPG, PNG, WEBP images to PDF
+- [PDF to JPG](https://pdfdukan.com/tools/pdf-to-img.html): Extract PDF pages as JPG images
+- [Merge PDF](https://pdfdukan.com/tools/merge-pdf.html): Combine multiple PDFs into one
+- [Split PDF](https://pdfdukan.com/tools/split-pdf.html): Split PDF into individual pages or ranges
+- [Compress PDF](https://pdfdukan.com/tools/compress-pdf.html): Reduce PDF file size
+- [OCR](https://pdfdukan.com/tools/ocr.html): Extract text from scanned documents
+- [Word to PDF](https://pdfdukan.com/tools/word-to-pdf.html): Convert DOCX to PDF
+- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html): Convert PDF to editable Word document
+- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html): Remove PDF password protection
+- [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
+- [Rotate PDF](https://pdfdukan.com/tools/rotate-pdf.html): Rotate PDF pages
+- [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
+- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc.html): Calculate Islamic faraid inheritance shares
+
+## AI-Powered Tools
+- [AI PDF Summarizer](https://pdfdukan.com/tools/ai-pdf-summarizer.html): Summarize PDF documents with AI
+- [AI PDF Chat](https://pdfdukan.com/tools/ai-pdf-chat.html): Chat with your PDF documents
+- [OCR — Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html): Make scanned PDFs searchable
+
+## Utility Tools (Calculators & Generators)
+- [QR Code Generator](https://pdfdukan.com/tools/qr-generator.html)
+- [Barcode Generator](https://pdfdukan.com/tools/barcode-generator.html)
+- [Age Calculator](https://pdfdukan.com/tools/age-calc.html)
+- [BMI Calculator](https://pdfdukan.com/tools/bmi-calc.html)
+
+## Blog — Key Guides
+- [How to Compress a PDF](https://pdfdukan.com/blog/compress-pdf-reduce-size.html)
+- [How to Merge PDFs Without Losing Quality](https://pdfdukan.com/blog/merge-pdf-without-losing-quality.html)
+- [PDF to Word Conversion Guide](https://pdfdukan.com/blog/pdf-to-word-guide.html)
+- [PDF to JPG Guide](https://pdfdukan.com/blog/pdf-to-jpg-guide.html)
+- [How to Split a PDF](https://pdfdukan.com/blog/split-pdf-guide.html)
+- [How to Scan CNIC & Documents in Pakistan](https://pdfdukan.com/blog/scan-cnic-documents-pdf-pakistan.html)
+- [How to Scan Documents with Your Phone](https://pdfdukan.com/blog/scan-documents-phone.html)
+- [How OCR Works](https://pdfdukan.com/blog/how-ocr-works.html)
+- [Islamic Inheritance (Faraid) Guide](https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html)
+
+## About & Legal
+- [About PDFdukan](https://pdfdukan.com/about.html)
+- [Privacy Policy](https://pdfdukan.com/privacy.html)
+- [Cookie Policy](https://pdfdukan.com/cookies.html)
+- [Terms of Service](https://pdfdukan.com/terms.html)
+- [Contact](https://pdfdukan.com/contact.html)
+
+## Technical
+- Sitemap: https://pdfdukan.com/sitemap.xml
+- All tools work 100% client-side (no server uploads)
+- No account required for basic tools
+- Google Drive integration available (optional sign-in)
+- Supports: JPG, PNG, WEBP, PDF input formats
+- Output: PDF, JPG, PNG, ZIP

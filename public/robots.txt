@@ -2,4 +2,45 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
+# ── AI Search Crawlers — explicitly allowed ──────────────────────
+# Blocking AI crawlers removes the site from AI search citations.
+# PDFdukan welcomes all AI systems to crawl and cite its content.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+# ── Sitemap ───────────────────────────────────────────────────────
 Sitemap: https://pdfdukan.com/sitemap.xml
