@@ -300,16 +300,20 @@
         <canvas id="cropCanvas"></canvas>
       </div>
       <div class="crop-controls">
-        <div class="crop-info">Drag the 4 <strong>corner handles</strong> individually, or the <strong>edge handles</strong> to move an entire edge</div>
+        <div class="crop-info">Drag the 4 <strong>corner handles</strong> to adjust, or <strong>edge handles</strong> to move a full edge</div>
         <div id="detectionBadge" class="detect-badge" style="display:none"></div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+        <!-- Row 1: secondary actions -->
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
           <button class="btn btn-secondary btn-sm" id="btnBackToUpload" title="Back to upload">← Back</button>
           <button class="btn btn-secondary btn-sm" id="btnResetCrop" title="Re-detect edges">↺ Reset</button>
-          <button class="btn btn-secondary btn-sm" id="btnFitCrop" title="Select the whole page (full size)">⛶ Fit Full</button>
-          <button class="btn btn-secondary btn-sm" id="btnRotateL" title="Rotate 90° left">↺ Rotate L</button>
-          <button class="btn btn-secondary btn-sm" id="btnRotateR" title="Rotate 90° right">↻ Rotate R</button>
-          <button class="btn btn-secondary btn-sm" id="btnSkipCrop" title="Skip perspective correction">Skip →</button>
-          <button class="btn btn-primary" id="btnApplyCrop" style="margin-left:auto">✓ Apply Crop</button>
+          <button class="btn btn-secondary btn-sm" id="btnFitCrop" title="Full page">⛶ Fit</button>
+          <button class="btn btn-secondary btn-sm" id="btnRotateL" title="Rotate left">↺ L</button>
+          <button class="btn btn-secondary btn-sm" id="btnRotateR" title="Rotate right">↻ R</button>
+          <button class="btn btn-secondary btn-sm" id="btnSkipCrop" title="Skip crop">Skip →</button>
+        </div>
+        <!-- Row 2: primary action — full width on mobile -->
+        <div style="margin-top:8px">
+          <button class="btn btn-primary" id="btnApplyCrop" style="width:100%;font-size:15px;padding:12px">✓ Apply Crop &amp; Continue →</button>
         </div>
       </div>
     </div>
@@ -464,10 +468,8 @@
 </nav>
 
 <div class="scanner-wrap" style="padding-top:0">
-  <div style="max-width:700px;margin:24px auto 0;padding:0 20px;text-align:center">
-    <p style="font-size:14px;line-height:1.7;color:var(--text-2)">
-      CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
-    </p>
+  <div class="scanner-seo-desc">
+    CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
   </div>
   <div style="max-width:700px;margin:28px auto;padding:0 20px">
     <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>

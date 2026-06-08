@@ -1154,12 +1154,24 @@ const OCRTool = (() => {
       reader.readAsDataURL(file);
     }
 
-    _showProgress(5, 'Loading Tesseract…');
+    _showProgress(5, 'Starting OCR engine…');
     try {
       const worker = await Tesseract.createWorker(lang, 1, {
         logger: m => {
-          if (m.status === 'recognizing text') {
-            _showProgress(Math.round(m.progress * 90), `Recognizing… ${Math.round(m.progress * 100)}%`);
+          // Show real progress for EVERY phase — not just recognizing
+          if (!m || !m.status) return;
+          const s = m.status;
+          const p = m.progress || 0;
+          if (s === 'loading tesseract core') {
+            _showProgress(8, 'Loading OCR core…');
+          } else if (s === 'initializing tesseract') {
+            _showProgress(18, 'Initializing OCR engine…');
+          } else if (s === 'loading language traineddata') {
+            _showProgress(20 + Math.round(p * 30), `Loading language data… ${Math.round(p * 100)}%`);
+          } else if (s === 'initializing api') {
+            _showProgress(55, 'Preparing recognition…');
+          } else if (s === 'recognizing text') {
+            _showProgress(60 + Math.round(p * 35), `Recognizing text… ${Math.round(p * 100)}%`);
           }
         }
       });
@@ -1169,7 +1181,7 @@ const OCRTool = (() => {
 
       _showProgress(100, 'Complete!');
       const output = document.getElementById('ocrOutput');
-      if (output) output.textContent = data.text.trim() || '(No text detected)';
+      if (output) output.textContent = data.text.trim() || '(No text detected in image — try a clearer photo)';
 
       const confEl = document.getElementById('statConf');
       const wordEl = document.getElementById('statWords');
@@ -1180,8 +1192,11 @@ const OCRTool = (() => {
       _showResult();
       toast('Text extracted! ✓', 'success');
     } catch (e) {
-      toast('OCR failed: ' + e.message, 'error');
-      console.error(e);
+      _showProgress(0, '');
+      const pc = document.getElementById('progressCard');
+      if (pc) pc.style.display = 'none';
+      toast('OCR failed — try a clearer image or different browser. ' + e.message, 'error');
+      console.error('OCR error:', e);
     }
   }
 

@@ -2396,3 +2396,54 @@ html[data-theme="light"] .blog-hero-strip {
   color: var(--primary);
 }
 .blog-card .bc-read-more:hover { text-decoration: underline; }
+
+
+/* ================================================================
+   FIX: TEXT OVERFLOW IN TOOL HERO + QUICK-ANSWER BOXES
+================================================================ */
+.tool-hero{overflow-wrap:break-word;word-break:break-word}
+.tool-hero h1,.tool-hero p{max-width:100%;overflow-wrap:break-word}
+.quick-answer{box-sizing:border-box!important;max-width:min(760px,100%)!important;overflow-wrap:break-word;word-break:break-word}
+
+/* ================================================================
+   FIX: SCANNER DESCRIPTION TEXT — ADD READABLE BACKGROUND
+================================================================ */
+.scanner-seo-desc{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:24px 28px;margin:24px auto 0;max-width:700px;
+  font-size:14px;line-height:1.75;color:var(--text-2);text-align:center;
+}
+
+/* ================================================================
+   FIX: SCANNER MOBILE — PROFESSIONAL LAYOUT
+================================================================ */
+@media(max-width:640px){
+  .scanner-wrap{padding:12px 10px 90px}
+  .crop-canvas-outer{min-height:260px;max-height:420px}
+  .crop-controls{padding:10px;gap:6px}
+  .crop-controls .crop-info{font-size:11px;padding:6px 10px;min-width:100%;margin-bottom:2px}
+  #btnBackToUpload,#btnResetCrop,#btnFitCrop,#btnSkipCrop,#btnRotateL,#btnRotateR{font-size:11px;padding:7px 8px}
+  #btnApplyCrop{width:100%;font-size:15px;padding:13px;margin:8px 0 0;margin-left:0!important;display:block}
+  .filter-layout{grid-template-columns:1fr;gap:12px}
+  .filter-preview-outer,.filter-preview-wrap{min-height:200px}
+  .filter-panel-inner{padding:12px;position:static!important;top:auto!important}
+  .filter-strip{grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:10px}
+  .filter-card canvas{height:52px}
+  .filter-card .fc-label{font-size:9px;padding:3px 2px}
+  .sliders-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .slider-group{margin-bottom:6px}
+  .compare-row{gap:6px;margin-top:8px}
+  .compare-box canvas{max-height:100px}
+  #btnBackToCropMain{min-width:80px;font-size:13px}
+  #btnAddPageMain{font-size:14px;padding:12px}
+  #btnAddPage{width:100%!important;font-size:14px;padding:12px}
+  #btnBackToCrop{width:100%!important;font-size:13px}
+  #batchBanner{padding:8px 10px}
+  .pages-screen-header{flex-direction:column;align-items:flex-start;gap:8px}
+  .pages-screen-header>div{width:100%;display:flex;gap:8px}
+  .pages-screen-header>div .btn{flex:1}
+  .pages-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .page-thumb .pt-img{height:130px}
+  .export-layout{gap:12px}
+  .export-card{padding:16px}
+}
