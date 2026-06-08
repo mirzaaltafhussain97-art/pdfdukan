@@ -137,7 +137,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Split PDF","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Split by page ranges","Extract single pages","Multiple output files","No file upload","Free forever"],"url":"https://pdfdukan.com/tools/split-pdf.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use Split PDF","description":"Free online PDF splitter. Split a PDF into separate pages or extract specific page ranges. No upload. Works in your browser instantly.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload your PDF file to the Split PDF tool."},{"@type":"HowToStep","name":"Step 2","text":"Enter the page ranges or individual page numbers you want to extract."},{"@type":"HowToStep","name":"Step 3","text":"Click Split and download each section as a separate PDF file."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I split a PDF into separate pages for free?","acceptedAnswer":{"@type":"Answer","text":"Upload your PDF to PDFdukan's Split tool, enter the page ranges or page numbers you want, then click Split. Each section downloads as a separate PDF."}},{"@type":"Question","name":"Can I extract just one page from a PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter a single page number (for example, 3) and the tool will extract just that page as its own PDF file."}},{"@type":"Question","name":"Can I split a large PDF into equal parts?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can split by specific page ranges (e.g., 1-5, 6-10) or extract every page as its own individual file."}},{"@type":"Question","name":"Is there a page limit for splitting PDFs?","acceptedAnswer":{"@type":"Answer","text":"No hard limit. PDFdukan handles large PDFs entirely in your browser. Multi-hundred-page documents work smoothly on modern devices."}},{"@type":"Question","name":"Will splitting a PDF affect the original file?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan never modifies your original file. The split creates new files while your original PDF stays unchanged on your device."}}]}]}</script></head>
 <body data-tool="split-pdf">
 <canvas id="particleCanvas"></canvas>
 
@@ -463,6 +463,32 @@ document.querySelectorAll('.mode-card').forEach(card => {
   <div class="brand-loader-text">Processing...</div>
   <div class="brand-loader-sub">Please wait</div>
 </div>
+
+<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Frequently Asked Questions">
+  <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I split a PDF into separate pages for free?</button>
+      <div class="faq-a"><p>Upload your PDF to PDFdukan&rsquo;s Split tool, enter the page ranges or page numbers you want, then click Split. Each section downloads as a separate PDF.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract just one page from a PDF?</button>
+      <div class="faq-a"><p>Yes. Enter a single page number (for example, 3) and the tool will extract just that page as its own PDF file.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I split a large PDF into equal parts?</button>
+      <div class="faq-a"><p>Yes. You can split by specific page ranges (e.g., 1-5, 6-10) or extract every page as its own individual file.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a page limit for splitting PDFs?</button>
+      <div class="faq-a"><p>No hard limit. PDFdukan handles large PDFs entirely in your browser. Multi-hundred-page documents work smoothly on modern devices.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will splitting a PDF affect the original file?</button>
+      <div class="faq-a"><p>No. PDFdukan never modifies your original file. The split creates new files while your original PDF stays unchanged on your device.</p></div>
+    </div>
+</section>
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>      <a href="delete-pages.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>      <a href="reorder-pdf.html" class="related-tool-card"><span class="rtc-icon">🔀</span>Reorder PDF</a>      <a href="compress-pdf.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>  </div>
+</section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">

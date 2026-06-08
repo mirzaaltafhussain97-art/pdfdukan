@@ -58,7 +58,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"OCR Text Extractor","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Extract text from images","Scanned PDF support","JPG PNG WEBP support","No file upload","Free forever"],"url":"https://pdfdukan.com/tools/ocr.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use OCR Text Extractor","description":"Free online OCR tool. Extract text from scanned PDFs and images using AI. Supports JPG, PNG, WEBP, PDF. No upload required.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload a scanned PDF or image file (JPG, PNG, WEBP)."},{"@type":"HowToStep","name":"Step 2","text":"PDFdukan&rsquo;s OCR engine reads and extracts all visible text from the document."},{"@type":"HowToStep","name":"Step 3","text":"Copy the extracted text or download it as a TXT file."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I extract text from a scanned PDF for free?","acceptedAnswer":{"@type":"Answer","text":"Upload your scanned PDF or image to PDFdukan's OCR tool. The AI reads the text automatically. Copy it or download as TXT — free, no signup."}},{"@type":"Question","name":"What file formats does the OCR tool support?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan OCR supports JPG, JPEG, PNG, and WEBP image files, as well as scanned PDF documents."}},{"@type":"Question","name":"How accurate is the OCR text extraction?","acceptedAnswer":{"@type":"Answer","text":"Accuracy depends on image quality. Clear, well-lit scans with a contrasting background typically achieve 90-98% accuracy for printed text."}},{"@type":"Question","name":"Can OCR read handwritten text?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan's OCR is optimized for printed text. Handwriting recognition accuracy is limited and depends heavily on handwriting clarity."}},{"@type":"Question","name":"Is the OCR tool free to use?","acceptedAnswer":{"@type":"Answer","text":"Yes, 100% free. No account, no credit card, and no file size limit for basic usage. All processing happens in your browser."}}]}]}</script></head>
 <body data-tool="ocr">
 <canvas id="particleCanvas"></canvas>
 
@@ -389,6 +389,32 @@ OCRTool.loadImage = function(files) {
   <div class="brand-loader-text">Processing...</div>
   <div class="brand-loader-sub">Please wait</div>
 </div>
+
+<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Frequently Asked Questions">
+  <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I extract text from a scanned PDF for free?</button>
+      <div class="faq-a"><p>Upload your scanned PDF or image to PDFdukan&rsquo;s OCR tool. The AI reads the text automatically. Copy it or download as TXT — free, no signup.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What file formats does the OCR tool support?</button>
+      <div class="faq-a"><p>PDFdukan OCR supports JPG, JPEG, PNG, and WEBP image files, as well as scanned PDF documents.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the OCR text extraction?</button>
+      <div class="faq-a"><p>Accuracy depends on image quality. Clear, well-lit scans with a contrasting background typically achieve 90&ndash;98% accuracy for printed text.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can OCR read handwritten text?</button>
+      <div class="faq-a"><p>PDFdukan&rsquo;s OCR is optimized for printed text. Handwriting recognition accuracy is limited and depends heavily on handwriting clarity.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is the OCR tool free to use?</button>
+      <div class="faq-a"><p>Yes, 100% free. No account, no credit card, and no file size limit for basic usage. All processing happens in your browser.</p></div>
+    </div>
+</section>
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="pdf-to-word.html" class="related-tool-card"><span class="rtc-icon">📝</span>PDF to Word</a>      <a href="searchable-pdf.html" class="related-tool-card"><span class="rtc-icon">🔍</span>Searchable PDF</a>      <a href="compress.html" class="related-tool-card"><span class="rtc-icon">🗜️</span>Compress Image</a>      <a href="../scanner.html" class="related-tool-card"><span class="rtc-icon">📷</span>Smart Scan</a>  </div>
+</section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">

@@ -124,7 +124,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PDF to Word Converter","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["PDF text extraction","DOCX generation","Table detection","No file upload","Free forever"],"url":"https://pdfdukan.com/tools/pdf-to-word.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use PDF to Word Converter","description":"Free online PDF to Word converter. Converts PDF text and basic formatting to DOCX in your browser instantly — no upload, no signup.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload your PDF file by clicking the drop zone or dragging it onto the page."},{"@type":"HowToStep","name":"Step 2","text":"PDFdukan extracts all text and layout automatically using PDF.js."},{"@type":"HowToStep","name":"Step 3","text":"Click Download to save your DOCX file — or copy text directly to clipboard."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert a PDF to Word for free?","acceptedAnswer":{"@type":"Answer","text":"Upload your PDF to PDFdukan's PDF to Word tool, click Convert, then download the DOCX file. It's 100% free with no signup required."}},{"@type":"Question","name":"Will formatting be preserved when converting PDF to Word?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan preserves text layout, paragraphs, and basic formatting. Complex tables and embedded graphics may need minor adjustments in Word after conversion."}},{"@type":"Question","name":"Is it safe to convert PDFs with private data?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan processes all files locally inside your browser using JavaScript. Your PDF never leaves your device and is never uploaded to any server."}},{"@type":"Question","name":"What is the difference between DOCX and TXT output?","acceptedAnswer":{"@type":"Answer","text":"DOCX preserves formatting and opens in Microsoft Word, LibreOffice, and Google Docs. TXT is plain text with no formatting — useful for quick copy-pasting."}},{"@type":"Question","name":"Does the PDF to Word converter work on mobile?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan works on all devices including Android and iPhone browsers. No app installation needed — just open the page and upload your file."}}]}]}</script></head>
 <body data-tool="pdf-to-word">
 <canvas id="particleCanvas"></canvas>
 
@@ -1152,6 +1152,32 @@ window.PDFToWord = PDFToWord;
   <div class="brand-loader-text">Processing...</div>
   <div class="brand-loader-sub">Please wait</div>
 </div>
+
+<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Frequently Asked Questions">
+  <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I convert a PDF to Word for free?</button>
+      <div class="faq-a"><p>Upload your PDF to PDFdukan&rsquo;s PDF to Word tool, click Convert, then download the DOCX file. It&rsquo;s 100% free with no signup required.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will formatting be preserved when converting PDF to Word?</button>
+      <div class="faq-a"><p>PDFdukan preserves text layout, paragraphs, and basic formatting. Complex tables and embedded graphics may need minor adjustments in Word after conversion.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is it safe to convert PDFs with private data?</button>
+      <div class="faq-a"><p>Yes. PDFdukan processes all files locally inside your browser using JavaScript. Your PDF never leaves your device and is never uploaded to any server.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the difference between DOCX and TXT output?</button>
+      <div class="faq-a"><p>DOCX preserves formatting and opens in Microsoft Word, LibreOffice, and Google Docs. TXT is plain text with no formatting — useful for quick copy-pasting.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does the PDF to Word converter work on mobile?</button>
+      <div class="faq-a"><p>Yes. PDFdukan works on all devices including Android and iPhone browsers. No app installation needed — just open the page and upload your file.</p></div>
+    </div>
+</section>
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="pdf-to-excel.html" class="related-tool-card"><span class="rtc-icon">📋</span>PDF to Excel</a>      <a href="pdf-to-img.html" class="related-tool-card"><span class="rtc-icon">🖼️</span>PDF to JPG</a>      <a href="ocr.html" class="related-tool-card"><span class="rtc-icon">🔤</span>OCR Text</a>      <a href="compress-pdf.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>  </div>
+</section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">

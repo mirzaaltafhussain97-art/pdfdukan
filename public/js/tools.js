@@ -67,6 +67,23 @@ function _downloadBlob(blob, filename, toolName, action) {
   }
 }
 
+/* ── FAQ Toggle (shared across all tool pages) ───────────────── */
+function toggleFAQ(btn) {
+  const item = btn.closest('.faq-item');
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    const q = el.querySelector('.faq-q');
+    if (q) q.setAttribute('aria-expanded', 'false');
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
 /* ================================================================
    1. IMAGE → PDF
 ================================================================ */

@@ -435,6 +435,20 @@ ul{list-style:none}
 }
 .faq-item.open .faq-a{max-height:300px;padding:0 18px 16px}
 
+/* ── TOOL PAGE — FAQ & RELATED TOOLS SECTIONS ────────────────── */
+.tool-seo-section{max-width:860px;margin:0 auto;padding:32px 20px 0}
+.tool-seo-section h2{font-size:20px;font-weight:800;margin-bottom:18px;letter-spacing:-.3px}
+.related-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:8px}
+.related-tool-card{
+  display:flex;align-items:center;gap:10px;padding:13px 14px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  font-size:13px;font-weight:600;color:var(--text);transition:var(--t) var(--ease);
+  text-decoration:none;
+}
+.related-tool-card:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
+.related-tool-card .rtc-icon{font-size:20px;flex-shrink:0}
+@media(max-width:600px){.related-tools-grid{grid-template-columns:1fr 1fr}}
+
 /* ── FOOTER ──────────────────────────────────────────────────── */
 .footer{background:var(--card);border-top:1px solid var(--border);margin-top:40px}
 .footer-content{max-width:var(--max-w);margin:0 auto;padding:44px 32px 22px}

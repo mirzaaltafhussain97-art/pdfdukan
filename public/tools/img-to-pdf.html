@@ -49,7 +49,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Image to PDF Converter","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["JPG PNG WEBP to PDF","Multi-page PDF creation","A4 Letter A3 page sizes","No file upload","Free forever"],"url":"https://pdfdukan.com/tools/img-to-pdf.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use Image to PDF Converter","description":"Free online image to PDF converter. Convert JPG, PNG, WEBP photos to PDF in seconds. Multi-page support, A4/Letter/A3 output. No upload needed.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload one or more image files — JPG, PNG, or WEBP."},{"@type":"HowToStep","name":"Step 2","text":"Arrange images in order. Each image becomes one page in the PDF."},{"@type":"HowToStep","name":"Step 3","text":"Choose page size and orientation, then click Convert to download your PDF."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I convert JPG photos to a PDF for free?","acceptedAnswer":{"@type":"Answer","text":"Upload your JPG, PNG, or WEBP images to PDFdukan, arrange them in order, then click Convert PDF. Your multi-page PDF downloads instantly — free."}},{"@type":"Question","name":"Can I convert multiple images into a single PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Upload as many images as you need. Each image becomes one page in the final PDF, and you can drag to reorder them before converting."}},{"@type":"Question","name":"What image formats can I convert to PDF?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan supports JPG, JPEG, PNG, and WEBP formats. You can mix different formats in a single PDF document."}},{"@type":"Question","name":"Can I choose the page size for the output PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can select A4, Letter, or A3 page sizes and choose between portrait or landscape orientation before converting."}},{"@type":"Question","name":"How do I scan a document and save it as PDF?","acceptedAnswer":{"@type":"Answer","text":"Use PDFdukan's CamMaster Smart Scan to photograph your document with edge detection, then export it directly as a PDF with AI enhancement."}}]}]}</script></head>
 <body data-tool="img-to-pdf">
 <canvas id="particleCanvas"></canvas>
 
@@ -390,6 +390,32 @@ ImageToPDF.generate = async function() {
   <div class="brand-loader-text">Processing...</div>
   <div class="brand-loader-sub">Please wait</div>
 </div>
+
+<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Frequently Asked Questions">
+  <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I convert JPG photos to a PDF for free?</button>
+      <div class="faq-a"><p>Upload your JPG, PNG, or WEBP images to PDFdukan, arrange them in order, then click Convert PDF. Your multi-page PDF downloads instantly — free.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert multiple images into a single PDF?</button>
+      <div class="faq-a"><p>Yes. Upload as many images as you need. Each image becomes one page in the final PDF, and you can drag to reorder them before converting.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What image formats can I convert to PDF?</button>
+      <div class="faq-a"><p>PDFdukan supports JPG, JPEG, PNG, and WEBP formats. You can mix different formats in a single PDF document.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I choose the page size for the output PDF?</button>
+      <div class="faq-a"><p>Yes. You can select A4, Letter, or A3 page sizes and choose between portrait or landscape orientation before converting.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I scan a document and save it as PDF?</button>
+      <div class="faq-a"><p>Use PDFdukan&rsquo;s CamMaster Smart Scan to photograph your document with edge detection, then export it directly as a PDF with AI enhancement.</p></div>
+    </div>
+</section>
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="pdf-to-img.html" class="related-tool-card"><span class="rtc-icon">🖼️</span>PDF to JPG</a>      <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>      <a href="compress-pdf.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>      <a href="../scanner.html" class="related-tool-card"><span class="rtc-icon">📷</span>Smart Scan</a>  </div>
+</section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">

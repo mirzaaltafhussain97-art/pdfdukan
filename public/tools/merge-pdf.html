@@ -134,7 +134,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-</head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Merge PDF","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Merge multiple PDFs","Select specific pages","Drag-and-drop reorder","No file upload","Free forever"],"url":"https://pdfdukan.com/tools/merge-pdf.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use Merge PDF Files","description":"Free online PDF merger. Combine multiple PDF files into one document, select specific pages, drag to reorder — all in your browser.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload two or more PDF files using the drop zone or file picker."},{"@type":"HowToStep","name":"Step 2","text":"Choose which pages to include from each file and drag to reorder."},{"@type":"HowToStep","name":"Step 3","text":"Click Merge PDF and download your combined document instantly."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I merge PDF files for free?","acceptedAnswer":{"@type":"Answer","text":"Upload your PDFs to PDFdukan's Merge tool, arrange them in the order you want, then click Merge PDF. Your combined document downloads instantly."}},{"@type":"Question","name":"Can I select specific pages when merging PDFs?","acceptedAnswer":{"@type":"Answer","text":"Yes. After uploading each PDF, you can choose exactly which pages to include from that file before merging."}},{"@type":"Question","name":"Is there a limit on how many PDFs I can merge?","acceptedAnswer":{"@type":"Answer","text":"There is no strict file count limit. PDFdukan handles as many PDFs as your browser can hold in memory — typically 10-20 large files comfortably."}},{"@type":"Question","name":"Are my PDFs secure when merging online?","acceptedAnswer":{"@type":"Answer","text":"Completely secure. All merging happens inside your browser using PDF-lib.js. No files are ever sent to a server or stored anywhere."}},{"@type":"Question","name":"Can I reorder pages in the merged PDF after combining?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use PDFdukan's Reorder PDF tool to rearrange individual pages in any order after you have merged the files."}}]}]}</script></head>
 <body data-tool="merge-pdf">
 <canvas id="particleCanvas"></canvas>
 
@@ -437,6 +437,32 @@
   <div class="brand-loader-text">Processing...</div>
   <div class="brand-loader-sub">Please wait</div>
 </div>
+
+<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Frequently Asked Questions">
+  <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I merge PDF files for free?</button>
+      <div class="faq-a"><p>Upload your PDFs to PDFdukan&rsquo;s Merge tool, arrange them in the order you want, then click Merge PDF. Your combined document downloads instantly.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I select specific pages when merging PDFs?</button>
+      <div class="faq-a"><p>Yes. After uploading each PDF, you can choose exactly which pages to include from that file before merging.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a limit on how many PDFs I can merge?</button>
+      <div class="faq-a"><p>There is no strict file count limit. PDFdukan handles as many PDFs as your browser can hold in memory — typically 10&ndash;20 large files comfortably.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my PDFs secure when merging online?</button>
+      <div class="faq-a"><p>Completely secure. All merging happens inside your browser using PDF-lib.js. No files are ever sent to a server or stored anywhere.</p></div>
+    </div>    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I reorder pages in the merged PDF after combining?</button>
+      <div class="faq-a"><p>Yes. Use PDFdukan&rsquo;s Reorder PDF tool to rearrange individual pages in any order after you have merged the files.</p></div>
+    </div>
+</section>
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="split-pdf.html" class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>      <a href="reorder-pdf.html" class="related-tool-card"><span class="rtc-icon">🔀</span>Reorder PDF</a>      <a href="compress-pdf.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>      <a href="delete-pages.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>  </div>
+</section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
