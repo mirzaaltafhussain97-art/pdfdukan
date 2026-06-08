@@ -115,13 +115,13 @@
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
 <!-- ===== PRELOAD critical above-the-fold resources ===== -->
-<link rel="preload" href="css/style.css?v=20260606b" as="style">
+<link rel="preload" href="css/style.css?v=20260608a" as="style">
 <link rel="preload" href="/images/hero-scanner.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-<link rel="stylesheet" href="css/style.css?v=20260606b">
+<link rel="stylesheet" href="css/style.css?v=20260608a">
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -385,215 +385,122 @@
         </div>
       </section>
 
-      <!-- ALL TOOLS — complete 25-tool dashboard -->
-      <section aria-label="All PDF, Image, Edit and Calculator Tools">
+      <!-- FEATURED TOOLS — Top 6 high-value tools -->
+      <section aria-label="Featured Tools">
         <div class="section-header">
-          <h2 class="section-title"><span class="st-icon">🛠️</span> <span data-i18n="tools.all">All Tools</span></h2>
-          <a href="tools.html" class="see-all" data-i18n="tools.browse">Browse All →</a>
+          <h2 class="section-title"><span class="st-icon">⭐</span> Featured Tools</h2>
+          <a href="tools.html" class="see-all">Browse All 40+ Tools →</a>
         </div>
-
-        <!-- Scanner -->
-        <div class="tool-category-label">📷 Scanner</div>
-        <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('scan')" role="button" tabindex="0" aria-label="Smart Scan">
-            <div class="tool-icon-wrap scan">📷</div>
-            <div class="tc-name">Smart Scan</div>
-            <div class="tc-desc">AI edge detection</div>
-            <span class="tc-badge" style="background:var(--primary)">AI</span>
+        <div class="tools-grid featured-grid" style="margin-bottom:28px">
+          <div class="tool-card featured-card" onclick="openTool('ai-pdf-summarizer')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00838f,#26c6da)">🤖</div>
+            <div class="tc-name">PDF Summarizer</div>
+            <div class="tc-desc">Instant AI summary of any PDF</div>
+            <span class="tc-badge" style="background:#607d8b">AI</span>
           </div>
+          <div class="tool-card featured-card" onclick="openTool('ai-pdf-chat')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">💬</div>
+            <div class="tc-name">Chat with PDF</div>
+            <div class="tc-desc">Ask your PDF questions — AI answers</div>
+            <span class="tc-badge" style="background:#607d8b">AI</span>
+          </div>
+          <div class="tool-card featured-card" onclick="openTool('pdf-to-word')" role="button" tabindex="0">
+            <div class="tool-icon-wrap pdf-word">📝</div>
+            <div class="tc-name">PDF to Word</div>
+            <div class="tc-desc">Convert PDF to editable DOCX</div>
+            <span class="tc-badge">FREE</span>
+          </div>
+          <div class="tool-card featured-card" onclick="openTool('ocr')" role="button" tabindex="0">
+            <div class="tool-icon-wrap ocr">🔤</div>
+            <div class="tc-name">OCR Text</div>
+            <div class="tc-desc">Extract text from any image or PDF</div>
+            <span class="tc-badge">FREE</span>
+          </div>
+          <div class="tool-card featured-card" onclick="openTool('notes-generator')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div>
+            <div class="tc-name">Notes Generator</div>
+            <div class="tc-desc">AI study notes from any document</div>
+            <span class="tc-badge" style="background:#607d8b">AI</span>
+          </div>
+          <div class="tool-card featured-card" onclick="openTool('resume-analyzer')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#4e342e,#8d6e63)">💼</div>
+            <div class="tc-name">Resume Analyzer</div>
+            <div class="tc-desc">AI feedback on your CV instantly</div>
+            <span class="tc-badge" style="background:#607d8b">AI</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI STUDY TOOLS — student-focused section -->
+      <section aria-label="AI Study Tools for Students">
+        <div class="section-header">
+          <h2 class="section-title"><span class="st-icon">🎓</span> AI Study Tools</h2>
+          <a href="tools.html#ai-tools" class="see-all">See All AI Tools →</a>
+        </div>
+        <div class="tools-grid" style="margin-bottom:28px">
+          <div class="tool-card" onclick="openTool('ai-pdf-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00838f,#26c6da)">🤖</div><div class="tc-name">PDF Summarizer</div><div class="tc-desc">Summarize any PDF</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('notes-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div><div class="tc-name">Notes Generator</div><div class="tc-desc">Make study notes</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('mcq-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#6a1b9a,#ab47bc)">❓</div><div class="tc-name">MCQ Generator</div><div class="tc-desc">Make quiz questions</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('assignment-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00695c,#26a69a)">📚</div><div class="tc-name">Assignment Writer</div><div class="tc-desc">Draft assignments</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('essay-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#5c6bc0)">✍️</div><div class="tc-name">Essay Writer</div><div class="tc-desc">Draft essays fast</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('research-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔬</div><div class="tc-name">Research Summarizer</div><div class="tc-desc">Summarize papers</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+        </div>
+      </section>
+
+      <!-- ALL TOOLS — organized by category (lazy-loaded) -->
+      <section aria-label="All PDF Tools by Category">
+        <div class="section-header">
+          <h2 class="section-title"><span class="st-icon">🛠️</span> All Tools</h2>
+          <a href="tools.html" class="see-all">Browse All →</a>
         </div>
 
         <!-- PDF Converters -->
         <div class="tool-category-label">📄 PDF Converters</div>
         <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('img-to-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap img-pdf">📑</div>
-            <div class="tc-name">Image to PDF</div>
-            <div class="tc-desc">JPG/PNG → PDF</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('pdf-to-img')" role="button" tabindex="0">
-            <div class="tool-icon-wrap pdf-img">🖼️</div>
-            <div class="tc-name">PDF to JPG</div>
-            <div class="tc-desc">Extract all pages</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('merge')" role="button" tabindex="0">
-            <div class="tool-icon-wrap merge">🔗</div>
-            <div class="tc-name">Merge PDF</div>
-            <div class="tc-desc">Combine PDFs</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('split')" role="button" tabindex="0">
-            <div class="tool-icon-wrap split">✂️</div>
-            <div class="tc-name">Split PDF</div>
-            <div class="tc-desc">Divide into parts</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('compress-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap compress-pdf">📉</div>
-            <div class="tc-name">PDF Document Compressor</div>
-            <div class="tc-desc">Shrink PDF file size</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('pdf-to-word')" role="button" tabindex="0">
-            <div class="tool-icon-wrap pdf-word">📝</div>
-            <div class="tc-name">PDF to Word</div>
-            <div class="tc-desc">Text to .doc file</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('word-to-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap word-pdf">📄</div>
-            <div class="tc-name">Word to PDF</div>
-            <div class="tc-desc">DOCX → PDF</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('pdf-to-ppt')" role="button" tabindex="0">
-            <div class="tool-icon-wrap pdf-ppt">📊</div>
-            <div class="tc-name">PDF to PPT</div>
-            <div class="tc-desc">Slides → PPTX</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('ppt-to-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap ppt-pdf">🎯</div>
-            <div class="tc-name">PPT to PDF</div>
-            <div class="tc-desc">PPTX → PDF</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('pdf-to-excel')" role="button" tabindex="0">
-            <div class="tool-icon-wrap pdf-excel">📋</div>
-            <div class="tc-name">PDF to Excel</div>
-            <div class="tc-desc">Tables → XLSX</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('excel-to-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap excel-pdf">📋</div>
-            <div class="tc-name">Excel to PDF</div>
-            <div class="tc-desc">XLSX → PDF</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('html-to-pdf')" role="button" tabindex="0">
-            <div class="tool-icon-wrap html-pdf">🌐</div>
-            <div class="tc-name">HTML to PDF</div>
-            <div class="tc-desc">URL/HTML → PDF</div>
-            <span class="tc-badge">FREE</span>
-          </div>
+          <div class="tool-card" onclick="openTool('img-to-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap img-pdf">📑</div><div class="tc-name">Image to PDF</div><div class="tc-desc">JPG/PNG → PDF</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('pdf-to-img')" role="button" tabindex="0"><div class="tool-icon-wrap pdf-img">🖼️</div><div class="tc-name">PDF to JPG</div><div class="tc-desc">Extract all pages</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('pdf-to-word')" role="button" tabindex="0"><div class="tool-icon-wrap pdf-word">📝</div><div class="tc-name">PDF to Word</div><div class="tc-desc">Text to .docx</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('word-to-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap word-pdf">📄</div><div class="tc-name">Word to PDF</div><div class="tc-desc">DOCX → PDF</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('pdf-to-excel')" role="button" tabindex="0"><div class="tool-icon-wrap pdf-excel">📋</div><div class="tc-name">PDF to Excel</div><div class="tc-desc">Tables → XLSX</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('pdf-to-ppt')" role="button" tabindex="0"><div class="tool-icon-wrap pdf-ppt">📊</div><div class="tc-name">PDF to PPT</div><div class="tc-desc">Slides → PPTX</div><span class="tc-badge">FREE</span></div>
         </div>
 
-        <!-- Edit & Sign -->
-        <div class="tool-category-label">✏️ Edit &amp; Sign</div>
+        <!-- PDF Utilities -->
+        <div class="tool-category-label">📎 PDF Utilities</div>
         <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('pdf-editor')" role="button" tabindex="0">
-            <div class="tool-icon-wrap pdf-editor">✏️</div>
-            <div class="tc-name">PDF Editor</div>
-            <div class="tc-desc">Edit text &amp; objects</div>
-            <span class="tc-badge" style="background:var(--success,#22c55e)">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('fill-sign')" role="button" tabindex="0">
-            <div class="tool-icon-wrap fill-sign">✍️</div>
-            <div class="tc-name">Fill &amp; Sign</div>
-            <div class="tc-desc">Digital signatures</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('watermark')" role="button" tabindex="0">
-            <div class="tool-icon-wrap watermark">💧</div>
-            <div class="tc-name">Watermark</div>
-            <div class="tc-desc">Stamp all pages</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('page-numbers')" role="button" tabindex="0">
-            <div class="tool-icon-wrap page-numbers">🔢</div>
-            <div class="tc-name">Page Numbers</div>
-            <div class="tc-desc">Auto-number pages</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('delete-pages')" role="button" tabindex="0">
-            <div class="tool-icon-wrap delete-pages">🗑️</div>
-            <div class="tc-name">Delete Pages</div>
-            <div class="tc-desc">Remove specific pages</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('ai-summarize')" role="button" tabindex="0">
-            <div class="tool-icon-wrap ai-summary">🤖</div>
-            <div class="tc-name">AI Summarizer</div>
-            <div class="tc-desc">Smart doc summary</div>
-            <span class="tc-badge" style="background:#607d8b">AI</span>
-          </div>
-        </div>
-
-        <!-- PDF Utilities & Generators -->
-        <div class="tool-category-label">🧰 PDF Utilities &amp; Generators</div>
-        <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('rotate-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">🔄</div><div class="tc-name">Rotate PDF</div><div class="tc-desc">Turn pages 90/180/270</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('merge')" role="button" tabindex="0"><div class="tool-icon-wrap merge">🔗</div><div class="tc-name">Merge PDF</div><div class="tc-desc">Combine PDFs</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('split')" role="button" tabindex="0"><div class="tool-icon-wrap split">✂️</div><div class="tc-name">Split PDF</div><div class="tc-desc">Divide into parts</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('compress-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap compress-pdf">📉</div><div class="tc-name">Compress PDF</div><div class="tc-desc">Shrink file size</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('rotate-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">🔄</div><div class="tc-name">Rotate PDF</div><div class="tc-desc">Turn pages 90°/180°</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('reorder-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#c62828,#ef5350)">🔀</div><div class="tc-name">Reorder PDF</div><div class="tc-desc">Drag pages to reorder</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('unlock-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">🔓</div><div class="tc-name">Unlock PDF</div><div class="tc-desc">Remove restrictions</div><span class="tc-badge">FREE</span></div>
-          <div class="tool-card" onclick="openTool('pdf-metadata')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00695c,#26a69a)">🏷️</div><div class="tc-name">PDF Metadata</div><div class="tc-desc">Edit title &amp; author</div><span class="tc-badge">FREE</span></div>
-          <div class="tool-card" onclick="openTool('pdf-text-extractor')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#3f51b5)">📃</div><div class="tc-name">Text Extractor</div><div class="tc-desc">Get text from PDF</div><span class="tc-badge">FREE</span></div>
-          <div class="tool-card" onclick="openTool('searchable-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div><div class="tc-name">Searchable PDF</div><div class="tc-desc">OCR text layer</div><span class="tc-badge">FREE</span></div>
-          <div class="tool-card" onclick="openTool('qr-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00897b,#26a69a)">🔗</div><div class="tc-name">QR Generator</div><div class="tc-desc">Make QR codes</div><span class="tc-badge">FREE</span></div>
-          <div class="tool-card" onclick="openTool('barcode-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#455a64,#78909c)">🔢</div><div class="tc-name">Barcode Generator</div><div class="tc-desc">CODE128, EAN, UPC</div><span class="tc-badge">FREE</span></div>
         </div>
 
-        <!-- AI-Powered Tools -->
-        <div class="tool-category-label">🤖 AI-Powered Tools</div>
+        <!-- Image & Scan & OCR -->
+        <div class="tool-category-label">🖼️ Image, Scan &amp; OCR</div>
         <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('ai-pdf-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00838f,#26c6da)">🤖</div><div class="tc-name">PDF Summarizer</div><div class="tc-desc">Summarize any PDF</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('ai-pdf-chat')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">💬</div><div class="tc-name">Chat with PDF</div><div class="tc-desc">Ask your PDF questions</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('notes-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div><div class="tc-name">Notes Generator</div><div class="tc-desc">Make study notes</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('mcq-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#6a1b9a,#ab47bc)">❓</div><div class="tc-name">MCQ Generator</div><div class="tc-desc">Make quiz questions</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('essay-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#5c6bc0)">✍️</div><div class="tc-name">Essay Writer</div><div class="tc-desc">Draft essays</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('assignment-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00695c,#26a69a)">📚</div><div class="tc-name">Assignment Writer</div><div class="tc-desc">Draft assignments</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('ai-humanizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#ad1457,#ec407a)">🤝</div><div class="tc-name">AI Humanizer</div><div class="tc-desc">Natural-sounding text</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('ai-detector')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#37474f,#607d8b)">🔎</div><div class="tc-name">AI Detector</div><div class="tc-desc">Check AI likelihood</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('research-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔬</div><div class="tc-name">Research Summarizer</div><div class="tc-desc">Summarize papers</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('scan')" role="button" tabindex="0" aria-label="Smart Scan"><div class="tool-icon-wrap scan">📷</div><div class="tc-name">Smart Scan</div><div class="tc-desc">AI edge detection</div><span class="tc-badge" style="background:var(--primary)">AI</span></div>
+          <div class="tool-card" onclick="openTool('ocr')" role="button" tabindex="0"><div class="tool-icon-wrap ocr">🔤</div><div class="tc-name">OCR Text</div><div class="tc-desc">Image to text</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('img-compress')" role="button" tabindex="0"><div class="tool-icon-wrap img-compress">🗜️</div><div class="tc-name">Image Compressor</div><div class="tc-desc">JPG, PNG, WebP</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('searchable-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div><div class="tc-name">Searchable PDF</div><div class="tc-desc">OCR text layer</div><span class="tc-badge">FREE</span></div>
+        </div>
+
+        <!-- Career & Writing AI -->
+        <div class="tool-category-label">💼 Career &amp; Writing AI</div>
+        <div class="tools-grid" style="margin-bottom:22px">
           <div class="tool-card" onclick="openTool('resume-analyzer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#4e342e,#8d6e63)">💼</div><div class="tc-name">Resume Analyzer</div><div class="tc-desc">Resume feedback</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
           <div class="tool-card" onclick="openTool('cover-letter-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#3949ab)">📎</div><div class="tc-name">Cover Letter</div><div class="tc-desc">Write cover letters</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-        </div>
-
-        <!-- Image & Scan -->
-        <div class="tool-category-label">🖼️ Image &amp; Scan</div>
-        <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('img-compress')" role="button" tabindex="0">
-            <div class="tool-icon-wrap img-compress">🗜️</div>
-            <div class="tc-name">Image Compressor &amp; Resizer</div>
-            <div class="tc-desc">JPG, PNG, WebP optimizer</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('ocr')" role="button" tabindex="0">
-            <div class="tool-icon-wrap ocr">🔤</div>
-            <div class="tc-name">OCR Text</div>
-            <div class="tc-desc">Image to text</div>
-            <span class="tc-badge">FREE</span>
-          </div>
+          <div class="tool-card" onclick="openTool('ai-humanizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#ad1457,#ec407a)">🤝</div><div class="tc-name">AI Humanizer</div><div class="tc-desc">Natural-sounding text</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card" onclick="openTool('ai-detector')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#37474f,#607d8b)">🔎</div><div class="tc-name">AI Detector</div><div class="tc-desc">Check AI likelihood</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
         </div>
 
         <!-- Calculators -->
         <div class="tool-category-label">🔧 Calculators</div>
         <div class="tools-grid" style="margin-bottom:28px">
-          <div class="tool-card" onclick="openTool('age')" role="button" tabindex="0">
-            <div class="tool-icon-wrap age">📅</div>
-            <div class="tc-name">Age Calculator</div>
-            <div class="tc-desc">Exact age, real-time</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('bmi')" role="button" tabindex="0">
-            <div class="tool-icon-wrap bmi">⚖️</div>
-            <div class="tc-name">BMI Calculator</div>
-            <div class="tc-desc">Metric &amp; imperial</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('discount')" role="button" tabindex="0">
-            <div class="tool-icon-wrap discount">🏷️</div>
-            <div class="tc-name">Discount Calc</div>
-            <div class="tc-desc">Price, % &amp; tax/GST</div>
-            <span class="tc-badge">FREE</span>
-          </div>
-          <div class="tool-card" onclick="openTool('inheritance')" role="button" tabindex="0">
-            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1b5e20,#43a047)">☪️</div>
-            <div class="tc-name">Islamic Inheritance</div>
-            <div class="tc-desc">Warasat Intikal Sharia</div>
-            <span class="tc-badge" style="background:#2d7a2d">FREE</span>
-          </div>
+          <div class="tool-card" onclick="openTool('age')" role="button" tabindex="0"><div class="tool-icon-wrap age">📅</div><div class="tc-name">Age Calculator</div><div class="tc-desc">Exact age, real-time</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('bmi')" role="button" tabindex="0"><div class="tool-icon-wrap bmi">⚖️</div><div class="tc-name">BMI Calculator</div><div class="tc-desc">Metric &amp; imperial</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('discount')" role="button" tabindex="0"><div class="tool-icon-wrap discount">🏷️</div><div class="tc-name">Discount Calc</div><div class="tc-desc">Price, % &amp; tax/GST</div><span class="tc-badge">FREE</span></div>
+          <div class="tool-card" onclick="openTool('inheritance')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1b5e20,#43a047)">☪️</div><div class="tc-name">Islamic Inheritance</div><div class="tc-desc">Warasat Intikal Sharia</div><span class="tc-badge" style="background:#2d7a2d">FREE</span></div>
         </div>
       </section>
 
@@ -836,9 +743,9 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/i18n.js?v=20260606b"></script>
-<script src="js/app.js?v=20260606b"></script>
-<script src="js/particles.js?v=20260606b"></script>
+<script src="js/i18n.js?v=20260608a"></script>
+<script src="js/app.js?v=20260608a"></script>
+<script src="js/particles.js?v=20260608a"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {

@@ -50,7 +50,7 @@
   }
 </script>
 
-<link rel="stylesheet" href="css/style.css?v=20260606b">
+<link rel="stylesheet" href="css/style.css?v=20260608a">
 <style>
 .scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
 .cv-badge { display: none !important; }
@@ -364,9 +364,16 @@
           <input type="checkbox" id="applyToAll"> Apply to all pages
         </label>
 
+        <!-- Batch auto-process banner — only shows when queue has multiple images -->
+        <div id="batchBanner" style="display:none;background:var(--primary-soft);border:1px solid var(--primary);border-radius:var(--radius-sm);padding:10px 12px;margin-top:12px">
+          <p style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px">⚡ Batch Mode</p>
+          <p id="batchBannerMsg" style="font-size:11px;color:var(--text-2);margin-bottom:8px">Remaining images will be auto-cropped and processed with these same settings.</p>
+          <button class="btn btn-primary" id="btnBatchAll" style="width:100%;font-size:12px">⚡ Apply to All Remaining &amp; Done</button>
+        </div>
+
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
           <button class="btn btn-secondary btn-sm" id="btnBackToCrop">← Back to Crop</button>
-          <button class="btn btn-primary" id="btnAddPage">✓ Add Page →</button>
+          <button class="btn btn-primary" id="btnAddPage">✓ Add This Page →</button>
         </div>
       </div>
     </div>
@@ -567,10 +574,64 @@
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20260606b"></script>
-<script src="js/particles.js?v=20260606b"></script>
-<script src="js/crop.js?v=20260606b"></script>
-<script src="js/filters.js?v=20260606b"></script>
-<script src="js/scanner.js?v=20260606b"></script>
+<script src="js/app.js?v=20260608a"></script>
+<script src="js/particles.js?v=20260608a"></script>
+<script src="js/crop.js?v=20260608a"></script>
+<script src="js/filters.js?v=20260608a"></script>
+<script src="js/scanner.js?v=20260608a"></script>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="scanner.html">CamMaster Scanner</a>
+        <a href="tools/ocr.html">OCR Text</a>
+        <a href="tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="tools/merge-pdf.html">Merge PDF</a>
+        <a href="tools/split-pdf.html">Split PDF</a>
+        <a href="tools/compress-pdf.html">Compress PDF</a>
+        <a href="tools/pdf-to-word.html">PDF to Word</a>
+        <a href="tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About PDFdukan</a>
+        <a href="blog/index.html">Blog</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="sitemap.xml">Sitemap</a>
+        <a href="cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
 </body>
 </html>

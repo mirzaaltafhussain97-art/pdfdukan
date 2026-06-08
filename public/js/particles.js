@@ -27,7 +27,7 @@
        saves battery. */
     var _skip3D = false;
     try {
-      _skip3D = window.matchMedia('(max-width: 768px)').matches
+      _skip3D = window.matchMedia('(max-width: 1024px)').matches
              || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     } catch (e) {}
     if (_skip3D) { canvas.style.display = 'none'; return; }
@@ -41,7 +41,7 @@
     s.height        = '100vh';
     s.zIndex        = '-10';
     s.pointerEvents = 'none';
-    s.opacity       = '0.4';
+    s.opacity       = '0.18';
 
     if (window.THREE) {
       _setupScene(canvas);
@@ -73,8 +73,8 @@
     /* ── Sphere 1: inner — brand orange, dense dots ────────────── */
     const geo1 = new THREE.SphereGeometry(1.6, 52, 52);
     const mat1 = new THREE.PointsMaterial({
-      color: 0xff6333, size: 0.024,
-      transparent: true, opacity: 0.78,
+      color: 0xff6333, size: 0.018,
+      transparent: true, opacity: 0.40,
       sizeAttenuation: true,
     });
     _sphere1 = new THREE.Points(geo1, mat1);
@@ -83,8 +83,8 @@
     /* ── Sphere 2: mid — purple, sparser ──────────────────────── */
     const geo2 = new THREE.SphereGeometry(2.2, 36, 36);
     const mat2 = new THREE.PointsMaterial({
-      color: 0xb43cdc, size: 0.018,
-      transparent: true, opacity: 0.36,
+      color: 0xb43cdc, size: 0.013,
+      transparent: true, opacity: 0.16,
       sizeAttenuation: true,
     });
     _sphere2 = new THREE.Points(geo2, mat2);
@@ -93,8 +93,8 @@
     /* ── Sphere 3: outer shell — electric blue, very sparse ────── */
     const geo3 = new THREE.SphereGeometry(2.9, 22, 22);
     const mat3 = new THREE.PointsMaterial({
-      color: 0x3c9eff, size: 0.012,
-      transparent: true, opacity: 0.20,
+      color: 0x3c9eff, size: 0.008,
+      transparent: true, opacity: 0.09,
       sizeAttenuation: true,
     });
     _sphere3 = new THREE.Points(geo3, mat3);

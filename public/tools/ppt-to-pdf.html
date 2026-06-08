@@ -10,6 +10,10 @@
 <title>PowerPoint to PDF — Convert PPTX Slides to PDF | CamMaster</title>
 <meta name="description" content="Convert PowerPoint PPTX files to PDF online. Each slide renders to a PDF page. Free, client-side using JSZip and pdf-lib.">
 <meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
 <link rel="canonical" href="https://pdfdukan.com/tools/ppt-to-pdf.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/ppt-to-pdf.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/ppt-to-pdf.html">
@@ -34,7 +38,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260606b">
+<link rel="stylesheet" href="../css/style.css?v=20260608a">
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PowerPoint to PDF","item":"https://pdfdukan.com/tools/ppt-to-pdf.html"}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
@@ -122,8 +126,8 @@
   </div>
 </div>
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260606b"></script>
-<script src="../js/particles.js?v=20260606b"></script>
+<script src="../js/app.js?v=20260608a"></script>
+<script src="../js/particles.js?v=20260608a"></script>
 <script>
 let _pptxFile = null;
 let _slideImages = [];
@@ -265,5 +269,59 @@ function clearFile() {
 }
 </script>
 <div class="brand-loader-overlay" id="brandLoader" style="display:none"><div class="brand-loader-ring"><div class="brand-loader-glow"></div><div class="brand-loader-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36"><defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs><rect width="40" height="40" rx="10" fill="url(#blg)"/><rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/></svg></div></div></div>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
 </body>
 </html>

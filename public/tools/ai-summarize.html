@@ -10,6 +10,10 @@
 <title>AI Text Summarizer — PDF &amp; Document Summary | CamMaster by PDFdukan</title>
 <meta name="description" content="Instantly summarize any PDF or pasted text using client-side AI. Generates bullet-point summaries using TF-IDF sentence scoring. Free, private, no upload.">
 <meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
 <link rel="canonical" href="https://pdfdukan.com/tools/ai-summarize.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/ai-summarize.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/ai-summarize.html">
@@ -34,7 +38,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-<link rel="stylesheet" href="../css/style.css?v=20260606b">
+<link rel="stylesheet" href="../css/style.css?v=20260608a">
 <style>
 .ai-input-tabs { display:flex; gap:6px; margin-bottom:14px; }
 .ai-tab {
@@ -287,8 +291,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260606b"></script>
-<script src="../js/particles.js?v=20260606b"></script>
+<script src="../js/app.js?v=20260608a"></script>
+<script src="../js/particles.js?v=20260608a"></script>
 <script>
 /* ── AI Summarizer (TF-IDF Client-Side) ──────────────────────── */
 const AI = (() => {
@@ -464,5 +468,59 @@ function handleFile(f) {
     </div>
   </div>
 </div>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,10 @@
 <title>Islamic Inheritance Calculator (Warasat) — Free | PDFdukan</title>
 <meta name="description" content="Free Islamic inheritance calculator (Warasat / faraid). Works out each heir's individual share — wife, husband, mother, father, sons, daughters — by Quranic rules, with percentages. No signup.">
 <meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
 <link rel="canonical" href="https://pdfdukan.com/tools/inheritance-calc.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/inheritance-calc.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/inheritance-calc.html">
@@ -29,7 +33,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260606b">
+<link rel="stylesheet" href="../css/style.css?v=20260608a">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Islamic Inheritance Calculator","item":"https://pdfdukan.com/tools/inheritance-calc.html"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What share does a wife get?","acceptedAnswer":{"@type":"Answer","text":"A wife receives 1/8 of the estate if the deceased left children, and 1/4 if there are none. Multiple wives share that portion equally."}},{"@type":"Question","name":"What share does a mother get?","acceptedAnswer":{"@type":"Answer","text":"A mother receives 1/6 if the deceased left children or two or more siblings, otherwise 1/3."}},{"@type":"Question","name":"How are children's shares divided?","acceptedAnswer":{"@type":"Answer","text":"When sons are present, the remaining estate is split among sons and daughters in a 2:1 ratio — each son receives twice a daughter's share. Daughters with no son receive 1/2 (one) or 2/3 (two or more)."}},{"@type":"Question","name":"Is this calculator a substitute for a scholar?","acceptedAnswer":{"@type":"Answer","text":"No. It estimates common cases. Complex estates (siblings, grandparents, special adjustments) should be confirmed by a qualified Mufti or inheritance lawyer."}}]}</script>
 <style>
@@ -249,8 +253,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260606b"></script>
-<script src="../js/particles.js?v=20260606b"></script>
+<script src="../js/app.js?v=20260608a"></script>
+<script src="../js/particles.js?v=20260608a"></script>
 <script>
 /* Islamic Inheritance Calculator engine — common-case faraid with Aul. */
 const IC = (() => {
@@ -378,5 +382,59 @@ const IC = (() => {
 })();
 window.IC = IC;
 </script>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
 </body>
 </html>

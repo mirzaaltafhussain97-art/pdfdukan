@@ -248,16 +248,30 @@ const ScannerApp = (() => {
   /* ── FILTER SCREEN ────────────────────────────────────────── */
   function _startFilterScreen(croppedImg) {
     state._currentCropped = croppedImg;
-    state.currentFilter = 'enhance';
-    state.adjustments = { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 };
+    // Only reset filter/adjustments when processing a fresh image (not re-editing an existing page)
+    if (state.editingIndex < 0) {
+      state.currentFilter = 'enhance';
+      state.adjustments = { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 };
+    }
 
-    // Reset sliders
+    // Reset sliders to current state
     ['brightness', 'contrast', 'sharpness', 'saturation'].forEach(k => {
       const sl = document.getElementById('sl_' + k);
       const vl = document.getElementById('sv_' + k);
-      if (sl) { sl.value = 0; }
-      if (vl) vl.textContent = '0';
+      if (sl) sl.value = state.adjustments[k] ?? 0;
+      if (vl) vl.textContent = String(state.adjustments[k] ?? 0);
     });
+
+    // Show batch banner when multiple images are queued
+    const remaining = state.queue.length - state.queueIndex - 1;
+    const banner = document.getElementById('batchBanner');
+    const bannerMsg = document.getElementById('batchBannerMsg');
+    if (banner) {
+      banner.style.display = remaining > 0 ? 'block' : 'none';
+      if (bannerMsg && remaining > 0) {
+        bannerMsg.textContent = `${remaining} more image${remaining > 1 ? 's' : ''} will be auto-cropped and processed with these same settings.`;
+      }
+    }
 
     // Build filter strip
     buildFilterStrip('filterStrip', croppedImg, 'enhance', fid => {
@@ -323,12 +337,99 @@ const ScannerApp = (() => {
     const btnBackCrop        = document.getElementById('btnBackToCrop');
     const btnBackCropMain    = document.getElementById('btnBackToCropMain');
     const applyAll           = document.getElementById('applyToAll');
+    const btnBatchAll        = document.getElementById('btnBatchAll');
 
     if (btnAddPage)      btnAddPage.onclick      = _addPage;
     if (btnAddPageMain)  btnAddPageMain.onclick  = _addPage;
     if (btnBackCrop)     btnBackCrop.onclick     = () => showScreen('crop');
     if (btnBackCropMain) btnBackCropMain.onclick = () => showScreen('crop');
     if (applyAll) applyAll.addEventListener('change', e => { state.applyToAll = e.target.checked; });
+    if (btnBatchAll)     btnBatchAll.onclick     = _batchProcessRemaining;
+  }
+
+  /* ── BATCH AUTO-PROCESS ───────────────────────────────────────
+     Auto-crops and applies current filter to all remaining queue
+     items without stopping for user input on each one.         */
+  async function _batchProcessRemaining() {
+    const img = state._currentCropped;
+    if (!img) return;
+
+    // First: save the current image as a page
+    state.pages.push({
+      id: Date.now() + Math.random(),
+      croppedImg: img,
+      filter: state.currentFilter,
+      adjustments: { ...state.adjustments },
+    });
+    state.queueIndex++;
+
+    const savedFilter      = state.currentFilter;
+    const savedAdjustments = { ...state.adjustments };
+    const remaining        = state.queue.length - state.queueIndex;
+
+    if (remaining === 0) { showScreen('pages'); _renderPages(); return; }
+
+    showProcessing(`Auto-processing ${remaining} remaining image${remaining > 1 ? 's' : ''}…`);
+
+    for (let i = state.queueIndex; i < state.queue.length; i++) {
+      const item = state.queue[i];
+      const processedImg = await _autoProcessImage(item.file);
+      if (processedImg) {
+        state.pages.push({
+          id: Date.now() + Math.random(),
+          croppedImg: processedImg,
+          filter: savedFilter,
+          adjustments: { ...savedAdjustments },
+        });
+      }
+      // Update progress message
+      const done = i - state.queueIndex + 1;
+      showProcessing(`Processed ${done} of ${remaining} images…`);
+    }
+
+    state.queueIndex = state.queue.length;
+    hideProcessing();
+    toast(`✓ All ${state.pages.length} pages ready!`, 'success');
+    showScreen('pages');
+    _renderPages();
+  }
+
+  /* Load an image file, auto-detect edges, return cropped image */
+  async function _autoProcessImage(file) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const img = new Image();
+        img.onload = async () => {
+          try {
+            // Downscale if needed
+            const px = img.naturalWidth * img.naturalHeight;
+            let sourceImg = img;
+            if (px > MAX_IMAGE_PX) {
+              const scale = Math.sqrt(MAX_IMAGE_PX / px);
+              const nW = Math.round(img.naturalWidth  * scale);
+              const nH = Math.round(img.naturalHeight * scale);
+              const c  = document.createElement('canvas');
+              c.width = nW; c.height = nH;
+              c.getContext('2d').drawImage(img, 0, 0, nW, nH);
+              sourceImg = new Image();
+              await new Promise(r => { sourceImg.onload = r; sourceImg.src = c.toDataURL('image/jpeg', 0.95); });
+            }
+            // Auto-detect + perspective-correct
+            await cropEditor.setImageAsync(sourceImg).catch(() => cropEditor.setImage(sourceImg));
+            const cropped = await cropEditor.perspectiveCrop().catch(() => sourceImg);
+            resolve(cropped);
+          } catch (err) {
+            console.warn('Auto-process failed for image, using original:', err);
+            resolve(img);
+          }
+        };
+        img.onerror = () => resolve(null);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    });
   }
 
   function _addPage() {
