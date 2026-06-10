@@ -38,7 +38,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260608a">
+<link rel="stylesheet" href="../css/style.css?v=20260608b">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -350,25 +350,6 @@
   <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
 </div></nav>
 
-<div style="max-width:760px;margin:32px auto;padding:0 20px">
-  <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I merge only specific pages from a PDF?</button>
-    <div class="faq-a">After uploading your PDFs, each file shows numbered page thumbnails. Click individual page numbers to toggle them — highlighted pages will be included, grey pages excluded. Use the "All" and "None" buttons for quick selection, or click "Range" to enter a page range like "1-3, 5, 8-10".</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I reorder the PDF files before merging?</button>
-    <div class="faq-a">Yes. After uploading, you can drag and drop the file cards to arrange them in the order you want them to appear in the merged output. The preview shows the current order and page selection at a glance.</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a limit on how many PDFs I can merge?</button>
-    <div class="faq-a">There is no technical limit on the number of PDFs you can merge. The practical limit is your browser's available memory. For very large PDF sets (10+ files or 100+ pages), we recommend processing in batches: merge groups of 5–10 files first, then merge the resulting files together.</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the text and formatting be preserved after merging?</button>
-    <div class="faq-a">Yes. PDFdukan merges PDFs at the binary level using PDF-lib, which preserves all text, fonts, images, and formatting from the original files. The merged result is indistinguishable from the originals — text remains selectable and searchable.</div>
-  </div>
-</div>
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>

@@ -404,9 +404,42 @@ ul{list-style:none}
   border-radius:var(--radius-lg);padding:30px;margin-bottom:20px;
 }
 .seo-section h2{
-  font-size:22px;font-weight:800;margin-bottom:12px;
+  font-size:18px;font-weight:800;margin:24px 0 10px;
   background:linear-gradient(135deg,var(--primary),var(--primary-light));
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.seo-section h2:first-child{margin-top:0}
+.seo-section p{font-size:14px;color:var(--text-2);line-height:1.75;margin-bottom:4px}
+/* Step list — "How to Use" numbered steps */
+.seo-section ol{
+  list-style:none;padding:0;margin:0 0 4px;
+  counter-reset:how-step;display:flex;flex-direction:column;gap:8px;
+}
+.seo-section ol li{
+  counter-increment:how-step;
+  display:flex;align-items:center;gap:14px;
+  padding:11px 14px;
+  background:var(--card-2);border:1px solid var(--border);
+  border-radius:var(--radius);
+  font-size:14px;color:var(--text);line-height:1.5;font-weight:500;
+}
+.seo-section ol li::before{
+  content:counter(how-step);
+  min-width:28px;height:28px;
+  background:var(--primary);color:#fff;
+  border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-weight:800;font-size:12px;flex-shrink:0;
+}
+/* Unordered lists in seo-section */
+.seo-section ul{padding-left:0;margin:0 0 4px;display:flex;flex-direction:column;gap:6px;list-style:none}
+.seo-section ul li{
+  padding:8px 12px 8px 36px;position:relative;
+  background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);
+  font-size:14px;color:var(--text);line-height:1.5;
+}
+.seo-section ul li::before{
+  content:'✓';position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--primary);font-weight:800;font-size:13px;
 }
 .seo-section .lead{font-size:14px;color:var(--text-2);margin-bottom:18px;line-height:1.7}
 .feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
@@ -2332,8 +2365,6 @@ html[data-theme="light"] .blog-hero-strip {
 .seo-section {
   position: relative;
   z-index: 1;
-  background: var(--bg);
-  padding: 24px 0;
 }
 
 /* ================================================================

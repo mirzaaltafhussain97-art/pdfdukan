@@ -1,0 +1,861 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://docs.opencv.org">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PDF Organizer — Reorder, Rotate &amp; Delete Pages | PDFdukan</title>
+<meta name="description" content="Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/pdf-organizer.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-organizer.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-organizer.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/pdf-organizer.html">
+<meta property="og:title" content="PDF Organizer — Reorder, Rotate &amp; Delete Pages | PDFdukan">
+<meta property="og:description" content="Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.">
+<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="PDF Organizer — Reorder, Rotate &amp; Delete Pages | PDFdukan">
+<meta name="twitter:description" content="Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.">
+<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<link rel="stylesheet" href="../css/style.css?v=20260608b">
+<style>
+/* ── PDF Organizer Grid ───────────────────────────────────────── */
+.org-toolbar {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  margin-bottom: 14px; padding: 10px 14px;
+  background: var(--card-2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.org-toolbar-label {
+  font-size: 12px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .4px; margin-right: 4px;
+}
+.org-chip {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text-2); padding: 5px 11px; border-radius: var(--radius-pill);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: var(--t) var(--ease);
+}
+.org-chip:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.org-chip.danger:hover { background: rgba(239,68,68,.1); border-color: var(--error); color: var(--error); }
+
+.org-stat {
+  margin-left: auto; font-size: 12px; color: var(--text-3); font-weight: 500;
+  background: var(--primary-soft); color: var(--primary);
+  padding: 4px 10px; border-radius: var(--radius-pill);
+}
+
+.org-grid {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding: 16px; min-height: 120px;
+  background: var(--card-2); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.org-grid-empty {
+  width: 100%; text-align: center; padding: 40px 20px;
+  color: var(--text-muted); font-size: 14px;
+}
+
+/* Page card */
+.org-page {
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: var(--radius); padding: 8px;
+  cursor: grab; transition: border-color var(--t) var(--ease), opacity var(--t);
+  user-select: none; width: 106px;
+}
+.org-page:hover { border-color: var(--primary); }
+.org-page.sortable-ghost { opacity: 0.35; }
+.org-page.sortable-chosen { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.org-page.deleted {
+  opacity: 0.25; border-color: var(--error);
+  background: rgba(239,68,68,.05);
+  pointer-events: none;
+}
+
+.org-page-canvas {
+  width: 88px; height: 114px; object-fit: contain;
+  border: 1px solid var(--border); border-radius: 3px;
+  background: #fff; display: block; pointer-events: none;
+}
+.org-page-num {
+  font-size: 11px; font-weight: 700; color: var(--text-3); line-height: 1;
+}
+
+/* Overlay action buttons */
+.org-page-overlay {
+  position: absolute; top: 4px; right: 4px;
+  display: flex; flex-direction: column; gap: 3px;
+  opacity: 0; transition: opacity var(--t);
+}
+.org-page:hover .org-page-overlay { opacity: 1; }
+.org-act {
+  width: 24px; height: 24px; border-radius: 5px; border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; transition: var(--t);
+  background: rgba(255,255,255,.92); backdrop-filter: blur(4px);
+  box-shadow: 0 1px 4px rgba(0,0,0,.15);
+}
+.org-act:hover { transform: scale(1.12); }
+.org-act.del { color: var(--error); }
+.org-act.del:hover { background: rgba(239,68,68,.15); }
+.org-act.rot { color: var(--primary); }
+.org-act.rot:hover { background: var(--primary-soft); }
+
+/* Rotate badge */
+.org-rot-badge {
+  position: absolute; bottom: 26px; left: 4px;
+  background: var(--primary); color: #fff;
+  font-size: 9px; font-weight: 700; padding: 1px 5px;
+  border-radius: 3px; display: none;
+}
+.org-rot-badge.show { display: block; }
+
+/* Drag hint */
+.org-drag-hint {
+  background: var(--primary-soft); border: 1px solid rgba(255,99,51,.22);
+  border-radius: var(--radius-sm); padding: 9px 14px;
+  font-size: 12px; color: var(--text-2); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Organizer","item":"https://pdfdukan.com/tools/pdf-organizer.html"}]}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+</head>
+<body data-tool="pdf-organizer">
+<canvas id="particleCanvas"></canvas>
+
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128260;</span><div class="nd-link-body"><div class="nd-link-name">PDF Organizer</div><div class="nd-link-desc">Reorder, rotate, delete</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+          <a href="../tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="../tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="../tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
+          <a href="../tools/inheritance-calc.html" class="nd-link"><span class="nd-link-icon">&#9770;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">PDF Organizer</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/delete-pages.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/compress.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/age-calc.html"      class="mnd-link">Age Calculator</a>
+  <a href="../tools/bmi-calc.html"      class="mnd-link">BMI Calculator</a>
+  <a href="../tools/discount-calc.html" class="mnd-link">Discount Calc</a>
+  <a href="../tools/inheritance-calc.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>PDF Organizer</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔀</div>
+    <h1>PDF Organizer</h1>
+    <p>Reorder, rotate, and delete PDF pages visually. Drag thumbnails to rearrange — then download your organized PDF.</p>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <!-- Upload -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Drop PDF here or click to browse">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop your PDF here or click to browse</div>
+      <div class="dz-hint">Page thumbnails will load below — drag to reorder, rotate or delete any page</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf,application/pdf" style="display:none">
+    </div>
+    <div id="pdfInfo" style="display:none;margin-top:10px;font-size:13px;color:var(--text-3);padding:9px 13px;background:var(--card-2);border-radius:var(--radius-sm)"></div>
+  </div>
+
+  <!-- Organizer Grid -->
+  <div class="tool-card" id="orgCard" style="display:none">
+    <h3><span class="tc-icon">🔀</span> Organize Pages</h3>
+
+    <div class="org-drag-hint">
+      <span>💡</span>
+      <span>Drag thumbnails to <strong>reorder</strong> · Hover a page for <strong>rotate</strong> (↻↺) and <strong>delete</strong> (✕) buttons · Changes are applied when you click <strong>Apply & Download</strong>.</span>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="org-toolbar">
+      <span class="org-toolbar-label">Batch:</span>
+      <button class="org-chip" onclick="OrgPDF.rotateAll(90)" title="Rotate all 90° clockwise">↻ Rotate All CW</button>
+      <button class="org-chip" onclick="OrgPDF.rotateAll(-90)" title="Rotate all 90° counter-clockwise">↺ Rotate All CCW</button>
+      <button class="org-chip" onclick="OrgPDF.reverseOrder()" title="Reverse page order">⇅ Reverse Order</button>
+      <button class="org-chip danger" onclick="OrgPDF.restoreDeleted()" title="Undo all deletions">↩ Restore Deleted</button>
+      <span class="org-stat" id="orgStat">0 pages</span>
+    </div>
+
+    <!-- Page grid -->
+    <div class="org-grid" id="orgGrid">
+      <div class="org-grid-empty">Upload a PDF to see pages here</div>
+    </div>
+
+    <!-- Apply button -->
+    <button class="btn btn-primary btn-lg" id="applyBtn" onclick="OrgPDF.apply()" disabled style="width:100%;margin-top:16px">
+      ✅ Apply &amp; Download PDF
+    </button>
+  </div>
+
+  <!-- Progress -->
+  <div class="tool-card" id="progressCard" style="display:none">
+    <h3><span class="tc-icon">⏳</span> Building PDF…</h3>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-label" id="progressLabel">Processing…</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="tool-card result-section" id="resultSection" style="display:none">
+    <h3><span class="tc-icon">✅</span> PDF Ready</h3>
+    <div class="result-stats">
+      <div class="result-stat"><div class="rs-label">Pages in Output</div><div class="rs-value" id="statPages">—</div></div>
+      <div class="result-stat"><div class="rs-label">File Size</div><div class="rs-value" id="statSize">—</div></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="download-btn" id="downloadBtn" onclick="OrgPDF.download()" style="flex:1;min-width:180px" disabled>
+        <span>📥</span> Download Organized PDF
+      </button>
+      <button style="flex:1;min-width:140px;padding:13px;background:var(--card-2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer" onclick="OrgPDF.reset()">
+        🔄 Organize Another
+      </button>
+    </div>
+  </div>
+
+  <div class="ad-slot" style="margin-top:24px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <h2>What is the PDF Organizer?</h2>
+    <p>The PDF Organizer lets you rearrange, rotate, and remove pages from any PDF file — all visually, in your browser. No upload to any server, no account needed.</p>
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Drag to reorder:</strong> Grab any page thumbnail and drop it in the position you want.</li>
+      <li><strong>Rotate pages:</strong> Rotate individual pages 90° clockwise or counter-clockwise. Or rotate all pages at once.</li>
+      <li><strong>Delete pages:</strong> Remove unwanted pages with one click. Restore them if you change your mind.</li>
+      <li><strong>Reverse order:</strong> Flip the entire page sequence with one button — useful for back-to-front scans.</li>
+    </ul>
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I rearrange pages in a PDF for free?</button><div class="faq-a">Yes. Upload your PDF to the organizer, drag thumbnails into any order, then click Apply &amp; Download. The reorganized PDF downloads instantly — free with no watermark.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I rotate just one page in a PDF?</button><div class="faq-a">Hover over the page thumbnail and click the ↻ (clockwise) or ↺ (counter-clockwise) button. Each click rotates that page by 90°. Only that page is affected.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I delete pages from a PDF without Adobe?</button><div class="faq-a">Yes. Hover any page thumbnail and click ✕ to mark it for deletion. The page fades out. Click Apply &amp; Download and the deleted pages will be excluded from the output PDF.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files safe?</button><div class="faq-a">Completely. All processing happens inside your browser using PDF-lib and PDF.js. Your file never leaves your device — no server ever sees it.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a page limit?</button><div class="faq-a">No hard limit. The organizer handles PDFs up to 200+ pages on any modern device. Very large files may take a few extra seconds to render thumbnails.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile?</button><div class="faq-a">Yes. The organizer is fully touch-compatible. On mobile, press and hold a page thumbnail to drag it. The rotate and delete buttons appear on tap.</div></div>
+  </section>
+
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js?v=20260608a"></script>
+<script src="../js/particles.js?v=20260608a"></script>
+
+<script>
+/* ── PDF Organizer Engine ─────────────────────────────────────── */
+const OrgPDF = (() => {
+  let _pdfBytes = null;      // original ArrayBuffer
+  let _pdfDoc   = null;      // pdfjs document (for thumbnails)
+  let _fileName = 'document';
+  let _resultBlob = null;
+
+  // Page state array — each entry: { origIndex (0-based), rotation (cumulative °), deleted }
+  let _pages = [];
+  let _sortable = null;
+
+  /* ── helpers ── */
+  function _showProgress(pct, msg) {
+    const fill = document.getElementById('progressFill');
+    const lbl  = document.getElementById('progressLabel');
+    if (fill) fill.style.width = pct + '%';
+    if (lbl)  lbl.textContent  = msg;
+  }
+
+  function _fmtBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1048576).toFixed(2) + ' MB';
+  }
+
+  function _updateStat() {
+    const active = _pages.filter(p => !p.deleted).length;
+    const total  = _pages.length;
+    const el = document.getElementById('orgStat');
+    if (el) el.textContent = active + ' of ' + total + ' pages';
+    const btn = document.getElementById('applyBtn');
+    if (btn) btn.disabled = active === 0;
+  }
+
+  /* ── Render a single page thumbnail using pdf.js ── */
+  async function _renderThumb(pageNum) {
+    const page   = await _pdfDoc.getPage(pageNum);
+    const vp     = page.getViewport({ scale: 0.5 });
+    const canvas = document.createElement('canvas');
+    canvas.width  = vp.width;
+    canvas.height = vp.height;
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+    return canvas;
+  }
+
+  /* ── Build/refresh the visual grid ── */
+  async function _buildGrid() {
+    const grid = document.getElementById('orgGrid');
+    grid.innerHTML = '';
+
+    if (!_pages.length) {
+      grid.innerHTML = '<div class="org-grid-empty">No pages to display</div>';
+      return;
+    }
+
+    for (let i = 0; i < _pages.length; i++) {
+      const pg = _pages[i];
+      const card = document.createElement('div');
+      card.className = 'org-page' + (pg.deleted ? ' deleted' : '');
+      card.dataset.idx = i;
+
+      // Canvas thumb (rendered async — show placeholder first)
+      const canvas = document.createElement('canvas');
+      canvas.className = 'org-page-canvas';
+      canvas.style.transform = 'rotate(' + ((pg.rotation % 360 + 360) % 360) + 'deg)';
+
+      const numEl = document.createElement('div');
+      numEl.className = 'org-page-num';
+      numEl.textContent = 'p.' + (pg.origIndex + 1);
+
+      // Rotation badge
+      const badge = document.createElement('div');
+      badge.className = 'org-rot-badge' + (pg.rotation % 360 !== 0 ? ' show' : '');
+      badge.textContent = ((pg.rotation % 360 + 360) % 360) + '°';
+
+      // Overlay buttons
+      const overlay = document.createElement('div');
+      overlay.className = 'org-page-overlay';
+
+      const btnDel = document.createElement('button');
+      btnDel.className = 'org-act del';
+      btnDel.title = 'Delete this page';
+      btnDel.innerHTML = '✕';
+      btnDel.addEventListener('click', e => { e.stopPropagation(); OrgPDF.deletePage(i); });
+
+      const btnRotCW = document.createElement('button');
+      btnRotCW.className = 'org-act rot';
+      btnRotCW.title = 'Rotate 90° clockwise';
+      btnRotCW.innerHTML = '↻';
+      btnRotCW.addEventListener('click', e => { e.stopPropagation(); OrgPDF.rotatePage(i, 90); });
+
+      const btnRotCCW = document.createElement('button');
+      btnRotCCW.className = 'org-act rot';
+      btnRotCCW.title = 'Rotate 90° counter-clockwise';
+      btnRotCCW.innerHTML = '↺';
+      btnRotCCW.addEventListener('click', e => { e.stopPropagation(); OrgPDF.rotatePage(i, -90); });
+
+      overlay.append(btnDel, btnRotCW, btnRotCCW);
+      card.append(canvas, badge, numEl, overlay);
+      grid.appendChild(card);
+
+      // Render thumbnail async
+      _renderThumb(pg.origIndex + 1).then(thumbCanvas => {
+        canvas.width  = thumbCanvas.width;
+        canvas.height = thumbCanvas.height;
+        canvas.getContext('2d').drawImage(thumbCanvas, 0, 0);
+      }).catch(() => {
+        canvas.width = 88; canvas.height = 114;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, 88, 114);
+        ctx.fillStyle = '#999';
+        ctx.font = '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('p.' + (pg.origIndex + 1), 44, 62);
+      });
+    }
+
+    // Init or refresh Sortable
+    if (_sortable) { _sortable.destroy(); _sortable = null; }
+    _sortable = Sortable.create(grid, {
+      animation: 180,
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+      filter: '.deleted',
+      onEnd(evt) {
+        // Sync _pages array to new DOM order
+        const newOrder = [...grid.querySelectorAll('.org-page')].map(el => +el.dataset.idx);
+        _pages = newOrder.map(i => _pages[i]);
+        // Update data-idx attributes
+        grid.querySelectorAll('.org-page').forEach((el, i) => { el.dataset.idx = i; });
+        _updateStat();
+      }
+    });
+
+    _updateStat();
+  }
+
+  /* ── Public API ── */
+
+  function init() {
+    const zone  = document.getElementById('dropZone');
+    const input = document.getElementById('fileInput');
+    if (!zone) return;
+
+    zone.addEventListener('click', () => input && input.click());
+    zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
+    ['dragenter','dragover'].forEach(ev =>
+      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); }));
+    ['dragleave','drop'].forEach(ev =>
+      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag'); }));
+    zone.addEventListener('drop', e => {
+      const files = [...e.dataTransfer.files];
+      if (files.length) loadFile(files[0]);
+    });
+    if (input) input.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+  }
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
+      toast('Please upload a PDF file', 'error'); return;
+    }
+
+    _fileName = file.name.replace(/\.pdf$/i, '');
+    _pages = [];
+    _resultBlob = null;
+
+    document.getElementById('orgCard').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('progressCard').style.display = '';
+    _showProgress(10, 'Loading PDF…');
+
+    try {
+      _pdfBytes = await file.arrayBuffer();
+      _showProgress(30, 'Parsing pages…');
+
+      _pdfDoc = await pdfjsLib.getDocument({ data: _pdfBytes.slice(0) }).promise;
+      const total = _pdfDoc.numPages;
+
+      // Init page state
+      _pages = Array.from({ length: total }, (_, i) => ({ origIndex: i, rotation: 0, deleted: false }));
+
+      // Show file info
+      const info = document.getElementById('pdfInfo');
+      if (info) {
+        info.style.display = '';
+        info.textContent = file.name + ' · ' + total + ' pages · ' + _fmtBytes(file.size);
+      }
+
+      _showProgress(60, 'Rendering thumbnails…');
+      document.getElementById('progressCard').style.display = 'none';
+      document.getElementById('orgCard').style.display = '';
+      document.getElementById('applyBtn').disabled = false;
+
+      await _buildGrid();
+      toast('PDF loaded — ' + total + ' pages ready to organize', 'success');
+    } catch (err) {
+      console.error(err);
+      toast('Failed to load PDF: ' + err.message, 'error');
+      document.getElementById('progressCard').style.display = 'none';
+    }
+  }
+
+  function deletePage(idx) {
+    if (_pages[idx]) {
+      _pages[idx].deleted = true;
+      const card = document.querySelector('.org-page[data-idx="' + idx + '"]');
+      if (card) card.classList.add('deleted');
+      _updateStat();
+      const active = _pages.filter(p => !p.deleted).length;
+      toast('Page removed · ' + active + ' page' + (active !== 1 ? 's' : '') + ' remaining', 'success');
+    }
+  }
+
+  function rotatePage(idx, deg) {
+    if (!_pages[idx]) return;
+    _pages[idx].rotation = (_pages[idx].rotation + deg + 360) % 360;
+    const card = document.querySelector('.org-page[data-idx="' + idx + '"]');
+    if (card) {
+      const canvas = card.querySelector('.org-page-canvas');
+      const badge  = card.querySelector('.org-rot-badge');
+      if (canvas) canvas.style.transform = 'rotate(' + _pages[idx].rotation + 'deg)';
+      if (badge) {
+        badge.textContent = _pages[idx].rotation + '°';
+        badge.classList.toggle('show', _pages[idx].rotation !== 0);
+      }
+    }
+  }
+
+  function rotateAll(deg) {
+    _pages.forEach((pg, i) => {
+      if (!pg.deleted) rotatePage(i, deg);
+    });
+    toast('All pages rotated ' + (deg > 0 ? 'clockwise' : 'counter-clockwise'), 'success');
+  }
+
+  function reverseOrder() {
+    _pages.reverse();
+    _buildGrid();
+    toast('Page order reversed', 'success');
+  }
+
+  function restoreDeleted() {
+    let count = 0;
+    _pages.forEach(pg => { if (pg.deleted) { pg.deleted = false; count++; } });
+    _buildGrid();
+    toast(count + ' page' + (count !== 1 ? 's' : '') + ' restored', 'success');
+  }
+
+  async function apply() {
+    const btn = document.getElementById('applyBtn');
+    if (btn) btn.disabled = true;
+
+    const activePgs = _pages.filter(p => !p.deleted);
+    if (!activePgs.length) { toast('No pages left to export', 'error'); if (btn) btn.disabled = false; return; }
+
+    document.getElementById('progressCard').style.display = '';
+    _showProgress(10, 'Preparing…');
+
+    try {
+      const { PDFDocument, degrees } = PDFLib;
+      const srcDoc = await PDFDocument.load(_pdfBytes);
+      const outDoc = await PDFDocument.create();
+
+      for (let i = 0; i < activePgs.length; i++) {
+        _showProgress(10 + Math.round(80 * i / activePgs.length), 'Copying page ' + (i + 1) + ' of ' + activePgs.length + '…');
+
+        const pg = activePgs[i];
+        const [copied] = await outDoc.copyPages(srcDoc, [pg.origIndex]);
+
+        // Apply rotation — accumulate on top of existing page rotation
+        if (pg.rotation !== 0) {
+          const existing = copied.getRotation().angle;
+          copied.setRotation(degrees((existing + pg.rotation) % 360));
+        }
+
+        outDoc.addPage(copied);
+      }
+
+      _showProgress(95, 'Saving…');
+      const outBytes = await outDoc.save();
+      _resultBlob = new Blob([outBytes], { type: 'application/pdf' });
+
+      _showProgress(100, 'Done!');
+      document.getElementById('progressCard').style.display = 'none';
+      document.getElementById('statPages').textContent = activePgs.length;
+      document.getElementById('statSize').textContent  = _fmtBytes(_resultBlob.size);
+      document.getElementById('resultSection').style.display = '';
+      document.getElementById('downloadBtn').disabled = false;
+      document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+      toast('PDF organized — ' + activePgs.length + ' pages', 'success');
+    } catch (err) {
+      console.error(err);
+      toast('Failed: ' + err.message, 'error');
+      document.getElementById('progressCard').style.display = 'none';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function download() {
+    if (!_resultBlob) { toast('No PDF ready', 'error'); return; }
+    const defaultName = _fileName + '_organized.pdf';
+    if (window.CMFilename) {
+      window.CMFilename.prompt(defaultName).then(name => {
+        if (!name) return;
+        _triggerDownload(_resultBlob, name);
+        if (window.CMLogs) window.CMLogs.log({ tool: 'PDF Organizer', action: 'organize', input: _fileName + '.pdf', output: name, size: _resultBlob.size });
+        toast('Downloaded!', 'success');
+      });
+    } else {
+      _triggerDownload(_resultBlob, defaultName);
+      toast('Downloaded!', 'success');
+    }
+  }
+
+  function _triggerDownload(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  function reset() {
+    _pdfBytes = null; _pdfDoc = null; _pages = []; _resultBlob = null;
+    if (_sortable) { _sortable.destroy(); _sortable = null; }
+    document.getElementById('orgGrid').innerHTML = '<div class="org-grid-empty">Upload a PDF to see pages here</div>';
+    document.getElementById('orgCard').style.display      = 'none';
+    document.getElementById('resultSection').style.display = 'none';
+    document.getElementById('pdfInfo').style.display       = 'none';
+    document.getElementById('fileInput').value = '';
+    toast('Ready for a new PDF', 'success');
+  }
+
+  return { init, loadFile, deletePage, rotatePage, rotateAll, reverseOrder, restoreDeleted, apply, download, reset };
+})();
+
+document.addEventListener('DOMContentLoaded', () => OrgPDF.init());
+window.OrgPDF = OrgPDF;
+</script>
+
+<script src="../js/tools.js?v=20260608a"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+
+<!-- Related Tools -->
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+    <a href="merge-pdf.html"    class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
+    <a href="split-pdf.html"    class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>
+    <a href="delete-pages.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>
+    <a href="compress-pdf.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-organizer.html">PDF Organizer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>

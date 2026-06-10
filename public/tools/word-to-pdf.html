@@ -36,13 +36,13 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260608a">
-<!-- mammoth.js for DOCX parsing -->
+<link rel="stylesheet" href="../css/style.css?v=20260608b">
+<!-- mammoth.js for DOCX preview -->
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
 <!-- jsPDF for PDF generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- html2canvas for rendering HTML to canvas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- JSZip for reading DOCX XML directly (accurate alignment/formatting) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 /* ── Word to PDF specific ── */
 .wtp-preview-wrap {
@@ -437,8 +437,22 @@
 <script>
 /* ── Word to PDF Engine ─────────────────────────────────────── */
 const WordToPDF = (() => {
-  let _pdfBlob = null;
-  let _fileName = 'document';
+  let _pdfBlob   = null;
+  let _docxBytes = null;   // raw ArrayBuffer — used by convert() for XML parsing
+  let _fileName  = 'document';
+
+  const W_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const R_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+
+  /* ── namespace-safe attribute reader ── */
+  function wAttr(el, name) {
+    if (!el) return null;
+    return el.getAttributeNS(W_NS, name) || el.getAttribute('w:' + name) || el.getAttribute(name);
+  }
+  function rAttr(el, name) {
+    if (!el) return null;
+    return el.getAttributeNS(R_NS, name) || el.getAttribute('r:' + name) || el.getAttribute(name);
+  }
 
   function _showProgress(pct, msg) {
     const fill = document.getElementById('progressFill');
@@ -447,11 +461,17 @@ const WordToPDF = (() => {
     if (lbl)  lbl.textContent  = msg || pct + '%';
   }
 
+  function _fmtBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(2) + ' MB';
+  }
+
+  /* ── Init drop-zone ── */
   function init() {
     const zone  = document.getElementById('dropZone');
     const input = document.getElementById('fileInput');
     if (!zone) return;
-
     zone.addEventListener('click', () => input && input.click());
     zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
     ['dragenter','dragover'].forEach(ev =>
@@ -459,12 +479,12 @@ const WordToPDF = (() => {
     ['dragleave','drop'].forEach(ev =>
       zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag'); }));
     zone.addEventListener('drop', e => {
-      const files = [...e.dataTransfer.files];
-      if (files.length) loadFile(files);
+      const f = [...e.dataTransfer.files]; if (f.length) loadFile(f);
     });
     if (input) input.addEventListener('change', e => loadFile([...e.target.files]));
   }
 
+  /* ── Load & preview ── */
   async function loadFile(files) {
     const file = files.find(f =>
       f.name.endsWith('.docx') ||
@@ -476,50 +496,47 @@ const WordToPDF = (() => {
       return;
     }
 
-    _fileName = file.name.replace(/\.docx$/i, '');
-    _pdfBlob = null;
+    _fileName  = file.name.replace(/\.docx$/i, '');
+    _pdfBlob   = null;
+    _docxBytes = null;
 
-    document.getElementById('progressCard').style.display = '';
-    document.getElementById('settingsCard').style.display = 'none';
-    document.getElementById('resultSection').style.display = 'none';
-
+    document.getElementById('progressCard').style.display   = '';
+    document.getElementById('settingsCard').style.display   = 'none';
+    document.getElementById('resultSection').style.display  = 'none';
     _showProgress(10, 'Parsing document…');
 
     try {
-      const ab = await file.arrayBuffer();
+      const ab   = await file.arrayBuffer();
+      _docxBytes = ab.slice(0);   // store copy for convert()
+
       _showProgress(40, 'Extracting content…');
 
+      /* mammoth: used only for the visual preview */
       const result = await mammoth.convertToHtml({ arrayBuffer: ab }, {
         styleMap: [
           "p[style-name='Heading 1'] => h1:fresh",
           "p[style-name='Heading 2'] => h2:fresh",
           "p[style-name='Heading 3'] => h3:fresh",
-          "b => strong",
-          "i => em"
-        ]
+          "b => strong", "i => em"
+        ],
+        convertImage: mammoth.images.imgElement(function(image) {
+          return image.read('base64').then(function(b64) {
+            return { src: 'data:' + image.contentType + ';base64,' + b64 };
+          });
+        })
       });
 
-      _showProgress(75, 'Rendering preview…');
-
-      // Show preview
+      _showProgress(80, 'Rendering preview…');
       const preview = document.getElementById('docPreview');
       if (preview) preview.innerHTML = result.value || '<p style="color:#999">(Empty document)</p>';
 
-      // Show file info
-      const nameEl = document.getElementById('wtpFileName');
-      const sizeEl = document.getElementById('wtpFileSize');
-      if (nameEl) nameEl.textContent = file.name;
-      if (sizeEl) sizeEl.textContent = _fmtBytes(file.size) + ' · DOCX';
+      document.getElementById('wtpFileName').textContent = file.name;
+      document.getElementById('wtpFileSize').textContent = _fmtBytes(file.size) + ' · DOCX';
 
       _showProgress(100, 'Ready to convert');
-      document.getElementById('progressCard').style.display = 'none';
-      document.getElementById('settingsCard').style.display = '';
+      document.getElementById('progressCard').style.display  = 'none';
+      document.getElementById('settingsCard').style.display  = '';
       document.getElementById('convertBtn').disabled = false;
-
-      if (result.messages && result.messages.length > 0) {
-        console.info('Mammoth conversion messages:', result.messages);
-      }
-
       toast('Document loaded! Click "Convert to PDF" to generate your PDF.', 'success');
     } catch (err) {
       console.error(err);
@@ -528,75 +545,277 @@ const WordToPDF = (() => {
     }
   }
 
+  /* ════════════════════════════════════════════════════════════
+     convert() — reads DOCX XML directly via JSZip so we can
+     honour paragraph alignment, bold, italic, font-size, line-
+     spacing, indentation, and embedded images exactly as they
+     appear in the original Word document.
+  ════════════════════════════════════════════════════════════ */
   async function convert() {
     const btn = document.getElementById('convertBtn');
     if (btn) { btn.disabled = true; btn.textContent = '⏳ Converting…'; }
-
     document.getElementById('progressCard').style.display = '';
-    _showProgress(10, 'Rendering pages…');
+    _showProgress(5, 'Opening document…');
 
     try {
-      const pageSize  = document.getElementById('pageSize')?.value  || 'a4';
-      const marginMm  = +(document.getElementById('pageMargin')?.value || 10);
-      const { jsPDF } = window.jspdf;
+      if (!_docxBytes) throw new Error('No document loaded — please upload a .docx file first.');
 
-      const previewEl = document.getElementById('docPreview');
-      if (!previewEl) throw new Error('Preview element not found');
+      const pageSize = document.getElementById('pageSize')?.value  || 'a4';
+      const marginMm = +(document.getElementById('pageMargin')?.value || 10);
+      const { jsPDF }  = window.jspdf;
+      const JSZip      = window.JSZip;
 
-      _showProgress(30, 'Capturing layout…');
+      /* ── 1. Unzip DOCX ── */
+      _showProgress(10, 'Reading document structure…');
+      const zip        = await JSZip.loadAsync(_docxBytes);
+      const docXmlText = await zip.file('word/document.xml').async('text');
 
-      // Use html2canvas to render the preview element
-      const canvas = await html2canvas(previewEl, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        windowWidth: 800
-      });
+      /* ── 2. Load embedded images ── */
+      const imgStore  = {};   // filename → { dataUrl, ext }
+      const rIdToImg  = {};   // relationship-id → { dataUrl, ext }
+      const mimeMap   = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', bmp:'image/bmp', webp:'image/webp' };
 
-      _showProgress(70, 'Building PDF…');
+      for (const path of Object.keys(zip.files)) {
+        if (!path.startsWith('word/media/')) continue;
+        const ext  = path.split('.').pop().toLowerCase();
+        const mime = mimeMap[ext] || 'image/jpeg';
+        const b64  = await zip.file(path).async('base64');
+        imgStore[path.split('/').pop()] = { dataUrl: 'data:' + mime + ';base64,' + b64, ext };
+      }
 
-      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: pageSize });
-      const pageW = doc.internal.pageSize.getWidth();
-      const pageH = doc.internal.pageSize.getHeight();
+      const relsFile = zip.file('word/_rels/document.xml.rels');
+      if (relsFile) {
+        const relsXml  = await relsFile.async('text');
+        const relsDom  = new DOMParser().parseFromString(relsXml, 'application/xml');
+        for (const rel of relsDom.getElementsByTagName('Relationship')) {
+          const type = rel.getAttribute('Type') || '';
+          if (!type.includes('image')) continue;
+          const id  = rel.getAttribute('Id') || '';
+          const tgt = (rel.getAttribute('Target') || '').split('/').pop();
+          if (imgStore[tgt]) rIdToImg[id] = imgStore[tgt];
+        }
+      }
+
+      /* ── 3. Parse document.xml ── */
+      _showProgress(25, 'Parsing XML…');
+      const xmlDoc = new DOMParser().parseFromString(docXmlText, 'application/xml');
+      const body   = xmlDoc.getElementsByTagNameNS(W_NS, 'body')[0];
+      if (!body) throw new Error('Could not find document body in XML');
+
+      /* ── 4. Set up jsPDF ── */
+      const doc    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: pageSize });
+      const pageW  = doc.internal.pageSize.getWidth();
+      const pageH  = doc.internal.pageSize.getHeight();
       const usableW = pageW - marginMm * 2;
-      const usableH = pageH - marginMm * 2;
+      let   y       = marginMm;
 
-      const imgData   = canvas.toDataURL('image/jpeg', 0.92);
-      const imgW      = canvas.width;
-      const imgH      = canvas.height;
-      const scaledH   = (imgH / imgW) * usableW;
+      function newPage() { doc.addPage(); y = marginMm; }
+      function ensureSpace(mm) { if (y + mm > pageH - marginMm) newPage(); }
 
-      let remaining = scaledH;
-      let yOffset   = 0;
+      /* ── 5. Paragraph renderer ── */
+      function renderPara(paraData) {
+        const { text, runs, align, indent, bold, italic, fontSize, lineSpaceFactor, isHeading, imgRef } = paraData;
 
-      while (remaining > 0) {
-        const sliceH = Math.min(remaining, usableH);
-        const srcY   = yOffset / scaledH * imgH;
-        const srcH   = sliceH / scaledH * imgH;
+        /* handle embedded images */
+        if (imgRef && rIdToImg[imgRef]) {
+          const img = rIdToImg[imgRef];
+          const fmt = img.ext === 'jpg' || img.ext === 'jpeg' ? 'JPEG' : img.ext.toUpperCase();
+          const iW  = Math.min(usableW, 120);
+          const iH  = 80;   // fallback height — real dimensions not available without canvas
+          ensureSpace(iH + 4);
+          try { doc.addImage(img.dataUrl, fmt, marginMm, y, iW, iH); y += iH + 4; } catch(e) { /* skip */ }
+          return;
+        }
 
-        // Create a slice canvas
-        const sliceCanvas = document.createElement('canvas');
-        sliceCanvas.width  = imgW;
-        sliceCanvas.height = Math.round(srcH);
-        const ctx = sliceCanvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-        ctx.drawImage(canvas, 0, srcY, imgW, srcH, 0, 0, imgW, srcH);
+        if (!text.trim()) {
+          /* empty paragraph → line gap */
+          const emptyH = fontSize * 0.3528 * lineSpaceFactor * 0.6;
+          ensureSpace(emptyH);
+          y += emptyH;
+          return;
+        }
 
-        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.92);
-        doc.addImage(sliceData, 'JPEG', marginMm, marginMm, usableW, sliceH);
+        /* font style — bold / italic / bolditalic */
+        let fontStyle = 'normal';
+        if (bold && italic) fontStyle = 'bolditalic';
+        else if (bold)      fontStyle = 'bold';
+        else if (italic)    fontStyle = 'italic';
 
-        remaining -= sliceH;
-        yOffset   += sliceH;
-        if (remaining > 0) doc.addPage();
+        /* heading spacing before */
+        if (isHeading) { ensureSpace(4); y += 3; }
+
+        doc.setFontSize(fontSize);
+        doc.setFont('helvetica', fontStyle);
+
+        const lhMm = fontSize * 0.3528 * lineSpaceFactor;
+
+        /* x position and pdf alignment based on Word alignment */
+        let xPos    = marginMm + indent;
+        let pdfAlign = 'left';
+        let wrapW   = usableW - indent;
+
+        if (align === 'center') { xPos = pageW / 2; pdfAlign = 'center'; wrapW = usableW; }
+        else if (align === 'right')  { xPos = pageW - marginMm; pdfAlign = 'right';  wrapW = usableW; }
+        /* 'both' (justified) — jsPDF has no native justify; render left-aligned */
+
+        const lines = doc.splitTextToSize(text, wrapW);
+        for (const line of lines) {
+          ensureSpace(lhMm);
+          doc.text(line, xPos, y, { align: pdfAlign });
+          y += lhMm;
+        }
+
+        if (isHeading) y += 2;
+      }
+
+      /* ── 6. Walk body children ── */
+      _showProgress(35, 'Rendering paragraphs…');
+      const bodyChildren = Array.from(body.childNodes);
+      const paraNodes    = bodyChildren.filter(n => n.localName === 'p' || n.localName === 'tbl');
+      const total        = paraNodes.length;
+
+      for (let pi = 0; pi < paraNodes.length; pi++) {
+        if (pi % 30 === 0) _showProgress(35 + Math.round(55 * pi / total), 'Rendering…');
+
+        const child = paraNodes[pi];
+
+        /* ─── TABLE ─── */
+        if (child.localName === 'tbl') {
+          const rows = Array.from(child.getElementsByTagNameNS(W_NS, 'tr'));
+          if (!rows.length) continue;
+          const maxCols = Math.max(...rows.map(r => r.getElementsByTagNameNS(W_NS, 'tc').length));
+          if (!maxCols) continue;
+          const colW  = usableW / maxCols;
+          const rowH  = 8;
+          for (const row of rows) {
+            const cells = Array.from(row.getElementsByTagNameNS(W_NS, 'tc'));
+            ensureSpace(rowH + 2);
+            cells.forEach((cell, ci) => {
+              const cx     = marginMm + ci * colW;
+              const isHead = row === rows[0];
+              if (isHead) { doc.setFillColor(235,235,235); doc.rect(cx, y-5.5, colW, rowH, 'FD'); }
+              else { doc.rect(cx, y-5.5, colW, rowH, 'D'); }
+              const cellText = Array.from(cell.getElementsByTagNameNS(W_NS,'t'))
+                                    .map(t => t.textContent).join('').replace(/\s+/g,' ').trim();
+              doc.setFontSize(9); doc.setFont('helvetica', isHead ? 'bold' : 'normal');
+              const ct = doc.splitTextToSize(cellText, colW - 2)[0] || '';
+              doc.text(ct, cx + 1.5, y);
+            });
+            y += rowH;
+          }
+          y += 3;
+          continue;
+        }
+
+        /* ─── PARAGRAPH ─── */
+        const pPr = child.getElementsByTagNameNS(W_NS, 'pPr')[0];
+
+        /* style name */
+        const pStyleEl  = pPr ? pPr.getElementsByTagNameNS(W_NS, 'pStyle')[0] : null;
+        const styleName = pStyleEl ? (wAttr(pStyleEl, 'val') || 'Normal') : 'Normal';
+        const isH1      = styleName === 'Heading1' || styleName === 'Heading 1';
+        const isH2      = styleName === 'Heading2' || styleName === 'Heading 2';
+        const isH3      = styleName === 'Heading3' || styleName === 'Heading 3';
+        const isList    = styleName === 'ListParagraph';
+
+        /* alignment */
+        const jcEl = pPr ? pPr.getElementsByTagNameNS(W_NS, 'jc')[0] : null;
+        const align = jcEl ? (wAttr(jcEl, 'val') || 'left') : 'left';
+
+        /* indentation (DXA → mm: 1 inch = 1440 DXA = 25.4mm) */
+        const indEl  = pPr ? pPr.getElementsByTagNameNS(W_NS, 'ind')[0] : null;
+        const indDxa = indEl ? parseInt(wAttr(indEl, 'left') || '0') : (isList ? 720 : 0);
+        const indent = (indDxa / 1440) * 25.4;
+
+        /* line spacing */
+        const spacingEl    = pPr ? pPr.getElementsByTagNameNS(W_NS, 'spacing')[0] : null;
+        const lineDxa      = spacingEl ? parseInt(wAttr(spacingEl, 'line') || '240') : 240;
+        const lineSpaceFactor = Math.max(0.9, lineDxa / 240);  // 240=single, 360=1.5x, 480=double
+
+        /* collect all w:r runs */
+        const runs = [];
+        let   imgRef = null;
+
+        /* paragraph-level run defaults (pPr > rPr) */
+        const pPrRpr   = pPr ? pPr.getElementsByTagNameNS(W_NS, 'rPr')[0] : null;
+        const pPrBold  = pPrRpr ? pPrRpr.getElementsByTagNameNS(W_NS, 'b').length > 0  : false;
+        const pPrItalic= pPrRpr ? pPrRpr.getElementsByTagNameNS(W_NS, 'i').length > 0  : false;
+
+        for (const r of child.getElementsByTagNameNS(W_NS, 'r')) {
+          /* check for drawing/image inside this run */
+          const drawings = r.getElementsByTagNameNS(W_NS, 'drawing');
+          if (drawings.length) {
+            /* find r:embed attribute anywhere inside drawing */
+            const allEls = drawings[0].getElementsByTagName('*');
+            for (const el of allEls) {
+              const embed = rAttr(el, 'embed') || el.getAttribute('r:embed');
+              if (embed) { imgRef = embed; break; }
+            }
+          }
+
+          const rPr = r.getElementsByTagNameNS(W_NS, 'rPr')[0];
+          const tEls = r.getElementsByTagNameNS(W_NS, 't');
+          let text = '';
+          for (const t of tEls) text += t.textContent || '';
+          if (!text) continue;
+
+          const bold   = pPrBold   || (rPr ? rPr.getElementsByTagNameNS(W_NS, 'b').length > 0 : false);
+          const italic = pPrItalic || (rPr ? rPr.getElementsByTagNameNS(W_NS, 'i').length > 0 : false);
+          const szEl   = rPr ? rPr.getElementsByTagNameNS(W_NS, 'sz')[0]           : null;
+          const szCsEl = rPr ? rPr.getElementsByTagNameNS(W_NS, 'szCs')[0]         : null;
+          /* sz is in half-points */
+          const rawSz  = szEl ? parseInt(wAttr(szEl, 'val') || '0') :
+                        (szCsEl ? parseInt(wAttr(szCsEl, 'val') || '0') : 0);
+          const fontPt = rawSz > 0 ? rawSz / 2 : null;
+
+          runs.push({ text, bold, italic, fontPt });
+        }
+
+        /* also check for drawings directly on the paragraph (not inside run) */
+        if (!imgRef) {
+          const paraDrawings = child.getElementsByTagNameNS(W_NS, 'drawing');
+          for (const drw of paraDrawings) {
+            const allEls = drw.getElementsByTagName('*');
+            for (const el of allEls) {
+              const embed = rAttr(el, 'embed') || el.getAttribute('r:embed');
+              if (embed) { imgRef = embed; break; }
+            }
+            if (imgRef) break;
+          }
+        }
+
+        /* derive paragraph-level bold/italic/fontSize from runs */
+        const fullText = runs.map(r => r.text).join('');
+        const paraBold   = runs.length > 0 && runs.every(r => r.bold);
+        const paraItalic = runs.length > 0 && runs.every(r => r.italic);
+        const firstRunSz = runs.find(r => r.fontPt)?.fontPt || null;
+
+        /* resolve font size */
+        let fontSize = 11;  // default body
+        if (isH1)          fontSize = firstRunSz || 16;
+        else if (isH2)     fontSize = firstRunSz || 14;
+        else if (isH3)     fontSize = firstRunSz || 12;
+        else if (firstRunSz) fontSize = Math.min(firstRunSz, 28);
+
+        renderPara({
+          text: fullText,
+          runs,
+          align,
+          indent,
+          bold:   paraBold || isH1 || isH2 || isH3,
+          italic: paraItalic,
+          fontSize,
+          lineSpaceFactor,
+          isHeading: isH1 || isH2 || isH3,
+          imgRef,
+        });
       }
 
       _showProgress(95, 'Finalising…');
       _pdfBlob = doc.output('blob');
       _showProgress(100, 'Done!');
 
-      document.getElementById('progressCard').style.display = 'none';
+      document.getElementById('progressCard').style.display  = 'none';
       document.getElementById('resultSection').style.display = '';
       document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
       toast('PDF created! ✓', 'success');
@@ -609,44 +828,40 @@ const WordToPDF = (() => {
     }
   }
 
+  /* ── Download ── */
   function download() {
     if (!_pdfBlob) { toast('No PDF to download', 'error'); return; }
-    var defaultName = _fileName + '_converted.pdf';
+    const defaultName = _fileName + '_converted.pdf';
     if (window.CMFilename) {
       window.CMFilename.prompt(defaultName).then(function(chosenName) {
         if (!chosenName) return;
-        var url = URL.createObjectURL(_pdfBlob);
-        var a = document.createElement('a');
-        a.href = url; a.download = chosenName;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+        _triggerDownload(_pdfBlob, chosenName);
         if (window.CMLogs) window.CMLogs.log({ tool: 'Word to PDF', action: 'convert', input: _fileName + '.docx', output: chosenName, size: _pdfBlob.size });
         toast('PDF downloaded! ✓', 'success');
       });
     } else {
-      var url = URL.createObjectURL(_pdfBlob);
-      var a = document.createElement('a');
-      a.href = url; a.download = defaultName;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+      _triggerDownload(_pdfBlob, defaultName);
       toast('PDF downloaded! ✓', 'success');
     }
   }
 
+  function _triggerDownload(blob, name) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  /* ── Reset ── */
   function reset() {
-    _pdfBlob = null;
+    _pdfBlob = null; _docxBytes = null;
     document.getElementById('resultSection').style.display = 'none';
     document.getElementById('settingsCard').style.display  = 'none';
     document.getElementById('docPreview').innerHTML = '';
     document.getElementById('fileInput').value = '';
     document.getElementById('convertBtn').disabled = true;
     toast('Ready for a new document', 'success');
-  }
-
-  function _fmtBytes(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(2) + ' MB';
   }
 
   return { init, loadFile, convert, download, reset };

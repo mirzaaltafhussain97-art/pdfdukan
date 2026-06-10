@@ -37,7 +37,7 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260608a">
+<link rel="stylesheet" href="../css/style.css?v=20260608b">
 <style>
 .ocr-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media(max-width:700px){.ocr-layout{grid-template-columns:1fr}}
@@ -295,25 +295,6 @@
   <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
 </div></nav>
 
-<div style="max-width:760px;margin:32px auto;padding:0 20px">
-  <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What affects OCR accuracy?</button>
-    <div class="faq-a">The main factors are image quality and contrast. For best results: use images at 300 DPI or higher, ensure strong contrast between text and background (dark text on white works best), avoid shadows or glare, and keep text not tilted more than 15 degrees. Printed text is recognized more accurately than handwriting.</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What languages does the OCR tool support?</button>
-    <div class="faq-a">PDFdukan's OCR uses Tesseract.js which supports over 100 languages including English, Arabic, Urdu, Hindi, Spanish, French, German, Chinese, Japanese, Korean, Portuguese, Italian, Russian, and many more. Select your document's language from the dropdown for the best recognition results.</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I OCR a PDF file?</button>
-    <div class="faq-a">The OCR tool processes image files (JPG, PNG, WEBP). For PDFs, first use the PDF to JPG tool to convert each page to an image, then run OCR on those images. We plan to add direct PDF OCR support in a future update.</div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is OCR slow?</button>
-    <div class="faq-a">OCR processing runs entirely in your browser using a neural network model (Tesseract LSTM). The first recognition is slower because the model needs to load (~8 MB). Subsequent recognitions on the same page session are much faster. Processing time also depends on image size — large, high-resolution images take longer to analyze.</div>
-  </div>
-</div>
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
   <div class="auth-modal">
     <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
