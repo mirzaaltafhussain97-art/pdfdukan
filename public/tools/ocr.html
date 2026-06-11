@@ -285,6 +285,41 @@
       <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">High Accuracy</div><div class="fc-desc">Powered by Tesseract 4.x with LSTM neural network for superior recognition accuracy.</div></div>
       <div class="feature-card"><div class="fc-icon">📋</div><div class="fc-title">Copy & Export</div><div class="fc-desc">Copy text directly to clipboard or download as a .txt file with one click.</div></div>
     </div>
+
+    <h2>How to Extract Text from an Image in 3 Steps</h2>
+    <ol>
+      <li><strong>Upload your image or scanned document</strong> — JPG, PNG, or WEBP photos of documents, screenshots, book pages, receipts, or handwritten-style printed text.</li>
+      <li><strong>Select the language</strong> — Choose the language of the text in your image (English, Urdu, Arabic, and 100+ more). Correct language selection significantly improves accuracy.</li>
+      <li><strong>Run OCR and copy the text</strong> — Click Extract Text. Within seconds the recognised text appears in an editable box — copy it to your clipboard or download it as a .txt file.</li>
+    </ol>
+
+    <h2>Common Uses for OCR</h2>
+    <ul>
+      <li><strong>Digitising printed documents:</strong> Convert photographed letters, certificates, contracts, and reports into editable, searchable text instead of retyping.</li>
+      <li><strong>Extracting text from screenshots:</strong> Grab text from a screenshot of a webpage, chat, error message, or app where copying is disabled.</li>
+      <li><strong>Book and notes scanning:</strong> Students can photograph textbook pages or class notes and extract the text for summaries and assignments.</li>
+      <li><strong>Receipts and invoices:</strong> Pull amounts, dates, and details from photographed receipts for record-keeping and expense reports.</li>
+      <li><strong>Old archives:</strong> Convert old printed family documents, certificates, and records into digital text before they fade.</li>
+      <li><strong>Translating foreign text:</strong> Extract text from an image first, then paste it into a translator — useful for documents, signs, and labels.</li>
+    </ul>
+
+    <h2>Tips for the Best OCR Accuracy</h2>
+    <ul>
+      <li>Use a <strong>sharp, well-lit photo</strong> — blur is the biggest cause of recognition errors.</li>
+      <li>Hold the camera <strong>straight above the text</strong> — tilted text reduces accuracy. For paper documents, scan with <a href="../scanner.html">CamMaster Scanner</a> first to flatten and enhance the page.</li>
+      <li><strong>Select the correct language</strong> before running OCR — the engine loads language-specific recognition models.</li>
+      <li>Higher resolution images give better results — avoid heavily compressed WhatsApp forwards when possible; ask for the original photo.</li>
+      <li>Printed text recognises far better than handwriting — Tesseract is built for printed characters.</li>
+    </ul>
+
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the OCR text extraction?</button><div class="faq-a"><p>For clear, well-lit photos of printed text, accuracy is typically 95–99%. Accuracy drops with blurry images, low light, unusual fonts, or skewed angles. The LSTM neural network in Tesseract 4.x handles most real-world documents very well — and you can edit the extracted text directly in the output box to fix any stray errors.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it support Urdu and Arabic text?</button><div class="faq-a"><p>Yes. The tool supports over 100 languages including Urdu, Arabic, Persian, Hindi, Chinese, and Japanese. Select the correct language before extraction — the engine downloads that language's trained recognition model and applies right-to-left text handling automatically.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can it read handwriting?</button><div class="faq-a"><p>Tesseract is designed for printed text and performs poorly on cursive or rough handwriting. Very neat, print-style handwriting may partially work. For handwritten notes, expect to correct errors manually.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my images uploaded to a server?</button><div class="faq-a"><p>No. The entire OCR engine (Tesseract.js) runs inside your browser using WebAssembly. Your photos — ID cards, bank documents, private letters — never leave your device.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract text from a scanned PDF?</button><div class="faq-a"><p>Convert the PDF pages to images first with the <a href="pdf-to-img.html">PDF to JPG tool</a>, then run OCR on each page image. Alternatively, use the <a href="searchable-pdf.html">Searchable PDF tool</a> to embed recognised text directly back into the PDF.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is the first extraction slow?</button><div class="faq-a"><p>On first use, the browser downloads the OCR engine and the selected language's model (a few MB). After that, they're cached and subsequent extractions run much faster.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>Yes. OCR on PDFdukan is 100% free with no page limits, no daily caps, no signup, and no watermarks. Extract text from as many images as you need.</p></div></div>
   </section>
 
 </div>
