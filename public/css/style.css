@@ -5,7 +5,10 @@
 
 /* ── MOBILE OVERFLOW GUARD (Part 1.11) ─────────────────────────
    Prevents horizontal scroll at 320–375px on every page. */
-html, body { max-width: 100%; overflow-x: hidden; box-sizing: border-box; }
+/* overflow-x:hidden on html/body breaks position:sticky (the header would
+   scroll away). overflow-x:clip blocks horizontal scroll WITHOUT creating a
+   scroll container, so the sticky header keeps working; hidden = fallback. */
+html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; box-sizing: border-box; }
 *, *::before, *::after { box-sizing: inherit; }
 img { max-width: 100%; height: auto; }
 table { max-width: 100%; }
