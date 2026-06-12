@@ -38,8 +38,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="../css/style.css?v=20260612c">
 <!-- PDF.js + JSZip for proper DOCX generation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 /* ── PDF to Word specific ── */
 .ptw-preview {
@@ -428,8 +428,10 @@ const PDFToWord = (() => {
   let _fileName = 'document';
   let _mediaList = [];  // [{ fileName, base64, rId }] collected during doc build
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  window.addEventListener('DOMContentLoaded', function(){
+    if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  });
 
   function _showProgress(pct, msg) {
     const fill = document.getElementById('progressFill');
