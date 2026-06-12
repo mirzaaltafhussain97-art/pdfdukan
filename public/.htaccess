@@ -1,0 +1,5 @@
+# 301 redirects for retired duplicate blog URLs (canonical = the -guide versions).
+# Hostinger serves /public files from its static layer, so next.config.js
+# redirects never fire for files that exist — these rules cover that layer.
+Redirect 301 /blog/going-paperless.html /blog/going-paperless-guide.html
+Redirect 301 /blog/document-digitization-best-practices.html /blog/document-digitization-guide.html
