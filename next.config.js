@@ -30,6 +30,17 @@ const nextConfig = {
         destination: 'https://pdfdukan.com/:path*',
         permanent: true,
       },
+      // Duplicate blog pages — canonical is the -guide version
+      {
+        source: '/blog/going-paperless.html',
+        destination: '/blog/going-paperless-guide.html',
+        permanent: true,
+      },
+      {
+        source: '/blog/document-digitization-best-practices.html',
+        destination: '/blog/document-digitization-guide.html',
+        permanent: true,
+      },
     ];
   },
 
