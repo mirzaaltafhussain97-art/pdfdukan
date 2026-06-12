@@ -124,7 +124,7 @@
 }
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Merge PDF Files Online","description":"Combine multiple PDF files into one using PDFdukan free Merge PDF tool.","step":[{"@type":"HowToStep","name":"Upload PDF Files","text":"Click Add PDFs or drag your PDF files onto the upload area."},{"@type":"HowToStep","name":"Select Pages and Order","text":"Drag files to reorder them. Select specific pages from each file using the page checkboxes."},{"@type":"HowToStep","name":"Download Merged PDF","text":"Click Merge PDFs to combine all selected pages into one PDF and download."}]}</script>
+
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"AI PDF Summarizer","item":"https://pdfdukan.com/tools/ai-pdf-summarizer.html"}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -134,7 +134,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI PDF Summarizer","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["AI-powered summarization","Gemini AI engine","Multi-page PDF support","Concise accurate summaries","Free forever"],"url":"https://pdfdukan.com/tools/ai-pdf-summarizer.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use AI PDF Summarizer","description":"Free AI-powered PDF summarizer. Upload any PDF and get a concise, accurate summary in seconds using Gemini AI. No file upload to servers.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload your PDF document to the AI PDF Summarizer."},{"@type":"HowToStep","name":"Step 2","text":"The AI extracts and reads the text, then generates a concise summary."},{"@type":"HowToStep","name":"Step 3","text":"Read, copy, or download your AI-generated summary instantly."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI PDF Summarizer work?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan extracts the text from your PDF using PDF.js, then passes it to the Gemini AI model which generates a clear, concise summary of the key points."}},{"@type":"Question","name":"What types of PDFs can be summarized?","acceptedAnswer":{"@type":"Answer","text":"The tool works with any text-based PDF: research papers, reports, contracts, books, articles, and study materials. Scanned-image-only PDFs need OCR first."}},{"@type":"Question","name":"Is my PDF sent to a server when I use the AI Summarizer?","acceptedAnswer":{"@type":"Answer","text":"The PDF text is sent to the Gemini AI API for summarization, but your original file stays in your browser. No PDF file is stored or shared."}},{"@type":"Question","name":"How long does summarization take?","acceptedAnswer":{"@type":"Answer","text":"Most PDFs are summarized in 5-15 seconds depending on document length. Very long documents (100+ pages) may take up to 30 seconds."}},{"@type":"Question","name":"Is the AI PDF Summarizer free?","acceptedAnswer":{"@type":"Answer","text":"Yes, it is free to use for standard documents. PDFdukan provides a daily usage allowance. Heavy users may consider the premium plan for unlimited access."}}]}]}</script></head>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI PDF Summarizer","applicationCategory":"ProductivityApplication","operatingSystem":"Any Web Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["AI-powered summarization","Gemini AI engine","Multi-page PDF support","Concise accurate summaries","Free forever"],"url":"https://pdfdukan.com/tools/ai-pdf-summarizer.html","provider":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com"}},{"@context":"https://schema.org","@type":"HowTo","name":"How to use AI PDF Summarizer","description":"Free AI-powered PDF summarizer. Upload any PDF and get a concise, accurate summary in seconds using Gemini AI. No file upload to servers.","step":[{"@type":"HowToStep","name":"Step 1","text":"Upload your PDF document to the AI PDF Summarizer."},{"@type":"HowToStep","name":"Step 2","text":"The AI extracts and reads the text, then generates a concise summary."},{"@type":"HowToStep","name":"Step 3","text":"Read, copy, or download your AI-generated summary instantly."}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes."}},{"@type":"Question","name":"Does it work on scanned PDFs?","acceptedAnswer":{"@type":"Answer","text":"Only if the PDF has real text. For image scans, use our OCR tool first."}},{"@type":"Question","name":"Is my PDF private?","acceptedAnswer":{"@type":"Answer","text":"The extracted text is sent to an AI API to summarize. Avoid sensitive documents."}},{"@type":"Question","name":"Can I download the summary?","acceptedAnswer":{"@type":"Answer","text":"Yes, copy or download as text."}}]}]}</script></head>
 <body data-tool="ai-pdf-summarizer">
 <canvas id="particleCanvas"></canvas>
 
@@ -361,26 +361,7 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
-<section class="tool-seo-section" aria-label="Frequently Asked Questions">
-  <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How does the AI PDF Summarizer work?</button>
-      <div class="faq-a"><p>PDFdukan extracts the text from your PDF using PDF.js, then passes it to the Gemini AI model which generates a clear, concise summary of the key points.</p></div>
-    </div>    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What types of PDFs can be summarized?</button>
-      <div class="faq-a"><p>The tool works with any text-based PDF: research papers, reports, contracts, books, articles, and study materials. Scanned-image-only PDFs need OCR first.</p></div>
-    </div>    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF sent to a server when I use the AI Summarizer?</button>
-      <div class="faq-a"><p>The PDF text is sent to the Gemini AI API for summarization, but your original file stays in your browser. No PDF file is stored or shared.</p></div>
-    </div>    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How long does summarization take?</button>
-      <div class="faq-a"><p>Most PDFs are summarized in 5&ndash;15 seconds depending on document length. Very long documents (100+ pages) may take up to 30 seconds.</p></div>
-    </div>    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is the AI PDF Summarizer free?</button>
-      <div class="faq-a"><p>Yes, it is free to use for standard documents. PDFdukan provides a daily usage allowance. Heavy users may consider the premium plan for unlimited access.</p></div>
-    </div>
-</section>
+<!-- Related Tools (injected for GEO/AEO/SXO) -->
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
   <h2>Related Tools</h2>
   <div class="related-tools-grid">

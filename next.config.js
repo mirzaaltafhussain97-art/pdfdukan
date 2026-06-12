@@ -20,6 +20,19 @@ const nextConfig = {
     ];
   },
 
+  // Canonical host: every canonical/og:url/sitemap entry uses the bare apex
+  // domain, so www must 301 to non-www or Google treats them as two sites.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.pdfdukan.com' }],
+        destination: 'https://pdfdukan.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   // Security + caching headers.
   async headers() {
     // CSP shipped in Report-Only mode first: it does NOT block anything, it only
