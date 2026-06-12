@@ -500,6 +500,14 @@ const ScannerApp = (() => {
       info.className = 'pt-info';
       info.innerHTML = `<div class="page-num">Page ${idx + 1}</div><div class="page-filter">${page.filter}</div>`;
 
+      const dl = document.createElement('button');
+      dl.type = 'button';
+      dl.textContent = '⬇ JPG';
+      dl.title = 'Download this page as JPG';
+      dl.style.cssText = 'margin-top:6px;font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
+      dl.onclick = (e) => { e.stopPropagation(); _downloadPage(idx); };
+      info.appendChild(dl);
+
       const del = document.createElement('button');
       del.className = 'page-del';
       del.innerHTML = '✕';
@@ -524,6 +532,27 @@ const ScannerApp = (() => {
         },
       });
     }
+  }
+
+  // Export one page (with its filter/adjustments applied) as a standalone JPG,
+  // so multi-page scans don't force a ZIP download for a single page.
+  function _downloadPage(idx) {
+    const page = state.pages[idx];
+    if (!page) return;
+    const c = document.createElement('canvas');
+    c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
+    c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(page.croppedImg, 0, 0);
+    applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+    c.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `CamMaster_page_${idx + 1}.jpg`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      toast(`Page ${idx + 1} downloaded ✓`, 'success');
+    }, 'image/jpeg', 0.92);
   }
 
   function _deletePage(idx) {

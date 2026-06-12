@@ -307,6 +307,8 @@ const PDFToImages = (() => {
 
   async function downloadZIP() {
     if (!renderedPages.length) return;
+    // Single page — no point wrapping one JPG in a ZIP, download it directly.
+    if (renderedPages.length === 1) { downloadOne(0); return; }
     _showProgress(10, 'Zipping…');
     const zip = new JSZip();
     const folder = zip.folder('pages');
@@ -564,6 +566,7 @@ const SplitPDF = (() => {
   let pdfFile    = null;
   let totalPages = 0;
   let zipBlob    = null;
+  let parts      = []; // [{ bytes, name, pageCount }] — for per-part downloads
   let splitPoints = new Set(); // page indices (1-based) AFTER which to split
 
   function init() {
@@ -780,23 +783,31 @@ const SplitPDF = (() => {
         if (!splits.length) splits = [Array.from({ length: totalPages }, (_, i) => i)];
       }
 
+      parts = [];
       for (let i = 0; i < splits.length; i++) {
         _showProgress(5 + Math.round(((i + 1) / splits.length) * 90), `Part ${i + 1} of ${splits.length}…`);
         const newDoc = await PDFDocument.create();
         const pages  = await newDoc.copyPages(srcDoc, splits[i]);
         pages.forEach(p => newDoc.addPage(p));
         const bytes = await newDoc.save();
-        folder.file(`part_${String(i + 1).padStart(3, '0')}.pdf`, bytes);
+        const name  = `part_${String(i + 1).padStart(3, '0')}.pdf`;
+        parts.push({ bytes, name, pageCount: splits[i].length });
+        folder.file(name, bytes);
       }
 
-      _showProgress(98, 'Compressing…');
-      zipBlob = await zip.generateAsync({ type: 'blob' });
+      if (parts.length > 1) {
+        _showProgress(98, 'Compressing…');
+        zipBlob = await zip.generateAsync({ type: 'blob' });
+      } else {
+        zipBlob = null; // single part — direct PDF download, no ZIP needed
+      }
       _showProgress(100, 'Done!');
 
       const statParts = document.getElementById('statParts');
       const statPages = document.getElementById('statPages');
       if (statParts) statParts.textContent = splits.length + ' parts';
       if (statPages) statPages.textContent = totalPages + ' pages';
+      _renderPartsList();
       _showResult();
       _setDownloadBtn(true);
       toast(`Split into ${splits.length} parts ✓`, 'success');
@@ -824,13 +835,50 @@ const SplitPDF = (() => {
     return parts.filter(p => p.length > 0);
   }
 
+  // Per-part download list inside the result card, so users can grab any
+  // individual PDF without unzipping. Also relabels the main button when
+  // there is only one part (direct PDF, no ZIP).
+  function _renderPartsList() {
+    const dlBtn = document.getElementById('downloadBtn');
+    let list = document.getElementById('partsList');
+    if (!list && dlBtn) {
+      list = document.createElement('div');
+      list.id = 'partsList';
+      list.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;justify-content:center';
+      dlBtn.parentNode.insertBefore(list, dlBtn);
+    }
+    if (!list) return;
+    list.innerHTML = '';
+    if (dlBtn) dlBtn.innerHTML = parts.length === 1
+      ? '<span>📄</span> Download PDF'
+      : '<span>📦</span> Download ZIP (all parts)';
+    if (parts.length <= 1) return; // single part — main button covers it
+    parts.forEach((part, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = `⬇ ${part.name} (${part.pageCount} pg)`;
+      b.style.cssText = 'font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
+      b.onclick = () => downloadPart(i);
+      list.appendChild(b);
+    });
+  }
+
+  function downloadPart(i) {
+    const part = parts[i];
+    if (!part) return;
+    const blob = new Blob([part.bytes], { type: 'application/pdf' });
+    _downloadBlob(blob, part.name, 'Split PDF', 'split');
+    toast(`${part.name} downloaded ✓`, 'success');
+  }
+
   function download() {
+    if (parts.length === 1) { downloadPart(0); return; }
     if (!zipBlob) return;
     _downloadBlob(zipBlob, `CamMaster_split_${Date.now()}.zip`, 'Split PDF', 'split');
     toast('Split ZIP downloaded! ✓', 'success');
   }
 
-  return { init, loadPDF, split, download };
+  return { init, loadPDF, split, download, downloadPart };
 })();
 
 /* ================================================================
