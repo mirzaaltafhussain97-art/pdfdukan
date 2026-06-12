@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -116,13 +116,13 @@
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
 <!-- ===== PRELOAD critical above-the-fold resources ===== -->
-<link rel="preload" href="css/style.css?v=20260612b" as="style">
+<link rel="preload" href="css/style.css?v=20260612c" as="style">
 <link rel="preload" href="/images/hero-scanner.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-<link rel="stylesheet" href="css/style.css?v=20260612b">
+<link rel="stylesheet" href="css/style.css?v=20260612c">
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -356,6 +356,26 @@
             <p class="hero-subtitle" data-i18n="hero.subtitle">
               Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser. No installation needed.
             </p>
+            <!-- Popular tools strip: top tools visible right on the homepage -->
+            <style>
+            .hero-tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
+            .hero-tool{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-pill);font-size:13px;font-weight:600;color:var(--text);text-decoration:none;transition:all .15s}
+            .hero-tool:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
+            .hero-tool span{font-size:16px}
+            .hero-tool-all{background:var(--primary);color:#fff;border-color:var(--primary)}
+            .hero-tool-all:hover{background:var(--primary-hover);color:#fff}
+            @media(max-width:600px){.hero-tool{padding:8px 13px;font-size:12px}}
+            </style>
+            <nav class="hero-tools" aria-label="Popular tools">
+              <a href="tools/merge-pdf.html" class="hero-tool"><span>🔗</span>Merge PDF</a>
+              <a href="tools/compress-pdf.html" class="hero-tool"><span>📉</span>Compress PDF</a>
+              <a href="tools/pdf-to-word.html" class="hero-tool"><span>📝</span>PDF to Word</a>
+              <a href="tools/img-to-pdf.html" class="hero-tool"><span>📑</span>JPG to PDF</a>
+              <a href="tools/pdf-to-img.html" class="hero-tool"><span>🖼️</span>PDF to JPG</a>
+              <a href="tools/split-pdf.html" class="hero-tool"><span>✂️</span>Split PDF</a>
+              <a href="tools/ocr.html" class="hero-tool"><span>🔤</span>OCR Text</a>
+              <a href="tools.html" class="hero-tool hero-tool-all"><span>🧰</span>All 40+ Tools →</a>
+            </nav>
           </div>
           <div class="hero-right" aria-hidden="false">
             <img src="/images/hero-scanner.svg"
@@ -744,9 +764,9 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/i18n.js?v=20260612b"></script>
-<script src="js/app.js?v=20260612b"></script>
-<script src="js/particles.js?v=20260612b"></script>
+<script src="js/i18n.js?v=20260612c"></script>
+<script src="js/app.js?v=20260612c"></script>
+<script src="js/particles.js?v=20260612c"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {
