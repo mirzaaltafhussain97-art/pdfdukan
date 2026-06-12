@@ -38,7 +38,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -281,7 +281,11 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes, completely free with no signup.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Why did my barcode fail?</button><div class="faq-a">Some formats need an exact number of digits (EAN-13 needs 12-13). Check your value.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my data uploaded?</button><div class="faq-a">No. The barcode is made in your browser only.</div></div>
-    <h2>Related Tools</h2><p><a href="qr-generator.html" style="color:var(--primary)">QR Code Generator</a> &middot; <a href="img-to-pdf.html" style="color:var(--primary)">Image to PDF</a></p>
+    <h2>Related Tools</h2>
+    <div class="related-tools-grid">
+    <a href="qr-generator.html" class="related-tool-card"><span class="rtc-icon">🔳</span>QR Code Generator</a>
+    <a href="img-to-pdf.html" class="related-tool-card"><span class="rtc-icon">📑</span>Image to PDF</a>
+    </div>
   </section>
 </div>
 <script>
@@ -353,9 +357,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

@@ -36,7 +36,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <!-- PDF.js + JSZip for proper DOCX generation -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -257,10 +257,6 @@
     <p>Extract text from PDF and download as an editable Word document. Runs entirely in your browser — no files are uploaded.</p>
   </div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">What is PDFdukan's PDF to Word converter?</strong> It is a free, browser-based tool that extracts text and basic formatting from any PDF and saves it as an editable Word (DOCX) document. Your files never leave your device — no uploads, no signup, no limits. Ideal for students, office staff, and anyone in Pakistan or worldwide who needs to edit PDF content fast.
-  </div>
-
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
   <!-- Upload -->
@@ -296,7 +292,9 @@
       <div class="ptw-stat"><div class="pts-label">Paragraphs</div><div class="pts-val" id="statParas">—</div></div>
     </div>
 
-    <div style="font-size:13px;font-weight:700;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Preview</div>
+    <div style="font-size:13px;font-weight:700;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Original PDF Preview</div>
+    <div id="pdfVisualPreview" style="display:flex;gap:10px;overflow-x:auto;padding:10px;background:var(--card-2);border:1px solid var(--border);border-radius:10px;margin-bottom:16px"></div>
+    <div style="font-size:13px;font-weight:700;color:var(--text-3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.4px">Extracted Text Preview</div>
     <div class="ptw-preview" id="textPreview">—</div>
 
     <div class="ptw-actions">
@@ -317,6 +315,10 @@
   </div>
 
   <div class="ad-slot" style="margin-top:24px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+    <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
+    <strong style="color:var(--text)">What is PDFdukan's PDF to Word converter?</strong> It is a free, browser-based tool that extracts text and basic formatting from any PDF and saves it as an editable Word (DOCX) document. Your files never leave your device — no uploads, no signup, no limits. Ideal for students, office staff, and anyone in Pakistan or worldwide who needs to edit PDF content fast.
+  </div>
 
   <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px">
 <h2>Convert PDF to Word Online — Free, Editable &amp; Private</h2>
@@ -410,8 +412,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════
    PDF to Word Engine v2.0
@@ -470,11 +472,28 @@ const PDFToWord = (() => {
       const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
       const n   = pdf.numPages;
 
+      const visPrev = document.getElementById('pdfVisualPreview');
+      if (visPrev) visPrev.innerHTML = '';
+
       for (let p = 1; p <= n; p++) {
         _showProgress(5 + Math.round((p / n) * 88), 'Extracting page ' + p + ' of ' + n + '…');
         const page    = await pdf.getPage(p);
         const vp      = page.getViewport({ scale: 1 });
         const content = await page.getTextContent();
+
+        /* Visual preview of the original page (first 12 pages) */
+        if (visPrev && p <= 12) {
+          try {
+            const pvp = page.getViewport({ scale: 180 / vp.width });
+            const pc  = document.createElement('canvas');
+            pc.width  = Math.round(pvp.width);
+            pc.height = Math.round(pvp.height);
+            await page.render({ canvasContext: pc.getContext('2d'), viewport: pvp }).promise;
+            pc.style.cssText = 'border-radius:6px;border:1px solid var(--border);flex-shrink:0;background:#fff';
+            pc.title = 'Page ' + p;
+            visPrev.appendChild(pc);
+          } catch (e) { console.warn('Preview render skipped:', e); }
+        }
 
         /* Build structured item list with geometry */
         const items = [];
@@ -1168,7 +1187,7 @@ const PDFToWord = (() => {
 document.addEventListener('DOMContentLoaded', () => PDFToWord.init());
 window.PDFToWord = PDFToWord;
 </script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

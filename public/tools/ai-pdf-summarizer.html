@@ -36,9 +36,9 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>if(typeof pdfjsLib!=="undefined"){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}</script><script src="../js/gemini-config.js?v=20260612b"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>if(typeof pdfjsLib!=="undefined"){pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";}</script><script src="../js/gemini-config.js?v=20260612c"></script>
 
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -276,7 +276,11 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on scanned PDFs?</button><div class="faq-a">Only if the PDF has real text. For image scans, use our OCR tool first.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is my PDF private?</button><div class="faq-a">The extracted text is sent to an AI API to summarize. Avoid sensitive documents.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I download the summary?</button><div class="faq-a">Yes, copy or download as text.</div></div>
-    <h2>Related Tools</h2><p><a href="ai-pdf-chat.html" style="color:var(--primary)">Chat with PDF</a> &middot; <a href="pdf-text-extractor.html" style="color:var(--primary)">Text Extractor</a></p>
+    <h2>Related Tools</h2>
+    <div class="related-tools-grid">
+    <a href="ai-pdf-chat.html" class="related-tool-card"><span class="rtc-icon">💬</span>Chat with PDF</a>
+    <a href="pdf-text-extractor.html" class="related-tool-card"><span class="rtc-icon">📋</span>Text Extractor</a>
+    </div>
   </section>
 </div>
 <script>
@@ -336,9 +340,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

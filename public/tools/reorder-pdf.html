@@ -38,7 +38,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -259,8 +259,15 @@
   <div class="tool-card">
     <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
     <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
+    <style>
+    .re-tile{transition:border-color .15s,box-shadow .15s,background .15s,color .15s}
+    .re-tile:hover{border-color:var(--primary)!important;box-shadow:0 2px 8px rgba(255,99,51,.25)}
+    .re-tile.sel{background:var(--primary)!important;color:#fff!important;border-color:var(--primary)!important;box-shadow:0 0 0 3px rgba(255,99,51,.3)}
+    .re-tile.sortable-chosen,.re-tile.sortable-drag{border-color:var(--primary)!important;box-shadow:0 6px 16px rgba(255,99,51,.35);background:var(--primary)!important;color:#fff!important}
+    .re-tile.sortable-ghost{opacity:.35}
+    </style>
     <div id="reArea" style="display:none;margin-top:16px">
-      <p style="font-size:13px;color:var(--text-3);margin-bottom:10px">Drag the page tiles to reorder, then download.</p>
+      <p style="font-size:13px;color:var(--text-3);margin-bottom:10px">Drag the page tiles to reorder — tap a tile to highlight it, then download.</p>
       <div id="pageList" style="display:flex;flex-wrap:wrap;gap:10px"></div>
       <button class="btn btn-primary" id="reBtn" style="margin-top:16px">Apply Order &amp; Download</button>
     </div>
@@ -273,13 +280,18 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes, free with no signup.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are my files uploaded?</button><div class="faq-a">No. Everything happens in your browser.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Will quality change?</button><div class="faq-a">No. Pages are copied without re-compressing.</div></div>
-    <h2>Related Tools</h2><p><a href="merge-pdf.html" style="color:var(--primary)">Merge PDF</a> &middot; <a href="split-pdf.html" style="color:var(--primary)">Split PDF</a> &middot; <a href="rotate-pdf.html" style="color:var(--primary)">Rotate PDF</a></p>
+    <h2>Related Tools</h2>
+    <div class="related-tools-grid">
+    <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
+    <a href="split-pdf.html" class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>
+    <a href="rotate-pdf.html" class="related-tool-card"><span class="rtc-icon">🔄</span>Rotate PDF</a>
+    </div>
   </section>
 </div>
 <script>
 (function(){
   var bytes=null, fname='document', sortable=null;
-  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } fname=f.name.replace(/\.pdf$/i,''); var r=new FileReader(); r.onload=async function(e){ bytes=e.target.result; try{ var d=await PDFLib.PDFDocument.load(bytes); var n=d.getPageCount(); var list=document.getElementById('pageList'); list.innerHTML=''; for(var i=0;i<n;i++){ var tile=document.createElement('div'); tile.className='re-tile'; tile.setAttribute('data-idx',i); tile.style.cssText='width:64px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--card-2);border:1px solid var(--border);border-radius:8px;cursor:grab;font-weight:700;color:var(--text)'; tile.textContent=(i+1); list.appendChild(tile); } document.getElementById('reArea').style.display='block'; if(window.Sortable){ if(sortable)sortable.destroy(); sortable=Sortable.create(list,{animation:150}); } }catch(err){ if(window.toast) toast('Could not read PDF','error'); console.error(err); } }; r.readAsArrayBuffer(f); }
+  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } fname=f.name.replace(/\.pdf$/i,''); var r=new FileReader(); r.onload=async function(e){ bytes=e.target.result; try{ var d=await PDFLib.PDFDocument.load(bytes); var n=d.getPageCount(); var list=document.getElementById('pageList'); list.innerHTML=''; for(var i=0;i<n;i++){ var tile=document.createElement('div'); tile.className='re-tile'; tile.setAttribute('data-idx',i); tile.style.cssText='width:64px;height:80px;display:flex;align-items:center;justify-content:center;background:var(--card-2);border:1px solid var(--border);border-radius:8px;cursor:grab;font-weight:700;color:var(--text)'; tile.textContent=(i+1); tile.onclick=function(){ this.classList.toggle('sel'); }; list.appendChild(tile); } document.getElementById('reArea').style.display='block'; if(window.Sortable){ if(sortable)sortable.destroy(); sortable=Sortable.create(list,{animation:150}); } }catch(err){ if(window.toast) toast('Could not read PDF','error'); console.error(err); } }; r.readAsArrayBuffer(f); }
   async function apply(){ if(!bytes){ if(window.toast) toast('Upload a PDF first','error'); return; } try{ var order=[].slice.call(document.querySelectorAll('#pageList .re-tile')).map(function(t){return parseInt(t.getAttribute('data-idx'),10);}); var src=await PDFLib.PDFDocument.load(bytes); var out=await PDFLib.PDFDocument.create(); var copied=await out.copyPages(src,order); copied.forEach(function(p){out.addPage(p);}); var data=await out.save(); var blob=new Blob([data],{type:'application/pdf'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fname+'_reordered.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); if(window.toast) toast('Done!','success'); if(window.trackToolUse) trackToolUse('reorder-pdf'); }catch(e){ if(window.toast) toast('Failed to reorder','error'); console.error(e); } }
   document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('reBtn').onclick=apply; });
 })();
@@ -333,9 +345,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

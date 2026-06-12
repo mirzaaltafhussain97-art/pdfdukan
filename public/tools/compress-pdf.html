@@ -39,7 +39,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <style>
 .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
 @media(max-width:600px){ .tier-grid { grid-template-columns:1fr; } }
@@ -210,10 +210,6 @@
     <p>Reduce PDF file size by re-encoding embedded images at your chosen quality tier. 100% private — runs in your browser.</p>
   </div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">How can I compress a PDF without losing quality?</strong> PDFdukan's free PDF Compressor shrinks file size by re-encoding the embedded images at a quality tier you choose — so you control the balance between size and clarity. Upload your PDF, pick a compression level, and download the smaller file. It works entirely in your browser with no uploads, no signup, and no limits.
-  </div>
-
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
   <!-- Upload -->
@@ -282,22 +278,26 @@
   </div>
 
   <!-- Action -->
-  <div class="tool-card">
-    <div class="progress-bar-wrap" id="progressWrap" style="display:none">
+  <div class="tool-card" style="display:flex;flex-direction:column;gap:12px;align-items:stretch">
+    <div class="progress-bar-wrap" id="progressWrap" style="display:none;margin:0">
       <div class="progress-bar-fill" id="progressFill"></div>
     </div>
-    <p id="progressLabel" style="font-size:12px;color:var(--text-3);margin-bottom:10px;display:none"></p>
-    <button class="btn btn-primary btn-lg" id="compressBtn" onclick="compressPDF()" disabled>
+    <p id="progressLabel" style="font-size:12px;color:var(--text-3);margin:0;display:none;text-align:center"></p>
+    <button class="btn btn-primary btn-lg" id="compressBtn" onclick="compressPDF()" style="justify-content:center" disabled>
       📉 Compress PDF
     </button>
-    <a class="btn btn-primary btn-lg" id="downloadBtn" style="display:none" href="#" download="compressed.pdf">
+    <a class="btn btn-primary btn-lg" id="downloadBtn" style="display:none;justify-content:center" href="#" download="compressed.pdf">
       ⬇️ Download Compressed PDF
     </a>
   </div>
 </div>
 
 <!-- Auth Modal -->
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px">
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
+    <strong style="color:var(--text)">How can I compress a PDF without losing quality?</strong> PDFdukan's free PDF Compressor shrinks file size by re-encoding the embedded images at a quality tier you choose — so you control the balance between size and clarity. Upload your PDF, pick a compression level, and download the smaller file. It works entirely in your browser with no uploads, no signup, and no limits.
+  </div>
+
+  <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px">
 
 <h2>Compress PDF Files Online — Free, Fast &amp; Private</h2>
 <p>PDFdukan's PDF Compressor reduces the file size of any PDF document by up to 80% while keeping the text sharp and readable. Whether you have a scanned document full of high-resolution images or a report that's too large to email, this tool handles it instantly. Everything runs inside your browser using JavaScript — your file is never sent to any server, never stored in the cloud, and never seen by anyone else.</p>
@@ -399,8 +399,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
 <script>
 /* ── Compress PDF Engine ────────────────────────────────────── */
 const CP = (() => {
@@ -483,7 +483,7 @@ const CP = (() => {
       const blob = new Blob([compressedBytes], { type: 'application/pdf' });
       var defaultName = _file.name.replace(/\.pdf$/i, '') + '_compressed.pdf';
       const dl   = document.getElementById('downloadBtn');
-      dl.style.display = 'block';
+      dl.style.display = 'inline-flex';
       dl.onclick = function(e) {
         e.preventDefault();
         if (window.CMFilename) {
@@ -507,7 +507,11 @@ const CP = (() => {
       console.error(e);
       toast('❌ Compression failed: ' + e.message);
     } finally {
-      btn.disabled = false; btn.textContent = '📉 Compress PDF';
+      const done = document.getElementById('downloadBtn').style.display !== 'none';
+      btn.disabled = false;
+      btn.textContent = done ? '🔁 Compress Again' : '📉 Compress PDF';
+      btn.classList.toggle('btn-secondary', done);
+      btn.classList.toggle('btn-primary', !done);
     }
   }
 
@@ -535,7 +539,10 @@ function handleFile(f) {
   document.getElementById('fileName').textContent = f.name;
   document.getElementById('origSize').textContent = fmt(f.size);
   document.getElementById('fileInfo').style.display = 'block';
-  document.getElementById('compressBtn').disabled = false;
+  const cBtn = document.getElementById('compressBtn');
+  cBtn.disabled = false;
+  cBtn.textContent = '📉 Compress PDF';
+  cBtn.classList.add('btn-primary'); cBtn.classList.remove('btn-secondary');
   document.getElementById('downloadBtn').style.display = 'none';
 }
 

@@ -40,9 +40,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
 <style>
 .pages-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
+/* Page selection */
+.page-thumb{cursor:pointer}
+.page-thumb .pt-check{position:absolute;top:6px;right:6px;z-index:2;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:var(--card);border:2px solid var(--border);color:transparent;transition:all .15s}
+.page-thumb.pt-selected .pt-check{background:var(--primary);border-color:var(--primary);color:#fff}
+.page-thumb.pt-selected{border-color:var(--primary);box-shadow:0 0 0 2px rgba(255,99,51,.35)}
+.page-thumb:not(.pt-selected){opacity:.92}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF to JPG Converter","item":"https://pdfdukan.com/tools/pdf-to-img.html"}]}</script>
@@ -238,6 +244,12 @@
       <div class="result-stat"><div class="rs-label">Pages</div><div class="rs-value" id="statPages">—</div></div>
       <div class="result-stat"><div class="rs-label">Dimensions</div><div class="rs-value" id="statDims">—</div></div>
     </div>
+    <div id="pageSelectBar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <span style="font-size:13px;font-weight:600;color:var(--text-2)" id="selCount"></span>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="PDFToImages.selectAll(true)">✓ Select All</button>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="PDFToImages.selectAll(false)">✗ Clear</button>
+      <span style="font-size:12px;color:var(--text-3)">Click a page to select / unselect it</span>
+    </div>
     <div class="pages-preview" id="pagesPreview"></div>
     <button class="download-btn" id="downloadBtn" onclick="PDFToImages.downloadZIP()" disabled style="margin-top:16px">
       <span>📦</span> Download All as ZIP
@@ -337,9 +349,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 <script>
 const _origLoad = PDFToImages.loadPDF;
 PDFToImages.loadPDF = function(files) {

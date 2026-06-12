@@ -37,7 +37,24 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260612b">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<link rel="stylesheet" href="../css/style.css?v=20260612c">
+<style>
+/* Image thumbnail grid: drag to reorder, rotate, remove */
+#fileList.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.img-card{position:relative;background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:8px;cursor:grab;transition:border-color .15s,box-shadow .15s;user-select:none}
+.img-card:hover{border-color:var(--primary);box-shadow:0 2px 10px rgba(255,99,51,.15)}
+.img-card-ghost{opacity:.35}
+.img-card-num{position:absolute;top:4px;left:4px;z-index:2;background:var(--primary);color:#fff;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:grid;place-items:center}
+.img-card-thumb{height:110px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:6px;background:rgba(0,0,0,.06)}
+.img-card-thumb img{max-width:100%;max-height:100%;object-fit:contain;transition:transform .2s;pointer-events:none}
+.img-card-name{font-size:11px;font-weight:600;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.img-card-meta{font-size:10px;color:var(--text-3)}
+.img-card-actions{display:flex;gap:6px;margin-top:6px}
+.img-card-actions button{flex:1;padding:4px 0;font-size:13px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text-2);cursor:pointer;transition:all .15s}
+.img-card-actions button:hover{border-color:var(--primary);color:var(--primary)}
+.img-card-actions .img-card-del:hover{border-color:#ef4444;color:#ef4444}
+</style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Image to PDF Converter","item":"https://pdfdukan.com/tools/img-to-pdf.html"}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
@@ -186,10 +203,6 @@
     <p>Convert JPG, PNG, WEBP images to PDF. Multi-page, free, instant — no upload to servers.</p>
   </div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">How do I convert images (JPG/PNG) to a PDF for free?</strong> Open PDFdukan's Image to PDF tool, add your JPG, PNG, or WEBP images, drag them into the order you want, and download a single multi-page PDF. Each image becomes a page. It runs entirely in your browser — no uploads to any server, no signup, and no watermark — so it is fast and fully private.
-  </div>
-
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
   <!-- Upload -->
@@ -276,6 +289,10 @@
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+    <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
+    <strong style="color:var(--text)">How do I convert images (JPG/PNG) to a PDF for free?</strong> Open PDFdukan's Image to PDF tool, add your JPG, PNG, or WEBP images, drag them into the order you want, and download a single multi-page PDF. Each image becomes a page. It runs entirely in your browser — no uploads to any server, no signup, and no watermark — so it is fast and fully private.
+  </div>
 
   <section class="seo-section">
     <h2>Convert Images to PDF Online — Free, Fast &amp; Private</h2>
@@ -385,9 +402,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260612b"></script>
-<script src="../js/particles.js?v=20260612b"></script>
-<script src="../js/tools.js?v=20260612b"></script>
+<script src="../js/app.js?v=20260612c"></script>
+<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/tools.js?v=20260612c"></script>
 <script>
 // Override generate to show progress card
 const _origGenerate = ImageToPDF.generate;

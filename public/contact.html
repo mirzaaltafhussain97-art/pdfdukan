@@ -32,7 +32,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css?v=20260612b">
+<link rel="stylesheet" href="css/style.css?v=20260612c">
 <style>
 .contact-layout {
   display: grid; grid-template-columns: 1fr 380px; gap: 32px;
@@ -286,6 +286,12 @@
       <p style="color:var(--text-3)">Thank you for reaching out. We'll reply to your email within 24 hours.</p>
       <button class="btn btn-primary" onclick="resetForm()" style="margin-top:20px">Send Another</button>
     </div>
+    <div id="mailFallback" style="display:none;margin-top:16px;padding:18px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);text-align:center">
+      <p style="font-size:14px;color:var(--text-2);margin-bottom:12px">
+        ⚠️ Automatic sending is temporarily unavailable. Your message is ready — send it directly from your email app instead:
+      </p>
+      <a id="mailFallbackLink" class="btn btn-primary" href="#" style="display:inline-block">📧 Open Email App &amp; Send</a>
+    </div>
   </div>
 
   <!-- Contact info -->
@@ -349,7 +355,7 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="js/app.js?v=20260612b"></script>
+<script src="js/app.js?v=20260612c"></script>
 <script>
 async function submitContact(e) {
   e.preventDefault();
@@ -386,24 +392,23 @@ async function submitContact(e) {
     }
   } catch (_) { /* network error — fall through to Formspree */ }
 
-  // Fallback: Formspree (free tier, no account needed for basic use)
+  // Fallback: FormSubmit.co (free relay, no account needed)
   if (!sent) {
     try {
-      const fd = new FormData();
-      fd.append('name',    name);
-      fd.append('email',   email);
-      fd.append('subject', subject);
-      fd.append('message', message);
-      fd.append('_replyto', email);
-      fd.append('_subject', '[CamMaster] ' + subject);
-
-      const fb = await fetch('https://formspree.io/f/xdkogwqb', {
-        method: 'POST', body: fd,
-        headers: { 'Accept': 'application/json' }
+      const fb = await fetch('https://formsubmit.co/ajax/mirzaaltafhussain97@gmail.com', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name, email, message,
+          _subject:  '[PDFdukan Contact] ' + subject + ' — from ' + name,
+          _replyto:  email,
+          _template: 'table',
+          _captcha:  'false'
+        })
       });
-      const fd2 = await fb.json();
-      if (fb.ok) { sent = true; }
-      else { throw new Error(fd2.error || 'Formspree error'); }
+      const fj = await fb.json().catch(() => ({}));
+      if (fb.ok && String(fj.success) === 'true') { sent = true; }
+      else { console.warn('[contact fallback]', fj); }
     } catch (err2) {
       console.error('[contact fallback]', err2);
     }
@@ -412,8 +417,18 @@ async function submitContact(e) {
   if (sent) {
     document.getElementById('contactForm').style.display = 'none';
     document.getElementById('successMsg').style.display  = 'block';
+    document.getElementById('mailFallback').style.display = 'none';
   } else {
-    toast('Could not send message. Please try again in a moment.', 'error', 8000);
+    // Never dead-end: open a prefilled direct-email path
+    const body = 'Name: ' + name + '\nEmail: ' + email + '\n\n' + message;
+    const link = document.getElementById('mailFallbackLink');
+    link.href  = 'mailto:mirzaaltafhussain97@gmail.com'
+               + '?subject=' + encodeURIComponent('[PDFdukan] ' + subject)
+               + '&body='    + encodeURIComponent(body);
+    const box = document.getElementById('mailFallback');
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('Automatic sending failed — use the direct email button below.', 'error', 8000);
     btn.textContent = '📬 Send Message';
     btn.disabled = false;
   }
