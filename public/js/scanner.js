@@ -23,9 +23,14 @@ const ScannerApp = (() => {
   function init() {
     cropEditor = new CropEditor('cropCanvas');
 
-    /* Warm up the AI corner-detection model in the background so the
-       first scan isn't slowed by the one-time model download. */
-    if (window.MLDetector) { window.MLDetector.load().catch(() => {}); }
+    /* Warm up the AI corner-detection model on the user's first interaction
+       (not at page load) so visitors who never scan don't download it, while
+       anyone about to scan gets it preloaded before the crop step. */
+    if (window.MLDetector) {
+      const warm = () => { window.MLDetector.load().catch(() => {}); };
+      ['pointerdown', 'dragover', 'keydown', 'touchstart'].forEach(ev =>
+        window.addEventListener(ev, warm, { once: true, passive: true }));
+    }
 
     _bindUploadZone();
     _bindCropControls();

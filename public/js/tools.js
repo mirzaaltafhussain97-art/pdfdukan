@@ -1280,6 +1280,11 @@ const OCRTool = (() => {
 
     _showProgress(5, 'Starting OCR engine…');
     try {
+      // Lazy-load Tesseract.js only when a file is actually processed.
+      if (typeof Tesseract === 'undefined') {
+        _showProgress(6, 'Downloading OCR engine…');
+        await window.loadScriptOnce('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+      }
       const logger = m => {
         // Show real progress for EVERY phase — not just recognizing
         if (!m || !m.status) return;

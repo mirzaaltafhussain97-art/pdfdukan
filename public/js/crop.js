@@ -75,6 +75,11 @@ const MLDetector = (() => {
     if (_loading) return _loading;
     _loading = (async () => {
       try {
+        // Lazy-load onnxruntime-web only when corner detection is first needed.
+        if (typeof ort === 'undefined' && window.loadScriptOnce) {
+          try { await window.loadScriptOnce('https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js'); }
+          catch (_) { /* fall through to OpenCV fallback below */ }
+        }
         if (typeof ort === 'undefined') { _failed = true; return null; }
         ort.env.wasm.wasmPaths  = WASM_PATHS;
         ort.env.wasm.numThreads = 1;       // single-thread → no worker dependency

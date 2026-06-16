@@ -42,15 +42,14 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<!-- ONNX Runtime Web — powers AI document corner detection (DocAligner model) -->
-<script defer src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js"></script>
+<!-- ONNX Runtime Web (DocAligner) — lazy-loaded on first scan; see js/app.js loadScriptOnce -->
 <script>
   if (typeof pdfjsLib !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   }
 </script>
 
-<link rel="stylesheet" href="css/style.css?v=20260616b">
+<link rel="stylesheet" href="css/style.css?v=20260616c">
 <style>
 .scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
 .cv-badge { display: none !important; }
@@ -575,11 +574,11 @@
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20260616b"></script>
-<script src="js/particles.js?v=20260616b"></script>
-<script src="js/crop.js?v=20260616b"></script>
-<script src="js/filters.js?v=20260616b"></script>
-<script src="js/scanner.js?v=20260616b"></script>
+<script src="js/app.js?v=20260616c"></script>
+<script src="js/particles.js?v=20260616c"></script>
+<script src="js/crop.js?v=20260616c"></script>
+<script src="js/filters.js?v=20260616c"></script>
+<script src="js/scanner.js?v=20260616c"></script>
 
 <!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
 <section class="tool-seo-section" aria-label="CamMaster Scanner Info">

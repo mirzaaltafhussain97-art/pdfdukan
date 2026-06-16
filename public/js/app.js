@@ -4,6 +4,29 @@
    Notifications · Storage UI · Pending File Transfer
 ================================================================ */
 
+/* ── LAZY SCRIPT LOADER ──────────────────────────────────────────
+   Loads a <script src> once, on demand, and resolves when ready.
+   Lets heavy CDN libraries (Tesseract, onnxruntime, …) download
+   only when a tool is actually used instead of on every page load. */
+window.loadScriptOnce = (function () {
+  const _cache = {};
+  return function loadScriptOnce(url) {
+    if (_cache[url]) return _cache[url];
+    _cache[url] = new Promise((resolve, reject) => {
+      // Already present on the page? resolve immediately.
+      const existing = document.querySelector('script[src="' + url + '"]');
+      if (existing && existing.dataset.loaded === '1') { resolve(); return; }
+      const s = document.createElement('script');
+      s.src = url;
+      s.async = true;
+      s.onload  = () => { s.dataset.loaded = '1'; resolve(); };
+      s.onerror = () => { delete _cache[url]; reject(new Error('Failed to load ' + url)); };
+      document.head.appendChild(s);
+    });
+    return _cache[url];
+  };
+})();
+
 /* ── STATE ───────────────────────────────────────────────────── */
 /* Auto theme by local time-of-day: 6:00–17:59 = light (day), else dark (night).
    Used whenever the user hasn't manually picked a theme (mode = 'auto'). */
