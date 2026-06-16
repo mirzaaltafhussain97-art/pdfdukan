@@ -29,8 +29,6 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc.html): Calculate Islamic faraid inheritance shares
 
 ## AI-Powered Tools
-- [AI PDF Summarizer](https://pdfdukan.com/tools/ai-pdf-summarizer.html): Summarize PDF documents with AI
-- [AI PDF Chat](https://pdfdukan.com/tools/ai-pdf-chat.html): Chat with your PDF documents
 - [OCR — Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html): Make scanned PDFs searchable
 
 ## Utility Tools (Calculators & Generators)

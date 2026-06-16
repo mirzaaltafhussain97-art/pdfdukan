@@ -3,3 +3,17 @@
 # redirects never fire for files that exist — these rules cover that layer.
 Redirect 301 /blog/going-paperless.html /blog/going-paperless-guide.html
 Redirect 301 /blog/document-digitization-best-practices.html /blog/document-digitization-guide.html
+
+# --- retired AI tools (API-dependent) -> tools hub ---
+Redirect 301 /tools/ai-detector.html /tools.html
+Redirect 301 /tools/ai-humanizer.html /tools.html
+Redirect 301 /tools/ai-pdf-chat.html /tools.html
+Redirect 301 /tools/ai-pdf-summarizer.html /tools.html
+Redirect 301 /tools/ai-summarize.html /tools.html
+Redirect 301 /tools/assignment-writer.html /tools.html
+Redirect 301 /tools/cover-letter-generator.html /tools.html
+Redirect 301 /tools/essay-writer.html /tools.html
+Redirect 301 /tools/mcq-generator.html /tools.html
+Redirect 301 /tools/notes-generator.html /tools.html
+Redirect 301 /tools/research-summarizer.html /tools.html
+Redirect 301 /tools/resume-analyzer.html /tools.html

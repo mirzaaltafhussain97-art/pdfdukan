@@ -39,7 +39,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260612c">
+<link rel="stylesheet" href="../css/style.css?v=20260616a">
 <style>
 .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
 @media(max-width:600px){ .tier-grid { grid-template-columns:1fr; } }
@@ -138,7 +138,6 @@
           <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
           <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
-          <a href="../tools/ai-summarize.html" class="nd-link"><span class="nd-link-icon">&#129302;</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
           <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
@@ -399,8 +398,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260612c"></script>
-<script src="../js/particles.js?v=20260612c"></script>
+<script src="../js/app.js?v=20260616a"></script>
+<script src="../js/particles.js?v=20260616a"></script>
 <script>
 /* ── Compress PDF Engine ────────────────────────────────────── */
 const CP = (() => {
@@ -584,7 +583,6 @@ function compressPDF() { CP.run(); }
     </div>
   </div>
 </div>
-
 
 <!-- Related Tools (injected for GEO/AEO/SXO) -->
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">

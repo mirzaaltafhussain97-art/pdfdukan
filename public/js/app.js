@@ -1496,7 +1496,6 @@ const TOOL_PAGES = {
   'ppt-to-pdf':    'tools/ppt-to-pdf.html',
   'pdf-to-excel':  'tools/pdf-to-excel.html',
   'excel-to-pdf':  'tools/excel-to-pdf.html',
-  'ai-summarize':  'tools/ai-summarize.html',
   'inheritance':   'tools/inheritance-calc.html',
   'warasat':       'tools/inheritance-calc.html',
   /* ── PDF utilities & generators (Part 5) ── */
@@ -1508,18 +1507,6 @@ const TOOL_PAGES = {
   'searchable-pdf':     'tools/searchable-pdf.html',
   'qr-generator':       'tools/qr-generator.html',
   'barcode-generator':  'tools/barcode-generator.html',
-  /* ── AI tools (Part 6, Gemini) ── */
-  'ai-pdf-summarizer':     'tools/ai-pdf-summarizer.html',
-  'ai-pdf-chat':           'tools/ai-pdf-chat.html',
-  'notes-generator':       'tools/notes-generator.html',
-  'mcq-generator':         'tools/mcq-generator.html',
-  'essay-writer':          'tools/essay-writer.html',
-  'assignment-writer':     'tools/assignment-writer.html',
-  'ai-humanizer':          'tools/ai-humanizer.html',
-  'ai-detector':           'tools/ai-detector.html',
-  'research-summarizer':   'tools/research-summarizer.html',
-  'resume-analyzer':       'tools/resume-analyzer.html',
-  'cover-letter-generator':'tools/cover-letter-generator.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');
@@ -1573,7 +1560,6 @@ const TOOL_SEARCH_INDEX = [
   { id:'ppt-to-pdf',   name:'PowerPoint to PDF',     desc:'Convert PPTX presentation to PDF output',     icon:'🎯', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation'] },
   { id:'pdf-to-excel', name:'PDF to Excel',          desc:'Extract tables from PDF to XLSX spreadsheet', icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','xls','table','spreadsheet','data'] },
   { id:'excel-to-pdf', name:'Excel to PDF',          desc:'Convert XLSX spreadsheets to PDF format',     icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','spreadsheet','convert'] },
-  { id:'ai-summarize', name:'AI Text Summarizer',    desc:'Instant AI-powered document summary',         icon:'🤖', category:'AI Tools',    keywords:['summary','summarize','ai','key points','brief','extract','nlp'] },
   { id:'age',          name:'Age Calculator',         desc:'Calculate exact age from any birthdate',       icon:'📅', category:'Calculators', keywords:['age','birthday','date','born','calculate','years','months'] },
   { id:'bmi',          name:'BMI Calculator',         desc:'Body mass index — metric & imperial',          icon:'⚖️', category:'Calculators', keywords:['bmi','body','weight','height','health','mass','index'] },
   { id:'discount',     name:'Discount Calculator',    desc:'Calculate discounts, savings, tax & GST',      icon:'🏷️', category:'Calculators', keywords:['discount','price','percent','tax','gst','sale','savings'] },

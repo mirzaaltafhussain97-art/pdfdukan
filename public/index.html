@@ -70,8 +70,7 @@
       "operatingSystem": "Any (Web Browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
       "creator": { "@id": "https://pdfdukan.com/#organization" },
-      "featureList": ["Document Scanner","Auto Edge Detection","AI Enhancement","JPG to PDF","PDF to JPG","Merge PDF","Split PDF","Compress Images","OCR Text Extraction"],
-      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "1247", "bestRating": "5" }
+      "featureList": ["Document Scanner","Auto Edge Detection","AI Enhancement","JPG to PDF","PDF to JPG","Merge PDF","Split PDF","Compress Images","OCR Text Extraction"]
     },
     {
       "@type": "WebSite",
@@ -116,13 +115,13 @@
 <link rel="dns-prefetch" href="https://www.googletagmanager.com">
 
 <!-- ===== PRELOAD critical above-the-fold resources ===== -->
-<link rel="preload" href="css/style.css?v=20260612c" as="style">
+<link rel="preload" href="css/style.css?v=20260616a" as="style">
 <link rel="preload" href="/images/hero-scanner.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-<link rel="stylesheet" href="css/style.css?v=20260612c">
+<link rel="stylesheet" href="css/style.css?v=20260616a">
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
@@ -197,7 +196,6 @@
           <a href="tools/watermark.html"     class="nd-link" role="menuitem"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp text or image</div></div></a>
           <a href="tools/page-numbers.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number all pages</div></div></a>
           <a href="tools/delete-pages.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
-          <a href="tools/ai-summarize.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🤖</span><div class="nd-link-body"><div class="nd-link-name">AI Summarizer</div><div class="nd-link-desc">Instant doc summary</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">🖼️ Image &amp; Scan</span>
           <a href="scanner.html"          class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
@@ -280,7 +278,6 @@
   <a href="tools/ppt-to-pdf.html"   class="mnd-link">🎯 PowerPoint to PDF</a>
   <a href="tools/pdf-to-excel.html" class="mnd-link">📋 PDF to Excel</a>
   <a href="tools/excel-to-pdf.html" class="mnd-link">📋 Excel to PDF</a>
-  <a href="tools/ai-summarize.html" class="mnd-link">🤖 AI Summarizer</a>
   <div class="mnd-section">🔧 Calculators</div>
   <a href="tools/age-calc.html"      class="mnd-link">📅 Age Calculator</a>
   <a href="tools/bmi-calc.html"      class="mnd-link">⚖️ BMI Calculator</a>
@@ -374,7 +371,7 @@
               <a href="tools/pdf-to-img.html" class="hero-tool"><span>🖼️</span>PDF to JPG</a>
               <a href="tools/split-pdf.html" class="hero-tool"><span>✂️</span>Split PDF</a>
               <a href="tools/ocr.html" class="hero-tool"><span>🔤</span>OCR Text</a>
-              <a href="tools.html" class="hero-tool hero-tool-all"><span>🧰</span>All 40+ Tools →</a>
+              <a href="tools.html" class="hero-tool hero-tool-all"><span>🧰</span>All 30+ Tools →</a>
             </nav>
           </div>
           <div class="hero-right" aria-hidden="false">
@@ -410,21 +407,9 @@
       <section aria-label="Featured Tools">
         <div class="section-header">
           <h2 class="section-title"><span class="st-icon">⭐</span> Featured Tools</h2>
-          <a href="tools.html" class="see-all">Browse All 40+ Tools →</a>
+          <a href="tools.html" class="see-all">Browse All 30+ Tools →</a>
         </div>
         <div class="tools-grid featured-grid" style="margin-bottom:28px">
-          <div class="tool-card featured-card" onclick="openTool('ai-pdf-summarizer')" role="button" tabindex="0">
-            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00838f,#26c6da)">🤖</div>
-            <div class="tc-name">PDF Summarizer</div>
-            <div class="tc-desc">Instant AI summary of any PDF</div>
-            <span class="tc-badge" style="background:#607d8b">AI</span>
-          </div>
-          <div class="tool-card featured-card" onclick="openTool('ai-pdf-chat')" role="button" tabindex="0">
-            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">💬</div>
-            <div class="tc-name">Chat with PDF</div>
-            <div class="tc-desc">Ask your PDF questions — AI answers</div>
-            <span class="tc-badge" style="background:#607d8b">AI</span>
-          </div>
           <div class="tool-card featured-card" onclick="openTool('pdf-to-word')" role="button" tabindex="0">
             <div class="tool-icon-wrap pdf-word">📝</div>
             <div class="tc-name">PDF to Word</div>
@@ -437,34 +422,30 @@
             <div class="tc-desc">Extract text from any image or PDF</div>
             <span class="tc-badge">FREE</span>
           </div>
-          <div class="tool-card featured-card" onclick="openTool('notes-generator')" role="button" tabindex="0">
-            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div>
-            <div class="tc-name">Notes Generator</div>
-            <div class="tc-desc">AI study notes from any document</div>
-            <span class="tc-badge" style="background:#607d8b">AI</span>
+          <div class="tool-card featured-card" onclick="openTool('merge')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#e53935,#ef5350)">🔗</div>
+            <div class="tc-name">Merge PDF</div>
+            <div class="tc-desc">Combine PDFs into one file</div>
+            <span class="tc-badge">FREE</span>
           </div>
-          <div class="tool-card featured-card" onclick="openTool('resume-analyzer')" role="button" tabindex="0">
-            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#4e342e,#8d6e63)">💼</div>
-            <div class="tc-name">Resume Analyzer</div>
-            <div class="tc-desc">AI feedback on your CV instantly</div>
-            <span class="tc-badge" style="background:#607d8b">AI</span>
+          <div class="tool-card featured-card" onclick="openTool('compress-pdf')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#43a047,#66bb6a)">🗜️</div>
+            <div class="tc-name">Compress PDF</div>
+            <div class="tc-desc">Reduce PDF file size</div>
+            <span class="tc-badge">FREE</span>
           </div>
-        </div>
-      </section>
-
-      <!-- AI STUDY TOOLS — student-focused section -->
-      <section aria-label="AI Study Tools for Students">
-        <div class="section-header">
-          <h2 class="section-title"><span class="st-icon">🎓</span> AI Study Tools</h2>
-          <a href="tools.html#ai-tools" class="see-all">See All AI Tools →</a>
-        </div>
-        <div class="tools-grid" style="margin-bottom:28px">
-          <div class="tool-card" onclick="openTool('ai-pdf-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00838f,#26c6da)">🤖</div><div class="tc-name">PDF Summarizer</div><div class="tc-desc">Summarize any PDF</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('notes-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div><div class="tc-name">Notes Generator</div><div class="tc-desc">Make study notes</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('mcq-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#6a1b9a,#ab47bc)">❓</div><div class="tc-name">MCQ Generator</div><div class="tc-desc">Make quiz questions</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('assignment-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#00695c,#26a69a)">📚</div><div class="tc-name">Assignment Writer</div><div class="tc-desc">Draft assignments</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('essay-writer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#5c6bc0)">✍️</div><div class="tc-name">Essay Writer</div><div class="tc-desc">Draft essays fast</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('research-summarizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔬</div><div class="tc-name">Research Summarizer</div><div class="tc-desc">Summarize papers</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
+          <div class="tool-card featured-card" onclick="openTool('split')" role="button" tabindex="0">
+            <div class="tool-icon-wrap" style="background:linear-gradient(135deg,#fb8c00,#ffa726)">✂️</div>
+            <div class="tc-name">Split PDF</div>
+            <div class="tc-desc">Extract or separate pages</div>
+            <span class="tc-badge">FREE</span>
+          </div>
+          <div class="tool-card featured-card" onclick="openTool('img-to-pdf')" role="button" tabindex="0">
+            <div class="tool-icon-wrap img-pdf">📑</div>
+            <div class="tc-name">Image to PDF</div>
+            <div class="tc-desc">Convert JPG/PNG to PDF</div>
+            <span class="tc-badge">FREE</span>
+          </div>
         </div>
       </section>
 
@@ -504,15 +485,6 @@
           <div class="tool-card" onclick="openTool('ocr')" role="button" tabindex="0"><div class="tool-icon-wrap ocr">🔤</div><div class="tc-name">OCR Text</div><div class="tc-desc">Image to text</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('img-compress')" role="button" tabindex="0"><div class="tool-icon-wrap img-compress">🗜️</div><div class="tc-name">Image Compressor</div><div class="tc-desc">JPG, PNG, WebP</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('searchable-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div><div class="tc-name">Searchable PDF</div><div class="tc-desc">OCR text layer</div><span class="tc-badge">FREE</span></div>
-        </div>
-
-        <!-- Career & Writing AI -->
-        <div class="tool-category-label">💼 Career &amp; Writing AI</div>
-        <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('resume-analyzer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#4e342e,#8d6e63)">💼</div><div class="tc-name">Resume Analyzer</div><div class="tc-desc">Resume feedback</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('cover-letter-generator')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#283593,#3949ab)">📎</div><div class="tc-name">Cover Letter</div><div class="tc-desc">Write cover letters</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('ai-humanizer')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#ad1457,#ec407a)">🤝</div><div class="tc-name">AI Humanizer</div><div class="tc-desc">Natural-sounding text</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
-          <div class="tool-card" onclick="openTool('ai-detector')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#37474f,#607d8b)">🔎</div><div class="tc-name">AI Detector</div><div class="tc-desc">Check AI likelihood</div><span class="tc-badge" style="background:#607d8b">AI</span></div>
         </div>
 
         <!-- Calculators -->
@@ -764,9 +736,9 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/i18n.js?v=20260612c"></script>
-<script src="js/app.js?v=20260612c"></script>
-<script src="js/particles.js?v=20260612c"></script>
+<script src="js/i18n.js?v=20260616a"></script>
+<script src="js/app.js?v=20260616a"></script>
+<script src="js/particles.js?v=20260616a"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {
