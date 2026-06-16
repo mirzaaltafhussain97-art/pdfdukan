@@ -41,6 +41,19 @@ const nextConfig = {
         destination: '/blog/document-digitization-guide.html',
         permanent: true,
       },
+      // Retired AI tools (API-dependent, removed 2026-06-16) -> tools hub.
+      // Deleted files no longer exist on disk, so these paths reach Next.js
+      // and these redirects fire (the static layer is bypassed once gone).
+      ...[
+        'ai-detector', 'ai-humanizer', 'ai-pdf-chat', 'ai-pdf-summarizer',
+        'ai-summarize', 'assignment-writer', 'cover-letter-generator',
+        'essay-writer', 'mcq-generator', 'notes-generator',
+        'research-summarizer', 'resume-analyzer',
+      ].map(t => ({
+        source: `/tools/${t}.html`,
+        destination: '/tools.html',
+        permanent: true,
+      })),
     ];
   },
 
