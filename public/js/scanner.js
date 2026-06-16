@@ -106,7 +106,11 @@ const ScannerApp = (() => {
     }
 
     const item = state.queue[state.queueIndex];
-    if (item.file.type === 'application/pdf') {
+    if (item.img) {
+      // pre-rendered image (e.g. a rasterised PDF page) — run it through the
+      // same crop + filter pipeline as a photo so all editing tools apply.
+      _startCropScreen(item.img);
+    } else if (item.file.type === 'application/pdf') {
       _processPDFFile(item.file);
     } else {
       _processImageFile(item.file);
@@ -164,16 +168,17 @@ const ScannerApp = (() => {
       }
 
       hideProcessing();
-      // Add each PDF page directly without crop step (already flat)
-      for (const img of allImgs) {
-        state.pages.push({
-          id: Date.now() + Math.random(),
-          croppedImg: img,
-          filter: 'enhance',
-          adjustments: { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 },
-        });
+      if (!allImgs.length) {
+        toast('PDF has no pages', 'error');
+        state.queueIndex++;
+        _processNextInQueue();
+        return;
       }
-      state.queueIndex++;
+      // Expand this PDF item into one queue item per rendered page, then run
+      // them through the normal crop + filter pipeline (so crop/filter/adjust
+      // tools all apply to PDF pages, just like uploaded photos).
+      const items = allImgs.map(img => ({ img }));
+      state.queue.splice(state.queueIndex, 1, ...items);
       _processNextInQueue();
     } catch (e) {
       hideProcessing();
@@ -373,7 +378,9 @@ const ScannerApp = (() => {
 
     for (let i = state.queueIndex; i < state.queue.length; i++) {
       const item = state.queue[i];
-      const processedImg = await _autoProcessImage(item.file);
+      const processedImg = item.img
+        ? await _autoProcessLoadedImage(item.img)   // pre-rendered PDF page
+        : await _autoProcessImage(item.file);
       if (processedImg) {
         state.pages.push({
           id: Date.now() + Math.random(),
@@ -398,38 +405,41 @@ const ScannerApp = (() => {
   async function _autoProcessImage(file) {
     return new Promise(resolve => {
       const reader = new FileReader();
-      reader.onload = async e => {
+      reader.onload = e => {
         const img = new Image();
-        img.onload = async () => {
-          try {
-            // Downscale if needed
-            const px = img.naturalWidth * img.naturalHeight;
-            let sourceImg = img;
-            if (px > MAX_IMAGE_PX) {
-              const scale = Math.sqrt(MAX_IMAGE_PX / px);
-              const nW = Math.round(img.naturalWidth  * scale);
-              const nH = Math.round(img.naturalHeight * scale);
-              const c  = document.createElement('canvas');
-              c.width = nW; c.height = nH;
-              c.getContext('2d').drawImage(img, 0, 0, nW, nH);
-              sourceImg = new Image();
-              await new Promise(r => { sourceImg.onload = r; sourceImg.src = c.toDataURL('image/jpeg', 0.95); });
-            }
-            // Auto-detect + perspective-correct
-            await cropEditor.setImageAsync(sourceImg).catch(() => cropEditor.setImage(sourceImg));
-            const cropped = await cropEditor.perspectiveCrop().catch(() => sourceImg);
-            resolve(cropped);
-          } catch (err) {
-            console.warn('Auto-process failed for image, using original:', err);
-            resolve(img);
-          }
-        };
+        img.onload  = () => _autoProcessLoadedImage(img).then(resolve);
         img.onerror = () => resolve(null);
         img.src = e.target.result;
       };
       reader.onerror = () => resolve(null);
       reader.readAsDataURL(file);
     });
+  }
+
+  /* Auto-detect edges + perspective-correct an already-loaded Image */
+  async function _autoProcessLoadedImage(img) {
+    try {
+      // Downscale if needed
+      const px = (img.naturalWidth || img.width) * (img.naturalHeight || img.height);
+      let sourceImg = img;
+      if (px > MAX_IMAGE_PX) {
+        const scale = Math.sqrt(MAX_IMAGE_PX / px);
+        const nW = Math.round((img.naturalWidth  || img.width)  * scale);
+        const nH = Math.round((img.naturalHeight || img.height) * scale);
+        const c  = document.createElement('canvas');
+        c.width = nW; c.height = nH;
+        c.getContext('2d').drawImage(img, 0, 0, nW, nH);
+        sourceImg = new Image();
+        await new Promise(r => { sourceImg.onload = r; sourceImg.src = c.toDataURL('image/jpeg', 0.95); });
+      }
+      // Auto-detect + perspective-correct
+      await cropEditor.setImageAsync(sourceImg).catch(() => cropEditor.setImage(sourceImg));
+      const cropped = await cropEditor.perspectiveCrop().catch(() => sourceImg);
+      return cropped;
+    } catch (err) {
+      console.warn('Auto-process failed for image, using original:', err);
+      return img;
+    }
   }
 
   function _addPage() {
