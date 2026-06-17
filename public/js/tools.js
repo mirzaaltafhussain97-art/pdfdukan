@@ -493,6 +493,394 @@ const PDFToImages = (() => {
 })();
 
 /* ================================================================
+   2b. CROP PDF  — Draw a region on a page, export it at full quality
+================================================================ */
+const PDFCrop = (() => {
+  let pdf = null, pageNum = 1, numPages = 1, fileName = 'document';
+  let previewScale = 1;          // preview-canvas px per PDF point
+  let bg = null;                 // offscreen canvas holding the rendered page
+  // regions: rotatable rectangles in preview-canvas px {cx,cy,w,h,angle(deg)}
+  let regions = [], active = -1;
+  let drag = null;               // { mode, key, ... }
+  const MIN = 18;                // smallest region side (preview px)
+  const MAX_DIM = 8000, MAX_AREA = 64 * 1e6;  // browser canvas safety limits
+
+  function _cv() { return document.getElementById('previewCanvas'); }
+  function _ctx() { return _cv().getContext('2d'); }
+
+  function init() {
+    _bindDropZone('dropZone', 'fileInput', loadPDF);
+
+    const q = document.getElementById('cropQuality');
+    const qv = document.getElementById('cropQualityVal');
+    if (q && qv) q.addEventListener('input', () => { qv.textContent = q.value + '%'; });
+
+    const f = document.getElementById('cropFormat');
+    const qg = document.getElementById('cropQualityGroup');
+    if (f && qg) f.addEventListener('change', () => {
+      qg.style.opacity = f.value === 'image/png' ? '.4' : '1';
+      if (q) q.disabled = f.value === 'image/png';
+    });
+
+    const sc = document.getElementById('cropScale');
+    if (sc) sc.addEventListener('change', _updateInfo);
+
+    const stage = document.getElementById('cropStage');
+    if (stage) {
+      stage.addEventListener('pointerdown', _onDown);
+      window.addEventListener('pointermove', _onMove);
+      window.addEventListener('pointerup', _onUp);
+    }
+  }
+
+  async function loadPDF(files) {
+    const file = files.find(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
+    if (!file) { toast('Please upload a PDF file', 'error'); return; }
+    fileName = file.name.replace(/\.pdf$/i, '');
+    const pc = document.getElementById('progressCard');
+    if (pc) pc.style.display = 'block';
+    _showProgress(20, 'Loading PDF…');
+    try {
+      const ab = await file.arrayBuffer();
+      pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+      numPages = pdf.numPages;
+      pageNum = 1;
+      _showProgress(100, 'Ready');
+      await _renderPreview();
+      const card = document.getElementById('cropCard');
+      const opts = document.getElementById('optionsCard');
+      if (card) card.classList.add('show');
+      if (opts) opts.style.display = 'block';
+      if (pc) pc.style.display = 'none';
+    } catch (e) {
+      toast('Could not open PDF: ' + e.message, 'error');
+      if (pc) pc.style.display = 'none';
+      console.error(e);
+    }
+  }
+
+  async function _renderPreview() {
+    const page = await pdf.getPage(pageNum);
+    const base = page.getViewport({ scale: 1 });
+    // Fit the whole page inside a ~1000px box for the preview
+    previewScale = Math.min(1000 / base.width, 1000 / base.height, 2);
+    const vp = page.getViewport({ scale: previewScale });
+    bg = document.createElement('canvas');
+    bg.width = Math.floor(vp.width); bg.height = Math.floor(vp.height);
+    const bctx = bg.getContext('2d');
+    bctx.fillStyle = '#ffffff';
+    bctx.fillRect(0, 0, bg.width, bg.height);
+    await page.render({ canvasContext: bctx, viewport: vp }).promise;
+
+    const c = _cv();
+    c.width = bg.width; c.height = bg.height;
+    regions = []; active = -1;
+    draw(); _updateInfo();
+
+    const bar = document.getElementById('pageBar');
+    if (bar) bar.style.display = numPages > 1 ? 'flex' : 'none';
+    const lbl = document.getElementById('pageLabel');
+    if (lbl) lbl.textContent = `Page ${pageNum} of ${numPages}`;
+    const pv = document.getElementById('prevPage'); if (pv) pv.disabled = pageNum <= 1;
+    const nx = document.getElementById('nextPage'); if (nx) nx.disabled = pageNum >= numPages;
+  }
+
+  /* ── Geometry ─────────────────────────────────────────────── */
+  const ROT_OFF = 30;            // rotation handle distance above top edge (px)
+  function _rad(r) { return r.angle * Math.PI / 180; }
+  function _axes(r) { const a = _rad(r); return { ex: { x: Math.cos(a), y: Math.sin(a) }, ey: { x: -Math.sin(a), y: Math.cos(a) } }; }
+  function _corners(r) {
+    const { ex, ey } = _axes(r), hw = r.w / 2, hh = r.h / 2;
+    const C = (sx, sy) => ({ x: r.cx + ex.x * sx * hw + ey.x * sy * hh, y: r.cy + ex.y * sx * hw + ey.y * sy * hh });
+    return { tl: C(-1, -1), tr: C(1, -1), br: C(1, 1), bl: C(-1, 1) };
+  }
+  function _edgeMids(r) {
+    const c = _corners(r);
+    return {
+      top: { x: (c.tl.x + c.tr.x) / 2, y: (c.tl.y + c.tr.y) / 2 },
+      right: { x: (c.tr.x + c.br.x) / 2, y: (c.tr.y + c.br.y) / 2 },
+      bottom: { x: (c.br.x + c.bl.x) / 2, y: (c.br.y + c.bl.y) / 2 },
+      left: { x: (c.bl.x + c.tl.x) / 2, y: (c.bl.y + c.tl.y) / 2 },
+    };
+  }
+  function _rotHandle(r) { const { ey } = _axes(r); const d = r.h / 2 + ROT_OFF; return { x: r.cx - ey.x * d, y: r.cy - ey.y * d }; }
+  function _toLocal(r, p) { const { ex, ey } = _axes(r); const dx = p.x - r.cx, dy = p.y - r.cy; return { x: dx * ex.x + dy * ex.y, y: dx * ey.x + dy * ey.y }; }
+
+  function _pos(e) {
+    const c = _cv(), rect = c.getBoundingClientRect();
+    const k = c.width / rect.width;
+    return { x: (e.clientX - rect.left) * k, y: (e.clientY - rect.top) * k };
+  }
+
+  function _hitHandle(r, p) {
+    const HR = 16;
+    if (Math.hypot(p.x - _rotHandle(r).x, p.y - _rotHandle(r).y) < HR) return { mode: 'rotate' };
+    const cs = _corners(r);
+    for (const k of ['tl', 'tr', 'br', 'bl']) if (Math.hypot(p.x - cs[k].x, p.y - cs[k].y) < HR) return { mode: 'resize', key: k };
+    const ms = _edgeMids(r);
+    for (const k of ['top', 'right', 'bottom', 'left']) if (Math.hypot(p.x - ms[k].x, p.y - ms[k].y) < HR) return { mode: 'edge', key: k };
+    const l = _toLocal(r, p);
+    if (Math.abs(l.x) <= r.w / 2 && Math.abs(l.y) <= r.h / 2) return { mode: 'move' };
+    return null;
+  }
+
+  /* ── Pointer handling ─────────────────────────────────────── */
+  function _onDown(e) {
+    if (!pdf) return;
+    e.preventDefault();
+    const p = _pos(e);
+    // Active region's handles take priority
+    if (active >= 0) {
+      const h = _hitHandle(regions[active], p);
+      if (h) { drag = { ...h, idx: active, start: p, orig: { ...regions[active] } }; _cv().classList.add('grabbing'); return; }
+    }
+    // Else: did we click inside another region? select & move it
+    for (let i = regions.length - 1; i >= 0; i--) {
+      const l = _toLocal(regions[i], p);
+      if (Math.abs(l.x) <= regions[i].w / 2 && Math.abs(l.y) <= regions[i].h / 2) {
+        active = i; drag = { mode: 'move', idx: i, start: p, orig: { ...regions[i] } };
+        _cv().classList.add('grabbing'); draw(); _updateInfo(); return;
+      }
+    }
+    // Else: start drawing a new region
+    regions.push({ cx: p.x, cy: p.y, w: 0, h: 0, angle: 0 });
+    active = regions.length - 1;
+    drag = { mode: 'new', idx: active, start: p };
+    draw();
+  }
+
+  function _onMove(e) {
+    if (!drag) return;
+    e.preventDefault();
+    const p = _pos(e), r = regions[drag.idx], o = drag.orig;
+
+    if (drag.mode === 'new') {
+      r.cx = (drag.start.x + p.x) / 2; r.cy = (drag.start.y + p.y) / 2;
+      r.w = Math.abs(p.x - drag.start.x); r.h = Math.abs(p.y - drag.start.y); r.angle = 0;
+    } else if (drag.mode === 'move') {
+      r.cx = o.cx + (p.x - drag.start.x); r.cy = o.cy + (p.y - drag.start.y);
+    } else if (drag.mode === 'rotate') {
+      let deg = Math.atan2(p.y - r.cy, p.x - r.cx) * 180 / Math.PI + 90;
+      if (e.shiftKey) deg = Math.round(deg / 15) * 15;            // hold Shift to snap 15°
+      r.angle = ((deg % 360) + 360) % 360;
+    } else if (drag.mode === 'resize') {                          // corner: opposite corner fixed
+      const oc = _corners(o);
+      const opp = { tl: 'br', tr: 'bl', br: 'tl', bl: 'tr' }[drag.key];
+      const fixed = oc[opp];
+      const nc = { x: (fixed.x + p.x) / 2, y: (fixed.y + p.y) / 2 };
+      const lp = _toLocal({ cx: nc.x, cy: nc.y, angle: o.angle }, p);
+      r.cx = nc.x; r.cy = nc.y; r.angle = o.angle;
+      r.w = Math.max(MIN, Math.abs(lp.x) * 2); r.h = Math.max(MIN, Math.abs(lp.y) * 2);
+    } else if (drag.mode === 'edge') {                            // edge: opposite edge fixed
+      const { ex, ey } = _axes(o);
+      if (drag.key === 'right' || drag.key === 'left') {
+        const sgn = drag.key === 'right' ? 1 : -1;
+        const fixedMid = { x: o.cx - ex.x * sgn * o.w / 2, y: o.cy - ex.y * sgn * o.w / 2 };
+        const t = Math.max(MIN, (p.x - fixedMid.x) * ex.x * sgn + (p.y - fixedMid.y) * ex.y * sgn);
+        r.w = t; r.h = o.h; r.angle = o.angle;
+        r.cx = fixedMid.x + ex.x * sgn * t / 2; r.cy = fixedMid.y + ex.y * sgn * t / 2;
+      } else {
+        const sgn = drag.key === 'bottom' ? 1 : -1;
+        const fixedMid = { x: o.cx - ey.x * sgn * o.h / 2, y: o.cy - ey.y * sgn * o.h / 2 };
+        const t = Math.max(MIN, (p.x - fixedMid.x) * ey.x * sgn + (p.y - fixedMid.y) * ey.y * sgn);
+        r.h = t; r.w = o.w; r.angle = o.angle;
+        r.cx = fixedMid.x + ey.x * sgn * t / 2; r.cy = fixedMid.y + ey.y * sgn * t / 2;
+      }
+    }
+    draw(); _updateInfo();
+  }
+
+  function _onUp() {
+    if (!drag) return;
+    const r = regions[drag.idx];
+    if (drag.mode === 'new' && (!r || r.w < MIN || r.h < MIN)) {
+      regions.splice(drag.idx, 1); active = regions.length - 1;
+    }
+    drag = null; _cv().classList.remove('grabbing');
+    draw(); _updateInfo();
+  }
+
+  /* ── Toolbar actions ──────────────────────────────────────── */
+  function addRegion() {
+    const c = _cv(); if (!c || !c.width) return;
+    regions.push({ cx: c.width / 2, cy: c.height / 2, w: c.width * 0.5, h: c.height * 0.5, angle: 0 });
+    active = regions.length - 1; draw(); _updateInfo();
+  }
+  function fitPage() {
+    const c = _cv(); if (!c || !c.width) return;
+    if (active < 0) { regions.push({ cx: 0, cy: 0, w: 0, h: 0, angle: 0 }); active = regions.length - 1; }
+    regions[active] = { cx: c.width / 2, cy: c.height / 2, w: c.width, h: c.height, angle: 0 };
+    draw(); _updateInfo();
+  }
+  function deleteRegion() {
+    if (active < 0) return;
+    regions.splice(active, 1); active = regions.length - 1; draw(); _updateInfo();
+  }
+  function rotate(deg) {
+    if (active < 0) { toast('Add a crop box first', 'error'); return; }
+    regions[active].angle = ((regions[active].angle + deg) % 360 + 360) % 360;
+    draw(); _updateInfo();
+  }
+  function resetAngle() { if (active >= 0) { regions[active].angle = 0; draw(); _updateInfo(); } }
+
+  /* ── Drawing ──────────────────────────────────────────────── */
+  function _poly(ctx, c) { ctx.beginPath(); ctx.moveTo(c.tl.x, c.tl.y); ctx.lineTo(c.tr.x, c.tr.y); ctx.lineTo(c.br.x, c.br.y); ctx.lineTo(c.bl.x, c.bl.y); ctx.closePath(); }
+  function _dot(ctx, x, y, rad) { ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = '#ff6333'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+
+  function draw() {
+    const c = _cv(); if (!c || !bg) return;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.drawImage(bg, 0, 0);
+
+    // Dark vignette, then punch out each region
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = 'destination-out';
+    regions.forEach(r => { if (r.w >= 1 && r.h >= 1) { _poly(ctx, _corners(r)); ctx.fill(); } });
+    ctx.restore();
+
+    regions.forEach((r, i) => {
+      if (r.w < 1 || r.h < 1) return;
+      const cs = _corners(r);
+      // tint + border
+      ctx.save();
+      _poly(ctx, cs); ctx.fillStyle = 'rgba(255,99,51,0.06)'; ctx.fill();
+      ctx.strokeStyle = '#ff6333'; ctx.lineWidth = i === active ? 2.5 : 1.5;
+      if (i !== active) ctx.setLineDash([6, 4]);
+      _poly(ctx, cs); ctx.stroke();
+      ctx.restore();
+
+      if (i === active) {
+        // rotation handle: line from top-edge mid to the rot dot
+        const tm = _edgeMids(r).top, rh = _rotHandle(r);
+        ctx.strokeStyle = '#ff6333'; ctx.lineWidth = 2; ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(tm.x, tm.y); ctx.lineTo(rh.x, rh.y); ctx.stroke();
+        _dot(ctx, rh.x, rh.y, 7);
+        const ms = _edgeMids(r); ['top', 'right', 'bottom', 'left'].forEach(k => _dot(ctx, ms[k].x, ms[k].y, 5.5));
+        ['tl', 'tr', 'br', 'bl'].forEach(k => _dot(ctx, cs[k].x, cs[k].y, 7));
+      }
+    });
+  }
+
+  /* ── Info + buttons ───────────────────────────────────────── */
+  function _outScale() { const s = document.getElementById('cropScale'); return s ? (+s.value || 4) : 4; }
+  function _outDims(r) {
+    let S = _outScale();
+    const wPt = r.w / previewScale, hPt = r.h / previewScale;
+    const longest = Math.max(wPt, hPt) * S;
+    if (longest > MAX_DIM) S *= MAX_DIM / longest;
+    if ((wPt * S) * (hPt * S) > MAX_AREA) S *= Math.sqrt(MAX_AREA / ((wPt * S) * (hPt * S)));
+    return { w: Math.max(1, Math.round(wPt * S)), h: Math.max(1, Math.round(hPt * S)) };
+  }
+  function _updateInfo() {
+    const info = document.getElementById('cropInfo');
+    const al = document.getElementById('angleLabel');
+    const dl = document.getElementById('cropDownloadBtn');
+    const da = document.getElementById('cropDownloadAllBtn');
+    const valid = regions.filter(r => r.w >= MIN && r.h >= MIN).length;
+    if (al) al.textContent = active >= 0 ? `${Math.round(regions[active].angle)}°` : '0°';
+    if (dl) dl.disabled = !(active >= 0 && regions[active].w >= MIN && regions[active].h >= MIN);
+    if (da) da.style.display = valid > 1 ? 'flex' : 'none';
+    if (!info) return;
+    if (!valid) { info.textContent = 'No crop yet — drag on the page'; return; }
+    if (active >= 0 && regions[active].w >= MIN) {
+      const d = _outDims(regions[active]);
+      info.innerHTML = `<strong>${valid}</strong> crop${valid > 1 ? 's' : ''} · selected: <strong>${d.w} × ${d.h}px</strong>`;
+    } else {
+      info.innerHTML = `<strong>${valid}</strong> crop${valid > 1 ? 's' : ''}`;
+    }
+  }
+
+  function prevPage() { if (pageNum > 1) { pageNum--; _renderPreview(); } }
+  function nextPage() { if (pageNum < numPages) { pageNum++; _renderPreview(); } }
+
+  /* ── Export (vector, high-DPI, de-rotated) ────────────────── */
+  async function _renderRegion(r, fmt, quality) {
+    const page = await pdf.getPage(pageNum);
+    const cxPt = r.cx / previewScale, cyPt = r.cy / previewScale;
+    const wPt = r.w / previewScale, hPt = r.h / previewScale;
+    let S = _outScale();
+    const longest = Math.max(wPt, hPt) * S;
+    if (longest > MAX_DIM) S *= MAX_DIM / longest;
+    if ((wPt * S) * (hPt * S) > MAX_AREA) S *= Math.sqrt(MAX_AREA / ((wPt * S) * (hPt * S)));
+    const cw = Math.max(1, Math.round(wPt * S)), ch = Math.max(1, Math.round(hPt * S));
+
+    // Affine mapping page-point → output pixel: o = O + S·R(-θ)·(p − C)
+    const a = _rad(r), ca = Math.cos(a), sa = Math.sin(a);
+    const aa = S * ca, cc = S * sa, bb = -S * sa, dd = S * ca;
+    const ee = cw / 2 - (aa * cxPt + cc * cyPt);
+    const ff = ch / 2 - (bb * cxPt + dd * cyPt);
+
+    const cc2 = document.createElement('canvas');
+    cc2.width = cw; cc2.height = ch;
+    const ctx = cc2.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cw, ch);
+    await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale: 1 }), transform: [aa, bb, cc, dd, ee, ff] }).promise;
+    const blob = await new Promise(res => cc2.toBlob(res, fmt, fmt === 'image/png' ? undefined : quality));
+    return { blob, w: cw, h: ch };
+  }
+
+  function _fmtOpts() {
+    const fmt = (document.getElementById('cropFormat') || {}).value || 'image/jpeg';
+    const ext = fmt === 'image/png' ? 'png' : fmt === 'image/webp' ? 'webp' : 'jpg';
+    const q = document.getElementById('cropQuality');
+    const quality = q ? Math.max(60, Math.min(100, +q.value || 95)) / 100 : 0.95;
+    return { fmt, ext, quality };
+  }
+
+  async function downloadActive() {
+    if (active < 0 || regions[active].w < MIN) { toast('Draw or select a crop first', 'error'); return; }
+    const { fmt, ext, quality } = _fmtOpts();
+    const pc = document.getElementById('progressCard');
+    if (pc) pc.style.display = 'block';
+    _showProgress(40, 'Rendering crop…');
+    try {
+      const { blob, w, h } = await _renderRegion(regions[active], fmt, quality);
+      _showProgress(100, 'Done!');
+      _downloadBlob(blob, `${fileName}_crop_${w}x${h}.${ext}`, 'Crop PDF', 'convert');
+      toast(`Crop saved — ${w} × ${h}px ✓`, 'success');
+      if (pc) pc.style.display = 'none';
+    } catch (e) {
+      toast('Crop failed: ' + e.message, 'error');
+      if (pc) pc.style.display = 'none';
+      console.error(e);
+    }
+  }
+
+  async function downloadAll() {
+    const list = regions.filter(r => r.w >= MIN && r.h >= MIN);
+    if (!list.length) { toast('Add at least one crop', 'error'); return; }
+    if (list.length === 1) { active = regions.indexOf(list[0]); return downloadActive(); }
+    if (typeof JSZip === 'undefined') { toast('ZIP library still loading — try again', 'error'); return; }
+    const { fmt, ext, quality } = _fmtOpts();
+    const pc = document.getElementById('progressCard');
+    if (pc) pc.style.display = 'block';
+    try {
+      const zip = new JSZip(), folder = zip.folder('crops');
+      for (let i = 0; i < list.length; i++) {
+        _showProgress(Math.round((i / list.length) * 80) + 10, `Rendering crop ${i + 1} of ${list.length}…`);
+        const { blob } = await _renderRegion(list[i], fmt, quality);
+        folder.file(`${fileName}_crop_${String(i + 1).padStart(2, '0')}.${ext}`, blob);
+      }
+      _showProgress(90, 'Zipping…');
+      const content = await zip.generateAsync({ type: 'blob' });
+      _showProgress(100, 'Done!');
+      _downloadBlob(content, `${fileName}_crops_${Date.now()}.zip`, 'Crop PDF', 'convert');
+      toast(`${list.length} crops downloaded ✓`, 'success');
+      if (pc) pc.style.display = 'none';
+    } catch (e) {
+      toast('Export failed: ' + e.message, 'error');
+      if (pc) pc.style.display = 'none';
+      console.error(e);
+    }
+  }
+
+  return { init, loadPDF, prevPage, nextPage, addRegion, fitPage, deleteRegion, rotate, resetAngle, downloadActive, downloadAll };
+})();
+
+/* ================================================================
    3. MERGE PDF  — Advanced workspace with per-file page selection
 ================================================================ */
 const MergePDF = (() => {
@@ -1840,6 +2228,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const page = document.body.dataset.tool;
   if (page === 'img-to-pdf')    ImageToPDF.init();
   if (page === 'pdf-to-img')    PDFToImages.init();
+  if (page === 'crop-pdf')      PDFCrop.init();
   if (page === 'merge-pdf')     MergePDF.init();
   if (page === 'split-pdf')     SplitPDF.init();
   if (page === 'compress')      CompressImage.init();
@@ -1851,6 +2240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.ImageToPDF    = ImageToPDF;
 window.PDFToImages   = PDFToImages;
+window.PDFCrop       = PDFCrop;
 window.MergePDF      = MergePDF;
 window.SplitPDF      = SplitPDF;
 window.CompressImage = CompressImage;
