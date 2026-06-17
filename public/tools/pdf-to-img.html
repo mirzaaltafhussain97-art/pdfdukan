@@ -187,7 +187,7 @@
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#e53935,#ef5350)">🖼️</div>
     <h1>PDF to JPG Converter</h1>
-    <p>Extract every page from a PDF as a high-quality JPG image. Download all pages as a ZIP archive.</p>
+    <p>Extract every page from a PDF as a high-quality image — JPG, lossless PNG, or compact WebP — at up to 400 DPI. Pick a page range and download all pages as a ZIP archive.</p>
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -209,22 +209,39 @@
     <h3><span class="tc-icon">⚙️</span> Output Options</h3>
     <div class="options-row">
       <div class="option-group">
+        <label>Output Format</label>
+        <select id="outFormat">
+          <option value="image/jpeg" selected>JPG — smaller files</option>
+          <option value="image/png">PNG — lossless, best quality</option>
+          <option value="image/webp">WebP — smallest size</option>
+        </select>
+      </div>
+      <div class="option-group">
         <label>Render Quality</label>
         <select id="renderScale">
-          <option value="3">High (300 DPI equivalent)</option>
+          <option value="4">Max (400 DPI) — sharpest</option>
+          <option value="3">High (300 DPI)</option>
           <option value="2" selected>Medium (200 DPI) — recommended</option>
           <option value="1.5">Low (150 DPI)</option>
           <option value="1">Draft (72 DPI)</option>
         </select>
       </div>
+    </div>
+    <div class="options-row">
+      <div class="option-group" id="qualityGroup">
+        <label>Image Quality: <span id="qualityVal">92%</span></label>
+        <input type="range" id="jpgQuality" min="60" max="100" value="92" step="1" style="width:100%;accent-color:var(--primary)">
+      </div>
       <div class="option-group">
         <label>Page Range</label>
         <select id="pageRange">
-          <option value="all">All pages</option>
-          <option value="custom">Custom range</option>
+          <option value="all" selected>All pages</option>
+          <option value="custom">Custom range…</option>
         </select>
+        <input type="text" id="pageRangeInput" placeholder="e.g. 1-3, 5, 8-10" style="display:none;margin-top:8px;width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)">
       </div>
     </div>
+    <button type="button" class="btn btn-secondary" id="applyBtn" onclick="PDFToImages.rerender()" style="margin-top:14px;display:none">🔄 Apply Settings &amp; Re-render</button>
   </div>
 
   <!-- Progress -->
@@ -266,7 +283,7 @@
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖼️ Per-Page Download</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Every page gets its own download button. Need only page 5 of a 40-page PDF? Save just that one page as a JPG.</p></div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>📦 ZIP for All Pages</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">One click downloads every page as a JPG inside a single ZIP file — neatly numbered and ready to use.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Sharp Rendering</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Pages render at 150 DPI — crisp enough for presentations, social media, and standard printing. Text stays fully readable.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Up to 400 DPI</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Choose JPG, lossless PNG, or compact WebP and render up to 400 DPI — crisp enough for large prints, presentations, and social media. Text stays fully readable.</p></div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 No Upload, No Risk</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The PDF is rendered locally in your browser using PDF.js. Private documents never touch a server.</p></div>
 </div>
 
@@ -288,7 +305,9 @@
 
 <h2>Frequently Asked Questions</h2>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract just one page instead of converting the whole PDF?</button><div class="faq-a"><p>Yes. After upload, each page appears as a thumbnail with its own ⬇ JPG download button. Click it on any page to save only that page — no need to download the rest.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What resolution will the output JPG be?</button><div class="faq-a"><p>Pages render at 150 DPI, which is sharp for screens, social media, presentations, and standard A4 printing. An A4 page becomes roughly a 1240×1754 pixel image. Text remains crisp and fully readable.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What resolution will the output image be?</button><div class="faq-a"><p>You control it. The default is 200 DPI (Medium), and you can go up to 400 DPI (Max) for the sharpest result. At 300 DPI an A4 page becomes roughly a 2480×3508 pixel image. Very large pages are automatically capped to a browser-safe size so the conversion never fails. Text remains crisp and fully readable.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert to PNG or WebP instead of JPG?</button><div class="faq-a"><p>Yes. In Output Options pick <strong>JPG</strong> (smallest, best for sharing), <strong>PNG</strong> (lossless, best quality — ideal for documents and maps), or <strong>WebP</strong> (modern format with the smallest file size). For JPG and WebP you can also fine-tune the quality with a slider.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why did my converted image come out black? (Fixed)</button><div class="faq-a"><p>Some PDFs — especially maps and graphics exported from design or GIS software — have no painted background. Older converters flatten these to a black image when saving as JPG. PDFdukan now paints a clean white background before exporting, so these PDFs convert correctly. If you still want transparency, choose the PNG format.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded to a server during conversion?</button><div class="faq-a"><p>No. The PDF is rendered into images entirely inside your browser using Mozilla's PDF.js library. Your file never leaves your device — safe for ID documents, certificates, financial papers, and anything private.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the text in my PDF be readable in the JPG?</button><div class="faq-a"><p>Yes. Text, graphics, tables, and images are all rendered into the JPG at high quality — the output is a pixel-accurate picture of each page, exactly as it appears in a PDF viewer.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I convert the JPGs back into a PDF later?</button><div class="faq-a"><p>Use the <a href="img-to-pdf.html">Image to PDF tool</a> — upload the JPGs, arrange the page order, and download a single PDF. Both tools are free and run in your browser.</p></div></div>
@@ -297,7 +316,7 @@
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>Yes. PDF to JPG conversion on PDFdukan is 100% free — no subscription, no watermarks, no daily limits, and no account required.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>Yes. Open PDFdukan in Chrome, Safari, or Samsung Internet on your phone, upload the PDF, and save the JPGs straight to your gallery — no app download needed.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"This tool converts each page of a PDF into a high-quality JPG image. You can download images individually (one per page) or as a ZIP archive. All processing happens in your browser."}},{"@type":"Question","name":"Who needs a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"Designers extracting page previews, students sharing a single page as an image, social media users posting document content, and anyone who needs a PDF page as a picture."}},{"@type":"Question","name":"What problem does the PDF to JPG Converter solve?","acceptedAnswer":{"@type":"Answer","text":"PDFs cannot be viewed on all platforms or inserted into presentations and social posts as images. Converting PDF pages to JPG makes them universally shareable."}},{"@type":"Question","name":"Can I extract just one page instead of the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. After upload, each page appears as a thumbnail with its own download button. Click the download icon on any specific page to save just that page as a JPG."}},{"@type":"Question","name":"What resolution will the output JPG be?","acceptedAnswer":{"@type":"Answer","text":"Pages are rendered at 150 DPI by default, which is sharp enough for screen sharing and most print uses. For very large PDFs, your browser's available memory affects the maximum quality."}},{"@type":"Question","name":"Will the text in my PDF be readable in the JPG?","acceptedAnswer":{"@type":"Answer","text":"Yes. Text, graphics, and images from the PDF are all rendered into the JPG at high quality. The output is a pixel-perfect screenshot of each page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed for basic use. Sign in only if you want to save files directly to your Google Drive."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"This tool converts each page of a PDF into a high-quality JPG image. You can download images individually (one per page) or as a ZIP archive. All processing happens in your browser."}},{"@type":"Question","name":"Who needs a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"Designers extracting page previews, students sharing a single page as an image, social media users posting document content, and anyone who needs a PDF page as a picture."}},{"@type":"Question","name":"What problem does the PDF to JPG Converter solve?","acceptedAnswer":{"@type":"Answer","text":"PDFs cannot be viewed on all platforms or inserted into presentations and social posts as images. Converting PDF pages to JPG makes them universally shareable."}},{"@type":"Question","name":"Can I extract just one page instead of the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. After upload, each page appears as a thumbnail with its own download button. Click the download icon on any specific page to save just that page as a JPG."}},{"@type":"Question","name":"What resolution will the output image be?","acceptedAnswer":{"@type":"Answer","text":"You control the quality. The default is 200 DPI and you can render up to 400 DPI for the sharpest result. You can also choose JPG, lossless PNG, or compact WebP. Very large pages are automatically capped to a browser-safe size so the conversion never fails."}},{"@type":"Question","name":"Will the text in my PDF be readable in the JPG?","acceptedAnswer":{"@type":"Answer","text":"Yes. Text, graphics, and images from the PDF are all rendered into the JPG at high quality. The output is a pixel-perfect screenshot of each page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed for basic use. Sign in only if you want to save files directly to your Google Drive."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers."}}]}</script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
@@ -350,7 +369,7 @@
 
 <script src="../js/app.js?v=20260616c"></script>
 <script src="../js/particles.js?v=20260616c"></script>
-<script src="../js/tools.js?v=20260616c"></script>
+<script src="../js/tools.js?v=20260617a"></script>
 <script>
 const _origLoad = PDFToImages.loadPDF;
 PDFToImages.loadPDF = function(files) {

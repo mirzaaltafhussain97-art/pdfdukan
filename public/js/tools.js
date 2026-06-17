@@ -255,6 +255,12 @@ const PDFToImages = (() => {
   let pdfFile = null;
   let renderedPages = [];
   let scale = 2.0;
+  // Output format state (set from UI at render time)
+  let fmt = 'image/jpeg', quality = 0.92, ext = 'jpg';
+  // Browser canvas safety limits — oversized pages (e.g. GIS/poster PDFs) blow
+  // past these and silently render blank/black, so we clamp the render scale.
+  const MAX_DIM = 8000;          // longest side in px
+  const MAX_AREA = 64 * 1e6;     // total pixels (≈ 8000 × 8000)
 
   function init() {
     _bindDropZone('dropZone', 'fileInput', loadPDF);
@@ -263,6 +269,50 @@ const PDFToImages = (() => {
 
     const scaleInput = document.getElementById('renderScale');
     if (scaleInput) scaleInput.addEventListener('change', () => { scale = +scaleInput.value || 2.0; });
+
+    // Quality slider — live label + hide it for lossless PNG
+    const q = document.getElementById('jpgQuality');
+    const qVal = document.getElementById('qualityVal');
+    if (q && qVal) q.addEventListener('input', () => { qVal.textContent = q.value + '%'; });
+
+    const f = document.getElementById('outFormat');
+    const qGroup = document.getElementById('qualityGroup');
+    if (f && qGroup) f.addEventListener('change', () => {
+      qGroup.style.opacity = f.value === 'image/png' ? '.4' : '1';
+      const qi = document.getElementById('jpgQuality'); if (qi) qi.disabled = f.value === 'image/png';
+    });
+
+    // Page range — reveal the custom input only when "Custom range" is picked
+    const pr = document.getElementById('pageRange');
+    const prInput = document.getElementById('pageRangeInput');
+    if (pr && prInput) pr.addEventListener('change', () => {
+      prInput.style.display = pr.value === 'custom' ? 'block' : 'none';
+    });
+  }
+
+  function _readOpts() {
+    const f = document.getElementById('outFormat');
+    fmt = f ? f.value : 'image/jpeg';
+    ext = fmt === 'image/png' ? 'png' : fmt === 'image/webp' ? 'webp' : 'jpg';
+    const q = document.getElementById('jpgQuality');
+    quality = q ? (Math.max(60, Math.min(100, +q.value || 92)) / 100) : 0.92;
+    const s = document.getElementById('renderScale');
+    scale = s ? (+s.value || 2) : 2;
+  }
+
+  // Parse "1-3, 5, 8-10" into a sorted unique page list. Returns null = all pages.
+  function _selectedPageNumbers(total) {
+    const sel = document.getElementById('pageRange');
+    if (!sel || sel.value !== 'custom') return null;
+    const raw = (document.getElementById('pageRangeInput') || {}).value || '';
+    const set = new Set();
+    raw.split(',').forEach(part => {
+      part = part.trim(); if (!part) return;
+      const m = part.match(/^(\d+)\s*-\s*(\d+)$/);
+      if (m) { let a = +m[1], b = +m[2]; if (a > b) [a, b] = [b, a]; for (let i = a; i <= b; i++) if (i >= 1 && i <= total) set.add(i); }
+      else if (/^\d+$/.test(part)) { const i = +part; if (i >= 1 && i <= total) set.add(i); }
+    });
+    return [...set].sort((a, b) => a - b);
   }
 
   async function loadPDF(files) {
@@ -274,8 +324,38 @@ const PDFToImages = (() => {
     await renderPages();
   }
 
+  // Re-run with the current options (format / quality / range) on the loaded file
+  async function rerender() {
+    if (!pdfFile) { toast('Upload a PDF first', 'error'); return; }
+    const pc = document.getElementById('progressCard');
+    if (pc) pc.style.display = 'block';
+    await renderPages();
+  }
+
+  // Render one page to a white-backed canvas, clamping scale to browser limits.
+  // White fill is essential: PDFs with a transparent page background (GIS/vector
+  // exports) otherwise render as a black image once flattened to JPEG/WebP.
+  async function _renderPageCanvas(page, reqScale) {
+    const base = page.getViewport({ scale: 1 });
+    let s = reqScale;
+    const longest = Math.max(base.width, base.height) * s;
+    if (longest > MAX_DIM) s *= MAX_DIM / longest;
+    const area = (base.width * s) * (base.height * s);
+    if (area > MAX_AREA) s *= Math.sqrt(MAX_AREA / area);
+
+    const vp = page.getViewport({ scale: s });
+    const c = document.createElement('canvas');
+    c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, c.width, c.height);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    return { canvas: c, w: c.width, h: c.height, clamped: s < reqScale - 1e-6 };
+  }
+
   async function renderPages() {
     if (!pdfFile) return;
+    _readOpts();
     renderedPages = [];
     _showProgress(5, 'Loading PDF…');
 
@@ -284,19 +364,27 @@ const PDFToImages = (() => {
       const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
       const total = pdf.numPages;
 
+      const list = _selectedPageNumbers(total);
+      if (list && list.length === 0) {
+        toast('Enter a valid page range (e.g. 1-3, 5)', 'error');
+        const pc = document.getElementById('progressCard'); if (pc) pc.style.display = 'none';
+        return;
+      }
+      const pages = list || Array.from({ length: total }, (_, i) => i + 1);
+
       const previewWrap = document.getElementById('pagesPreview');
       if (previewWrap) previewWrap.innerHTML = '';
 
-      for (let p = 1; p <= total; p++) {
-        _showProgress(5 + Math.round((p / total) * 90), `Rendering page ${p} of ${total}…`);
+      let clampedAny = false;
+      for (let k = 0; k < pages.length; k++) {
+        const p = pages[k];
+        _showProgress(5 + Math.round(((k + 1) / pages.length) * 90), `Rendering page ${p} (${k + 1} of ${pages.length})…`);
         const page = await pdf.getPage(p);
-        const vp = page.getViewport({ scale });
-        const c = document.createElement('canvas');
-        c.width = vp.width; c.height = vp.height;
-        await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+        const { canvas: c, w, h, clamped } = await _renderPageCanvas(page, scale);
+        if (clamped) clampedAny = true;
 
-        const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.92));
-        renderedPages.push({ blob, page: p, w: vp.width, h: vp.height, sel: true });
+        const blob = await new Promise(r => c.toBlob(r, fmt, fmt === 'image/png' ? undefined : quality));
+        renderedPages.push({ blob, page: p, w, h, sel: true });
 
         if (previewWrap) {
           const thumb = document.createElement('div');
@@ -306,17 +394,17 @@ const PDFToImages = (() => {
           check.className = 'pt-check';
           check.textContent = '✓';
           const tc = document.createElement('canvas');
-          const ts = Math.min(150 / vp.width, 180 / vp.height, 1);
-          tc.width = Math.round(vp.width * ts); tc.height = Math.round(vp.height * ts);
+          const ts = Math.min(150 / w, 180 / h, 1);
+          tc.width = Math.round(w * ts); tc.height = Math.round(h * ts);
           tc.getContext('2d').drawImage(c, 0, 0, tc.width, tc.height);
           const info = document.createElement('div');
           info.className = 'pt-info';
           info.innerHTML = `<div class="page-num">Page ${p}</div>`;
           const dlBtn = document.createElement('button');
           dlBtn.type = 'button';
-          dlBtn.textContent = '⬇ JPG';
+          dlBtn.textContent = '⬇ ' + ext.toUpperCase();
           dlBtn.style.cssText = 'margin-top:6px;font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
-          const pageIdx = p - 1;
+          const pageIdx = k;
           dlBtn.onclick = ev => { ev.stopPropagation(); downloadOne(pageIdx); };
           thumb.onclick = () => toggleSel(pageIdx);
           info.appendChild(dlBtn);
@@ -325,15 +413,18 @@ const PDFToImages = (() => {
         }
       }
 
-      _showProgress(100, `${total} pages ready`);
+      _showProgress(100, `${pages.length} page${pages.length !== 1 ? 's' : ''} ready`);
       const stat = document.getElementById('statPages');
       const statDims = document.getElementById('statDims');
-      if (stat) stat.textContent = total;
-      if (statDims && renderedPages[0]) statDims.textContent = `${Math.round(renderedPages[0].w)} × ${Math.round(renderedPages[0].h)}`;
+      if (stat) stat.textContent = pages.length;
+      if (statDims && renderedPages[0]) statDims.textContent = `${Math.round(renderedPages[0].w)} × ${Math.round(renderedPages[0].h)} · ${ext.toUpperCase()}`;
       _showResult();
       _setDownloadBtn(true);
       _updateSelUI();
-      toast(`${total} pages rendered ✓`, 'success');
+      const applyBtn = document.getElementById('applyBtn');
+      if (applyBtn) applyBtn.style.display = 'inline-flex';
+      toast(`${pages.length} page${pages.length !== 1 ? 's' : ''} rendered ✓`, 'success');
+      if (clampedAny) toast(`Large page detected — rendered at max safe size (${MAX_DIM}px) for full browser compatibility`, 'info');
     } catch (e) {
       toast('PDF render failed: ' + e.message, 'error');
       console.error(e);
@@ -343,7 +434,7 @@ const PDFToImages = (() => {
   function downloadOne(i) {
     const pg = renderedPages[i];
     if (!pg) return;
-    _downloadBlob(pg.blob, `page_${pg.page}.jpg`, 'PDF to JPG', 'convert');
+    _downloadBlob(pg.blob, `page_${pg.page}.${ext}`, 'PDF to JPG', 'convert');
     toast(`Page ${pg.page} downloaded ✓`, 'success');
   }
 
@@ -374,7 +465,7 @@ const PDFToImages = (() => {
     const btn = document.getElementById('downloadBtn');
     if (btn) {
       btn.disabled = n === 0;
-      btn.innerHTML = n === 1 ? '<span>🖼️</span> Download JPG'
+      btn.innerHTML = n === 1 ? `<span>🖼️</span> Download ${ext.toUpperCase()}`
         : (n === total ? '<span>📦</span> Download All as ZIP'
                        : `<span>📦</span> Download ${n} Selected as ZIP`);
     }
@@ -389,7 +480,7 @@ const PDFToImages = (() => {
     const zip = new JSZip();
     const folder = zip.folder('pages');
     sel.forEach(p => {
-      folder.file(`page_${String(p.page).padStart(3, '0')}.jpg`, p.blob);
+      folder.file(`page_${String(p.page).padStart(3, '0')}.${ext}`, p.blob);
     });
     _showProgress(70, 'Compressing…');
     const content = await zip.generateAsync({ type: 'blob' });
@@ -398,7 +489,7 @@ const PDFToImages = (() => {
     toast(`ZIP with ${sel.length} pages downloaded! ✓`, 'success');
   }
 
-  return { init, loadPDF, downloadZIP, downloadOne, toggleSel, selectAll };
+  return { init, loadPDF, rerender, downloadZIP, downloadOne, toggleSel, selectAll };
 })();
 
 /* ================================================================
