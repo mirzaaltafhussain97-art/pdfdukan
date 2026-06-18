@@ -41,8 +41,8 @@
 <link rel="stylesheet" href="../css/style.css?v=20260616c">
 <style>
 /* Crop stage */
-.crop-stage-wrap{margin-top:14px;overflow:auto;border:1px solid var(--border);border-radius:12px;background:var(--card-2);padding:10px;display:flex;justify-content:center}
-.crop-stage{position:relative;display:inline-block;line-height:0;touch-action:none;user-select:none}
+.crop-stage-wrap{margin-top:14px;overflow:auto;max-height:72vh;border:1px solid var(--border);border-radius:12px;background:var(--card-2);padding:10px}
+.crop-stage{position:relative;display:block;width:fit-content;margin:0 auto;line-height:0;touch-action:none;user-select:none}
 .crop-stage canvas{display:block;max-width:100%;height:auto;border-radius:6px;cursor:crosshair}
 .crop-stage canvas.grabbing{cursor:grabbing}
 .crop-hint{font-size:13px;color:var(--text-3);margin-top:10px;text-align:center;line-height:1.5}
@@ -382,7 +382,7 @@
 
 <script src="../js/app.js?v=20260616c"></script>
 <script src="../js/particles.js?v=20260616c"></script>
-<script src="../js/tools.js?v=20260617c"></script>
+<script src="../js/tools.js?v=20260617d"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

@@ -569,7 +569,7 @@ const PDFCrop = (() => {
     baseFit = Math.min(1000 / base.width, 1000 / base.height, 2);
     baseCanvasW = Math.floor(base.width * baseFit);
     // Cap zoom so the re-rendered page never exceeds a browser-safe ~6000px
-    maxZoom = Math.max(2, Math.min(6, 6000 / (baseFit * Math.max(base.width, base.height))));
+    maxZoom = Math.max(3, Math.min(8, 8000 / (baseFit * Math.max(base.width, base.height))));
     zoom = 1; regions = []; active = -1;
     await _renderPage();
 
@@ -597,8 +597,10 @@ const PDFCrop = (() => {
     c.width = bg.width; c.height = bg.height;
     // Display size drives the visual zoom; the scroll container handles overflow.
     const wrap = c.closest('.crop-stage-wrap');
-    const avail = (wrap && wrap.clientWidth) ? wrap.clientWidth - 20 : baseCanvasW;
-    const baseDispW = Math.max(50, Math.min(avail, baseCanvasW));
+    const aspect = bg.width / bg.height;
+    const availW = ((wrap && wrap.clientWidth) ? wrap.clientWidth : baseCanvasW) - 20;
+    const availH = Math.max(220, window.innerHeight * 0.72 - 20);   // matches .crop-stage-wrap max-height
+    const baseDispW = Math.max(50, Math.min(availW, availH * aspect, baseCanvasW));
     c.style.maxWidth = 'none';
     c.style.width = Math.round(baseDispW * zoom) + 'px';
     c.style.height = 'auto';
@@ -784,13 +786,16 @@ const PDFCrop = (() => {
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(bg, 0, 0);
 
-    // Dark vignette, then punch out each region
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(0, 0, c.width, c.height);
-    ctx.globalCompositeOperation = 'destination-out';
-    regions.forEach(r => { if (_area(r) > 4) { _polyP(ctx, r.p); ctx.fill(); } });
-    ctx.restore();
+    // Dim the area OUTSIDE the crop boxes — but only when at least one box
+    // exists, so the page shows in its original colours while nothing is selected.
+    if (regions.some(r => _area(r) > 4)) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.globalCompositeOperation = 'destination-out';
+      regions.forEach(r => { if (_area(r) > 4) { _polyP(ctx, r.p); ctx.fill(); } });
+      ctx.restore();
+    }
 
     regions.forEach((r, i) => {
       if (_area(r) < 4) return;
