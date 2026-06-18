@@ -33,10 +33,10 @@
 /* ── RESET & BASE ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0f0f;--surface:#1a1a1a;--surface2:#242424;--surface3:#2e2e2e;
-  --border:#333;--border2:#444;--accent:#ff6333;--accent2:#ff9055;
+  --bg:#eaedf2;--surface:#ffffff;--surface2:#f4f5f8;--surface3:#eaecf1;
+  --border:#dde0e8;--border2:#c8ccd8;--accent:#ff6333;--accent2:#ff9055;
   --danger:#e53935;--success:#43a047;--warn:#fb8c00;
-  --text:#f0f0f0;--text2:#aaa;--text3:#666;
+  --text:#1a1a2e;--text2:#55566a;--text3:#8899aa;
   --thumb-w:180px;--toolbar-h:52px;--sub-toolbar-h:44px;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
@@ -158,7 +158,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .resize-handle.rm{right:-5px;top:50%;transform:translateY(-50%);cursor:e-resize}
 
 /* ── FLOATING CONTEXT PANEL ───────────────────────────────── */
-#pe-ctx-panel{position:fixed;z-index:800;background:#1c1c1c;border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.7);padding:10px;display:none;min-width:290px;max-width:330px}
+#pe-ctx-panel{position:fixed;z-index:800;background:var(--surface);border:1px solid var(--border2);border-radius:10px;box-shadow:0 8px 40px rgba(0,0,0,.7);padding:10px;display:none;min-width:290px;max-width:330px}
 #pe-ctx-panel.visible{display:block}
 #pe-ctx-panel .ctx-row{display:flex;align-items:center;gap:5px;margin-bottom:7px;flex-wrap:wrap}
 #pe-ctx-panel .ctx-row:last-child{margin-bottom:0}
@@ -179,7 +179,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ── SIGNATURE MODAL ──────────────────────────────────────── */
 #sig-modal{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);align-items:center;justify-content:center}
 #sig-modal.open{display:flex}
-.sig-box{background:#1a1a1a;border:1px solid var(--border2);border-radius:12px;padding:18px;width:440px;max-width:95vw}
+.sig-box{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px;width:440px;max-width:95vw}
 .sig-box h3{font-size:15px;margin-bottom:12px;color:var(--text)}
 #sig-canvas{border:1px solid var(--border2);border-radius:6px;cursor:crosshair;background:#fff;width:100%;height:160px;display:block}
 .sig-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
@@ -189,7 +189,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ── LINK MODAL ───────────────────────────────────────────── */
 #link-modal{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);align-items:center;justify-content:center}
 #link-modal.open{display:flex}
-.link-box{background:#1a1a1a;border:1px solid var(--border2);border-radius:12px;padding:18px;width:380px;max-width:95vw}
+.link-box{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px;width:380px;max-width:95vw}
 .link-box h3{font-size:15px;margin-bottom:12px}
 .link-box input{width:100%;height:34px;padding:0 10px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);border-radius:6px;font-size:13px;margin-bottom:10px}
 .link-actions{display:flex;gap:8px;justify-content:flex-end}
@@ -197,7 +197,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ── IMAGE MODAL ──────────────────────────────────────────── */
 #img-modal{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);align-items:center;justify-content:center}
 #img-modal.open{display:flex}
-.img-box{background:#1a1a1a;border:1px solid var(--border2);border-radius:12px;padding:18px;width:380px;max-width:95vw;text-align:center}
+.img-box{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px;width:380px;max-width:95vw;text-align:center}
 .img-box h3{font-size:15px;margin-bottom:12px}
 .img-drop{border:2px dashed var(--border2);border-radius:8px;padding:28px;cursor:pointer;transition:all .15s;font-size:13px;color:var(--text2)}
 .img-drop:hover{border-color:var(--accent);color:var(--accent)}
@@ -211,7 +211,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ── PROGRESS ─────────────────────────────────────────────── */
 #pe-progress{display:none;position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.6);align-items:center;justify-content:center;flex-direction:column;gap:14px}
 #pe-progress.open{display:flex}
-.prog-box{background:#1a1a1a;border:1px solid var(--border2);border-radius:12px;padding:24px 32px;text-align:center}
+.prog-box{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:24px 32px;text-align:center}
 .prog-bar-wrap{width:280px;height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;margin-top:12px}
 .prog-bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .2s}
 
@@ -227,11 +227,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .pe-native-text:hover{border-color:rgba(255,99,51,.3);background:rgba(255,99,51,.04)}
 /* box-shadow: 0 0 0 5px #fff extends opaque white coverage 5px beyond element bounds,
    completely hiding any canvas text that bleeds around the overlay edges */
-.pe-native-text.active,.pe-native-text:focus{color:inherit;background:#fff;border-color:var(--accent);box-shadow:0 0 0 5px #fff,0 0 0 6px rgba(255,99,51,.2);z-index:20}
-.pe-native-text.nt-deleted{display:none}
+.pe-native-text.active,.pe-native-text:focus{color:inherit;background:#fff;border-color:var(--accent);box-shadow:0 0 0 8px #fff,0 0 0 9px rgba(255,99,51,.2);z-index:20}
+/* nt-edited: permanently covers the original canvas text once edited */
+.pe-native-text.nt-edited{color:inherit;background:#fff;box-shadow:0 0 0 8px #fff;z-index:16}
+/* nt-deleted: show opaque white rectangle to erase the original canvas text */
+.pe-native-text.nt-deleted{background:#fff;box-shadow:0 0 0 8px #fff;color:transparent;pointer-events:none;z-index:16}
 
 /* ── FLOATING INLINE TOOLBAR ─────────────────────────────── */
-#pe-float-toolbar{position:fixed;z-index:850;display:none;align-items:center;gap:3px;padding:5px 7px;background:#1c1c1c;border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.6);white-space:nowrap}
+#pe-float-toolbar{position:fixed;z-index:850;display:none;align-items:center;gap:3px;padding:5px 7px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.6);white-space:nowrap}
 #pe-float-toolbar.visible{display:inline-flex}
 #pe-float-toolbar::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #1c1c1c}
 .ft-btn{width:28px;height:28px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);border-radius:5px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0}
@@ -1585,7 +1588,12 @@ function extractNativeText(pageNum, page, vp){
 
       var overlay = document.createElement('div');
       overlay.className = 'pe-native-text';
-      if(rec.deleted) overlay.classList.add('nt-deleted');
+      if(rec.deleted){
+        overlay.classList.add('nt-deleted');
+      } else {
+        var wasEdited = rec.newText !== rec.origText || rec.bold || rec.italic || (rec.color && rec.color !== '#000000' && rec.color !== '');
+        if(wasEdited) overlay.classList.add('nt-edited');
+      }
       overlay.contentEditable = 'true';
       overlay.spellcheck = false;
       overlay.textContent = rec.newText;
@@ -1613,8 +1621,10 @@ function extractNativeText(pageNum, page, vp){
       });
       overlay.addEventListener('blur', function(){
         overlay.classList.remove('active');
-        /* innerText collapses browser-inserted <br>/<div> into newlines; strip trailing newline */
         rec.newText = overlay.innerText.replace(/\n+$/, '');
+        /* Permanently cover canvas text once anything has changed */
+        var changed = rec.newText !== rec.origText || rec.bold || rec.italic || (rec.color && rec.color !== '#000000' && rec.color !== '');
+        overlay.classList.toggle('nt-edited', changed);
         setTimeout(hideFloatToolbar, 200);
       });
       overlay.addEventListener('input', function(){
