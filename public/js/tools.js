@@ -499,9 +499,10 @@ const PDFCrop = (() => {
   let pdf = null, pageNum = 1, numPages = 1, fileName = 'document';
   let previewScale = 1;          // preview-canvas px per PDF point
   let bg = null;                 // offscreen canvas holding the rendered page
-  // regions: rotatable rectangles in preview-canvas px {cx,cy,w,h,angle(deg)}
+  // regions: free quadrilaterals in preview-canvas px { p: [tl, tr, br, bl] }
   let regions = [], active = -1;
   let drag = null;               // { mode, key, ... }
+  let zoom = 1, baseFit = 1, baseCanvasW = 0, maxZoom = 4;  // preview zoom state
   const MIN = 18;                // smallest region side (preview px)
   const MAX_DIM = 8000, MAX_AREA = 64 * 1e6;  // browser canvas safety limits
 
@@ -546,11 +547,12 @@ const PDFCrop = (() => {
       numPages = pdf.numPages;
       pageNum = 1;
       _showProgress(100, 'Ready');
-      await _renderPreview();
+      // Reveal the editor BEFORE rendering so the canvas can measure its container.
       const card = document.getElementById('cropCard');
       const opts = document.getElementById('optionsCard');
       if (card) card.classList.add('show');
       if (opts) opts.style.display = 'block';
+      await _renderPreview();
       if (pc) pc.style.display = 'none';
     } catch (e) {
       toast('Could not open PDF: ' + e.message, 'error');
@@ -559,11 +561,30 @@ const PDFCrop = (() => {
     }
   }
 
+  // Full (re)load of a page: resets zoom + selections, then renders.
   async function _renderPreview() {
     const page = await pdf.getPage(pageNum);
     const base = page.getViewport({ scale: 1 });
-    // Fit the whole page inside a ~1000px box for the preview
-    previewScale = Math.min(1000 / base.width, 1000 / base.height, 2);
+    // Fit the whole page inside a ~1000px box at zoom 1
+    baseFit = Math.min(1000 / base.width, 1000 / base.height, 2);
+    baseCanvasW = Math.floor(base.width * baseFit);
+    // Cap zoom so the re-rendered page never exceeds a browser-safe ~6000px
+    maxZoom = Math.max(2, Math.min(6, 6000 / (baseFit * Math.max(base.width, base.height))));
+    zoom = 1; regions = []; active = -1;
+    await _renderPage();
+
+    const bar = document.getElementById('pageBar');
+    if (bar) bar.style.display = numPages > 1 ? 'flex' : 'none';
+    const lbl = document.getElementById('pageLabel');
+    if (lbl) lbl.textContent = `Page ${pageNum} of ${numPages}`;
+    const pv = document.getElementById('prevPage'); if (pv) pv.disabled = pageNum <= 1;
+    const nx = document.getElementById('nextPage'); if (nx) nx.disabled = pageNum >= numPages;
+  }
+
+  // Render the current page at the current zoom (keeps existing selections).
+  async function _renderPage() {
+    const page = await pdf.getPage(pageNum);
+    previewScale = baseFit * zoom;
     const vp = page.getViewport({ scale: previewScale });
     bg = document.createElement('canvas');
     bg.width = Math.floor(vp.width); bg.height = Math.floor(vp.height);
@@ -574,76 +595,108 @@ const PDFCrop = (() => {
 
     const c = _cv();
     c.width = bg.width; c.height = bg.height;
-    regions = []; active = -1;
+    // Display size drives the visual zoom; the scroll container handles overflow.
+    const wrap = c.closest('.crop-stage-wrap');
+    const avail = (wrap && wrap.clientWidth) ? wrap.clientWidth - 20 : baseCanvasW;
+    const baseDispW = Math.max(50, Math.min(avail, baseCanvasW));
+    c.style.maxWidth = 'none';
+    c.style.width = Math.round(baseDispW * zoom) + 'px';
+    c.style.height = 'auto';
     draw(); _updateInfo();
-
-    const bar = document.getElementById('pageBar');
-    if (bar) bar.style.display = numPages > 1 ? 'flex' : 'none';
-    const lbl = document.getElementById('pageLabel');
-    if (lbl) lbl.textContent = `Page ${pageNum} of ${numPages}`;
-    const pv = document.getElementById('prevPage'); if (pv) pv.disabled = pageNum <= 1;
-    const nx = document.getElementById('nextPage'); if (nx) nx.disabled = pageNum >= numPages;
+    const zl = document.getElementById('zoomLabel'); if (zl) zl.textContent = Math.round(zoom * 100) + '%';
   }
 
-  /* ── Geometry ─────────────────────────────────────────────── */
-  const ROT_OFF = 30;            // rotation handle distance above top edge (px)
-  function _rad(r) { return r.angle * Math.PI / 180; }
-  function _axes(r) { const a = _rad(r); return { ex: { x: Math.cos(a), y: Math.sin(a) }, ey: { x: -Math.sin(a), y: Math.cos(a) } }; }
-  function _corners(r) {
-    const { ex, ey } = _axes(r), hw = r.w / 2, hh = r.h / 2;
-    const C = (sx, sy) => ({ x: r.cx + ex.x * sx * hw + ey.x * sy * hh, y: r.cy + ex.y * sx * hw + ey.y * sy * hh });
-    return { tl: C(-1, -1), tr: C(1, -1), br: C(1, 1), bl: C(-1, 1) };
+  // Zoom keeps selections: rescale region points by the zoom factor, then re-render sharp.
+  // The visible centre is preserved so the page zooms symmetrically (from the middle),
+  // not anchored to the top-left corner.
+  async function setZoom(z) {
+    if (!pdf) return;
+    const nz = Math.max(1, Math.min(maxZoom, z));
+    if (Math.abs(nz - zoom) < 1e-3) return;
+    const wrap = _cv().closest('.crop-stage-wrap');
+    let fx = 0.5, fy = 0.5;
+    if (wrap && wrap.scrollWidth > wrap.clientWidth) fx = (wrap.scrollLeft + wrap.clientWidth / 2) / wrap.scrollWidth;
+    if (wrap && wrap.scrollHeight > wrap.clientHeight) fy = (wrap.scrollTop + wrap.clientHeight / 2) / wrap.scrollHeight;
+    const f = nz / zoom;
+    regions.forEach(r => { r.p = r.p.map(q => ({ x: q.x * f, y: q.y * f })); });
+    zoom = nz;
+    await _renderPage();
+    if (wrap) {
+      wrap.scrollLeft = fx * wrap.scrollWidth - wrap.clientWidth / 2;
+      wrap.scrollTop = fy * wrap.scrollHeight - wrap.clientHeight / 2;
+    }
   }
-  function _edgeMids(r) {
-    const c = _corners(r);
-    return {
-      top: { x: (c.tl.x + c.tr.x) / 2, y: (c.tl.y + c.tr.y) / 2 },
-      right: { x: (c.tr.x + c.br.x) / 2, y: (c.tr.y + c.br.y) / 2 },
-      bottom: { x: (c.br.x + c.bl.x) / 2, y: (c.br.y + c.bl.y) / 2 },
-      left: { x: (c.bl.x + c.tl.x) / 2, y: (c.bl.y + c.tl.y) / 2 },
-    };
+  function zoomIn() { setZoom(zoom * 1.4); }
+  function zoomOut() { setZoom(zoom / 1.4); }
+  function zoomReset() { setZoom(1); }
+
+  /* ── Geometry (free quadrilateral: region.p = [tl, tr, br, bl]) ─ */
+  const ROT_OFF = 30, HR = 15, XR = 13;     // rotation offset, handle/remove hit radii
+  const WARP_MAX = 4500, WARP_AREA = 20 * 1e6;  // limits for the perspective (warp) path
+  function _centroid(r) { const p = r.p; return { x: (p[0].x + p[1].x + p[2].x + p[3].x) / 4, y: (p[0].y + p[1].y + p[2].y + p[3].y) / 4 }; }
+  function _emid(r, i) { const a = r.p[i], b = r.p[(i + 1) % 4]; return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; }
+  function _rotHandle(r) { const tm = _emid(r, 0), ct = _centroid(r); let nx = tm.x - ct.x, ny = tm.y - ct.y; const L = Math.hypot(nx, ny) || 1; return { x: tm.x + nx / L * ROT_OFF, y: tm.y + ny / L * ROT_OFF }; }
+  function _xBtn(r) { const tr = r.p[1], ct = _centroid(r); let nx = tr.x - ct.x, ny = tr.y - ct.y; const L = Math.hypot(nx, ny) || 1; return { x: tr.x + nx / L * 20, y: tr.y + ny / L * 20 }; }
+  function _inside(r, p) { let s = 0; for (let i = 0; i < 4; i++) { const a = r.p[i], b = r.p[(i + 1) % 4]; const cr = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x); const sg = cr >= 0 ? 1 : -1; if (i === 0) s = sg; else if (sg !== s) return false; } return true; }
+  function _edgeLens(r) { const p = r.p, d = (a, b) => Math.hypot(p[a].x - p[b].x, p[a].y - p[b].y); return { wPx: Math.max(d(0, 1), d(3, 2)), hPx: Math.max(d(0, 3), d(1, 2)) }; }
+  function _valid(r) { const { wPx, hPx } = _edgeLens(r); return wPx >= MIN && hPx >= MIN; }
+  function _area(r) { const p = r.p; let a = 0; for (let i = 0; i < 4; i++) { const j = (i + 1) % 4; a += p[i].x * p[j].y - p[j].x * p[i].y; } return Math.abs(a) / 2; }
+  function _topAngle(r) { return Math.atan2(r.p[1].y - r.p[0].y, r.p[1].x - r.p[0].x); }
+  // A quad is "rectangular" (affine-renderable from vector) if it's a parallelogram with a ~right angle.
+  function _isRect(p) {
+    const m1 = { x: (p[0].x + p[2].x) / 2, y: (p[0].y + p[2].y) / 2 }, m2 = { x: (p[1].x + p[3].x) / 2, y: (p[1].y + p[3].y) / 2 };
+    if (Math.hypot(m1.x - m2.x, m1.y - m2.y) > 2) return false;
+    const v1 = { x: p[1].x - p[0].x, y: p[1].y - p[0].y }, v2 = { x: p[3].x - p[0].x, y: p[3].y - p[0].y };
+    const mg = Math.hypot(v1.x, v1.y) * Math.hypot(v2.x, v2.y) || 1;
+    return Math.abs((v1.x * v2.x + v1.y * v2.y) / mg) < 0.03;
   }
-  function _rotHandle(r) { const { ey } = _axes(r); const d = r.h / 2 + ROT_OFF; return { x: r.cx - ey.x * d, y: r.cy - ey.y * d }; }
-  function _toLocal(r, p) { const { ex, ey } = _axes(r); const dx = p.x - r.cx, dy = p.y - r.cy; return { x: dx * ex.x + dy * ex.y, y: dx * ey.x + dy * ey.y }; }
+  function _rectPts(x0, y0, x1, y1) { return [{ x: x0, y: y0 }, { x: x1, y: y0 }, { x: x1, y: y1 }, { x: x0, y: y1 }]; }
+  function _clone(r) { return { p: r.p.map(q => ({ x: q.x, y: q.y })) }; }
 
   function _pos(e) {
     const c = _cv(), rect = c.getBoundingClientRect();
     const k = c.width / rect.width;
     return { x: (e.clientX - rect.left) * k, y: (e.clientY - rect.top) * k };
   }
-
-  function _hitHandle(r, p) {
-    const HR = 16;
-    if (Math.hypot(p.x - _rotHandle(r).x, p.y - _rotHandle(r).y) < HR) return { mode: 'rotate' };
-    const cs = _corners(r);
-    for (const k of ['tl', 'tr', 'br', 'bl']) if (Math.hypot(p.x - cs[k].x, p.y - cs[k].y) < HR) return { mode: 'resize', key: k };
-    const ms = _edgeMids(r);
-    for (const k of ['top', 'right', 'bottom', 'left']) if (Math.hypot(p.x - ms[k].x, p.y - ms[k].y) < HR) return { mode: 'edge', key: k };
-    const l = _toLocal(r, p);
-    if (Math.abs(l.x) <= r.w / 2 && Math.abs(l.y) <= r.h / 2) return { mode: 'move' };
-    return null;
-  }
+  function _clampPt(p) { const c = _cv(); return { x: Math.max(0, Math.min(c.width, p.x)), y: Math.max(0, Math.min(c.height, p.y)) }; }
 
   /* ── Pointer handling ─────────────────────────────────────── */
   function _onDown(e) {
     if (!pdf) return;
     e.preventDefault();
     const p = _pos(e);
+    // Remove (✕) button on any region
+    for (let i = regions.length - 1; i >= 0; i--) {
+      const xb = _xBtn(regions[i]);
+      if (Math.hypot(p.x - xb.x, p.y - xb.y) < XR) {
+        regions.splice(i, 1); active = regions.length ? Math.min(active, regions.length - 1) : -1;
+        draw(); _updateInfo(); return;
+      }
+    }
     // Active region's handles take priority
     if (active >= 0) {
-      const h = _hitHandle(regions[active], p);
-      if (h) { drag = { ...h, idx: active, start: p, orig: { ...regions[active] } }; _cv().classList.add('grabbing'); return; }
+      const r = regions[active], ct = _centroid(r);
+      if (Math.hypot(p.x - _rotHandle(r).x, p.y - _rotHandle(r).y) < HR) {
+        drag = { mode: 'rotate', idx: active, orig: _clone(r), ct, a0: Math.atan2(p.y - ct.y, p.x - ct.x) };
+        _cv().classList.add('grabbing'); return;
+      }
+      for (let k = 0; k < 4; k++) if (Math.hypot(p.x - r.p[k].x, p.y - r.p[k].y) < HR) {
+        drag = { mode: 'corner', key: k, idx: active }; _cv().classList.add('grabbing'); return;
+      }
+      for (let k = 0; k < 4; k++) { const m = _emid(r, k); if (Math.hypot(p.x - m.x, p.y - m.y) < HR) {
+        drag = { mode: 'edge', key: k, idx: active, start: p, orig: _clone(r) }; _cv().classList.add('grabbing'); return;
+      } }
+      if (_inside(r, p)) { drag = { mode: 'move', idx: active, start: p, orig: _clone(r) }; _cv().classList.add('grabbing'); return; }
     }
-    // Else: did we click inside another region? select & move it
+    // Click inside another region → select & move it
     for (let i = regions.length - 1; i >= 0; i--) {
-      const l = _toLocal(regions[i], p);
-      if (Math.abs(l.x) <= regions[i].w / 2 && Math.abs(l.y) <= regions[i].h / 2) {
-        active = i; drag = { mode: 'move', idx: i, start: p, orig: { ...regions[i] } };
+      if (_inside(regions[i], p)) {
+        active = i; drag = { mode: 'move', idx: i, start: p, orig: _clone(regions[i]) };
         _cv().classList.add('grabbing'); draw(); _updateInfo(); return;
       }
     }
-    // Else: start drawing a new region
-    regions.push({ cx: p.x, cy: p.y, w: 0, h: 0, angle: 0 });
+    // Start drawing a new region
+    regions.push({ p: [{ x: p.x, y: p.y }, { x: p.x, y: p.y }, { x: p.x, y: p.y }, { x: p.x, y: p.y }] });
     active = regions.length - 1;
     drag = { mode: 'new', idx: active, start: p };
     draw();
@@ -655,77 +708,75 @@ const PDFCrop = (() => {
     const p = _pos(e), r = regions[drag.idx], o = drag.orig;
 
     if (drag.mode === 'new') {
-      r.cx = (drag.start.x + p.x) / 2; r.cy = (drag.start.y + p.y) / 2;
-      r.w = Math.abs(p.x - drag.start.x); r.h = Math.abs(p.y - drag.start.y); r.angle = 0;
+      const x0 = Math.min(drag.start.x, p.x), y0 = Math.min(drag.start.y, p.y);
+      const x1 = Math.max(drag.start.x, p.x), y1 = Math.max(drag.start.y, p.y);
+      r.p = _rectPts(x0, y0, x1, y1);
     } else if (drag.mode === 'move') {
-      r.cx = o.cx + (p.x - drag.start.x); r.cy = o.cy + (p.y - drag.start.y);
-    } else if (drag.mode === 'rotate') {
-      let deg = Math.atan2(p.y - r.cy, p.x - r.cx) * 180 / Math.PI + 90;
-      if (e.shiftKey) deg = Math.round(deg / 15) * 15;            // hold Shift to snap 15°
-      r.angle = ((deg % 360) + 360) % 360;
-    } else if (drag.mode === 'resize') {                          // corner: opposite corner fixed
-      const oc = _corners(o);
-      const opp = { tl: 'br', tr: 'bl', br: 'tl', bl: 'tr' }[drag.key];
-      const fixed = oc[opp];
-      const nc = { x: (fixed.x + p.x) / 2, y: (fixed.y + p.y) / 2 };
-      const lp = _toLocal({ cx: nc.x, cy: nc.y, angle: o.angle }, p);
-      r.cx = nc.x; r.cy = nc.y; r.angle = o.angle;
-      r.w = Math.max(MIN, Math.abs(lp.x) * 2); r.h = Math.max(MIN, Math.abs(lp.y) * 2);
-    } else if (drag.mode === 'edge') {                            // edge: opposite edge fixed
-      const { ex, ey } = _axes(o);
-      if (drag.key === 'right' || drag.key === 'left') {
-        const sgn = drag.key === 'right' ? 1 : -1;
-        const fixedMid = { x: o.cx - ex.x * sgn * o.w / 2, y: o.cy - ex.y * sgn * o.w / 2 };
-        const t = Math.max(MIN, (p.x - fixedMid.x) * ex.x * sgn + (p.y - fixedMid.y) * ex.y * sgn);
-        r.w = t; r.h = o.h; r.angle = o.angle;
-        r.cx = fixedMid.x + ex.x * sgn * t / 2; r.cy = fixedMid.y + ex.y * sgn * t / 2;
-      } else {
-        const sgn = drag.key === 'bottom' ? 1 : -1;
-        const fixedMid = { x: o.cx - ey.x * sgn * o.h / 2, y: o.cy - ey.y * sgn * o.h / 2 };
-        const t = Math.max(MIN, (p.x - fixedMid.x) * ey.x * sgn + (p.y - fixedMid.y) * ey.y * sgn);
-        r.h = t; r.w = o.w; r.angle = o.angle;
-        r.cx = fixedMid.x + ey.x * sgn * t / 2; r.cy = fixedMid.y + ey.y * sgn * t / 2;
-      }
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y;
+      r.p = o.p.map(q => ({ x: q.x + dx, y: q.y + dy }));
+    } else if (drag.mode === 'corner') {                          // each corner moves independently
+      const c = _clampPt(p); r.p[drag.key] = { x: c.x, y: c.y };
+    } else if (drag.mode === 'edge') {                            // move a full edge (its 2 corners)
+      const dx = p.x - drag.start.x, dy = p.y - drag.start.y, i = drag.key, j = (i + 1) % 4;
+      r.p = o.p.map(q => ({ x: q.x, y: q.y }));
+      r.p[i] = { x: o.p[i].x + dx, y: o.p[i].y + dy };
+      r.p[j] = { x: o.p[j].x + dx, y: o.p[j].y + dy };
+    } else if (drag.mode === 'rotate') {                          // rotate the whole quad around its centre
+      let da = Math.atan2(p.y - drag.ct.y, p.x - drag.ct.x) - drag.a0;
+      if (e.shiftKey) da = Math.round(da / (Math.PI / 12)) * (Math.PI / 12);   // snap 15°
+      const ca = Math.cos(da), sa = Math.sin(da), ct = drag.ct;
+      r.p = o.p.map(q => { const dx = q.x - ct.x, dy = q.y - ct.y; return { x: ct.x + dx * ca - dy * sa, y: ct.y + dx * sa + dy * ca }; });
     }
     draw(); _updateInfo();
   }
 
   function _onUp() {
     if (!drag) return;
-    const r = regions[drag.idx];
-    if (drag.mode === 'new' && (!r || r.w < MIN || r.h < MIN)) {
-      regions.splice(drag.idx, 1); active = regions.length - 1;
+    if (drag.mode === 'new' && !_valid(regions[drag.idx])) {
+      regions.splice(drag.idx, 1); active = regions.length ? regions.length - 1 : -1;
     }
     drag = null; _cv().classList.remove('grabbing');
     draw(); _updateInfo();
   }
 
   /* ── Toolbar actions ──────────────────────────────────────── */
+  function _rotateRegion(r, rad) {
+    const ct = _centroid(r), ca = Math.cos(rad), sa = Math.sin(rad);
+    r.p = r.p.map(q => { const dx = q.x - ct.x, dy = q.y - ct.y; return { x: ct.x + dx * ca - dy * sa, y: ct.y + dx * sa + dy * ca }; });
+  }
   function addRegion() {
     const c = _cv(); if (!c || !c.width) return;
-    regions.push({ cx: c.width / 2, cy: c.height / 2, w: c.width * 0.5, h: c.height * 0.5, angle: 0 });
+    const x = c.width * 0.25, y = c.height * 0.25;
+    regions.push({ p: _rectPts(x, y, x + c.width * 0.5, y + c.height * 0.5) });
     active = regions.length - 1; draw(); _updateInfo();
   }
   function fitPage() {
     const c = _cv(); if (!c || !c.width) return;
-    if (active < 0) { regions.push({ cx: 0, cy: 0, w: 0, h: 0, angle: 0 }); active = regions.length - 1; }
-    regions[active] = { cx: c.width / 2, cy: c.height / 2, w: c.width, h: c.height, angle: 0 };
+    const r = { p: _rectPts(0, 0, c.width, c.height) };
+    if (active >= 0) regions[active] = r; else { regions.push(r); active = regions.length - 1; }
     draw(); _updateInfo();
   }
   function deleteRegion() {
     if (active < 0) return;
-    regions.splice(active, 1); active = regions.length - 1; draw(); _updateInfo();
+    regions.splice(active, 1); active = regions.length ? regions.length - 1 : -1; draw(); _updateInfo();
   }
   function rotate(deg) {
     if (active < 0) { toast('Add a crop box first', 'error'); return; }
-    regions[active].angle = ((regions[active].angle + deg) % 360 + 360) % 360;
-    draw(); _updateInfo();
+    _rotateRegion(regions[active], deg * Math.PI / 180); draw(); _updateInfo();
   }
-  function resetAngle() { if (active >= 0) { regions[active].angle = 0; draw(); _updateInfo(); } }
+  function resetAngle() { if (active >= 0) { _rotateRegion(regions[active], -_topAngle(regions[active])); draw(); _updateInfo(); } }
 
   /* ── Drawing ──────────────────────────────────────────────── */
-  function _poly(ctx, c) { ctx.beginPath(); ctx.moveTo(c.tl.x, c.tl.y); ctx.lineTo(c.tr.x, c.tr.y); ctx.lineTo(c.br.x, c.br.y); ctx.lineTo(c.bl.x, c.bl.y); ctx.closePath(); }
+  function _polyP(ctx, p) { ctx.beginPath(); ctx.moveTo(p[0].x, p[0].y); for (let i = 1; i < 4; i++) ctx.lineTo(p[i].x, p[i].y); ctx.closePath(); }
   function _dot(ctx, x, y, rad) { ctx.beginPath(); ctx.arc(x, y, rad, 0, Math.PI * 2); ctx.fillStyle = '#ff6333'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = '#fff'; ctx.stroke(); }
+  function _xMark(ctx, x, y) {
+    ctx.save();
+    ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#e53935'; ctx.stroke();
+    ctx.lineWidth = 2.2; ctx.beginPath();
+    ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4); ctx.moveTo(x + 4, y - 4); ctx.lineTo(x - 4, y + 4); ctx.stroke();
+    ctx.restore();
+  }
 
   function draw() {
     const c = _cv(); if (!c || !bg) return;
@@ -738,56 +789,64 @@ const PDFCrop = (() => {
     ctx.fillStyle = 'rgba(0,0,0,0.5)';
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.globalCompositeOperation = 'destination-out';
-    regions.forEach(r => { if (r.w >= 1 && r.h >= 1) { _poly(ctx, _corners(r)); ctx.fill(); } });
+    regions.forEach(r => { if (_area(r) > 4) { _polyP(ctx, r.p); ctx.fill(); } });
     ctx.restore();
 
     regions.forEach((r, i) => {
-      if (r.w < 1 || r.h < 1) return;
-      const cs = _corners(r);
+      if (_area(r) < 4) return;
       // tint + border
       ctx.save();
-      _poly(ctx, cs); ctx.fillStyle = 'rgba(255,99,51,0.06)'; ctx.fill();
+      _polyP(ctx, r.p); ctx.fillStyle = 'rgba(255,99,51,0.06)'; ctx.fill();
       ctx.strokeStyle = '#ff6333'; ctx.lineWidth = i === active ? 2.5 : 1.5;
       if (i !== active) ctx.setLineDash([6, 4]);
-      _poly(ctx, cs); ctx.stroke();
+      _polyP(ctx, r.p); ctx.stroke();
       ctx.restore();
+
+      _xMark(ctx, _xBtn(r).x, _xBtn(r).y);   // remove (✕) button on every region
 
       if (i === active) {
         // rotation handle: line from top-edge mid to the rot dot
-        const tm = _edgeMids(r).top, rh = _rotHandle(r);
+        const tm = _emid(r, 0), rh = _rotHandle(r);
         ctx.strokeStyle = '#ff6333'; ctx.lineWidth = 2; ctx.setLineDash([]);
         ctx.beginPath(); ctx.moveTo(tm.x, tm.y); ctx.lineTo(rh.x, rh.y); ctx.stroke();
         _dot(ctx, rh.x, rh.y, 7);
-        const ms = _edgeMids(r); ['top', 'right', 'bottom', 'left'].forEach(k => _dot(ctx, ms[k].x, ms[k].y, 5.5));
-        ['tl', 'tr', 'br', 'bl'].forEach(k => _dot(ctx, cs[k].x, cs[k].y, 7));
+        for (let k = 0; k < 4; k++) { const m = _emid(r, k); _dot(ctx, m.x, m.y, 5.5); }   // edge handles
+        for (let k = 0; k < 4; k++) _dot(ctx, r.p[k].x, r.p[k].y, 7);                        // corner handles
       }
     });
   }
 
   /* ── Info + buttons ───────────────────────────────────────── */
   function _outScale() { const s = document.getElementById('cropScale'); return s ? (+s.value || 4) : 4; }
-  function _outDims(r) {
+  function _plan(r) {
+    const { wPx, hPx } = _edgeLens(r);
+    const wPt = wPx / previewScale, hPt = hPx / previewScale;
+    const rect = _isRect(r.p);
     let S = _outScale();
-    const wPt = r.w / previewScale, hPt = r.h / previewScale;
-    const longest = Math.max(wPt, hPt) * S;
-    if (longest > MAX_DIM) S *= MAX_DIM / longest;
-    if ((wPt * S) * (hPt * S) > MAX_AREA) S *= Math.sqrt(MAX_AREA / ((wPt * S) * (hPt * S)));
-    return { w: Math.max(1, Math.round(wPt * S)), h: Math.max(1, Math.round(hPt * S)) };
+    const md = rect ? MAX_DIM : WARP_MAX, ma = rect ? MAX_AREA : WARP_AREA;
+    const lo = Math.max(wPt, hPt) * S; if (lo > md) S *= md / lo;
+    if ((wPt * S) * (hPt * S) > ma) S *= Math.sqrt(ma / ((wPt * S) * (hPt * S)));
+    if (!rect) {
+      const xs = r.p.map(q => q.x), ys = r.p.map(q => q.y);
+      const bw = (Math.max(...xs) - Math.min(...xs)) / previewScale, bh = (Math.max(...ys) - Math.min(...ys)) / previewScale;
+      const bl = Math.max(bw, bh) * S; if (bl > MAX_DIM) S *= MAX_DIM / bl;
+    }
+    return { rect, S, outW: Math.max(1, Math.round(wPt * S)), outH: Math.max(1, Math.round(hPt * S)) };
   }
   function _updateInfo() {
     const info = document.getElementById('cropInfo');
     const al = document.getElementById('angleLabel');
     const dl = document.getElementById('cropDownloadBtn');
     const da = document.getElementById('cropDownloadAllBtn');
-    const valid = regions.filter(r => r.w >= MIN && r.h >= MIN).length;
-    if (al) al.textContent = active >= 0 ? `${Math.round(regions[active].angle)}°` : '0°';
-    if (dl) dl.disabled = !(active >= 0 && regions[active].w >= MIN && regions[active].h >= MIN);
+    const valid = regions.filter(_valid).length;
+    if (al) al.textContent = active >= 0 ? `${Math.round((((_topAngle(regions[active]) * 180 / Math.PI) % 360) + 360) % 360)}°` : '0°';
+    if (dl) dl.disabled = !(active >= 0 && _valid(regions[active]));
     if (da) da.style.display = valid > 1 ? 'flex' : 'none';
     if (!info) return;
     if (!valid) { info.textContent = 'No crop yet — drag on the page'; return; }
-    if (active >= 0 && regions[active].w >= MIN) {
-      const d = _outDims(regions[active]);
-      info.innerHTML = `<strong>${valid}</strong> crop${valid > 1 ? 's' : ''} · selected: <strong>${d.w} × ${d.h}px</strong>`;
+    if (active >= 0 && _valid(regions[active])) {
+      const d = _plan(regions[active]);
+      info.innerHTML = `<strong>${valid}</strong> crop${valid > 1 ? 's' : ''} · selected: <strong>${d.outW} × ${d.outH}px</strong>${d.rect ? '' : ' <span style="color:var(--text-3)">(perspective)</span>'}`;
     } else {
       info.innerHTML = `<strong>${valid}</strong> crop${valid > 1 ? 's' : ''}`;
     }
@@ -796,30 +855,87 @@ const PDFCrop = (() => {
   function prevPage() { if (pageNum > 1) { pageNum--; _renderPreview(); } }
   function nextPage() { if (pageNum < numPages) { pageNum++; _renderPreview(); } }
 
-  /* ── Export (vector, high-DPI, de-rotated) ────────────────── */
+  /* ── Perspective warp helpers (pure JS, for non-rectangular quads) ── */
+  function _solve8(A, b) {
+    const n = 8, M = A.map((r, i) => [...r, b[i]]);
+    for (let c = 0; c < n; c++) {
+      let pr = c, pv = Math.abs(M[c][c]);
+      for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > pv) { pv = Math.abs(M[r][c]); pr = r; }
+      if (pv < 1e-10) return null;
+      const t = M[c]; M[c] = M[pr]; M[pr] = t;
+      for (let r = 0; r < n; r++) { if (r === c) continue; const f = M[r][c] / M[c][c]; for (let j = c; j <= n; j++) M[r][j] -= f * M[c][j]; }
+    }
+    return M.map((r, i) => r[n] / r[i]);
+  }
+  function _homography(s, d) {
+    const A = [], b = [];
+    for (let i = 0; i < 4; i++) {
+      const sx = s[i].x, sy = s[i].y, dx = d[i].x, dy = d[i].y;
+      A.push([sx, sy, 1, 0, 0, 0, -sx * dx, -sy * dx]); b.push(dx);
+      A.push([0, 0, 0, sx, sy, 1, -sx * dy, -sy * dy]); b.push(dy);
+    }
+    const h = _solve8(A, b); if (!h) return null;
+    return [[h[0], h[1], h[2]], [h[3], h[4], h[5]], [h[6], h[7], 1]];
+  }
+  function _inv3(m) {
+    const [[a, b, c], [d, e, f], [g, h, k]] = m;
+    const det = a * (e * k - f * h) - b * (d * k - f * g) + c * (d * h - e * g);
+    if (Math.abs(det) < 1e-12) return null; const i = 1 / det;
+    return [[(e * k - f * h) * i, (c * h - b * k) * i, (b * f - c * e) * i],
+            [(f * g - d * k) * i, (a * k - c * g) * i, (c * d - a * f) * i],
+            [(d * h - e * g) * i, (b * g - a * h) * i, (a * e - b * d) * i]];
+  }
+  function _warp(src, srcQuad, outW, outH) {
+    const H = _homography(srcQuad, [{ x: 0, y: 0 }, { x: outW, y: 0 }, { x: outW, y: outH }, { x: 0, y: outH }]);
+    if (!H) return null; const Hi = _inv3(H); if (!Hi) return null;
+    const [[a, b, c], [d, e, f], [g, h, k]] = Hi;
+    const sctx = src.getContext('2d'), sw = src.width, sh = src.height, sd = sctx.getImageData(0, 0, sw, sh).data;
+    const out = document.createElement('canvas'); out.width = outW; out.height = outH;
+    const octx = out.getContext('2d'), od = octx.createImageData(outW, outH), o = od.data;
+    for (let y = 0; y < outH; y++) for (let x = 0; x < outW; x++) {
+      const wx = a * x + b * y + c, wy = d * x + e * y + f, ww = g * x + h * y + k;
+      const sx = wx / ww, sy = wy / ww, oi = (y * outW + x) * 4;
+      if (sx < 0 || sy < 0 || sx >= sw || sy >= sh) { o[oi] = o[oi + 1] = o[oi + 2] = o[oi + 3] = 255; continue; }
+      const x0 = sx | 0, y0 = sy | 0, x1 = Math.min(x0 + 1, sw - 1), y1 = Math.min(y0 + 1, sh - 1);
+      const tx = sx - x0, ty = sy - y0, itx = 1 - tx, ity = 1 - ty;
+      const i00 = (y0 * sw + x0) * 4, i10 = (y0 * sw + x1) * 4, i01 = (y1 * sw + x0) * 4, i11 = (y1 * sw + x1) * 4;
+      for (let ch = 0; ch < 4; ch++) o[oi + ch] = (sd[i00 + ch] * itx * ity + sd[i10 + ch] * tx * ity + sd[i01 + ch] * itx * ty + sd[i11 + ch] * tx * ty) + 0.5 | 0;
+    }
+    octx.putImageData(od, 0, 0); return out;
+  }
+
+  /* ── Export (each region from the PDF vector, high-DPI) ───── */
   async function _renderRegion(r, fmt, quality) {
     const page = await pdf.getPage(pageNum);
-    const cxPt = r.cx / previewScale, cyPt = r.cy / previewScale;
-    const wPt = r.w / previewScale, hPt = r.h / previewScale;
-    let S = _outScale();
-    const longest = Math.max(wPt, hPt) * S;
-    if (longest > MAX_DIM) S *= MAX_DIM / longest;
-    if ((wPt * S) * (hPt * S) > MAX_AREA) S *= Math.sqrt(MAX_AREA / ((wPt * S) * (hPt * S)));
-    const cw = Math.max(1, Math.round(wPt * S)), ch = Math.max(1, Math.round(hPt * S));
+    const plan = _plan(r), S = plan.S, outW = plan.outW, outH = plan.outH;
 
-    // Affine mapping page-point → output pixel: o = O + S·R(-θ)·(p − C)
-    const a = _rad(r), ca = Math.cos(a), sa = Math.sin(a);
-    const aa = S * ca, cc = S * sa, bb = -S * sa, dd = S * ca;
-    const ee = cw / 2 - (aa * cxPt + cc * cyPt);
-    const ff = ch / 2 - (bb * cxPt + dd * cyPt);
+    if (plan.rect) {
+      // Affine de-rotate: o = O + S·R(-θ)·(p − C)
+      const ct = _centroid(r), cxPt = ct.x / previewScale, cyPt = ct.y / previewScale;
+      const th = _topAngle(r), ca = Math.cos(th), sa = Math.sin(th);
+      const aa = S * ca, cc = S * sa, bb = -S * sa, dd = S * ca;
+      const ee = outW / 2 - (aa * cxPt + cc * cyPt), ff = outH / 2 - (bb * cxPt + dd * cyPt);
+      const cv2 = document.createElement('canvas'); cv2.width = outW; cv2.height = outH;
+      const ctx = cv2.getContext('2d'); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, outW, outH);
+      await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale: 1 }), transform: [aa, bb, cc, dd, ee, ff] }).promise;
+      const blob = await new Promise(res => cv2.toBlob(res, fmt, fmt === 'image/png' ? undefined : quality));
+      return { blob, w: outW, h: outH };
+    }
 
-    const cc2 = document.createElement('canvas');
-    cc2.width = cw; cc2.height = ch;
-    const ctx = cc2.getContext('2d');
-    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cw, ch);
-    await page.render({ canvasContext: ctx, viewport: page.getViewport({ scale: 1 }), transform: [aa, bb, cc, dd, ee, ff] }).promise;
-    const blob = await new Promise(res => cc2.toBlob(res, fmt, fmt === 'image/png' ? undefined : quality));
-    return { blob, w: cw, h: ch };
+    // Non-rectangular quad: render the bounding box from vector, then perspective-warp it straight.
+    const xs = r.p.map(q => q.x), ys = r.p.map(q => q.y);
+    const minXpx = Math.min(...xs), minYpx = Math.min(...ys), maxXpx = Math.max(...xs), maxYpx = Math.max(...ys);
+    const minXpt = minXpx / previewScale, minYpt = minYpx / previewScale;
+    const bw = Math.max(1, Math.round((maxXpx - minXpx) / previewScale * S));
+    const bh = Math.max(1, Math.round((maxYpx - minYpx) / previewScale * S));
+    const srcC = document.createElement('canvas'); srcC.width = bw; srcC.height = bh;
+    const sctx = srcC.getContext('2d'); sctx.fillStyle = '#ffffff'; sctx.fillRect(0, 0, bw, bh);
+    await page.render({ canvasContext: sctx, viewport: page.getViewport({ scale: 1 }), transform: [S, 0, 0, S, -minXpt * S, -minYpt * S] }).promise;
+    const srcQuad = r.p.map(q => ({ x: (q.x - minXpx) / previewScale * S, y: (q.y - minYpx) / previewScale * S }));
+    const out = _warp(srcC, srcQuad, outW, outH);
+    if (!out) throw new Error('perspective warp failed');
+    const blob = await new Promise(res => out.toBlob(res, fmt, fmt === 'image/png' ? undefined : quality));
+    return { blob, w: outW, h: outH };
   }
 
   function _fmtOpts() {
@@ -831,7 +947,7 @@ const PDFCrop = (() => {
   }
 
   async function downloadActive() {
-    if (active < 0 || regions[active].w < MIN) { toast('Draw or select a crop first', 'error'); return; }
+    if (active < 0 || !_valid(regions[active])) { toast('Draw or select a crop first', 'error'); return; }
     const { fmt, ext, quality } = _fmtOpts();
     const pc = document.getElementById('progressCard');
     if (pc) pc.style.display = 'block';
@@ -850,7 +966,7 @@ const PDFCrop = (() => {
   }
 
   async function downloadAll() {
-    const list = regions.filter(r => r.w >= MIN && r.h >= MIN);
+    const list = regions.filter(_valid);
     if (!list.length) { toast('Add at least one crop', 'error'); return; }
     if (list.length === 1) { active = regions.indexOf(list[0]); return downloadActive(); }
     if (typeof JSZip === 'undefined') { toast('ZIP library still loading — try again', 'error'); return; }
@@ -877,7 +993,7 @@ const PDFCrop = (() => {
     }
   }
 
-  return { init, loadPDF, prevPage, nextPage, addRegion, fitPage, deleteRegion, rotate, resetAngle, downloadActive, downloadAll };
+  return { init, loadPDF, prevPage, nextPage, addRegion, fitPage, deleteRegion, rotate, resetAngle, zoomIn, zoomOut, zoomReset, downloadActive, downloadAll };
 })();
 
 /* ================================================================

@@ -666,30 +666,39 @@ const ScannerApp = (() => {
     }
   }
 
+  // Download every page as a separate image file (NOT a ZIP). Browsers throttle
+  // rapid programmatic downloads, so we stagger them and may trigger a one-time
+  // "allow multiple downloads" prompt — that's expected. ZIP stays a separate button.
   async function exportAsImages(format) {
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
+    const ext = format === 'jpeg' ? 'jpg' : format;
+    const multi = state.pages.length > 1;
+    showProcessing(multi ? `Saving ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');
+    try {
+      for (let i = 0; i < state.pages.length; i++) {
+        const page = state.pages[i];
+        const c = document.createElement('canvas');
+        c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
+        c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(page.croppedImg, 0, 0);
+        applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
 
-    if (state.pages.length === 1) {
-      showProcessing('Preparing download…');
-      const page = state.pages[0];
-      const c = document.createElement('canvas');
-      c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-      c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-      const ctx = c.getContext('2d');
-      ctx.drawImage(page.croppedImg, 0, 0);
-      applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
-
-      c.toBlob(blob => {
-        hideProcessing();
+        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url; a.download = `CamMaster_${Date.now()}.${format === 'jpeg' ? 'jpg' : format}`;
+        a.href = url;
+        a.download = multi ? `CamMaster_page_${String(i + 1).padStart(2, '0')}.${ext}` : `CamMaster_${Date.now()}.${ext}`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        toast('Image downloaded! ✓', 'success');
-      }, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0);
-    } else {
-      await exportAsZIP(format);
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        if (i < state.pages.length - 1) await new Promise(r => setTimeout(r, 400));
+      }
+      hideProcessing();
+      toast(multi ? `${state.pages.length} ${ext.toUpperCase()} files downloaded ✓` : 'Image downloaded! ✓', 'success');
+    } catch (e) {
+      hideProcessing();
+      console.error('Image export error:', e);
+      toast('Image export failed', 'error');
     }
   }
 
