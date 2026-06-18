@@ -663,6 +663,24 @@ const PDFCrop = (() => {
   function _clampPt(p) { const c = _cv(); return { x: Math.max(0, Math.min(c.width, p.x)), y: Math.max(0, Math.min(c.height, p.y)) }; }
 
   /* ── Pointer handling ─────────────────────────────────────── */
+  function _updateCursor(p) {
+    const c = _cv(); if (!c || !pdf) return;
+    let cur = 'crosshair';
+    if (active >= 0 && regions[active]) {
+      const r = regions[active];
+      if (Math.hypot(p.x - _xBtn(r).x, p.y - _xBtn(r).y) < XR) cur = 'pointer';
+      else if (Math.hypot(p.x - _rotHandle(r).x, p.y - _rotHandle(r).y) < HR) cur = 'grab';
+      else if (r.p.some((_, k) => Math.hypot(p.x - r.p[k].x, p.y - r.p[k].y) < HR)) cur = 'nwse-resize';
+      else if ([0,1,2,3].some(k => { const m = _emid(r,k); return Math.hypot(p.x-m.x, p.y-m.y) < HR; })) cur = 'nesw-resize';
+      else if (_inside(r, p)) cur = 'move';
+    }
+    if (cur === 'crosshair') {
+      for (let i = regions.length - 1; i >= 0; i--)
+        if (_inside(regions[i], p)) { cur = 'move'; break; }
+    }
+    c.style.cursor = cur;
+  }
+
   function _onDown(e) {
     if (!pdf) return;
     e.preventDefault();
@@ -680,21 +698,21 @@ const PDFCrop = (() => {
       const r = regions[active], ct = _centroid(r);
       if (Math.hypot(p.x - _rotHandle(r).x, p.y - _rotHandle(r).y) < HR) {
         drag = { mode: 'rotate', idx: active, orig: _clone(r), ct, a0: Math.atan2(p.y - ct.y, p.x - ct.x) };
-        _cv().classList.add('grabbing'); return;
+        _cv().style.cursor = 'grabbing'; return;
       }
       for (let k = 0; k < 4; k++) if (Math.hypot(p.x - r.p[k].x, p.y - r.p[k].y) < HR) {
-        drag = { mode: 'corner', key: k, idx: active }; _cv().classList.add('grabbing'); return;
+        drag = { mode: 'corner', key: k, idx: active }; _cv().style.cursor = 'grabbing'; return;
       }
       for (let k = 0; k < 4; k++) { const m = _emid(r, k); if (Math.hypot(p.x - m.x, p.y - m.y) < HR) {
-        drag = { mode: 'edge', key: k, idx: active, start: p, orig: _clone(r) }; _cv().classList.add('grabbing'); return;
+        drag = { mode: 'edge', key: k, idx: active, start: p, orig: _clone(r) }; _cv().style.cursor = 'grabbing'; return;
       } }
-      if (_inside(r, p)) { drag = { mode: 'move', idx: active, start: p, orig: _clone(r) }; _cv().classList.add('grabbing'); return; }
+      if (_inside(r, p)) { drag = { mode: 'move', idx: active, start: p, orig: _clone(r) }; _cv().style.cursor = 'grabbing'; return; }
     }
     // Click inside another region → select & move it
     for (let i = regions.length - 1; i >= 0; i--) {
       if (_inside(regions[i], p)) {
         active = i; drag = { mode: 'move', idx: i, start: p, orig: _clone(regions[i]) };
-        _cv().classList.add('grabbing'); draw(); _updateInfo(); return;
+        _cv().style.cursor = 'grabbing'; draw(); _updateInfo(); return;
       }
     }
     // Start drawing a new region
@@ -705,9 +723,10 @@ const PDFCrop = (() => {
   }
 
   function _onMove(e) {
-    if (!drag) return;
+    const p = _pos(e);
+    if (!drag) { _updateCursor(p); return; }
     e.preventDefault();
-    const p = _pos(e), r = regions[drag.idx], o = drag.orig;
+    const r = regions[drag.idx], o = drag.orig;
 
     if (drag.mode === 'new') {
       const x0 = Math.min(drag.start.x, p.x), y0 = Math.min(drag.start.y, p.y);
@@ -732,12 +751,13 @@ const PDFCrop = (() => {
     draw(); _updateInfo();
   }
 
-  function _onUp() {
+  function _onUp(e) {
     if (!drag) return;
     if (drag.mode === 'new' && !_valid(regions[drag.idx])) {
       regions.splice(drag.idx, 1); active = regions.length ? regions.length - 1 : -1;
     }
-    drag = null; _cv().classList.remove('grabbing');
+    drag = null;
+    if (e) _updateCursor(_pos(e)); else _cv().style.cursor = 'crosshair';
     draw(); _updateInfo();
   }
 
