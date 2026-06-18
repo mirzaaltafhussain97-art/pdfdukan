@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -39,10 +39,11 @@
   --text:#1a1a2e;--text2:#55566a;--text3:#8899aa;
   --thumb-w:180px;--toolbar-h:52px;--sub-toolbar-h:44px;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
+body{overflow-y:auto}
 
 /* ── LAYOUT ───────────────────────────────────────────────── */
-#pe-shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+#pe-shell{display:flex;flex-direction:column;height:calc(100vh - 60px);overflow:hidden;min-height:400px}
 
 /* ── HEADER BAR ───────────────────────────────────────────── */
 #pe-header{display:flex;align-items:center;gap:10px;padding:0 14px;height:48px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;z-index:200}
@@ -116,8 +117,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 .page-wrapper canvas{display:block;border-radius:3px}
 
 /* Object layer */
-.obj-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.obj-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:5}
 .obj-layer.editing{pointer-events:all}
+/* Coverage canvas: sits between PDF canvas and obj-layer, draws white rects */
+.pe-cov-canvas{position:absolute;top:0;left:0;pointer-events:none;z-index:3}
 
 /* PDF Objects */
 .pe-obj{position:absolute;cursor:move;user-select:none;outline:none}
@@ -322,6 +325,97 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 </script>
 </head>
 <body>
+<header class="header" role="banner">
+  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="site-lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#site-lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#site-lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="../index.html" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/crop-pdf.html"     class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Cut a region to image</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="../index.html"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/pdf-editor.html"   class="mnd-link">PDF Editor</a>
+  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/crop-pdf.html"     class="mnd-link">Crop PDF</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <div class="mnd-section">More</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scanner</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <a href="../blog/index.html"         class="mnd-link">Blog</a>
+</div>
+
 <div id="pe-shell">
 
   <!-- HEADER BAR -->
@@ -616,7 +710,8 @@ var STATE = {
   subShape: { type:'rect', color:'#ff6333', fill:'transparent', width:'2' },
   subAnnotate: { color:'rgba(255,255,0,0.6)' },
   subForm: { type:'text' },
-  nativeTextEdits: {}
+  nativeTextEdits: {},
+  coverageCanvases: {}
 };
 
 /* ============================================================
@@ -791,6 +886,17 @@ function renderPage(pageNum){
     }
     canvas.width = vp.width;
     canvas.height = vp.height;
+
+    /* Coverage canvas — sits between PDF canvas and obj-layer */
+    var cov = STATE.coverageCanvases[pageNum];
+    if(!cov){
+      cov = document.createElement('canvas');
+      cov.className = 'pe-cov-canvas';
+      wrapper.appendChild(cov);
+      STATE.coverageCanvases[pageNum] = cov;
+    }
+    cov.width = vp.width;
+    cov.height = vp.height;
 
     return page.render({canvasContext: canvas.getContext('2d'), viewport: vp}).promise.then(function(){
       var layer = STATE.objLayers[pageNum];
@@ -1542,6 +1648,31 @@ function reflowNeighbors(pageNum, changedObj){
 }
 
 /* ============================================================
+   COVERAGE CANVAS — whiteouts original canvas text for edited items
+============================================================ */
+function updateCoverage(pageNum){
+  var cov = STATE.coverageCanvases[pageNum];
+  if(!cov) return;
+  var ctx = cov.getContext('2d');
+  ctx.clearRect(0, 0, cov.width, cov.height);
+  var edits = STATE.nativeTextEdits[pageNum] || {};
+  var vpH = cov.height;
+  Object.keys(edits).forEach(function(idxKey){
+    var e = edits[idxKey];
+    if(!e) return;
+    var changed = e.deleted || e.newText !== e.origText || e.bold || e.italic ||
+                  (e.color && e.color !== '#000000' && e.color !== '');
+    if(!changed) return;
+    var xs = e.x * STATE.scale;
+    var ys = vpH - (e.y * STATE.scale);
+    var fs = e.origFontSize * STATE.scale;
+    var w  = Math.max((e.width || e.origFontSize * (e.origText||'').length * 0.65) * STATE.scale, fs * 1.5);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(xs - 4, ys - fs - 5, w + 16, fs + 12);
+  });
+}
+
+/* ============================================================
    NATIVE TEXT EXTRACTION
 ============================================================ */
 function extractNativeText(pageNum, page, vp){
@@ -1622,9 +1753,9 @@ function extractNativeText(pageNum, page, vp){
       overlay.addEventListener('blur', function(){
         overlay.classList.remove('active');
         rec.newText = overlay.innerText.replace(/\n+$/, '');
-        /* Permanently cover canvas text once anything has changed */
         var changed = rec.newText !== rec.origText || rec.bold || rec.italic || (rec.color && rec.color !== '#000000' && rec.color !== '');
         overlay.classList.toggle('nt-edited', changed);
+        updateCoverage(pageNum);
         setTimeout(hideFloatToolbar, 200);
       });
       overlay.addEventListener('input', function(){
@@ -1644,6 +1775,7 @@ function extractNativeText(pageNum, page, vp){
 
       layer.appendChild(overlay);
     });
+    updateCoverage(pageNum);
   });
 }
 
@@ -1716,7 +1848,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = STATE.nativeTextEdits[_ftPage] && STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec){ rec.bold = !rec.bold; if(_ftTarget) _ftTarget.style.fontWeight = rec.bold ? 'bold' : 'normal'; }
+      if(rec){ rec.bold = !rec.bold; if(_ftTarget) _ftTarget.style.fontWeight = rec.bold ? 'bold' : 'normal'; updateCoverage(_ftPage); }
       this.classList.toggle('active');
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
@@ -1729,7 +1861,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = STATE.nativeTextEdits[_ftPage] && STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec){ rec.italic = !rec.italic; if(_ftTarget) _ftTarget.style.fontStyle = rec.italic ? 'italic' : 'normal'; }
+      if(rec){ rec.italic = !rec.italic; if(_ftTarget) _ftTarget.style.fontStyle = rec.italic ? 'italic' : 'normal'; updateCoverage(_ftPage); }
       this.classList.toggle('active');
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
@@ -1761,7 +1893,7 @@ function hideFloatToolbar(){
     if(_ftType === 'native'){
       if(_ftTarget) _ftTarget.style.color = this.value;
       var rec = STATE.nativeTextEdits[_ftPage] && STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec) rec.color = this.value;
+      if(rec){ rec.color = this.value; updateCoverage(_ftPage); }
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
       if(obj){ obj.color = this.value; applyTextStyle(obj, _ftPage); pushHistory(); }
@@ -1818,7 +1950,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = STATE.nativeTextEdits[_ftPage] && STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec) rec.deleted = true;
+      if(rec){ rec.deleted = true; updateCoverage(_ftPage); }
       if(_ftTarget) _ftTarget.classList.add('nt-deleted');
       _ftTarget = null;
       document.getElementById('pe-float-toolbar').classList.remove('visible');
@@ -2464,6 +2596,8 @@ function exportPage(outDoc, srcDoc, pageNum){
 setActiveTool('select');
 updateUndoRedo();
 </script>
+<script src="../js/app.js?v=20260618c"></script>
+<script src="../js/particles.js?v=20260618c"></script>
 <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><h2>What is the PDF Editor?</h2><p>This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded.</p><h2>Who needs this tool?</h2><p>Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text.</p><h2>What problem does it solve?</h2><p>PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document.</p><h2>How to Use</h2><ol><li>Upload your file.</li><li>Choose your options.</li><li>Click the action button.</li><li>Download the result.</li></ol><h2>Frequently Asked Questions</h2><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is a PDF Editor?</button><div class="faq-a">This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Who needs a PDF Editor?</button><div class="faq-a">Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What problem does the PDF Editor solve?</button><div class="faq-a">PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text inside the PDF?</button><div class="faq-a">This tool adds annotations on top of the PDF — it does not change existing text. To edit the actual text, use the PDF to Word converter first.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will my annotations be saved if I close the browser?</button><div class="faq-a">Download your annotated PDF immediately after editing. Browser tabs do not save changes automatically.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add multiple text boxes on one page?</button><div class="faq-a">Yes. You can add as many text boxes, drawings, or highlights as you need on any page.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a">Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to create an account?</button><div class="faq-a">No account is needed for basic use. Sign in only if you want to save files directly to your Google Drive.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files uploaded to a server?</button><div class="faq-a">No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile and tablets?</button><div class="faq-a">Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers.</div></div></section>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded."}},{"@type":"Question","name":"Who needs a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text."}},{"@type":"Question","name":"What problem does the PDF Editor solve?","acceptedAnswer":{"@type":"Answer","text":"PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document."}},{"@type":"Question","name":"Can I edit the existing text inside the PDF?","acceptedAnswer":{"@type":"Answer","text":"This tool adds annotations on top of the PDF — it does not change existing text. To edit the actual text, use the PDF to Word converter first."}},{"@type":"Question","name":"Will my annotations be saved if I close the browser?","acceptedAnswer":{"@type":"Answer","text":"Download your annotated PDF immediately after editing. Browser tabs do not save changes automatically."}},{"@type":"Question","name":"Can I add multiple text boxes on one page?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can add as many text boxes, drawings, or highlights as you need on any page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed for basic use. Sign in only if you want to save files directly to your Google Drive."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers."}}]}</script>
 
