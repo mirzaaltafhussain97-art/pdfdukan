@@ -402,8 +402,8 @@ const PDFToImages = (() => {
           info.innerHTML = `<div class="page-num">Page ${p}</div>`;
           const dlBtn = document.createElement('button');
           dlBtn.type = 'button';
-          dlBtn.textContent = '⬇ ' + ext.toUpperCase();
-          dlBtn.style.cssText = 'margin-top:6px;font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
+          dlBtn.className = 'pt-dl-btn';
+          dlBtn.textContent = '⬇ Download ' + ext.toUpperCase();
           const pageIdx = k;
           dlBtn.onclick = ev => { ev.stopPropagation(); downloadOne(pageIdx); };
           thumb.onclick = () => toggleSel(pageIdx);
