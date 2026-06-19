@@ -263,9 +263,39 @@
 .sg-d{font-size:12px;color:var(--text-3);line-height:1.5}
 .sg-arrow{display:flex;align-items:center;color:var(--primary);font-size:20px;font-weight:700}
 @media(max-width:720px){.sg-arrow{display:none}.sg-step{min-width:140px}}
+/* Animated "scan in action" demo (CSS only — lightweight, crisp, no GIF) */
+.sd-stage{position:relative;width:220px;height:158px;margin:0 auto 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-2);overflow:hidden}
+.sd-doc{position:absolute;left:50px;top:22px;width:120px;height:114px;background:#fff;border-radius:3px;box-shadow:0 3px 10px rgba(0,0,0,.18);transform-origin:center;animation:sdDoc 8s ease-in-out infinite}
+.sd-doc i{display:block;height:6px;border-radius:3px;background:#b4b4b4;margin:9px 12px}
+.sd-doc i:first-child{margin-top:16px;width:55%;height:8px;background:#8a8a8a}
+.sd-corner{position:absolute;width:13px;height:13px;border:2px solid var(--primary);opacity:0;animation:sdCorner 8s ease-in-out infinite}
+.sd-corner.tl{left:44px;top:16px;border-right:0;border-bottom:0}
+.sd-corner.tr{right:44px;top:16px;border-left:0;border-bottom:0}
+.sd-corner.bl{left:44px;bottom:16px;border-right:0;border-top:0}
+.sd-corner.br{right:44px;bottom:16px;border-left:0;border-top:0}
+.sd-pdf{position:absolute;right:14px;bottom:12px;background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:5px 9px;border-radius:5px;opacity:0;transform:translateY(16px);animation:sdPdf 8s ease-in-out infinite}
+.sd-cap{height:20px;position:relative;margin-bottom:16px}
+.sd-cap span{position:absolute;left:0;right:0;text-align:center;font-size:13px;font-weight:600;color:var(--primary);opacity:0;animation:sdCap 8s ease-in-out infinite}
+.sd-cap span:nth-child(2){animation-delay:2s}.sd-cap span:nth-child(3){animation-delay:4s}.sd-cap span:nth-child(4){animation-delay:6s}
+@keyframes sdDoc{0%,8%{transform:rotate(-7deg) scale(.9);filter:brightness(.86)}22%,46%{transform:rotate(0) scale(1);filter:brightness(.86)}60%,100%{transform:rotate(0) scale(1);filter:brightness(1.12) contrast(1.12)}}
+@keyframes sdCorner{0%,12%{opacity:0}20%,44%{opacity:1}52%,100%{opacity:0}}
+@keyframes sdPdf{0%,62%{opacity:0;transform:translateY(16px)}74%,100%{opacity:1;transform:translateY(0)}}
+@keyframes sdCap{0%{opacity:0}3%{opacity:1}22%{opacity:1}25%,100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.sd-stage,.sd-cap{display:none}}
 </style>
 <section class="scan-guide" aria-label="How CamMaster works — upload to export">
   <h2>How it works — upload to export</h2>
+  <div class="sd-stage" role="img" aria-label="Animated demo: a tilted photo is uploaded, its edges are auto-detected, the scan is enhanced, then exported as a PDF">
+    <div class="sd-doc"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="sd-corner tl"></div><div class="sd-corner tr"></div><div class="sd-corner bl"></div><div class="sd-corner br"></div>
+    <div class="sd-pdf">PDF ✓</div>
+  </div>
+  <div class="sd-cap" aria-hidden="true">
+    <span>1. Upload your photo</span>
+    <span>2. AI detects edges</span>
+    <span>3. Enhance &amp; filter</span>
+    <span>4. Export as PDF</span>
+  </div>
   <div class="sg-steps">
     <div class="sg-step"><div class="sg-num">1</div><div class="sg-ico" aria-hidden="true">📤</div><div class="sg-h">Upload</div><div class="sg-d">Drop a photo or PDF, or click to browse.</div></div>
     <div class="sg-arrow" aria-hidden="true">→</div>
