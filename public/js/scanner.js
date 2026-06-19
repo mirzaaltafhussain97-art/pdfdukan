@@ -680,35 +680,69 @@ const ScannerApp = (() => {
     }
   }
 
-  // Download every page as a separate image file (NOT a ZIP). Browsers throttle
-  // rapid programmatic downloads, so we stagger them and may trigger a one-time
-  // "allow multiple downloads" prompt — that's expected. ZIP stays a separate button.
+  // Render one page (cropped + filtered) to an image blob.
+  async function _pageToBlob(page, format) {
+    const c = document.createElement('canvas');
+    c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
+    c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(page.croppedImg, 0, 0);
+    applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+    return await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
+  }
+
+  // Strip illegal filename characters and any extension the user typed.
+  function _sanitizeBaseName(name, fallback) {
+    const cleaned = (name || '').trim().replace(/[\\/:*?"<>|]+/g, '_').replace(/\.(jpe?g|png|zip)$/i, '');
+    return cleaned || fallback;
+  }
+
+  // Export pages as images. Browsers block multiple automatic downloads, so a
+  // single page downloads directly while multiple pages are bundled into ONE ZIP
+  // (named "<base>.zip") with files auto-numbered "<base>_01.jpg", "<base>_02.jpg"…
+  // — this is the only reliable way to get every page in a single download.
   async function exportAsImages(format) {
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
     const ext = format === 'jpeg' ? 'jpg' : format;
     const multi = state.pages.length > 1;
-    showProcessing(multi ? `Saving ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');
-    try {
-      for (let i = 0; i < state.pages.length; i++) {
-        const page = state.pages[i];
-        const c = document.createElement('canvas');
-        c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-        c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(page.croppedImg, 0, 0);
-        applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+    const fallback = 'CamMaster_' + new Date().toISOString().slice(0, 10);
 
-        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
+    // Ask for a file name; the rest are auto-numbered in the same pattern.
+    const promptMsg = multi
+      ? `Enter a file name for your ${state.pages.length} images.\n\n` +
+        `They will be saved together in one ZIP as:\n` +
+        `"<name>_01.${ext}", "<name>_02.${ext}", …`
+      : `Enter a file name for your image:`;
+    const input = prompt(promptMsg, fallback);
+    if (input === null) return; // user cancelled
+    const base = _sanitizeBaseName(input, fallback);
+
+    showProcessing(multi ? `Packaging ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');
+    try {
+      if (!multi) {
+        const blob = await _pageToBlob(state.pages[0], format);
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = multi ? `CamMaster_page_${String(i + 1).padStart(2, '0')}.${ext}` : `CamMaster_${Date.now()}.${ext}`;
+        a.href = url; a.download = `${base}.${ext}`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 2000);
-        if (i < state.pages.length - 1) await new Promise(r => setTimeout(r, 400));
+        hideProcessing();
+        toast('Image downloaded! ✓', 'success');
+        return;
       }
+
+      // Multiple pages → one ZIP so they all download together, every page named
+      // in the same pattern. padStart width grows with page count (01.. / 001..).
+      const zip = new JSZip();
+      const pad = Math.max(2, String(state.pages.length).length);
+      for (let i = 0; i < state.pages.length; i++) {
+        const blob = await _pageToBlob(state.pages[i], format);
+        zip.file(`${base}_${String(i + 1).padStart(pad, '0')}.${ext}`, blob);
+      }
+      const content = await zip.generateAsync({ type: 'blob' });
+      saveAs(content, `${base}.zip`);
       hideProcessing();
-      toast(multi ? `${state.pages.length} ${ext.toUpperCase()} files downloaded ✓` : 'Image downloaded! ✓', 'success');
+      toast(`${state.pages.length} ${ext.toUpperCase()} images downloaded as ${base}.zip ✓`, 'success');
     } catch (e) {
       hideProcessing();
       console.error('Image export error:', e);
