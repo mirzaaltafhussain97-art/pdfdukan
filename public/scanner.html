@@ -251,6 +251,34 @@
   <p style="font-size:15px;color:var(--text-2);margin:0">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
 </div>
 
+<!-- How it works — visual step guide -->
+<style>
+.scan-guide{max-width:1100px;margin:8px auto 4px;padding:0 20px}
+.scan-guide h2{font-size:16px;font-weight:700;text-align:center;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin:0 0 16px}
+.sg-steps{display:flex;align-items:stretch;justify-content:center;gap:8px;flex-wrap:wrap}
+.sg-step{flex:1;min-width:150px;max-width:200px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;text-align:center;position:relative}
+.sg-num{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.sg-ico{font-size:28px;margin:6px 0 8px;line-height:1}
+.sg-h{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.sg-d{font-size:12px;color:var(--text-3);line-height:1.5}
+.sg-arrow{display:flex;align-items:center;color:var(--primary);font-size:20px;font-weight:700}
+@media(max-width:720px){.sg-arrow{display:none}.sg-step{min-width:140px}}
+</style>
+<section class="scan-guide" aria-label="How CamMaster works — upload to export">
+  <h2>How it works — upload to export</h2>
+  <div class="sg-steps">
+    <div class="sg-step"><div class="sg-num">1</div><div class="sg-ico" aria-hidden="true">📤</div><div class="sg-h">Upload</div><div class="sg-d">Drop a photo or PDF, or click to browse.</div></div>
+    <div class="sg-arrow" aria-hidden="true">→</div>
+    <div class="sg-step"><div class="sg-num">2</div><div class="sg-ico" aria-hidden="true">✂️</div><div class="sg-h">Crop</div><div class="sg-d">AI finds the edges — drag corners to fine-tune.</div></div>
+    <div class="sg-arrow" aria-hidden="true">→</div>
+    <div class="sg-step"><div class="sg-num">3</div><div class="sg-ico" aria-hidden="true">🎨</div><div class="sg-h">Filter</div><div class="sg-d">Magic Pro, B&amp;W or auto-enhance for a clean scan.</div></div>
+    <div class="sg-arrow" aria-hidden="true">→</div>
+    <div class="sg-step"><div class="sg-num">4</div><div class="sg-ico" aria-hidden="true">📄</div><div class="sg-h">Pages</div><div class="sg-d">Add, reorder or delete pages for multi-page docs.</div></div>
+    <div class="sg-arrow" aria-hidden="true">→</div>
+    <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF or JPG — all in your browser.</div></div>
+  </div>
+</section>
+
 <div class="scanner-wrap">
 
   <!-- Step Indicator -->
