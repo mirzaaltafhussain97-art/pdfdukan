@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CamMaster Scanner — PDFdukan | Free Document Scanner</title>
@@ -33,8 +32,8 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-<!-- OpenCV.js -->
-<script async src="https://docs.opencv.org/4.8.0/opencv.js" onload="onOpenCvReady()"></script>
+<!-- OpenCV.js (self-hosted 4.8.0 — avoids docs.opencv.org 403 to crawlers + external dependency) -->
+<script async src="/vendor/opencv/opencv.js?v=4.8.0" onload="onOpenCvReady()"></script>
 
 <!-- CDN Libraries -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
