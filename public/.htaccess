@@ -55,6 +55,9 @@
 
 # ============================================================
 
+# /blog and /blog/ both resolve to the blog index page
+Redirect 301 /blog /blog/index.html
+
 # 301 redirects for retired duplicate blog URLs (canonical = the -guide versions).
 # Hostinger serves /public files from its static layer, so next.config.js
 # redirects never fire for files that exist — these rules cover that layer.

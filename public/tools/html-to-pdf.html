@@ -444,77 +444,7 @@ function updatePreview() {
   const frame = document.getElementById('previewFrame');
   const doc   = frame.contentDocument || frame.contentWindow.document;
   doc.open();
-  doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <style>body{font-family:Arial,sans-serif;line-height:1.5;padding:16px;}</style>
-    <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"HTML to PDF Converter","item":"https://pdfdukan.com/tools/html-to-pdf.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
-</head><body>${html}
-<!-- FOOTER -->
-<footer class="footer" role="contentinfo">
-  <div class="footer-content">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Scanner</h4>
-        <a href="../scanner.html">CamMaster Scanner</a>
-        <a href="../tools/ocr.html">OCR Text</a>
-        <a href="../tools/img-to-pdf.html">Image to PDF</a>
-      </div>
-      <div class="footer-col">
-        <h4>PDF Tools</h4>
-        <a href="../tools/merge-pdf.html">Merge PDF</a>
-        <a href="../tools/split-pdf.html">Split PDF</a>
-        <a href="../tools/compress-pdf.html">Compress PDF</a>
-        <a href="../tools/pdf-to-word.html">PDF to Word</a>
-        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="../about.html">About PDFdukan</a>
-        <a href="../blog/index.html">Blog</a>
-        <a href="../contact.html">Contact Us</a>
-        <a href="../privacy.html">Privacy Policy</a>
-        <a href="../terms.html">Terms of Service</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
-      <div class="footer-links">
-        <a href="../privacy.html">Privacy</a>
-        <a href="../terms.html">Terms</a>
-        <a href="../sitemap.xml">Sitemap</a>
-        <a href="../cookies.html">Cookies</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- MOBILE NAV -->
-<nav class="mobile-nav" aria-label="Mobile navigation">
-  <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
-    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
-    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
-  </div>
-</nav>
-</body></html>`);
+  doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;line-height:1.5;padding:16px;}</style></head><body>${html}</body></html>`);
   doc.close();
 }
 
@@ -535,85 +465,14 @@ function printToPDF() {
 <html>
 <head>
   <meta charset="UTF-8">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-  <title>HTML to PDF</title>
+  <title>Print Preview — PDFdukan HTML to PDF</title>
   <style>
-    @page {
-      size: ${_pageSize} ${_orientation};
-      margin: ${margin}mm;
-    }
+    @page { size: ${_pageSize} ${_orientation}; margin: ${margin}mm; }
     * { box-sizing: border-box; }
     body { font-family: Arial, sans-serif; line-height: 1.5; }
   </style>
-<meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"HTML to PDF Converter","item":"https://pdfdukan.com/tools/html-to-pdf.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 </head>
-<body>${html}
-<!-- FOOTER -->
-<footer class="footer" role="contentinfo">
-  <div class="footer-content">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Scanner</h4>
-        <a href="../scanner.html">CamMaster Scanner</a>
-        <a href="../tools/ocr.html">OCR Text</a>
-        <a href="../tools/img-to-pdf.html">Image to PDF</a>
-      </div>
-      <div class="footer-col">
-        <h4>PDF Tools</h4>
-        <a href="../tools/merge-pdf.html">Merge PDF</a>
-        <a href="../tools/split-pdf.html">Split PDF</a>
-        <a href="../tools/compress-pdf.html">Compress PDF</a>
-        <a href="../tools/pdf-to-word.html">PDF to Word</a>
-        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="../about.html">About PDFdukan</a>
-        <a href="../blog/index.html">Blog</a>
-        <a href="../contact.html">Contact Us</a>
-        <a href="../privacy.html">Privacy Policy</a>
-        <a href="../terms.html">Terms of Service</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
-      <div class="footer-links">
-        <a href="../privacy.html">Privacy</a>
-        <a href="../terms.html">Terms</a>
-        <a href="../sitemap.xml">Sitemap</a>
-        <a href="../cookies.html">Cookies</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<!-- MOBILE NAV -->
-<nav class="mobile-nav" aria-label="Mobile navigation">
-  <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
-    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
-    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
-  </div>
-</nav>
-</body>
+<body>${html}</body>
 </html>`);
   printWin.document.close();
   printWin.focus();
@@ -631,7 +490,7 @@ const TEMPLATES = {
   .total{text-align:right;font-size:18px;font-weight:bold;color:#ff6333;}
 </style>
 <div class="header">
-  <div><h1>INVOICE</h1><p>#INV-2024-001 &nbsp;|&nbsp; Date: May 27, 2026</p></div>
+  <div><p style="font-size:28px;font-weight:bold;color:#ff6333;margin:0 0 4px;">INVOICE</p><p>#INV-2024-001 &nbsp;|&nbsp; Date: May 27, 2026</p></div>
   <div style="text-align:right"><strong>Your Company</strong><br>123 Business St<br>contact@yourco.com</div>
 </div>
 <p><strong>Bill To:</strong><br>Client Name<br>client@email.com</p>
@@ -646,14 +505,14 @@ const TEMPLATES = {
 
   report: `<style>
   body{font-family:Georgia,serif;color:#1a1a1a;max-width:700px;margin:auto;}
-  h1{color:#2c3e50;border-bottom:2px solid #2c3e50;padding-bottom:8px;}
+  .rpt-title{font-size:26px;font-weight:bold;color:#2c3e50;border-bottom:2px solid #2c3e50;padding-bottom:8px;margin:0 0 8px;}
   h2{color:#34495e;margin-top:28px;}
   .stat-row{display:flex;gap:16px;margin:20px 0;}
   .stat{flex:1;background:#f8f9fa;border-left:4px solid #ff6333;padding:12px 16px;border-radius:4px;}
   .stat-num{font-size:28px;font-weight:bold;color:#ff6333;}
   .stat-label{font-size:12px;color:#888;margin-top:4px;}
 </style>
-<h1>Quarterly Business Report — Q2 2026</h1>
+<p class="rpt-title">Quarterly Business Report — Q2 2026</p>
 <p>Prepared by: Analytics Team &nbsp;|&nbsp; Date: May 27, 2026</p>
 <div class="stat-row">
   <div class="stat"><div class="stat-num">$124K</div><div class="stat-label">Revenue</div></div>
