@@ -157,6 +157,20 @@ const ScannerApp = (() => {
   async function _processPDFFile(file) {
     showProcessing('Rendering PDF pages…');
     try {
+      if (typeof pdfjsLib === 'undefined') {
+        hideProcessing();
+        toast('PDF engine still loading — please try again in a moment', 'error');
+        state.queueIndex++; _processNextInQueue();
+        return;
+      }
+      // The inline <head> worker config runs before the deferred pdf.min.js has
+      // loaded, so GlobalWorkerOptions.workerSrc is empty at that point. Set it
+      // here (pdf.js is guaranteed loaded by now) so PDFs use a real worker
+      // instead of the slow/flaky main-thread fake-worker fallback.
+      if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      }
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       const allImgs = [];

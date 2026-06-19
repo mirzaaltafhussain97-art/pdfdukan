@@ -43,9 +43,16 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 <!-- ONNX Runtime Web (DocAligner) — lazy-loaded on first scan; see js/app.js loadScriptOnce -->
 <script>
-  if (typeof pdfjsLib !== 'undefined') {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
+  /* pdf.min.js is deferred, so pdfjsLib is not defined yet when this inline
+     script first runs. Poll until it loads, then configure the worker so PDF
+     import uses a real worker (not the slow main-thread fake-worker fallback). */
+  (function setPdfWorker() {
+    if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    } else {
+      setTimeout(setPdfWorker, 100);
+    }
+  })();
 </script>
 
 <link rel="stylesheet" href="css/style.css?v=20260616c">
@@ -572,7 +579,7 @@
 </div>
 
 <!-- Hidden file inputs -->
-<input type="file" id="fileInputScanner" accept="image/*" multiple>
+<input type="file" id="fileInputScanner" accept="image/*,.pdf,application/pdf" multiple>
 <input type="file" id="fileInputPdfScan" accept=".pdf,application/pdf" multiple>
 
 <!-- Toast -->
