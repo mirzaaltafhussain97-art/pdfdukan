@@ -529,7 +529,7 @@ const CMLogs = (() => {
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
-    a.download = 'CamMaster_Transaction_Log_' + new Date().toISOString().slice(0, 10) + '.csv';
+    a.download = 'PDFdukan.com_Transaction_Log_' + new Date().toISOString().slice(0, 10) + '.csv';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

@@ -241,7 +241,7 @@ const ImageToPDF = (() => {
 
   function download() {
     if (!pdfBlob) return;
-    _downloadBlob(pdfBlob, `CamMaster_images_${Date.now()}.pdf`, 'Image to PDF', 'convert');
+    _downloadBlob(pdfBlob, `PDFdukan.com_images_${Date.now()}.pdf`, 'Image to PDF', 'convert');
     toast('PDF downloaded! ✓', 'success');
   }
 
@@ -485,7 +485,7 @@ const PDFToImages = (() => {
     _showProgress(70, 'Compressing…');
     const content = await zip.generateAsync({ type: 'blob' });
     _showProgress(100, 'Done!');
-    _downloadBlob(content, `CamMaster_pdf_pages_${Date.now()}.zip`, 'PDF to Images', 'convert');
+    _downloadBlob(content, `PDFdukan.com_pdf_pages_${Date.now()}.zip`, 'PDF to Images', 'convert');
     toast(`ZIP with ${sel.length} pages downloaded! ✓`, 'success');
   }
 
@@ -1248,7 +1248,7 @@ const MergePDF = (() => {
 
   function download() {
     if (!mergedBlob) return;
-    _downloadBlob(mergedBlob, `CamMaster_merged_${Date.now()}.pdf`, 'Merge PDF', 'merge');
+    _downloadBlob(mergedBlob, `PDFdukan.com_merged_${Date.now()}.pdf`, 'Merge PDF', 'merge');
     toast('Merged PDF downloaded! ✓', 'success');
   }
 
@@ -1570,7 +1570,7 @@ const SplitPDF = (() => {
   function download() {
     if (parts.length === 1) { downloadPart(0); return; }
     if (!zipBlob) return;
-    _downloadBlob(zipBlob, `CamMaster_split_${Date.now()}.zip`, 'Split PDF', 'split');
+    _downloadBlob(zipBlob, `PDFdukan.com_split_${Date.now()}.zip`, 'Split PDF', 'split');
     toast('Split ZIP downloaded! ✓', 'success');
   }
 
@@ -1967,7 +1967,7 @@ const OCRTool = (() => {
     const text = document.getElementById('ocrOutput')?.textContent || '';
     if (!text) return;
     const blob = new Blob([text], { type: 'text/plain' });
-    _downloadBlob(blob, `CamMaster_ocr_${Date.now()}.txt`, 'OCR Text', 'extract');
+    _downloadBlob(blob, `PDFdukan.com_ocr_${Date.now()}.txt`, 'OCR Text', 'extract');
     toast('Text file downloaded! ✓', 'success');
   }
 

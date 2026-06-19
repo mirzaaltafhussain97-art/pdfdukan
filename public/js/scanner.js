@@ -577,7 +577,7 @@ const ScannerApp = (() => {
     c.toBlob(blob => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = `CamMaster_page_${idx + 1}.jpg`;
+      a.href = url; a.download = `PDFdukan.com_page_${idx + 1}.jpg`;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       toast(`Page ${idx + 1} downloaded ✓`, 'success');
@@ -670,7 +670,7 @@ const ScannerApp = (() => {
         doc.addImage(dataUrl, 'JPEG', x, y, iw, ih);
       }
 
-      doc.save(`CamMaster_${Date.now()}.pdf`);
+      doc.save(`PDFdukan.com_${Date.now()}.pdf`);
       hideProcessing();
       toast('PDF downloaded! ✓', 'success');
     } catch (e) {
@@ -705,7 +705,7 @@ const ScannerApp = (() => {
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
     const ext = format === 'jpeg' ? 'jpg' : format;
     const multi = state.pages.length > 1;
-    const fallback = 'CamMaster_' + new Date().toISOString().slice(0, 10);
+    const fallback = 'PDFdukan.com_' + new Date().toISOString().slice(0, 10);
 
     // Ask for a file name; the rest are auto-numbered in the same pattern.
     const promptMsg = multi
@@ -773,7 +773,7 @@ const ScannerApp = (() => {
       }
 
       const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `CamMaster_${Date.now()}.zip`);
+      saveAs(content, `PDFdukan.com_${Date.now()}.zip`);
       hideProcessing();
       toast('ZIP downloaded! ✓', 'success');
     } catch (e) {
