@@ -246,10 +246,10 @@
   <a href="about.html"      class="mnd-link">🏢 About</a>
 </div>
 
-<div style="text-align:center;padding:24px 20px 8px;max-width:800px;margin:0 auto">
-  <h1 style="font-size:clamp(22px,4vw,32px);font-weight:700;margin:0 0 8px;color:var(--text)">CamMaster — Free AI Document Scanner</h1>
-  <p style="font-size:15px;color:var(--text-2);margin:0">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
-</div>
+<div class="scan-hero">
+ <div class="scan-hero-inner">
+  <h1>CamMaster — Free AI Document Scanner</h1>
+  <p class="sh-sub">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
 
 <!-- How it works — visual step guide -->
 <style>
@@ -282,6 +282,14 @@
 @keyframes sdPdf{0%,62%{opacity:0;transform:translateY(16px)}74%,100%{opacity:1;transform:translateY(0)}}
 @keyframes sdCap{0%{opacity:0}3%{opacity:1}22%{opacity:1}25%,100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.sd-stage,.sd-cap{display:none}}
+/* Professional hero band behind the title + how-it-works guide */
+.scan-hero{background:linear-gradient(135deg,rgba(255,99,51,.12) 0%,rgba(124,58,237,.07) 100%);border-bottom:1px solid var(--border);padding:32px 16px 28px;margin-bottom:20px}
+.scan-hero-inner{max-width:1100px;margin:0 auto}
+.scan-hero h1{font-size:clamp(24px,4vw,34px);font-weight:800;margin:0 0 10px;color:var(--text);text-align:center;line-height:1.15}
+.scan-hero .sh-sub{font-size:15px;color:var(--text-2);margin:0 auto 22px;text-align:center;max-width:620px;line-height:1.6}
+.scan-hero .scan-guide{margin-top:0;padding:0;max-width:100%}
+.scan-hero .sd-stage{background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.scan-hero .sg-step{box-shadow:0 2px 8px rgba(0,0,0,.05)}
 </style>
 <section class="scan-guide" aria-label="How CamMaster works — upload to export">
   <h2>How it works — upload to export</h2>
@@ -308,6 +316,8 @@
     <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF or JPG — all in your browser.</div></div>
   </div>
 </section>
+ </div>
+</div>
 
 <div class="scanner-wrap">
 
