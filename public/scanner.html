@@ -246,12 +246,12 @@
   <a href="about.html"      class="mnd-link">🏢 About</a>
 </div>
 
-<div class="scan-hero">
- <div class="scan-hero-inner">
-  <h1>CamMaster — Free AI Document Scanner</h1>
-  <p class="sh-sub">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
+<div style="text-align:center;max-width:760px;margin:0 auto;padding:18px 20px 4px">
+  <h1 style="font-size:clamp(20px,3.5vw,28px);font-weight:800;margin:0 0 6px;color:var(--text)">CamMaster — Free AI Document Scanner</h1>
+  <p style="font-size:14px;color:var(--text-2);margin:0">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
+</div>
 
-<!-- How it works — visual step guide -->
+<!-- how-it-works guide styles (the guide itself lives in the "How to scan" section below) -->
 <style>
 .scan-guide{max-width:1100px;margin:8px auto 4px;padding:0 20px}
 .scan-guide h2{font-size:16px;font-weight:700;text-align:center;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;margin:0 0 16px}
@@ -291,34 +291,6 @@
 .scan-hero .sd-stage{background:var(--card);box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .scan-hero .sg-step{box-shadow:0 2px 8px rgba(0,0,0,.05)}
 </style>
-<section class="scan-guide" aria-label="How CamMaster works — upload to export">
-  <h2>How it works — upload to export</h2>
-  <div class="sd-stage" role="img" aria-label="Animated demo: a tilted photo is uploaded, its edges are auto-detected, the scan is enhanced, then exported as a PDF">
-    <div class="sd-doc"><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="sd-corner tl"></div><div class="sd-corner tr"></div><div class="sd-corner bl"></div><div class="sd-corner br"></div>
-    <div class="sd-pdf">PDF ✓</div>
-  </div>
-  <div class="sd-cap" aria-hidden="true">
-    <span>1. Upload your photo</span>
-    <span>2. AI detects edges</span>
-    <span>3. Enhance &amp; filter</span>
-    <span>4. Export as PDF</span>
-  </div>
-  <div class="sg-steps">
-    <div class="sg-step"><div class="sg-num">1</div><div class="sg-ico" aria-hidden="true">📤</div><div class="sg-h">Upload</div><div class="sg-d">Drop a photo or PDF, or click to browse.</div></div>
-    <div class="sg-arrow" aria-hidden="true">→</div>
-    <div class="sg-step"><div class="sg-num">2</div><div class="sg-ico" aria-hidden="true">✂️</div><div class="sg-h">Crop</div><div class="sg-d">AI finds the edges — drag corners to fine-tune.</div></div>
-    <div class="sg-arrow" aria-hidden="true">→</div>
-    <div class="sg-step"><div class="sg-num">3</div><div class="sg-ico" aria-hidden="true">🎨</div><div class="sg-h">Filter</div><div class="sg-d">Magic Pro, B&amp;W or auto-enhance for a clean scan.</div></div>
-    <div class="sg-arrow" aria-hidden="true">→</div>
-    <div class="sg-step"><div class="sg-num">4</div><div class="sg-ico" aria-hidden="true">📄</div><div class="sg-h">Pages</div><div class="sg-d">Add, reorder or delete pages for multi-page docs.</div></div>
-    <div class="sg-arrow" aria-hidden="true">→</div>
-    <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF or JPG — all in your browser.</div></div>
-  </div>
-</section>
- </div>
-</div>
-
 <div class="scanner-wrap">
 
   <!-- Step Indicator -->
@@ -685,6 +657,36 @@
   </div>
 
   <h2>How to Scan a Document with CamMaster</h2>
+
+  <div class="scan-hero" style="border:1px solid var(--border);border-radius:var(--radius);margin:14px 0 22px">
+   <div class="scan-hero-inner">
+    <div class="sd-stage" role="img" aria-label="Animated demo: a tilted photo is uploaded, its edges are auto-detected, the scan is enhanced, then exported as a PDF">
+      <div class="sd-doc"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="sd-corner tl"></div><div class="sd-corner tr"></div><div class="sd-corner bl"></div><div class="sd-corner br"></div>
+      <div class="sd-pdf">PDF ✓</div>
+    </div>
+    <div class="sd-cap" aria-hidden="true">
+      <span>1. Upload your photo</span>
+      <span>2. AI detects edges</span>
+      <span>3. Enhance &amp; filter</span>
+      <span>4. Export as PDF</span>
+    </div>
+    <div class="scan-guide">
+      <div class="sg-steps">
+        <div class="sg-step"><div class="sg-num">1</div><div class="sg-ico" aria-hidden="true">📤</div><div class="sg-h">Upload</div><div class="sg-d">Drop a photo or PDF, or click to browse.</div></div>
+        <div class="sg-arrow" aria-hidden="true">→</div>
+        <div class="sg-step"><div class="sg-num">2</div><div class="sg-ico" aria-hidden="true">✂️</div><div class="sg-h">Crop</div><div class="sg-d">AI finds the edges — drag corners to fine-tune.</div></div>
+        <div class="sg-arrow" aria-hidden="true">→</div>
+        <div class="sg-step"><div class="sg-num">3</div><div class="sg-ico" aria-hidden="true">🎨</div><div class="sg-h">Filter</div><div class="sg-d">Magic Pro, B&amp;W or auto-enhance for a clean scan.</div></div>
+        <div class="sg-arrow" aria-hidden="true">→</div>
+        <div class="sg-step"><div class="sg-num">4</div><div class="sg-ico" aria-hidden="true">📄</div><div class="sg-h">Pages</div><div class="sg-d">Add, reorder or delete pages for multi-page docs.</div></div>
+        <div class="sg-arrow" aria-hidden="true">→</div>
+        <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF or JPG — all in your browser.</div></div>
+      </div>
+    </div>
+   </div>
+  </div>
+
   <ol>
     <li><strong>Take a photo or upload an image</strong> — Use your phone camera to photograph the document, or upload an existing photo from your gallery. Place the document on a flat, dark surface with good lighting for best results.</li>
     <li><strong>Auto-detect and crop</strong> — CamMaster's AI automatically detects the four corners of your document and applies perspective correction to remove any tilt or angle. You can also adjust the crop corners manually.</li>
