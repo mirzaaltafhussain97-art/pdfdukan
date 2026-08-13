@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Advanced Faraid Calculator (Full Heirs) Free | PDFdukan</title>
+<title>Islamic Inheritance Calculator (Faraid) | PDFdukan</title>
 <meta name="description" content="Advanced faraid calculator — spouse, parents, grandparents, sons, daughters, siblings — with Hajb, Aul and Radd adjustments. Shows each heir's share.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
@@ -73,7 +73,7 @@
 <canvas id="particleCanvas"></canvas>
 
 <header class="header" role="banner">
-  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
       <rect width="40" height="40" rx="10" fill="url(#lbg)"/>
@@ -85,7 +85,7 @@
     <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
   </a>
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="../index.html" class="nav-item">Home</a>
+    <a href="/" class="nav-item">Home</a>
     <a href="../tools.html" class="nav-item">Tools</a>
     <a href="../blog/index.html" class="nav-item">Blog</a>
   </nav>
@@ -97,20 +97,19 @@
 </header>
 
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
-  <a href="../index.html" class="mnd-link">🏠 Home</a>
+  <a href="/" class="mnd-link">🏠 Home</a>
   <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
   <a href="../blog/index.html" class="mnd-link">📝 Blog</a>
-  <a href="inheritance-calc.html" class="mnd-link">☪️ Simple Inheritance</a>
 </div>
 
 <div class="ic-wrap">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:12px">
-    <a href="../index.html" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <a href="inheritance-calc.html" style="color:var(--text-3)">Inheritance</a> › <span>Advanced</span>
+    <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Advanced</span>
   </nav>
 
   <div class="ic-hero">
     <div class="ic-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <h1>☪️ Advanced Inheritance Calculator (Full Faraid)</h1>
+    <h1>☪️ Islamic Inheritance Calculator (Faraid)</h1>
     <p>Spouse, parents, grandparents, children, grandchildren &amp; all siblings — with Hajb (blocking), Aul &amp; Radd.</p>
   </div>
 
@@ -155,7 +154,6 @@
     <div class="ic-field"><label for="icUSib">Maternal (uterine) siblings — male &amp; female equal</label><input type="number" id="icUSib" min="0" step="1" value="0"></div>
 
     <button class="ic-btn" onclick="IC.calculate()">☪️ Calculate Full Distribution</button>
-    <a href="inheritance-calc.html" class="ic-btn" style="display:block;text-align:center;text-decoration:none;background:var(--card-2);color:var(--text);border:1px solid var(--border);margin-top:10px">← Back to Simple Calculator</a>
     <div id="icError" style="display:none"></div>
   </div>
 
@@ -168,7 +166,7 @@
   </div>
 
   <section class="seo-section" style="margin-top:16px;padding:26px 22px">
-    <h2>How the advanced calculator works</h2>
+    <h2>How the inheritance calculator works</h2>
     <p>This tool applies the fixed Quranic shares (faraid), then assigns the remaining estate to the residuary (asaba) heirs, and finally adjusts with <strong>Aul</strong> (when fixed shares exceed the estate) or <strong>Radd</strong> (when there is a surplus and no residuary). It also applies <strong>Hajb</strong> — the rules by which nearer heirs block more distant ones (for example, a son blocks grandchildren and siblings; the father blocks siblings and the grandfather).</p>
     <h2 id="limits">Known limitations (consult a scholar)</h2>
     <ul style="font-size:13px;line-height:1.9;color:var(--text-2)">
@@ -187,7 +185,7 @@
 </div>
 
 <nav class="mobile-nav"><div class="mob-nav-items">
-  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
   <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
 </div></nav>
@@ -225,7 +223,6 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="../js/app.js?v=20260619b"></script>
-<script src="../js/particles.js?v=20260616c"></script>
 <script>
 /* Advanced faraid engine — validated against canonical cases (Aul, Radd,
    Umariyyatayn, asaba-with-daughters, uterine, father/grandfather). */
@@ -398,7 +395,7 @@ window.IC = IC;
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>

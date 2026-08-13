@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>HTML to PDF — Convert HTML &amp; CSS to PDF | CamMaster by PDFdukan</title>
+<title>HTML Print Preview — Save HTML as PDF | PDFdukan</title>
 <meta name="description" content="Convert raw HTML and CSS into a downloadable PDF. Paste your code, preview in real-time, and print to PDF. Free, 100% client-side, no server upload.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
@@ -21,7 +21,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/html-to-pdf.html">
-<meta property="og:title" content="HTML to PDF — Convert HTML &amp; CSS to PDF | CamMaster by PDFdukan">
+<meta property="og:title" content="HTML Print Preview — Save HTML as PDF | PDFdukan">
 <meta property="og:description" content="Convert raw HTML and CSS into a downloadable PDF. Paste your code, preview in real-time, and print to PDF. Free, 100% client-side, no server upload.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
@@ -30,7 +30,7 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="HTML to PDF — Convert HTML &amp; CSS to PDF | CamMaster by PDFdukan">
+<meta name="twitter:title" content="HTML Print Preview — Save HTML as PDF | PDFdukan">
 <meta name="twitter:description" content="Convert raw HTML and CSS into a downloadable PDF. Paste your code, preview in real-time, and print to PDF. Free, 100% client-side, no server upload.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -120,7 +120,7 @@
 <canvas id="particleCanvas"></canvas>
 
 <header class="header" role="banner">
-  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
       <rect width="40" height="40" rx="10" fill="url(#lg)"/>
@@ -144,7 +144,7 @@
     <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
   </a>
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="../index.html" class="nav-item">Home</a>
+    <a href="/" class="nav-item">Home</a>
     <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
       Tools <span class="nav-chevron">&#9662;</span>
       <div class="nav-dropdown mega" role="menu">
@@ -165,7 +165,7 @@
           <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div></div></a>
           <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div></div></a>
           <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div></div></a>
-          <a href="../tools/delete-pages.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div></div></a>
           <div class="nd-divider"></div>
           <a href="../scanner.html"        class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
           <a href="../tools/compress.html" class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div></div></a>
@@ -185,7 +185,7 @@
 </header>
 
 <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
-  <a href="../index.html"             class="mnd-link">Home</a>
+  <a href="/"             class="mnd-link">Home</a>
   <div class="mnd-section">PDF Tools</div>
   <a href="../tools/html-to-pdf.html" class="mnd-link">HTML to PDF</a>
   <a href="../tools/merge-pdf.html"   class="mnd-link">Merge PDF</a>
@@ -196,14 +196,14 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
-    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="/" style="color:var(--text-3)">Home</a> ›
     <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
     <span>HTML to PDF</span>
   </nav>
 
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#006064,#00acc1)">🌐</div>
-    <h1>HTML to PDF Converter</h1>
+    <h1>HTML Print Preview &amp; Save as PDF</h1>
     <p>Write or paste your HTML &amp; CSS, preview it live, then use your browser's print engine to generate a perfect PDF — no server, no upload.</p>
   </div>
 
@@ -344,7 +344,6 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="../js/app.js?v=20260619b"></script>
-<script src="../js/particles.js?v=20260616c"></script>
 <script>
 /* ── HTML to PDF ─────────────────────────────────────────────── */
 let _pageSize = 'A4', _orientation = 'portrait';
@@ -633,7 +632,7 @@ window.addEventListener('DOMContentLoaded', () => {
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>

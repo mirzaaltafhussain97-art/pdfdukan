@@ -30,6 +30,12 @@ const nextConfig = {
         destination: 'https://pdfdukan.com/:path*',
         permanent: true,
       },
+      // Consolidate the duplicate public-file homepage on the canonical root.
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
       // Duplicate blog pages — canonical is the -guide version
       {
         source: '/blog/going-paperless.html',
@@ -41,6 +47,33 @@ const nextConfig = {
         destination: '/blog/document-digitization-guide.html',
         permanent: true,
       },
+      {
+        source: '/blog/image-compression-guide.html',
+        destination: '/blog/compress-images-guide.html',
+        permanent: true,
+      },
+      {
+        source: '/blog/maximizing-pdf-workflows.html',
+        destination: '/blog/pdf-workflows.html',
+        permanent: true,
+      },
+      {
+        source: '/blog/document-scanning-tips.html',
+        destination: '/blog/scan-documents-phone.html',
+        permanent: true,
+      },
+      // Closely overlapping page-management tools now live in one organizer.
+      ...['rotate-pdf', 'reorder-pdf', 'delete-pages'].map(t => ({
+        source: `/tools/${t}.html`,
+        destination: '/tools/pdf-organizer.html',
+        permanent: true,
+      })),
+      // Keep the more complete faraid implementation as the single calculator.
+      {
+        source: '/tools/inheritance-calc.html',
+        destination: '/tools/inheritance-calc-advanced.html',
+        permanent: true,
+      },
       // Retired AI tools (API-dependent, removed 2026-06-16) -> tools hub.
       // Deleted files no longer exist on disk, so these paths reach Next.js
       // and these redirects fire (the static layer is bypassed once gone).
@@ -49,6 +82,9 @@ const nextConfig = {
         'ai-summarize', 'assignment-writer', 'cover-letter-generator',
         'essay-writer', 'mcq-generator', 'notes-generator',
         'research-summarizer', 'resume-analyzer',
+        // Off-topic tools and converters retired after the indexing audit.
+        'age-calc', 'bmi-calc', 'discount-calc', 'qr-generator',
+        'barcode-generator', 'excel-to-pdf', 'ppt-to-pdf',
       ].map(t => ({
         source: `/tools/${t}.html`,
         destination: '/tools.html',

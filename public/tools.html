@@ -118,7 +118,7 @@
 
 <!-- HEADER -->
 <header class="header" role="banner">
-  <a href="index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lgt" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
       <rect width="40" height="40" rx="10" fill="url(#lgt)"/>
@@ -143,7 +143,7 @@
   </a>
 
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="index.html" class="nav-item">Home</a>
+    <a href="/" class="nav-item">Home</a>
     <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
       Tools <span class="nav-chevron">▾</span>
       <div class="nav-dropdown mega" role="menu">
@@ -164,11 +164,8 @@
           <a href="tools/compress.html" class="nd-link"><span class="nd-link-icon">🗜️</span><div class="nd-link-body"><div class="nd-link-name">Compress</div></div></a>
           <a href="tools/ocr.html"      class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
           <div class="nd-divider"></div>
-          <span class="nd-section-head">🔧 Calculators</span>
-          <a href="tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">📅</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
-          <a href="tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">⚖️</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
-          <a href="tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a>
-          <a href="tools/inheritance-calc.html" class="nd-link"><span class="nd-link-icon">☪️</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
+          <span class="nd-section-head">☪️ Specialized Tool</span>
+          <a href="tools/inheritance-calc-advanced.html" class="nd-link"><span class="nd-link-icon">☪️</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
         </div>
       </div>
     </div>
@@ -202,7 +199,7 @@
 
 <!-- Mobile nav drawer -->
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
-  <a href="index.html"           class="mnd-link">🏠 Home</a>
+  <a href="/"           class="mnd-link">🏠 Home</a>
   <div class="mnd-section">PDF Tools</div>
   <a href="tools/img-to-pdf.html"  class="mnd-link">📑 Image to PDF</a>
   <a href="tools/pdf-to-img.html"  class="mnd-link">🖼️ PDF to JPG</a>
@@ -216,11 +213,8 @@
   <a href="scanner.html"           class="mnd-link">📷 Smart Scan</a>
   <a href="tools/compress.html"    class="mnd-link">🗜️ Compress</a>
   <a href="tools/ocr.html"         class="mnd-link">🔤 OCR Text</a>
-  <div class="mnd-section">Calculators</div>
-  <a href="tools/age-calc.html"      class="mnd-link">📅 Age</a>
-  <a href="tools/bmi-calc.html"      class="mnd-link">⚖️ BMI</a>
-  <a href="tools/discount-calc.html" class="mnd-link">🏷️ Discount</a>
-  <a href="tools/inheritance-calc.html" class="mnd-link">☪️ Islamic Inheritance</a>
+  <div class="mnd-section">Specialized Tool</div>
+  <a href="tools/inheritance-calc-advanced.html" class="mnd-link">☪️ Islamic Inheritance</a>
 </div>
 
 <div class="tools-page">
@@ -363,40 +357,13 @@
 
   <!-- Utilities -->
   <div class="category-section" id="cat-utils">
-    <h2 class="category-title">Free Online Calculator Tools</h2>
+    <h2 class="category-title">Islamic Finance Tool</h2>
     <div class="big-tools-grid">
-      <a href="tools/age-calc.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#ad1457,#ec407a)">📅</div>
-        <div class="btc-body">
-          <div class="btc-name">Age Calculator</div>
-          <div class="btc-desc">Calculate exact age in years, months, days, hours, minutes and seconds. Updates in real-time.</div>
-          <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Real-time</span></div>
-        </div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/bmi-calc.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#0288d1,#4fc3f7)">⚖️</div>
-        <div class="btc-body">
-          <div class="btc-name">BMI Calculator</div>
-          <div class="btc-desc">Calculate your Body Mass Index instantly. Supports metric (kg/cm) and imperial (lbs/ft) with visual gauge and ideal weight range.</div>
-          <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Metric &amp; Imperial</span></div>
-        </div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/discount-calc.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#388e3c,#66bb6a)">🏷️</div>
-        <div class="btc-body">
-          <div class="btc-name">Discount Calculator</div>
-          <div class="btc-desc">Find the final price after a discount, calculate what % was saved, or add GST/tax to any amount. 3 modes in one tool.</div>
-          <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Discount %</span><span class="btc-tag">Tax/GST</span></div>
-        </div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/inheritance-calc.html" class="big-tool-card">
+      <a href="tools/inheritance-calc-advanced.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#1b5e20,#43a047)">☪️</div>
         <div class="btc-body">
           <div class="btc-name">Islamic Inheritance Calculator</div>
-          <div class="btc-desc">Calculate Warasat Intikal — Sharia-compliant estate distribution among mother, brothers, and sisters per Surah An-Nisa 4:11 with a pie chart breakdown.</div>
+          <div class="btc-desc">Estimate faraid shares for spouses, parents, children, grandparents, and siblings, including Hajb, Aul, and Radd adjustments.</div>
           <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Islamic Law</span><span class="btc-tag">Faraidh</span></div>
         </div>
         <span class="btc-arrow">→</span>
@@ -407,16 +374,6 @@
   <div class="category-section" id="cat-utils-pdf">
     <h2 class="category-title">Free PDF Utilities &amp; Generators</h2>
     <div class="big-tools-grid">
-      <a href="tools/rotate-pdf.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#5e35b1,#7e57c2)">🔄</div>
-        <div class="btc-body"><div class="btc-name">Rotate PDF</div><div class="btc-desc">Turn all PDF pages by 90, 180, or 270 degrees. Fix sideways scans.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Rotate</span></div></div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/reorder-pdf.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#c62828,#ef5350)">🔀</div>
-        <div class="btc-body"><div class="btc-name">Reorder PDF</div><div class="btc-desc">Drag PDF pages into any order, then download the rearranged file.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Reorder</span></div></div>
-        <span class="btc-arrow">→</span>
-      </a>
       <a href="tools/unlock-pdf.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">🔓</div>
         <div class="btc-body"><div class="btc-name">Unlock PDF</div><div class="btc-desc">Remove printing, copying, and editing restrictions from a PDF.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Unlock</span></div></div>
@@ -435,16 +392,6 @@
       <a href="tools/searchable-pdf.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div>
         <div class="btc-body"><div class="btc-name">Searchable PDF</div><div class="btc-desc">Turn a scanned image into a PDF with a searchable OCR text layer.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">OCR</span></div></div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/qr-generator.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#00897b,#26a69a)">🔗</div>
-        <div class="btc-body"><div class="btc-name">QR Code Generator</div><div class="btc-desc">Create a QR code for any link or text and download it as a PNG.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">QR Code</span></div></div>
-        <span class="btc-arrow">→</span>
-      </a>
-      <a href="tools/barcode-generator.html" class="big-tool-card">
-        <div class="btc-icon" style="background:linear-gradient(135deg,#455a64,#78909c)">🔢</div>
-        <div class="btc-body"><div class="btc-name">Barcode Generator</div><div class="btc-desc">Create CODE128, EAN-13, UPC barcodes and download as SVG.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Barcode</span></div></div>
         <span class="btc-arrow">→</span>
       </a>
     </div>
@@ -471,7 +418,7 @@
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item" onclick="window.location.href='scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button><button class="mob-nav-item" onclick="openAuth()"><span class="mni">👤</span><span>Account</span></button>
@@ -517,7 +464,6 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="js/app.js?v=20260619b"></script>
-<script src="js/particles.js?v=20260616c"></script>
 <script>
 // Tool search filter — hides non-matching cards, empty category sections, and shows a no-results note.
 (function(){

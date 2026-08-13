@@ -184,7 +184,7 @@
 <canvas id="particleCanvas"></canvas>
 
 <header class="header" role="banner">
-  <a href="../index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
       <rect width="40" height="40" rx="10" fill="url(#lbg)"/>
@@ -201,9 +201,9 @@
     <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
   </a>
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="../index.html"      class="nav-item">Home</a>
+    <a href="/"      class="nav-item">Home</a>
     <a href="../tools.html"      class="nav-item">Tools</a>
-    <a href="index.html"         class="nav-item active">Blog</a>
+    <a href="/"         class="nav-item active">Blog</a>
     <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
       Legal <span class="nav-chevron">▾</span>
       <div class="nav-dropdown legal" role="menu">
@@ -227,9 +227,9 @@
 
 <!-- Mobile nav drawer -->
 <div class="mobile-nav-drawer" id="mobileNavDrawer">
-  <a href="../index.html"  class="mnd-link">🏠 Home</a>
+  <a href="/"  class="mnd-link">🏠 Home</a>
   <a href="../tools.html"  class="mnd-link">🛠️ All Tools</a>
-  <a href="index.html"     class="mnd-link active">📝 Blog</a>
+  <a href="/"     class="mnd-link active">📝 Blog</a>
   <a href="../about.html"  class="mnd-link">🏢 About</a>
   <a href="../privacy.html" class="mnd-link">🔒 Privacy</a>
   <a href="../contact.html" class="mnd-link">📬 Contact</a>
@@ -245,7 +245,7 @@
 <div style="max-width:960px;margin:0 auto;padding:36px 24px 60px" class="blog-content-layer">
 
   <nav style="font-size:12px;color:var(--text-3);margin-bottom:24px">
-    <a href="../index.html" style="color:var(--text-3)">Home</a> ›
+    <a href="/" style="color:var(--text-3)">Home</a> ›
     <span>Blog</span>
   </nav>
 
@@ -264,237 +264,28 @@
     <button class="bcat-btn" onclick="filterBlog('productivity')">Productivity</button>
   </div>
 
-  <!-- Featured article — with structured image container -->
-  <article class="blog-feat-card" onclick="location.href='document-digitization-guide.html'"
-           data-cat="scanning" aria-label="Document Digitization Best Practices article">
-    <div class="bfc-visual" role="img" aria-label="Document digitization concept — scanner capturing paper documents into digital format">
-      <span aria-hidden="true" style="z-index:1;position:relative">📄</span>
-      <!-- Structured image block for SEO -->
-      <figure style="position:absolute;inset:0;margin:0;overflow:hidden">
-        <img src="/images/blog-digitization.svg" alt="Document digitization process — scanning physical papers to create a searchable digital archive" style="width:100%;height:100%;object-fit:cover" loading="eager">
-        <figcaption style="display:none">Document digitization process — scanning physical papers to create a searchable digital archive</figcaption>
-      </figure>
-    </div>
-    <div class="bfc-body">
-      <div class="bfc-tag">⭐ Featured · Document Scanning</div>
-      <h2 class="bfc-title">Document Digitization Best Practices: The Complete 2026 Guide</h2>
-      <p class="bfc-excerpt">Learn how to digitize physical documents correctly — from choosing the right scan resolution to organizing your digital archive for long-term access. Covers <a href="../scanner.html" onclick="event.stopPropagation()" style="color:var(--primary)">AI-powered scanning</a>, PDF optimization, and <a href="https://en.wikipedia.org/wiki/Document_management_system" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">document management systems</a>.</p>
-      <div class="bfc-meta">
-        <span>📅 May 20, 2026</span>
-        <span>⏱ 8 min read</span>
-      </div>
-      <a href="document-digitization-guide.html" class="bfc-read-btn">Read Article →</a>
-    </div>
-  </article>
-
-  <!-- Two-column layout: articles + sidebar -->
-  <div style="display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start">
-    <!-- Articles column -->
+  <!-- Retained, distinct articles after the content-consolidation audit -->
+  <div class="blog-layout">
     <div>
-      <h2 style="font-size:16px;font-weight:800;margin-bottom:18px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px">Latest Articles</h2>
-      <div class="blog-secondary-grid" style="grid-template-columns:1fr 1fr">
-
-        <article class="blog-card" onclick="location.href='islamic-inheritance-calculator-guide.html'" data-cat="calculators"
-                 aria-label="Islamic Inheritance Calculator guide article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#1b5e20,#66bb6a);margin:0"
-                  aria-label="Islamic inheritance shares and estate distribution documents">
-            <img src="/images/blog-paperless.svg" alt="Calculating Islamic inheritance shares (warasat / faraid) for an estate" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">Calculators</div>
-            <h3 class="bc-title">Islamic Inheritance in Pakistan: Heir Shares &amp; How to Calculate</h3>
-            <p class="bc-excerpt">Warasat / faraid explained — order of distribution, each heir's Quranic share, a worked example, and the free <a href="../tools/inheritance-calc.html" onclick="event.stopPropagation()" style="color:var(--primary)">inheritance calculator</a>.</p>
-            <div class="bc-meta">June 5, 2026 · 11 min read</div>
-            <a href="islamic-inheritance-calculator-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='scan-cnic-documents-pdf-pakistan.html'" data-cat="scanning"
-                 aria-label="Scan CNIC and Documents to PDF article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="Scanning a CNIC and documents into a clean PDF on a phone">
-            <img src="/images/blog-digitization.svg" alt="Scanning a CNIC and documents to PDF on a phone in Pakistan" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">Document Scanning</div>
-            <h3 class="bc-title">How to Scan Your CNIC &amp; Documents to PDF on Your Phone</h3>
-            <p class="bc-excerpt">For jobs, admissions &amp; online forms in Pakistan — make a clean, accepted PDF scan with the free <a href="../scanner.html" onclick="event.stopPropagation()" style="color:var(--primary)">document scanner</a>.</p>
-            <div class="bc-meta">June 5, 2026 · 6 min read</div>
-            <a href="scan-cnic-documents-pdf-pakistan.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='split-pdf-guide.html'" data-cat="pdf"
-                 aria-label="Split a PDF into Separate Files article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="A single PDF being split into separate page files">
-            <img src="/images/blog-pdf-workflow.svg" alt="Splitting a PDF into separate files by page range" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">How to Split a PDF into Separate Files</h3>
-            <p class="bc-excerpt">Extract a page range, single pages, or break a big file apart with the free <a href="../tools/split-pdf.html" onclick="event.stopPropagation()" style="color:var(--primary)">Split PDF</a> tool.</p>
-            <div class="bc-meta">June 5, 2026 · 5 min read</div>
-            <a href="split-pdf-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='pdf-to-jpg-guide.html'" data-cat="pdf"
-                 aria-label="Convert PDF to JPG article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="A PDF being converted into separate JPG images">
-            <img src="/images/blog-jpg-to-pdf.svg" alt="Converting each PDF page into a JPG image" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">How to Convert PDF to JPG (Each Page as an Image)</h3>
-            <p class="bc-excerpt">Turn every page into a shareable JPG for WhatsApp, slides, and social with <a href="../tools/pdf-to-img.html" onclick="event.stopPropagation()" style="color:var(--primary)">PDF to JPG</a>.</p>
-            <div class="bc-meta">June 5, 2026 · 5 min read</div>
-            <a href="pdf-to-jpg-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='merge-pdf-without-losing-quality.html'" data-cat="pdf"
-                 aria-label="Merge PDF Without Losing Quality article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="Multiple PDF files combining into one document without quality loss">
-            <img src="/images/blog-pdf-workflow.svg" alt="Merging multiple PDF files into one without losing quality" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">How to Merge PDF Files Without Losing Quality</h3>
-            <p class="bc-excerpt">Combine PDFs, pick exact pages, and reorder — without any quality loss. Uses <a href="../tools/merge-pdf.html" onclick="event.stopPropagation()" style="color:var(--primary)">PDFdukan's Merge PDF</a> tool.</p>
-            <div class="bc-meta">June 5, 2026 · 6 min read</div>
-            <a href="merge-pdf-without-losing-quality.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='compress-pdf-reduce-size.html'" data-cat="pdf"
-                 aria-label="Compress a PDF to Reduce File Size article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="A large PDF being compressed to a much smaller file size">
-            <img src="/images/blog-compress.svg" alt="Compressing a PDF to reduce its file size for email and uploads" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">How to Compress a PDF to Reduce File Size</h3>
-            <p class="bc-excerpt">Beat email and upload limits — shrink a PDF without wrecking quality using <a href="../tools/compress-pdf.html" onclick="event.stopPropagation()" style="color:var(--primary)">our free PDF compressor</a>.</p>
-            <div class="bc-meta">June 5, 2026 · 5 min read</div>
-            <a href="compress-pdf-reduce-size.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='pdf-to-word-guide.html'" data-cat="pdf"
-                 aria-label="Convert PDF to Word Editable article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="A PDF being converted into an editable Word document">
-            <img src="/images/blog-digitization.svg" alt="Converting a PDF into an editable Word document for free" style="height:130px;width:auto" loading="lazy">
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">How to Convert PDF to Word (Editable) for Free</h3>
-            <p class="bc-excerpt">Edit a PDF by turning it into Word — plus the OCR trick for scanned files. Uses <a href="../tools/pdf-to-word.html" onclick="event.stopPropagation()" style="color:var(--primary)">PDF to Word</a>.</p>
-            <div class="bc-meta">June 5, 2026 · 6 min read</div>
-            <a href="pdf-to-word-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='pdf-workflows.html'" data-cat="pdf"
-                 aria-label="Maximizing PDF Workflows article">
-          <!-- Image container 1: PDF workflow visual -->
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="PDF merge and split workflow diagram showing multiple documents combining into one optimized file">
-            <img src="/images/blog-pdf-workflow.svg" alt="PDF workflow showing merge, split and organize steps with connected document icons" style="height:130px;width:auto" loading="lazy">
-            <figcaption style="display:none">PDF merge and split workflow diagram — multiple PDFs being combined and organized using PDFdukan tools</figcaption>
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">PDF Tools</div>
-            <h3 class="bc-title">Maximizing PDF Workflows: Merge, Split &amp; Organize Like a Pro</h3>
-            <p class="bc-excerpt">Professional techniques for merging specific pages, splitting large files, and keeping documents organized. Uses <a href="../tools/merge-pdf.html" onclick="event.stopPropagation()" style="color:var(--primary)">PDFdukan's Merge PDF</a> and <a href="https://en.wikipedia.org/wiki/PDF" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">PDF standard</a> best practices.</p>
-            <div class="bc-meta">May 22, 2026 · 6 min read</div>
-            <a href="pdf-workflows.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='how-ocr-works.html'" data-cat="ocr"
-                 aria-label="How OCR Works in 2026 article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="OCR text extraction process — converting a handwritten note or printed receipt into editable digital text">
-            <img src="/images/blog-ocr.svg" alt="How OCR works — converting image text to editable digital text using AI recognition" style="height:130px;width:auto" loading="lazy">
-            <figcaption style="display:none">OCR text extraction process using Tesseract.js — converting scanned document image to editable text</figcaption>
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">OCR &amp; Text Extraction</div>
-            <h3 class="bc-title">How OCR Works in 2026: Extract Text from Any Image</h3>
-            <p class="bc-excerpt">From handwritten notes to typed receipts — learn how modern <a href="../tools/ocr.html" onclick="event.stopPropagation()" style="color:var(--primary)">OCR engines</a> extract text with high accuracy using <a href="https://tesseract-ocr.github.io/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">Tesseract</a>.</p>
-            <div class="bc-meta">May 23, 2026 · 5 min read</div>
-            <a href="how-ocr-works.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='compress-images-guide.html'" data-cat="compress"
-                 aria-label="Image Compression Guide article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="Side-by-side image compression comparison showing original vs compressed file size reduction">
-            <img src="/images/blog-compress.svg" alt="Image compression comparison — large original file versus compressed smaller file without quality loss" style="height:130px;width:auto" loading="lazy">
-            <figcaption style="display:none">Side-by-side image compression showing original 3.2MB file reduced to 220KB without visible quality loss</figcaption>
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">Image Compression</div>
-            <h3 class="bc-title">Compress Images Without Losing Quality: The Complete Guide</h3>
-            <p class="bc-excerpt">Target KB limits, <a href="https://developers.google.com/speed/webp" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">WebP conversion</a>, social media presets — master every technique with <a href="../tools/compress.html" onclick="event.stopPropagation()" style="color:var(--primary)">our free compressor</a>.</p>
-            <div class="bc-meta">May 24, 2026 · 4 min read</div>
-            <a href="compress-images-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='going-paperless-guide.html'" data-cat="productivity"
-                 aria-label="Going Paperless Guide article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"
-                  aria-label="Paperless office setup showing a laptop with digital documents replacing physical paper files">
-            <img src="/images/blog-paperless.svg" alt="Going paperless — transforming physical document filing system to organized digital cloud storage" style="height:130px;width:auto" loading="lazy">
-            <figcaption style="display:none">Modern paperless office transformation — physical paper files replaced by digital cloud storage system</figcaption>
-          </figure>
-          <div class="bc-body">
-            <div class="bc-tag">Productivity</div>
-            <h3 class="bc-title">Going Paperless in 2026: A Step-by-Step Office Action Plan</h3>
-            <p class="bc-excerpt">Practical checklist for converting your office to digital — <a href="../scanner.html" onclick="event.stopPropagation()" style="color:var(--primary)">scanning</a>, filing, and retrieval workflows explained. Endorsed by <a href="https://www.iso.org/standard/61085.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="color:var(--primary)">ISO document standards</a>.</p>
-            <div class="bc-meta">May 25, 2026 · 7 min read</div>
-            <a href="going-paperless-guide.html" class="bc-read-more">Read Article →</a>
-          </div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='scan-documents-phone.html'" data-cat="scanning" aria-label="Scan documents on your phone article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-digitization.svg" alt="Scanning documents on a phone" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">Scanning</div><h3 class="bc-title">How to Scan Documents on Your Phone for Free</h3><p class="bc-excerpt">Turn your phone into a free scanner — steps, settings, and tips for crisp PDF scans.</p><div class="bc-meta">June 2, 2026 · 6 min read</div><a href="scan-documents-phone.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-        <article class="blog-card" onclick="location.href='jpg-to-pdf-guide.html'" data-cat="pdf" aria-label="Convert JPG to PDF article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-jpg-to-pdf.svg" alt="Convert JPG images to a single PDF file for free in your browser" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">PDF</div><h3 class="bc-title">How to Convert JPG to PDF Free — No App Needed</h3><p class="bc-excerpt">Convert images to clean PDFs in your browser, plus when to use JPG vs PDF.</p><div class="bc-meta">June 2, 2026 · 5 min read</div><a href="jpg-to-pdf-guide.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-        <article class="blog-card" onclick="location.href='pdf-vs-word.html'" data-cat="pdf" aria-label="PDF vs Word article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-pdf-workflow.svg" alt="PDF vs Word comparison" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">PDF</div><h3 class="bc-title">PDF vs Word: When to Use Which Format?</h3><p class="bc-excerpt">A simple guide to picking the right format — and converting between them free.</p><div class="bc-meta">June 2, 2026 · 5 min read</div><a href="pdf-vs-word.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-        <article class="blog-card" onclick="location.href='best-free-pdf-tools.html'" data-cat="pdf" aria-label="Best free PDF tools article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/merge-pdf.svg" alt="Best free PDF tools" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">Tools</div><h3 class="bc-title">Best Free Online PDF Tools in 2026 (No Signup)</h3><p class="bc-excerpt">The free PDF tools worth bookmarking — scan, convert, merge, compress, OCR.</p><div class="bc-meta">June 2, 2026 · 6 min read</div><a href="best-free-pdf-tools.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-        <article class="blog-card" onclick="location.href='document-scanning-tips.html'" data-cat="scanning" aria-label="Document scanning tips article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-ocr.svg" alt="Document scanning tips" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">Scanning</div><h3 class="bc-title">10 Tips for Perfect Document Scans Every Time</h3><p class="bc-excerpt">Simple habits for sharp, clean scans — lighting, angle, DPI, and cleanup.</p><div class="bc-meta">June 2, 2026 · 6 min read</div><a href="document-scanning-tips.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='maximizing-pdf-workflows.html'" data-cat="pdf" aria-label="Maximize PDF workflows article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-pdf-workflow.svg" alt="Maximizing PDF workflows — merge, split and organize documents" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">PDF Tools</div><h3 class="bc-title">Maximize PDF Workflows: Merge, Split &amp; Organize</h3><p class="bc-excerpt">Professional techniques for merging specific pages, splitting large files, and keeping documents organized efficiently.</p><div class="bc-meta">May 22, 2026 · 6 min read</div><a href="maximizing-pdf-workflows.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-
-        <article class="blog-card" onclick="location.href='image-compression-guide.html'" data-cat="compress" aria-label="Image compression guide article">
-          <figure class="bc-img" style="background:linear-gradient(135deg,#1a1a2e,#2a2036,#ff6333);margin:0"><img src="/images/blog-compress.svg" alt="Image compression guide — target KB limits and WebP conversion" style="height:130px;width:auto" loading="lazy"></figure>
-          <div class="bc-body"><div class="bc-tag">Image Compression</div><h3 class="bc-title">Image Compression Guide 2026 — Every Technique</h3><p class="bc-excerpt">Target KB limits, WebP conversion, social media presets, batch compression — lossless vs lossy explained.</p><div class="bc-meta">May 24, 2026 · 4 min read</div><a href="image-compression-guide.html" class="bc-read-more">Read Article →</a></div>
-        </article>
-
+      <a class="featured-post" href="document-digitization-guide.html">
+        <div class="fp-content"><div class="bc-tag">Featured Guide</div><h2>Document Digitization Best Practices</h2><p>A complete, practical workflow for scanning, organizing, securing, and maintaining digital documents.</p><span class="bc-read-more">Read the guide →</span></div>
+      </a>
+      <div class="blog-grid" id="blogGrid">
+        <article class="blog-card" data-cat="ocr"><div class="bc-body"><div class="bc-tag">OCR</div><h3 class="bc-title">How OCR Works</h3><p class="bc-excerpt">Understand text recognition and improve results from scanned documents.</p><a href="how-ocr-works.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="scanning"><div class="bc-body"><div class="bc-tag">Scanning</div><h3 class="bc-title">Scan Documents on Your Phone</h3><p class="bc-excerpt">A practical workflow for sharp, readable mobile scans.</p><a href="scan-documents-phone.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="scanning"><div class="bc-body"><div class="bc-tag">Pakistan</div><h3 class="bc-title">Scan CNIC and Documents to PDF</h3><p class="bc-excerpt">Privacy-conscious guidance for Pakistani identity documents.</p><a href="scan-cnic-documents-pdf-pakistan.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="compress"><div class="bc-body"><div class="bc-tag">Compression</div><h3 class="bc-title">Compress Images Without Losing Quality</h3><p class="bc-excerpt">Choose formats, dimensions, and quality settings intelligently.</p><a href="compress-images-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">PDF Tools</div><h3 class="bc-title">PDF Workflows</h3><p class="bc-excerpt">Merge, split, organize, and share PDFs efficiently.</p><a href="pdf-workflows.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">Conversion</div><h3 class="bc-title">JPG to PDF Guide</h3><p class="bc-excerpt">Turn one or many images into a clean PDF.</p><a href="jpg-to-pdf-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">Conversion</div><h3 class="bc-title">PDF to JPG Guide</h3><p class="bc-excerpt">Export PDF pages as high-quality images.</p><a href="pdf-to-jpg-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">Conversion</div><h3 class="bc-title">PDF to Word Guide</h3><p class="bc-excerpt">Understand what is and is not editable after conversion.</p><a href="pdf-to-word-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="compress"><div class="bc-body"><div class="bc-tag">Compression</div><h3 class="bc-title">Reduce PDF File Size</h3><p class="bc-excerpt">Compress PDFs while keeping important text readable.</p><a href="compress-pdf-reduce-size.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">PDF Tools</div><h3 class="bc-title">Merge PDFs Without Losing Quality</h3><p class="bc-excerpt">Combine documents without unnecessary re-encoding.</p><a href="merge-pdf-without-losing-quality.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">PDF Tools</div><h3 class="bc-title">Split a PDF into Separate Files</h3><p class="bc-excerpt">Choose page ranges and create smaller documents.</p><a href="split-pdf-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="productivity"><div class="bc-body"><div class="bc-tag">Productivity</div><h3 class="bc-title">Going Paperless</h3><p class="bc-excerpt">Build a maintainable paperless workflow step by step.</p><a href="going-paperless-guide.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">Formats</div><h3 class="bc-title">PDF vs Word</h3><p class="bc-excerpt">Choose the right format for editing, sharing, and archiving.</p><a href="pdf-vs-word.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="pdf"><div class="bc-body"><div class="bc-tag">Roundup</div><h3 class="bc-title">Best Free PDF Tools</h3><p class="bc-excerpt">A focused overview of the site's core document tools.</p><a href="best-free-pdf-tools.html" class="bc-read-more">Read Article →</a></div></article>
+        <article class="blog-card" data-cat="productivity"><div class="bc-body"><div class="bc-tag">Islamic Finance</div><h3 class="bc-title">Islamic Inheritance Calculator Guide</h3><p class="bc-excerpt">Understand faraid concepts before using the calculator.</p><a href="islamic-inheritance-calculator-guide.html" class="bc-read-more">Read Article →</a></div></article>
       </div>
     </div>
 
@@ -508,7 +299,6 @@
           <a href="../tools/merge-pdf.html"  style="color:var(--primary);font-size:13px;font-weight:600">🔗 Merge PDF →</a>
           <a href="../tools/compress.html"   style="color:var(--primary);font-size:13px;font-weight:600">🗜️ Compress Image →</a>
           <a href="../tools/ocr.html"        style="color:var(--primary);font-size:13px;font-weight:600">🔤 OCR Text →</a>
-          <a href="../tools/bmi-calc.html"   style="color:var(--primary);font-size:13px;font-weight:600">⚖️ BMI Calculator →</a>
           <a href="../tools/pdf-to-word.html" style="color:var(--primary);font-size:13px;font-weight:600">📝 PDF to Word →</a>
         </div>
       </div>
@@ -533,13 +323,13 @@
 
   <section class="seo-section" style="margin-top:32px">
     <h2>About the PDFdukan Blog</h2>
-    <p class="lead">The PDFdukan Blog is your resource for practical guides on document management, digital productivity, and PDF best practices. Written by the team that built <a href="../scanner.html" style="color:var(--primary)">CamMaster</a> — we share real-world tips based on how people actually use document tools every day. All tools described are available free at <a href="../index.html" style="color:var(--primary)">pdfdukan.com</a>. For authoritative references, we link to <a href="https://www.iso.org/home.html" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">ISO standards</a> and <a href="https://developers.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Google developer resources</a>.</p>
+    <p class="lead">The PDFdukan Blog is your resource for practical guides on document management, digital productivity, and PDF best practices. Written by the team that built <a href="../scanner.html" style="color:var(--primary)">CamMaster</a> — we share real-world tips based on how people actually use document tools every day. All tools described are available free at <a href="/" style="color:var(--primary)">pdfdukan.com</a>. For authoritative references, we link to <a href="https://www.iso.org/home.html" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">ISO standards</a> and <a href="https://developers.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--primary)">Google developer resources</a>.</p>
   </section>
 
 </div>
 
 <nav class="mobile-nav"><div class="mob-nav-items">
-  <button class="mob-nav-item" onclick="location.href='../index.html'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
   <button class="mob-nav-item" onclick="location.href='../tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
 </div></nav>
@@ -579,7 +369,6 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="../js/i18n.js?v=20260616c"></script>
 <script src="../js/app.js?v=20260619b"></script>
-<script src="../js/particles.js?v=20260616c"></script>
 <script>
 function filterBlog(cat) {
   document.querySelectorAll('.bcat-btn').forEach(b => b.classList.remove('active'));
