@@ -55,9 +55,21 @@
   })();
 </script>
 
-<link rel="stylesheet" href="css/style.css?v=20260814b">
+<link rel="stylesheet" href="css/style.css?v=20260814c">
 <style>
 .scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
+.scanner-shell{background:linear-gradient(180deg,var(--card),var(--bg-2));border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
+.scanner-stage-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0 0 16px}
+.scanner-stage-copy h2{font-size:18px;margin:0 0 4px}.scanner-stage-copy p{font-size:12px;color:var(--text-3);margin:0}
+.scanner-kicker{display:inline-flex;color:var(--primary);background:var(--primary-soft);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;margin-bottom:8px}
+.scanner-primary-row{display:flex;gap:8px;margin-top:14px}.scanner-primary-row .btn-primary{flex:1}
+.scanner-secondary-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.scanner-trust-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.scanner-trust-item{display:flex;align-items:center;gap:10px;background:var(--card-2);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:left;font-size:11px;color:var(--text-2)}
+.scanner-trust-item strong{display:block;color:var(--text);font-size:12px;margin-bottom:2px}
+.scanner-action-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:12px 14px;background:var(--card-2);border:1px solid var(--border);border-radius:14px}
+.scanner-action-bar p{margin:0;font-size:12px;color:var(--text-3)}
+.scanner-action-buttons{display:flex;gap:8px;flex-wrap:wrap}
 .cv-badge { display: none !important; }
 .cv-badge.ready { display: none !important; }
 
@@ -115,6 +127,12 @@
 }
 @media (max-width: 640px) {
   .scanner-wrap { padding: 16px 12px 90px; }
+  .scanner-shell{padding:10px;border-radius:16px}
+  .scanner-stage-head{display:block}.scanner-kicker{margin-bottom:6px}
+  .scanner-steps{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}.scanner-steps::-webkit-scrollbar{display:none}.scanner-step{flex:0 0 auto;min-width:92px;scroll-snap-align:start}
+  .scanner-trust-row{grid-template-columns:1fr}
+  .scanner-action-bar{align-items:stretch;flex-direction:column}.scanner-action-buttons{display:grid;grid-template-columns:1fr 1fr}.scanner-action-buttons .btn{width:100%}
+  .scanner-primary-row{position:sticky;bottom:76px;z-index:30;background:var(--card);padding:8px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg)}
 }
 </style>
 <meta name="theme-color" content="#ff6333">
@@ -287,22 +305,24 @@
 .scan-hero .sg-step{box-shadow:0 2px 8px rgba(0,0,0,.05)}
 </style>
 <div class="scanner-wrap">
+  <div class="scanner-shell">
 
   <!-- Step Indicator -->
   <div class="scanner-steps" role="navigation" aria-label="Scanner steps">
-    <div class="scanner-step active" data-step="upload">📤 Upload</div>
-    <div class="scanner-step" data-step="crop">✂️ Crop</div>
-    <div class="scanner-step" data-step="filter">🎨 Filter</div>
-    <div class="scanner-step" data-step="pages">📄 Pages</div>
-    <div class="scanner-step" data-step="export">📥 Export</div>
+    <div class="scanner-step active" data-step="upload">1. Add</div>
+    <div class="scanner-step" data-step="crop">2. Crop</div>
+    <div class="scanner-step" data-step="filter">3. Enhance</div>
+    <div class="scanner-step" data-step="pages">4. Organize</div>
+    <div class="scanner-step" data-step="export">5. Export</div>
   </div>
 
   <!-- ======== SCREEN: UPLOAD ======== -->
   <div class="scanner-screen active" id="screen-upload">
     <div class="scanner-upload">
+      <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 1 of 5</span><h2>Add your document</h2><p>Take or choose clear photos. You can add more pages later.</p></div></div>
       <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Upload document">
         <div class="uz-icon">📁</div>
-        <h2 class="uz-title">Drop documents here or click to upload</h2>
+        <h3 class="uz-title">Drop documents here or choose a source</h3>
         <p class="uz-hint">Supports JPG, PNG, WEBP, PDF — multiple files at once</p>
         <div class="uz-actions">
           <button class="action-btn primary" onclick="event.stopPropagation();document.getElementById('fileInputScanner').click()">
@@ -315,23 +335,7 @@
         <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">🔒 All processing is local — files never leave your device</p>
       </div>
 
-      <div style="text-align:center;margin:20px auto 0;max-width:460px">
-        <img src="/images/hero-scanner.svg"
-             alt="CamMaster online document scanner with AI edge detection and auto-crop"
-             width="460" height="276"
-             loading="lazy"
-             style="width:100%;max-width:460px;height:auto;border-radius:12px;opacity:.95">
-      </div>
-
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-top:16px">
-        <p style="font-size:13px;color:var(--text-3);margin-bottom:10px;font-weight:600">📋 Quick Tips</p>
-        <ul style="font-size:12px;color:var(--text-3);line-height:2;padding-left:16px">
-          <li>For best results, place document on a contrasting background</li>
-          <li>Good lighting reduces shadows — try near a window</li>
-          <li>Upload multiple images to create a multi-page PDF</li>
-          <li>Use <strong>Magic Pro</strong> filter to remove shadows from scanned docs</li>
-        </ul>
-      </div>
+      <div class="scanner-trust-row"><div class="scanner-trust-item">🔒 <strong>Private on-device</strong></div><div class="scanner-trust-item">✂️ <strong>Smart edge crop</strong></div><div class="scanner-trust-item">📄 <strong>Multi-page PDF</strong></div></div>
 
       <div class="ad-slot" style="margin-top:16px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
     </div>
@@ -339,6 +343,7 @@
 
   <!-- ======== SCREEN: CROP ======== -->
   <div class="scanner-screen" id="screen-crop">
+    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 2 of 5</span><h2>Confirm document edges</h2><p>Move the handles only when automatic detection needs correction.</p></div></div>
     <div class="crop-layout">
       <div class="crop-canvas-outer">
         <canvas id="cropCanvas"></canvas>
@@ -347,7 +352,7 @@
         <div class="crop-info">Drag the 4 <strong>corner handles</strong> to adjust, or <strong>edge handles</strong> to move a full edge</div>
         <div id="detectionBadge" class="detect-badge" style="display:none"></div>
         <!-- Row 1: secondary actions -->
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+        <div class="scanner-secondary-row">
           <button class="btn btn-secondary btn-sm" id="btnBackToUpload" title="Back to upload">← Back</button>
           <button class="btn btn-secondary btn-sm" id="btnResetCrop" title="Re-detect edges">↺ Reset</button>
           <button class="btn btn-secondary btn-sm" id="btnFitCrop" title="Full page">⛶ Fit</button>
@@ -356,7 +361,7 @@
           <button class="btn btn-secondary btn-sm" id="btnSkipCrop" title="Skip crop">Skip →</button>
         </div>
         <!-- Row 2: primary action — full width on mobile -->
-        <div style="margin-top:8px">
+        <div class="scanner-primary-row">
           <button class="btn btn-primary" id="btnApplyCrop" style="width:100%;font-size:15px;padding:12px">✓ Apply Crop &amp; Continue →</button>
         </div>
       </div>
@@ -365,6 +370,7 @@
 
   <!-- ======== SCREEN: FILTER ======== -->
   <div class="scanner-screen" id="screen-filter">
+    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 3 of 5</span><h2>Enhance readability</h2><p>Pick a preset first. Fine-tune only if the document needs it.</p></div></div>
     <div class="filter-layout">
 
       <!-- Left: Preview -->
@@ -377,7 +383,7 @@
           <div class="compare-box"><div class="cb-label">Processed</div><canvas id="procMini"></canvas></div>
         </div>
         <!-- Back + Next row always visible below preview -->
-        <div style="display:flex;gap:8px;margin-top:14px">
+        <div class="scanner-primary-row">
           <button class="btn btn-secondary" id="btnBackToCropMain" style="flex-shrink:0">← Back</button>
           <button class="btn btn-primary btn-lg" id="btnAddPageMain" style="flex:1;font-size:15px">✓ Done — Next →</button>
         </div>
@@ -419,7 +425,7 @@
           <button class="btn btn-primary" id="btnBatchAll" style="width:100%;font-size:12px">⚡ Apply to All Remaining &amp; Done</button>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+        <div style="display:none" aria-hidden="true">
           <button class="btn btn-secondary btn-sm" id="btnBackToCrop">← Back to Crop</button>
           <button class="btn btn-primary" id="btnAddPage">✓ Add This Page →</button>
         </div>
@@ -429,20 +435,21 @@
 
   <!-- ======== SCREEN: PAGES ======== -->
   <div class="scanner-screen pages-screen" id="screen-pages">
-    <div class="pages-screen-header">
-      <h2>📄 Document Pages</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 4 of 5</span><h2>Organize pages</h2><p>Drag to reorder, tap a page to edit, or add more scans.</p></div></div>
+    <div class="scanner-action-bar">
+      <p><strong>Tip:</strong> Drag pages to reorder them, or tap a page to edit it.</p>
+      <div class="scanner-action-buttons">
         <button class="btn btn-secondary" id="btnAddMore">+ Add More</button>
         <button class="btn btn-primary" id="btnGoExport">Export PDF →</button>
       </div>
     </div>
-    <p style="font-size:12px;color:var(--text-3);margin-bottom:16px">Drag to reorder pages · Click to edit filter · Hover to delete</p>
     <div class="pages-grid" id="pagesGrid"></div>
     <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
   </div>
 
   <!-- ======== SCREEN: EXPORT ======== -->
   <div class="scanner-screen" id="screen-export">
+    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 5 of 5</span><h2>Choose your output</h2><p>PDF is best for sharing; JPG or ZIP is best for image workflows.</p></div></div>
     <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
       <button class="btn btn-secondary" id="btnBackToPages">← Back to Pages</button>
       <span style="font-size:14px;color:var(--text-3)">Ready to export — <strong id="exportPageCount">0 pages</strong></span>
@@ -499,6 +506,7 @@
     </div>
   </div>
 
+</div><!-- /scanner-shell -->
 </div><!-- /scanner-wrap -->
 
 <!-- MOBILE NAV -->

@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="stylesheet" href="../css/style.css?v=20260814b">
+<link rel="stylesheet" href="../css/style.css?v=20260814c">
 <title>Edit, Annotate &amp; Sign PDF Online Free | PDFdukan</title>
 <meta name="description" content="Visually replace selectable PDF text lines, add text boxes, images, links, shapes, signatures, highlights and drawings privately in your browser. Output is flattened; original PDF text objects are not structurally rewritten.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -239,14 +239,19 @@ body{overflow-y:auto}
   #btn-find-replace{grid-area:find;justify-self:start}
   #pe-zoom-wrap{grid-area:zoom;justify-self:end}
   #pe-page-info,.hdr-spacer{display:none}
-  #pe-toolbar{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));height:auto;min-height:88px;padding:3px 5px;overflow:visible;gap:1px}
-  .tool-btn{min-width:0;width:100%;height:40px;padding:0 2px;font-size:9px}
+  #pe-toolbar{display:flex;height:auto;min-height:52px;padding:4px 6px;overflow-x:auto;overflow-y:hidden;gap:3px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .tool-btn{min-width:66px;width:66px;height:44px;padding:0 4px;font-size:9px;scroll-snap-align:start;flex-shrink:0}
   .tool-sep{display:none}
   #pe-sub-toolbar{height:auto;min-height:42px;padding:6px 8px;flex-wrap:wrap;overflow:visible}
   #pe-canvas-col{padding:12px 8px}
+  #pe-workspace{min-width:0}
+  .page-wrapper{max-width:100%}
   #pe-drop-zone{min-height:220px;padding:22px 16px;max-width:100%}
   .dz-title{font-size:19px}
   #btn-export-pdf svg{display:none}
+  #pe-float-toolbar{left:8px!important;right:8px!important;max-width:calc(100vw - 16px);overflow-x:auto;transform:none!important}
+  #find-replace-modal{left:8px;right:8px;top:112px;width:auto}
+  #pe-toast{max-width:calc(100vw - 24px);white-space:normal;text-align:center}
 }
 
 /* ── NATIVE TEXT OVERLAY ─────────────────────────────────── */
@@ -2487,7 +2492,54 @@ function exportPDF(){
   });
 }
 
-function exportPage(outDoc, srcDoc, pageNum){
+function _pdfEditColor(value,fallback){
+  var rgb=PDFLib.rgb,v=String(value||fallback||'#000000').trim();
+  var m=v.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if(m){var h=m[1];if(h.length===3)h=h.split('').map(function(c){return c+c}).join('');return rgb(parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255)}
+  var r=v.match(/rgba?\(\s*(\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)/i);
+  return r?rgb(+r[1]/255,+r[2]/255,+r[3]/255):_pdfEditColor(fallback||'#000000','#000000');
+}
+function _pdfEditFont(outDoc,obj){
+  var family=String(obj&&obj.fontFamily||'').toLowerCase(),bold=!!(obj&&obj.bold),italic=!!(obj&&obj.italic);
+  var base=family.indexOf('times')>=0?'TimesRoman':family.indexOf('courier')>=0?'Courier':'Helvetica';
+  var key=base+(bold&&italic?'BoldOblique':bold?'Bold':italic?'Oblique':'');
+  return outDoc.embedFont(PDFLib.StandardFonts[key]||PDFLib.StandardFonts.Helvetica);
+}
+function _pdfEditImageBytes(src){return fetch(src).then(function(r){return r.arrayBuffer()}).then(function(ab){return new Uint8Array(ab)})}
+
+function exportPage(outDoc,srcDoc,pageNum){
+  /* Copy the original PDF page so its text, lines and images remain sharp.
+     The previous JPEG-flattening exporter visibly degraded edited documents. */
+  return outDoc.copyPages(srcDoc,[pageNum-1]).then(function(copied){
+    var page=copied[0];outDoc.addPage(page);
+    var pageH=page.getHeight(),ratio=1/PE_STATE.scale,chain=Promise.resolve();
+    var edits=PE_STATE.nativeTextEdits[pageNum]||{};
+    Object.keys(edits).forEach(function(key){var edit=edits[key];if(!edit||!_nativeEditChanged(edit))return;
+      chain=chain.then(function(){var x=edit.origX!==undefined?edit.origX:edit.x,baseline=edit.origY!==undefined?edit.origY:edit.y,fs=edit.origFontSize||12;
+        var width=Math.max(edit.origWidth||edit.width||fs*String(edit.origText||'').length*.6,fs*1.5);
+        page.drawRectangle({x:x-2,y:baseline-fs*.28-2,width:width+4,height:fs*1.28+4,color:_pdfEditColor(edit.backgroundColor,'#ffffff')});
+        if(edit.deleted)return;
+        return _pdfEditFont(outDoc,edit).then(function(font){page.drawText(String(edit.newText!==undefined?edit.newText:edit.origText),{x:edit.x,y:edit.y-(edit.fontSize||fs)*.18,size:edit.fontSize||fs,font:font,color:_pdfEditColor(edit.color||edit.origColor,'#000000')})});
+      });
+    });
+    getPageObjects(pageNum).forEach(function(obj){chain=chain.then(function(){
+      var x=obj.x*ratio,w=obj.w*ratio,h=obj.h*ratio,y=pageH-(obj.y+obj.h)*ratio;
+      if(obj.type==='whiteout'){page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.color,'#ffffff')});return}
+      if(obj.type==='text'){var fs=(obj.fontSize||14)*ratio,lh=fs*(+(obj.lineHeight)||1.4);if(obj.highlight&&obj.highlight!=='transparent')page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.highlight,'#fff59d')});return _pdfEditFont(outDoc,obj).then(function(font){String(obj.text||'').split('\n').forEach(function(line,i){var ly=y+h-fs-i*lh;page.drawText(line,{x:x+6*ratio,y:ly,size:fs,font:font,color:_pdfEditColor(obj.color,'#000000')});if(obj.underline)page.drawLine({start:{x:x+6*ratio,y:ly-1},end:{x:x+6*ratio+font.widthOfTextAtSize(line,fs),y:ly-1},thickness:Math.max(.5,ratio),color:_pdfEditColor(obj.color,'#000000')})})})}
+      if(obj.type==='annotate'){page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.bgColor,'#fff176'),opacity:.75});return _pdfEditFont(outDoc,obj).then(function(font){String(obj.text||'').split('\n').forEach(function(line,i){page.drawText(line,{x:x+5*ratio,y:y+h-12*ratio-i*16*ratio,size:12*ratio,font:font,color:_pdfEditColor('#333333')})})})}
+      if(obj.type==='image'||obj.type==='signature'||obj.type==='draw'){if(!obj.src)return;return _pdfEditImageBytes(obj.src).then(function(bytes){return (/^data:image\/png/i.test(obj.src)?outDoc.embedPng(bytes):outDoc.embedJpg(bytes)).then(function(img){page.drawImage(img,{x:x,y:y,width:w,height:h})})})}
+      if(obj.type==='shape'){var color=_pdfEditColor(obj.stroke||obj.color||obj.strokeColor,'#ff6333'),th=Math.max(.7,(obj.strokeWidth||2)*ratio),shape=obj.shapeType||obj.shape||'rect';
+        if(shape==='line'||shape==='arrow'){page.drawLine({start:{x:x,y:y+h},end:{x:x+w,y:y},thickness:th,color:color});if(shape==='arrow'){page.drawLine({start:{x:x+w,y:y},end:{x:x+w-Math.min(w*.22,14),y:y+Math.min(h*.28,10)},thickness:th,color:color});page.drawLine({start:{x:x+w,y:y},end:{x:x+w-Math.min(w*.22,14),y:y-Math.min(h*.18,7)},thickness:th,color:color})}}
+        else if(shape==='circle'||shape==='ellipse')page.drawEllipse({x:x+w/2,y:y+h/2,xScale:w/2,yScale:h/2,borderColor:color,borderWidth:th});
+        else if(shape==='triangle'){page.drawLine({start:{x:x+w/2,y:y+h},end:{x:x,y:y},thickness:th,color:color});page.drawLine({start:{x:x,y:y},end:{x:x+w,y:y},thickness:th,color:color});page.drawLine({start:{x:x+w,y:y},end:{x:x+w/2,y:y+h},thickness:th,color:color})}
+        else page.drawRectangle({x:x,y:y,width:w,height:h,borderColor:color,borderWidth:th});return}
+      if(obj.type==='link')page.drawRectangle({x:x,y:y,width:w,height:h,borderColor:_pdfEditColor('#ff6333'),borderWidth:Math.max(.5,ratio),opacity:.12});
+    })});
+    return chain;
+  });
+}
+
+function exportPageRaster(outDoc, srcDoc, pageNum){
   return PE_STATE.pdfDoc.getPage(pageNum).then(function(pdfPage){
     var exportScale = 2;
     var vp1 = pdfPage.getViewport({scale:1});
