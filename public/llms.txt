@@ -26,7 +26,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
 - [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html): Rotate, reorder and delete PDF pages
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
-- [Annotate & Sign PDF](https://pdfdukan.com/tools/pdf-editor.html): Add annotations, text boxes, images, links, shapes and signatures; does not directly rewrite existing PDF text
+- [Edit, Annotate & Sign PDF](https://pdfdukan.com/tools/pdf-editor.html): Visually replace selectable text lines and add annotations, images, links, shapes and signatures; flattened output does not structurally rewrite PDF text objects
 - [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Estimate Islamic faraid inheritance shares
 
 ## OCR and Scanning

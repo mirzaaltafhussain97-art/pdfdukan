@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css?v=20260814b">
-<title>Annotate &amp; Sign PDF Online Free | PDFdukan</title>
-<meta name="description" content="Annotate and sign PDF files online. Add text boxes, images, links, shapes, signatures, highlights and drawings in your browser. Existing PDF text is not directly rewritten.">
+<title>Edit, Annotate &amp; Sign PDF Online Free | PDFdukan</title>
+<meta name="description" content="Visually replace selectable PDF text lines, add text boxes, images, links, shapes, signatures, highlights and drawings privately in your browser. Output is flattened; original PDF text objects are not structurally rewritten.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -17,8 +17,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-editor.html">
-<meta property="og:title" content="Annotate &amp; Sign PDF Online Free | PDFdukan">
-<meta property="og:description" content="Add annotations, text boxes, images, signatures, links and drawings to a PDF privately in your browser.">
+<meta property="og:title" content="Edit, Annotate &amp; Sign PDF Online Free | PDFdukan">
+<meta property="og:description" content="Visually replace selectable text lines and add annotations, signatures, links and drawings to a PDF privately in your browser.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,8 +26,8 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Annotate &amp; Sign PDF Online Free | PDFdukan">
-<meta name="twitter:description" content="Add annotations, text boxes, images, signatures, links and drawings to a PDF privately in your browser.">
+<meta name="twitter:title" content="Edit, Annotate &amp; Sign PDF Online Free | PDFdukan">
+<meta name="twitter:description" content="Visually replace selectable text lines and add annotations, signatures, links and drawings to a PDF privately in your browser.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
@@ -252,13 +252,13 @@ body{overflow-y:auto}
 /* ── NATIVE TEXT OVERLAY ─────────────────────────────────── */
 .pe-native-text{position:absolute;background:transparent;border:1px solid transparent;color:transparent;cursor:text;outline:none;padding:0 2px;white-space:nowrap;z-index:15;caret-color:var(--accent);border-radius:1px;transition:background .15s,border-color .15s,color .15s;overflow:visible;pointer-events:all;font-family:sans-serif}
 .pe-native-text:hover{border-color:rgba(255,99,51,.3);background:rgba(255,99,51,.04)}
-/* box-shadow: 0 0 0 5px #fff extends opaque white coverage 5px beyond element bounds,
-   completely hiding any canvas text that bleeds around the overlay edges */
-.pe-native-text.active,.pe-native-text:focus{color:inherit;background:#fff;border-color:var(--accent);box-shadow:0 0 0 8px #fff,0 0 0 9px rgba(255,99,51,.2);z-index:20}
+/* --native-bg is sampled from the original page around each line. This avoids
+   a white patch when text is replaced over a coloured CV header. */
+.pe-native-text.active,.pe-native-text:focus{color:var(--native-color,#000);background:var(--native-bg,#fff);border-color:var(--accent);box-shadow:0 0 0 6px var(--native-bg,#fff),0 0 0 7px rgba(255,99,51,.28);z-index:20}
 /* nt-edited: permanently covers the original canvas text once edited */
-.pe-native-text.nt-edited{color:inherit;background:#fff;box-shadow:0 0 0 8px #fff;z-index:16}
-/* nt-deleted: show opaque white rectangle to erase the original canvas text */
-.pe-native-text.nt-deleted{background:#fff;box-shadow:0 0 0 8px #fff;color:transparent;pointer-events:none;z-index:16}
+.pe-native-text.nt-edited{color:var(--native-color,#000);background:var(--native-bg,#fff);box-shadow:0 0 0 6px var(--native-bg,#fff);z-index:16}
+/* nt-deleted: show an opaque sampled-background rectangle */
+.pe-native-text.nt-deleted{background:var(--native-bg,#fff);box-shadow:0 0 0 6px var(--native-bg,#fff);color:transparent;pointer-events:none;z-index:16}
 
 /* ── FLOATING INLINE TOOLBAR ─────────────────────────────── */
 #pe-float-toolbar{position:fixed;z-index:850;display:none;align-items:center;gap:3px;padding:5px 7px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.6);white-space:nowrap}
@@ -293,7 +293,7 @@ body{overflow-y:auto}
 .fr-btn.primary:hover{opacity:.85}
 /* Highlight found text overlays */
 .pe-native-text.fr-highlight{background:rgba(255,235,59,.35)!important;border-color:rgba(255,193,7,.5)!important}
-.pe-native-text.fr-highlight-active{background:rgba(255,152,0,.55)!important;border-color:#fb8c00!important;color:inherit!important;z-index:21!important}
+.pe-native-text.fr-highlight-active{background:rgba(255,152,0,.55)!important;border-color:#fb8c00!important;color:var(--native-color,#000)!important;z-index:21!important}
 
 /* ── SUCCESS / DOWNLOAD SCREEN ───────────────────────────── */
 #pe-success-screen{display:none;position:fixed;inset:0;z-index:960;background:var(--bg);flex-direction:column;overflow:hidden}
@@ -526,9 +526,9 @@ body{overflow-y:auto}
     <div id="pe-canvas-col">
       <div id="pe-drop-zone">
         <div class="dz-icon">&#128196;</div>
-        <h1 class="dz-title">Annotate and Sign a PDF</h1>
-        <div class="dz-sub">Open or drop a PDF, then add text boxes, images, links, signatures, notes, shapes and drawings.</div>
-        <div class="dz-limit"><strong>Important:</strong> this browser tool adds an annotation layer. It does not directly rewrite the original text already embedded in the PDF.</div>
+        <h1 class="dz-title">Edit, Annotate and Sign a PDF</h1>
+        <div class="dz-sub">Open or drop a PDF, visually replace selectable text lines, or add text boxes, images, links, signatures, notes, shapes and drawings.</div>
+        <div class="dz-limit"><strong>Important:</strong> text replacement covers the visible original line and draws the replacement. The downloaded PDF is flattened; its underlying text objects are not structurally rewritten.</div>
       </div>
     </div>
   </div>
@@ -811,9 +811,12 @@ function loadPDFFile(file){
   var reader = new FileReader();
   reader.onload = function(ev){
     var ab = ev.target.result;
-    var typedArr = new Uint8Array(ab);
+    /* PDF.js may transfer and detach the worker input buffer. Preserve an
+       independent copy before getDocument() so export always retains bytes. */
+    var preservedBytes = ab.slice(0);
+    var typedArr = new Uint8Array(ab.slice(0));
     pdfjsLib.getDocument({data: typedArr}).promise.then(function(doc){
-      PE_STATE.pdfBytes = ab.slice(0);
+      PE_STATE.pdfBytes = preservedBytes;
       PE_STATE.pdfDoc = doc;
       PE_STATE.numPages = doc.numPages;
       PE_STATE.objects = {};
@@ -833,6 +836,7 @@ function loadPDFFile(file){
       PE_STATE.pageWrappers = {};
       PE_STATE.objLayers = {};
       PE_STATE.thumbCanvases = {};
+      PE_STATE.coverageCanvases = {};
 
       pushHistory();
 
@@ -855,6 +859,7 @@ function loadPDFFile(file){
       hideProgress();
       PE_STATE.pdfDoc = null; PE_STATE.pdfBytes = null; PE_STATE.numPages = 0;
       PE_STATE.objects = {}; PE_STATE.nativeTextEdits = {}; PE_STATE.history = []; PE_STATE.historyIdx = -1;
+      PE_STATE.coverageCanvases = {};
       document.getElementById('pe-filename').textContent = 'No file loaded';
       document.getElementById('btn-export-pdf').disabled = true;
       document.getElementById('pe-page-info').textContent = '';
@@ -922,7 +927,15 @@ function renderPage(pageNum){
 }
 
 function rerenderAllPages(){
-  for(var p = 1; p <= PE_STATE.numPages; p++) renderObjects(p);
+  for(var p = 1; p <= PE_STATE.numPages; p++){
+    renderObjects(p);
+    (function(pageNum){
+      if(!PE_STATE.pdfDoc) return;
+      PE_STATE.pdfDoc.getPage(pageNum).then(function(page){
+        return extractNativeText(pageNum, page, page.getViewport({scale:PE_STATE.scale}));
+      });
+    })(p);
+  }
 }
 
 function renderThumb(pageNum, page){
@@ -1666,17 +1679,114 @@ function updateCoverage(pageNum){
   var vpH = cov.height;
   Object.keys(edits).forEach(function(idxKey){
     var e = edits[idxKey];
-    if(!e) return;
-    var changed = e.deleted || e.newText !== e.origText || e.bold || e.italic ||
-                  (e.color && e.color !== '#000000' && e.color !== '');
-    if(!changed) return;
-    var xs = e.x * PE_STATE.scale;
-    var ys = vpH - (e.y * PE_STATE.scale);
-    var fs = e.origFontSize * PE_STATE.scale;
-    var w  = Math.max((e.width || e.origFontSize * (e.origText||'').length * 0.65) * PE_STATE.scale, fs * 1.5);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(xs - 4, ys - fs - 5, w + 16, fs + 12);
+    if(!e || !_nativeEditChanged(e)) return;
+    var xs = (e.origX !== undefined ? e.origX : e.x) * PE_STATE.scale;
+    var ys = vpH - ((e.origY !== undefined ? e.origY : e.y) * PE_STATE.scale);
+    var fs = (e.origFontSize || 12) * PE_STATE.scale;
+    var w  = Math.max((e.origWidth || e.width || e.origFontSize * (e.origText||'').length * 0.65) * PE_STATE.scale, fs * 1.5);
+    ctx.fillStyle = e.backgroundColor || '#ffffff';
+    ctx.fillRect(xs - 3, ys - fs * 1.12 - 3, w + 6, fs * 1.42 + 6);
   });
+}
+
+function _nativeEditChanged(e){
+  return !!(e && (e.deleted || e.newText !== e.origText ||
+    !!e.bold !== !!e.origBold || !!e.italic !== !!e.origItalic ||
+    (e.color || e.origColor || '#000000') !== (e.origColor || '#000000') ||
+    Math.abs((e.fontSize || e.origFontSize) - e.origFontSize) > 0.01 ||
+    Math.abs((e.x !== undefined ? e.x : e.origX) - e.origX) > 0.01 ||
+    Math.abs((e.y !== undefined ? e.y : e.origY) - e.origY) > 0.01));
+}
+
+function _nativeEditSignature(e){
+  return JSON.stringify({text:e.newText,bold:!!e.bold,italic:!!e.italic,color:e.color,
+    size:e.fontSize,x:e.x,y:e.y,deleted:!!e.deleted});
+}
+
+/* PDF.js often returns one text item per word or style fragment. Group nearby
+   fragments into editable visual lines, but split large horizontal gaps so
+   separate CV columns do not become one field. */
+function _buildNativeTextRuns(textContent){
+  var atoms = [];
+  (textContent.items || []).forEach(function(item, sourceIdx){
+    if(!item.str || !item.str.trim() || !item.transform) return;
+    var tx = item.transform;
+    var fs = Math.sqrt(tx[0]*tx[0] + tx[1]*tx[1]) || Math.abs(tx[3]) || 12;
+    atoms.push({sourceIdx:sourceIdx,str:item.str,x:tx[4],y:tx[5],
+      width:item.width || fs * item.str.length * 0.55,fontSize:fs,
+      fontName:item.fontName || '',dir:item.dir || 'ltr'});
+  });
+  atoms.sort(function(a,b){ return Math.abs(b.y-a.y)>1 ? b.y-a.y : a.x-b.x; });
+
+  var rows = [];
+  atoms.forEach(function(atom){
+    var row = null;
+    for(var i=0;i<rows.length;i++){
+      if(Math.abs(rows[i].y - atom.y) <= Math.max(2, Math.min(rows[i].fontSize, atom.fontSize) * 0.32)){
+        row = rows[i]; break;
+      }
+    }
+    if(!row){ row={y:atom.y,fontSize:atom.fontSize,atoms:[]}; rows.push(row); }
+    row.atoms.push(atom);
+    row.fontSize = Math.max(row.fontSize, atom.fontSize);
+  });
+  rows.sort(function(a,b){ return b.y-a.y; });
+
+  var runs = [];
+  function flushSegment(segment){
+    if(!segment.length) return;
+    var rtl = segment.filter(function(a){return a.dir==='rtl';}).length > segment.length/2;
+    segment.sort(function(a,b){return rtl ? b.x-a.x : a.x-b.x;});
+    var minX=Infinity,maxX=-Infinity,maxFs=0,text='';
+    segment.forEach(function(a,i){
+      minX=Math.min(minX,a.x); maxX=Math.max(maxX,a.x+a.width); maxFs=Math.max(maxFs,a.fontSize);
+      if(i){
+        var prev=segment[i-1];
+        var gap=rtl ? (prev.x-(a.x+a.width)) : (a.x-(prev.x+prev.width));
+        if(gap > Math.min(prev.fontSize,a.fontSize)*0.12 && !/\s$/.test(text) && !/^\s/.test(a.str)) text+=' ';
+      }
+      text+=a.str;
+    });
+    var lead=segment[0];
+    runs.push({origText:text.trim(),x:minX,y:lead.y,width:Math.max(1,maxX-minX),
+      fontSize:maxFs,fontName:lead.fontName,dir:rtl?'rtl':'ltr'});
+  }
+  rows.forEach(function(row){
+    var ordered=row.atoms.slice().sort(function(a,b){return a.x-b.x;});
+    var segment=[];
+    ordered.forEach(function(atom){
+      if(segment.length){
+        var prev=segment[segment.length-1];
+        var gap=atom.x-(prev.x+prev.width);
+        if(gap > Math.max(30, Math.max(prev.fontSize,atom.fontSize)*3)){
+          flushSegment(segment); segment=[];
+        }
+      }
+      segment.push(atom);
+    });
+    flushSegment(segment);
+  });
+  return runs;
+}
+
+function _sampleNativeBackground(pageNum, rec){
+  var canvas=PE_STATE.pageCanvases[pageNum];
+  if(!canvas) return '#ffffff';
+  var ctx=canvas.getContext('2d'),s=PE_STATE.scale;
+  var left=Math.round(rec.origX*s),base=Math.round(canvas.height-rec.origY*s);
+  var top=Math.round(base-rec.origFontSize*s*1.12),right=Math.round(left+rec.origWidth*s);
+  var bottom=Math.round(base+rec.origFontSize*s*0.24),pixels=[];
+  function take(x,y){
+    x=Math.max(0,Math.min(canvas.width-1,Math.round(x))); y=Math.max(0,Math.min(canvas.height-1,Math.round(y)));
+    try{var d=ctx.getImageData(x,y,1,1).data;if(d[3]>200)pixels.push([d[0],d[1],d[2]]);}catch(e){}
+  }
+  for(var i=0;i<=12;i++){
+    var px=left+(right-left)*(i/12); take(px,top-3); take(px,bottom+3);
+    var py=top+(bottom-top)*(i/12); take(left-3,py); take(right+3,py);
+  }
+  if(!pixels.length) return '#ffffff';
+  function median(ch){var vals=pixels.map(function(p){return p[ch];}).sort(function(a,b){return a-b;});return vals[Math.floor(vals.length/2)];}
+  return 'rgb('+median(0)+','+median(1)+','+median(2)+')';
 }
 
 /* ============================================================
@@ -1695,41 +1805,57 @@ function extractNativeText(pageNum, page, vp){
     var prevEdits = PE_STATE.nativeTextEdits[pageNum] || {};
     PE_STATE.nativeTextEdits[pageNum] = {};
 
-    textContent.items.forEach(function(item, idx){
-      if(!item.str || !item.str.trim()) return;
-      var tx = item.transform;
-      if(!tx) return;
-
-      var fontSize = Math.sqrt(tx[0]*tx[0] + tx[1]*tx[1]) || 12;
-      var x = tx[4] * PE_STATE.scale;
-      var y = vp.height - (tx[5] * PE_STATE.scale);
+    var runs = _buildNativeTextRuns(textContent);
+    runs.forEach(function(run, idx){
+      var fontSize = run.fontSize;
+      var x = run.x * PE_STATE.scale;
+      var y = vp.height - (run.y * PE_STATE.scale);
       var scaledFs = fontSize * PE_STATE.scale;
-      var w = (item.width || fontSize * item.str.length * 0.6) * PE_STATE.scale;
+      var w = run.width * PE_STATE.scale;
+      var styleInfo = textContent.styles && textContent.styles[run.fontName] || {};
+      var fontLabel = (run.fontName+' '+(styleInfo.fontFamily||''));
+      var inferredBold = /bold|black|heavy|semibold|demi/i.test(fontLabel);
+      var inferredItalic = /italic|oblique/i.test(fontLabel);
 
       /* Restore previous edit record if exists */
       var prev = prevEdits[idx];
       PE_STATE.nativeTextEdits[pageNum][idx] = {
-        origText: item.str,
+        origText: run.origText,
         origFontSize: fontSize,
-        newText: prev ? prev.newText : item.str,
-        x: tx[4],
-        y: tx[5],
+        origX: run.x,
+        origY: run.y,
+        origWidth: run.width,
+        newText: prev ? prev.newText : run.origText,
+        x: prev && prev.x !== undefined ? prev.x : run.x,
+        y: prev && prev.y !== undefined ? prev.y : run.y,
         fontSize: (prev && prev.fontSize !== undefined) ? prev.fontSize : fontSize,
-        fontName: item.fontName || '',
-        width: item.width || 0,
-        bold: prev ? !!prev.bold : false,
-        italic: prev ? !!prev.italic : false,
-        color: prev ? (prev.color || '') : '',
+        fontName: run.fontName,
+        fontFamily: (styleInfo.fontFamily || 'Arial, sans-serif'),
+        width: run.width,
+        origBold: inferredBold,
+        origItalic: inferredItalic,
+        bold: prev ? !!prev.bold : inferredBold,
+        italic: prev ? !!prev.italic : inferredItalic,
+        origColor: prev ? (prev.origColor || '#000000') : '#000000',
+        color: prev ? (prev.color || prev.origColor || '#000000') : '#000000',
+        backgroundColor: prev ? (prev.backgroundColor || '#ffffff') : '#ffffff',
         deleted: prev ? !!prev.deleted : false
       };
       var rec = PE_STATE.nativeTextEdits[pageNum][idx];
+      if(!prev){
+        rec.backgroundColor = _sampleNativeBackground(pageNum, rec);
+        var rgb=(rec.backgroundColor.match(/\d+/g)||[]).map(Number);
+        if(rgb.length===3 && (rgb[0]*0.299+rgb[1]*0.587+rgb[2]*0.114)<115){
+          rec.origColor='#ffffff'; rec.color='#ffffff';
+        }
+      }
 
       var overlay = document.createElement('div');
       overlay.className = 'pe-native-text';
       if(rec.deleted){
         overlay.classList.add('nt-deleted');
       } else {
-        var wasEdited = rec.newText !== rec.origText || rec.bold || rec.italic || (rec.color && rec.color !== '#000000' && rec.color !== '');
+        var wasEdited = _nativeEditChanged(rec);
         if(wasEdited) overlay.classList.add('nt-edited');
       }
       overlay.contentEditable = 'true';
@@ -1738,15 +1864,20 @@ function extractNativeText(pageNum, page, vp){
       overlay.dataset.ntIdx = idx;
       overlay.dataset.page = pageNum;
 
-      overlay.style.left   = Math.round(x) + 'px';
-      overlay.style.top    = Math.round(y - scaledFs) + 'px';
-      overlay.style.fontSize   = Math.round(scaledFs) + 'px';
-      overlay.style.lineHeight = Math.round(scaledFs + 2) + 'px';
-      overlay.style.height     = Math.round(scaledFs + 4) + 'px';
+      var currentFs = rec.fontSize * PE_STATE.scale;
+      var currentX = rec.x * PE_STATE.scale;
+      var currentY = vp.height - rec.y * PE_STATE.scale;
+      overlay.style.left   = Math.round(currentX) + 'px';
+      overlay.style.top    = Math.round(currentY - currentFs) + 'px';
+      overlay.style.fontSize   = Math.round(currentFs) + 'px';
+      overlay.style.lineHeight = Math.round(currentFs + 2) + 'px';
+      overlay.style.height     = Math.round(currentFs + 4) + 'px';
       overlay.style.minWidth   = Math.round(w + 6) + 'px';
+      overlay.style.fontFamily = rec.fontFamily;
+      overlay.style.setProperty('--native-bg', rec.backgroundColor || '#ffffff');
+      overlay.style.setProperty('--native-color', rec.color || rec.origColor || '#000000');
       if(rec.bold)   overlay.style.fontWeight = 'bold';
       if(rec.italic) overlay.style.fontStyle  = 'italic';
-      if(rec.color)  overlay.style.color = rec.color;
 
       /* Critical: stop the mousedown from bubbling to obj-layer, which would otherwise
          trigger createObjectAt() when using the text tool — this was the duplication bug */
@@ -1755,18 +1886,23 @@ function extractNativeText(pageNum, page, vp){
       });
       overlay.addEventListener('focus', function(){
         overlay.classList.add('active');
+        overlay.dataset.editStart = _nativeEditSignature(rec);
         showFloatToolbar(overlay, pageNum, idx);
       });
       overlay.addEventListener('blur', function(){
         overlay.classList.remove('active');
         rec.newText = overlay.innerText.replace(/\n+$/, '');
-        var changed = rec.newText !== rec.origText || rec.bold || rec.italic || (rec.color && rec.color !== '#000000' && rec.color !== '');
+        var changed = _nativeEditChanged(rec);
         overlay.classList.toggle('nt-edited', changed);
         updateCoverage(pageNum);
+        if(overlay.dataset.editStart && overlay.dataset.editStart !== _nativeEditSignature(rec)) pushHistory();
+        delete overlay.dataset.editStart;
         setTimeout(hideFloatToolbar, 200);
       });
       overlay.addEventListener('input', function(){
         rec.newText = overlay.innerText.replace(/\n+$/, '');
+        overlay.classList.toggle('nt-edited', _nativeEditChanged(rec));
+        updateCoverage(pageNum);
       });
       /* Prevent Enter from creating a second line inside the single-line native overlay */
       overlay.addEventListener('keydown', function(e){
@@ -1801,7 +1937,7 @@ function showFloatToolbar(el, pageNum, ntIdx){
     document.getElementById('ft-bold').classList.toggle('active', !!(rec && rec.bold));
     document.getElementById('ft-italic').classList.toggle('active', !!(rec && rec.italic));
     document.getElementById('ft-size').value = Math.round(parseFloat(el.style.fontSize) || 14);
-    document.getElementById('ft-color').value = (rec && rec.color) || '#000000';
+    document.getElementById('ft-color').value = (rec && (rec.color || rec.origColor)) || '#000000';
   } else {
     _ftType = 'object'; _ftIdx = -1;
     var peObj = el.closest ? el.closest('.pe-obj') : el.parentElement;
@@ -1888,7 +2024,11 @@ function hideFloatToolbar(){
         _ftTarget.style.height     = (val + 4) + 'px';
       }
       var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec) rec.fontSize = val / PE_STATE.scale;
+      if(rec){
+        rec.fontSize = val / PE_STATE.scale;
+        if(_ftTarget) _ftTarget.classList.toggle('nt-edited', _nativeEditChanged(rec));
+        updateCoverage(_ftPage);
+      }
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
       if(obj){ obj.fontSize = val; applyTextStyle(obj, _ftPage); pushHistory(); }
@@ -1898,7 +2038,7 @@ function hideFloatToolbar(){
   ftColor.addEventListener('mousedown', function(e){ e.stopPropagation(); });
   ftColor.addEventListener('input', function(){
     if(_ftType === 'native'){
-      if(_ftTarget) _ftTarget.style.color = this.value;
+      if(_ftTarget) _ftTarget.style.setProperty('--native-color', this.value);
       var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
       if(rec){ rec.color = this.value; updateCoverage(_ftPage); }
     } else if(_ftType === 'object'){
@@ -1942,7 +2082,11 @@ function hideFloatToolbar(){
             var newLeft = parseInt(el.style.left) || 0;
             var newTop  = parseInt(el.style.top)  || 0;
             rec.x = newLeft / PE_STATE.scale;
-            rec.y = (PE_STATE.pageWrappers[_ftPage] ? parseInt(PE_STATE.pageWrappers[_ftPage].style.height) : 0) / PE_STATE.scale - newTop / PE_STATE.scale;
+            var pageHeight = (PE_STATE.pageWrappers[_ftPage] ? parseFloat(PE_STATE.pageWrappers[_ftPage].style.height) : 0) / PE_STATE.scale;
+            rec.y = pageHeight - newTop / PE_STATE.scale - rec.fontSize;
+            el.classList.toggle('nt-edited', _nativeEditChanged(rec));
+            updateCoverage(_ftPage);
+            pushHistory();
           }
         }
       }
@@ -1957,7 +2101,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec){ rec.deleted = true; updateCoverage(_ftPage); }
+      if(rec){ rec.deleted = true; updateCoverage(_ftPage); pushHistory(); }
       if(_ftTarget) _ftTarget.classList.add('nt-deleted');
       _ftTarget = null;
       document.getElementById('pe-float-toolbar').classList.remove('visible');
@@ -2359,25 +2503,26 @@ function exportPage(outDoc, srcDoc, pageNum){
       ntKeys.forEach(function(idxKey){
         var edit = ntEdits[idxKey];
         if(!edit) return;
-        var changed = edit.deleted || (edit.newText !== undefined && edit.newText !== edit.origText) || edit.bold || edit.italic || (edit.color && edit.color !== '#000000');
-        if(!changed) return;
-        var x_e = edit.x * exportScale;
-        var y_e = (pageH - edit.y) * exportScale;
-        var origFs = edit.origFontSize * exportScale;
-        var renderFs = edit.fontSize * exportScale;
-        var w_e = Math.max((edit.width || edit.origFontSize * edit.origText.length * 0.6) * exportScale, origFs * 2);
+        if(!_nativeEditChanged(edit)) return;
+        var coverX = (edit.origX !== undefined ? edit.origX : edit.x) * exportScale;
+        var coverY = (pageH - (edit.origY !== undefined ? edit.origY : edit.y)) * exportScale;
+        var drawX = edit.x * exportScale;
+        var drawY = (pageH - edit.y) * exportScale;
+        var origFs = (edit.origFontSize || 12) * exportScale;
+        var renderFs = (edit.fontSize || edit.origFontSize || 12) * exportScale;
+        var coverW = Math.max((edit.origWidth || edit.width || edit.origFontSize * edit.origText.length * 0.6) * exportScale, origFs * 1.5);
         ectx.save();
-        ectx.fillStyle = '#ffffff';
-        ectx.fillRect(x_e - 1, y_e - origFs - 2, w_e + 8, origFs + 6);
+        ectx.fillStyle = edit.backgroundColor || '#ffffff';
+        ectx.fillRect(coverX - 3, coverY - origFs * 1.12 - 3, coverW + 6, origFs * 1.42 + 6);
         if(!edit.deleted){
           var fstr = '';
           if(edit.italic) fstr += 'italic ';
           if(edit.bold) fstr += 'bold ';
-          fstr += Math.round(renderFs) + 'px sans-serif';
+          fstr += Math.round(renderFs) + 'px ' + (edit.fontFamily || 'Arial, sans-serif');
           ectx.font = fstr;
-          ectx.fillStyle = edit.color || '#000000';
+          ectx.fillStyle = edit.color || edit.origColor || '#000000';
           ectx.textBaseline = 'alphabetic';
-          ectx.fillText(edit.newText !== undefined ? edit.newText : edit.origText, x_e, y_e);
+          ectx.fillText(edit.newText !== undefined ? edit.newText : edit.origText, drawX, drawY);
         }
         ectx.restore();
       });
@@ -2608,9 +2753,9 @@ updateUndoRedo();
 </script>
 <script src="../js/app.js?v=20260814a"></script>
 <script src="../js/header.js?v=20260618c"></script>
-<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Annotate and sign PDF files online. Add text boxes, images, links, shapes, signatures, highlights and drawings in your browser. Existing PDF text is not directly rewritten.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside><h2>What is the PDF Editor?</h2><p>This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded.</p><h2>Who needs this tool?</h2><p>Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text.</p><h2>What problem does it solve?</h2><p>PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document.</p><h2>How to Use</h2><ol><li>Upload your file.</li><li>Choose your options.</li><li>Click the action button.</li><li>Download the result.</li></ol><h2>Frequently Asked Questions</h2><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is a PDF Editor?</button><div class="faq-a">This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Who needs a PDF Editor?</button><div class="faq-a">Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What problem does the PDF Editor solve?</button><div class="faq-a">PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text inside the PDF?</button><div class="faq-a">This tool adds annotations on top of the PDF — it does not change existing text. To edit the actual text, use the PDF to Word converter first.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will my annotations be saved if I close the browser?</button><div class="faq-a">Download your annotated PDF immediately after editing. Browser tabs do not save changes automatically.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add multiple text boxes on one page?</button><div class="faq-a">Yes. You can add as many text boxes, drawings, or highlights as you need on any page.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a">Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to create an account?</button><div class="faq-a">No account is needed to use this browser-based tool.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files uploaded to a server?</button><div class="faq-a">No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile and tablets?</button><div class="faq-a">Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers.</div></div></section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"This tool lets you view a PDF and add annotations — text boxes, highlights, and drawings — directly on the page. The annotated PDF can be downloaded."}},{"@type":"Question","name":"Who needs a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"Reviewers marking up documents, teachers annotating student work, and anyone who needs to add comments or corrections to a PDF without editing the original text."}},{"@type":"Question","name":"What problem does the PDF Editor solve?","acceptedAnswer":{"@type":"Answer","text":"PDFs are not editable by default. This tool adds a layer of annotations on top of the existing content so you can mark up any PDF without changing the underlying document."}},{"@type":"Question","name":"Can I edit the existing text inside the PDF?","acceptedAnswer":{"@type":"Answer","text":"This tool adds annotations on top of the PDF — it does not change existing text. To edit the actual text, use the PDF to Word converter first."}},{"@type":"Question","name":"Will my annotations be saved if I close the browser?","acceptedAnswer":{"@type":"Answer","text":"Download your annotated PDF immediately after editing. Browser tabs do not save changes automatically."}},{"@type":"Question","name":"Can I add multiple text boxes on one page?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can add as many text boxes, drawings, or highlights as you need on any page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed to use this browser-based tool."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers."}}]}</script>
+<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Visually replace selectable PDF text lines, then add text boxes, images, links, shapes, signatures, highlights or drawings. Replacement is flattened into the downloaded PDF; the original text objects are not structurally rewritten.</div>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside><h2>What is the PDF Editor?</h2><p>This browser-based PDF editor can visually replace selectable text lines and add text boxes, highlights, images, signatures, links, shapes and drawings. Processing stays on your device.</p><h2>Who needs this tool?</h2><p>People correcting a name, contact line or short sentence in a selectable PDF, reviewers marking documents, teachers annotating work, and anyone adding signatures or notes.</p><h2>What problem does it solve?</h2><p>It handles quick visible corrections and annotations without uploading the file. The downloaded page is flattened, so this is visual replacement rather than structural editing of the PDF text objects.</p><h2>How to Use</h2><ol><li>Upload a PDF.</li><li>Click a selectable text line and type the replacement, or choose an annotation tool.</li><li>Adjust size, colour or position if needed.</li><li>Export and download the flattened PDF.</li></ol><h2>Frequently Asked Questions</h2><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is a PDF Editor?</button><div class="faq-a">This tool visually replaces selectable text lines and adds text boxes, highlights, images, signatures, links, shapes and drawings in the browser.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Who needs a PDF Editor?</button><div class="faq-a">It is useful for short visible corrections in selectable PDFs, document review, signatures, notes and classroom markup.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What problem does the PDF Editor solve?</button><div class="faq-a">It lets you make quick visible corrections and annotations without uploading the PDF to a server.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text inside the PDF?</button><div class="faq-a">Selectable text lines can be visually replaced: PDFdukan covers the original line and draws your replacement in the same area. The output is flattened and does not structurally rewrite the underlying PDF text objects. Scanned or image-only text needs OCR or a manual whiteout and text box.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will my annotations be saved if I close the browser?</button><div class="faq-a">Download your edited PDF before closing the tab. Browser tabs do not save changes automatically.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add multiple text boxes on one page?</button><div class="faq-a">Yes. You can add as many text boxes, drawings, or highlights as you need on any page.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a">Yes. PDFdukan is free to use with no subscription or credit card required.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to create an account?</button><div class="faq-a">No account is needed to use this browser-based tool.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files uploaded to a server?</button><div class="faq-a">No. Processing happens inside your browser using JavaScript, so the file stays on your device.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile and tablets?</button><div class="faq-a">Basic annotation works in modern mobile browsers, but precise text replacement and positioning are easier on a desktop browser.</div></div></section>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"This tool visually replaces selectable text lines and adds text boxes, highlights, images, signatures, links, shapes and drawings in the browser."}},{"@type":"Question","name":"Who needs a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"It is useful for short visible corrections in selectable PDFs, document review, signatures, notes and classroom markup."}},{"@type":"Question","name":"What problem does the PDF Editor solve?","acceptedAnswer":{"@type":"Answer","text":"It lets you make quick visible corrections and annotations without uploading the PDF to a server."}},{"@type":"Question","name":"Can I edit the existing text inside the PDF?","acceptedAnswer":{"@type":"Answer","text":"Selectable text lines can be visually replaced. PDFdukan covers the original line and draws the replacement in the same area. The output is flattened and does not structurally rewrite the underlying PDF text objects. Scanned or image-only text needs OCR or a manual whiteout and text box."}},{"@type":"Question","name":"Will my annotations be saved if I close the browser?","acceptedAnswer":{"@type":"Answer","text":"Download your edited PDF before closing the tab. Browser tabs do not save changes automatically."}},{"@type":"Question","name":"Can I add multiple text boxes on one page?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can add as many text boxes, drawings, or highlights as you need on any page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free to use with no subscription or credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed to use this browser-based tool."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Processing happens inside your browser using JavaScript, so the file stays on your device."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Basic annotation works in modern mobile browsers, but precise text replacement and positioning are easier on a desktop browser."}}]}</script>
 
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
