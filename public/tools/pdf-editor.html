@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="stylesheet" href="../css/style.css?v=20260814a">
+<link rel="stylesheet" href="../css/style.css?v=20260814b">
 <title>Annotate &amp; Sign PDF Online Free | PDFdukan</title>
 <meta name="description" content="Annotate and sign PDF files online. Add text boxes, images, links, shapes, signatures, highlights and drawings in your browser. Existing PDF text is not directly rewritten.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -35,13 +35,13 @@
 /* ── RESET & BASE ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#eaedf2;--surface:#ffffff;--surface2:#f4f5f8;--surface3:#eaecf1;
-  --border:#dde0e8;--border2:#c8ccd8;--accent:#ff6333;--accent2:#ff9055;
-  --danger:#e53935;--success:#43a047;--warn:#fb8c00;
-  --text:#1a1a2e;--text2:#55566a;--text3:#8899aa;
+  --surface:var(--card);--surface2:var(--card-2);--surface3:var(--card-3);
+  --border2:var(--border-strong);--accent:var(--primary);--accent2:var(--primary-light);
+  --danger:var(--error);--warn:var(--warning);
+  --text2:var(--text-2);--text3:var(--text-3);
   --thumb-w:180px;--toolbar-h:52px;--sub-toolbar-h:44px;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px}
 body{overflow-y:auto}
 
 /* ── LAYOUT ───────────────────────────────────────────────── */
@@ -215,7 +215,7 @@ body{overflow-y:auto}
 .img-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
 
 /* ── TOAST ────────────────────────────────────────────────── */
-#pe-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;border:1px solid var(--border2);color:var(--text);padding:9px 20px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999;white-space:nowrap}
+#pe-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surface3);border:1px solid var(--border2);color:var(--text);padding:9px 20px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:999;white-space:nowrap}
 #pe-toast.show{opacity:1}
 
 /* ── PROGRESS ─────────────────────────────────────────────── */

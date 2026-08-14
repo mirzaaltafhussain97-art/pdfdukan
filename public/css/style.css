@@ -84,6 +84,30 @@ html[data-theme="light"] {
   --shadow-lg:  0 12px 40px rgba(0,0,0,0.14);
 }
 
+/* ── SITE-WIDE BRAND PALETTE ────────────────────────────────
+   Decorative surfaces use one PDFdukan identity. Semantic status colors
+   (success, warning, error and info) remain available for feedback only. */
+.tool-hero-icon,
+.tool-icon-wrap,
+.btc-icon,
+.logo-icon {
+  background:linear-gradient(135deg,var(--primary),var(--primary-light)) !important;
+}
+.article-hero,
+.ic-hero {
+  background:linear-gradient(135deg,#e8522a 0%,var(--primary) 55%,var(--primary-light) 100%) !important;
+}
+.bfc-visual {
+  background:linear-gradient(135deg,#2a1712 0%,#7c2f1d 48%,var(--primary) 100%) !important;
+}
+.ss-card-icon {
+  background:var(--primary-soft) !important;
+  color:var(--primary) !important;
+}
+.tc-badge {
+  background:var(--primary) !important;
+}
+
 /* ── RESET ──────────────────────────────────────────────────── */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
