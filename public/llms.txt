@@ -10,8 +10,8 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 ## Primary Pages
 - [Home — Free PDF Tools & Document Scanner](https://pdfdukan.com/): Overview of all tools and CamMaster scanner
 - [CamMaster Scanner](https://pdfdukan.com/scanner.html): AI-powered document scanner — scan, crop, enhance, export to PDF/JPG
-- [All Tools](https://pdfdukan.com/tools.html): Full list of 40+ free PDF and document tools
-- [Blog](https://pdfdukan.com/blog/): In-depth guides on PDF tools, document scanning, and productivity
+- [All Tools](https://pdfdukan.com/tools.html): Curated PDF and document tools
+- [Blog](https://pdfdukan.com/blog/index.html): In-depth guides on PDF tools, document scanning, and productivity
 
 ## Core PDF Tools
 - [Image to PDF](https://pdfdukan.com/tools/img-to-pdf.html): Convert JPG, PNG, WEBP images to PDF
@@ -21,21 +21,15 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Compress PDF](https://pdfdukan.com/tools/compress-pdf.html): Reduce PDF file size
 - [OCR](https://pdfdukan.com/tools/ocr.html): Extract text from scanned documents
 - [Word to PDF](https://pdfdukan.com/tools/word-to-pdf.html): Convert DOCX to PDF
-- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html): Convert PDF to editable Word document
-- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html): Remove PDF password protection
+- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html): Extract PDF content into a Word-compatible document
+- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html): Remove an open password when the correct password is supplied
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
-- [Rotate PDF](https://pdfdukan.com/tools/rotate-pdf.html): Rotate PDF pages
+- [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html): Rotate, reorder and delete PDF pages
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
-- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc.html): Calculate Islamic faraid inheritance shares
+- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Estimate Islamic faraid inheritance shares
 
 ## AI-Powered Tools
 - [OCR — Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html): Make scanned PDFs searchable
-
-## Utility Tools (Calculators & Generators)
-- [QR Code Generator](https://pdfdukan.com/tools/qr-generator.html)
-- [Barcode Generator](https://pdfdukan.com/tools/barcode-generator.html)
-- [Age Calculator](https://pdfdukan.com/tools/age-calc.html)
-- [BMI Calculator](https://pdfdukan.com/tools/bmi-calc.html)
 
 ## Blog — Key Guides
 - [How to Compress a PDF](https://pdfdukan.com/blog/compress-pdf-reduce-size.html)
@@ -57,7 +51,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 
 ## Technical
 - Sitemap: https://pdfdukan.com/sitemap.xml
-- All tools work 100% client-side (no server uploads)
+- File-processing tools run client-side unless a page explicitly states otherwise
 - No account required for basic tools
 - Google Drive integration available (optional sign-in)
 - Supports: JPG, PNG, WEBP, PDF input formats

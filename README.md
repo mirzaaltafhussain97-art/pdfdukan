@@ -4,49 +4,32 @@
 
 ---
 
-## Tools (43 Free Tools)
+## Tools
 
 ### PDF Tools
 - [Compress PDF](https://pdfdukan.com/tools/compress-pdf.html) — Reduce PDF file size
 - [Merge PDF](https://pdfdukan.com/tools/merge-pdf.html) — Combine multiple PDFs
 - [Split PDF](https://pdfdukan.com/tools/split-pdf.html) — Split PDF into pages
-- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html) — Convert PDF to DOCX
+- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html) — Extract content to a Word-compatible document
 - [Word to PDF](https://pdfdukan.com/tools/word-to-pdf.html) — Convert DOCX to PDF
 - [PDF to JPG](https://pdfdukan.com/tools/pdf-to-img.html) — Extract images from PDF
 - [JPG to PDF](https://pdfdukan.com/tools/img-to-pdf.html) — Convert images to PDF
-- [Rotate PDF](https://pdfdukan.com/tools/rotate-pdf.html) — Rotate PDF pages
-- [Delete Pages](https://pdfdukan.com/tools/delete-pages.html) — Remove pages from PDF
+- [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html) — Rotate, reorder and delete PDF pages
 - [Add Page Numbers](https://pdfdukan.com/tools/page-numbers.html) — Number PDF pages
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html) — Add watermark to PDF
-- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html) — Remove PDF password
+- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html) — Remove an open password when the correct password is supplied
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html) — Fill and sign PDF forms
 - [OCR PDF](https://pdfdukan.com/tools/ocr.html) — Extract text from scanned PDFs
 - [Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html) — Make PDF searchable
 
 ### Conversion Tools
-- [Excel to PDF](https://pdfdukan.com/tools/excel-to-pdf.html)
-- [PPT to PDF](https://pdfdukan.com/tools/ppt-to-pdf.html)
 - [HTML to PDF](https://pdfdukan.com/tools/html-to-pdf.html)
 - [PDF to Excel](https://pdfdukan.com/tools/pdf-to-excel.html)
 - [PDF to PPT](https://pdfdukan.com/tools/pdf-to-ppt.html)
 - [Compress Image](https://pdfdukan.com/tools/compress.html)
 
-### AI Tools
-- [AI PDF Summarizer](https://pdfdukan.com/tools/ai-pdf-summarizer.html)
-- [AI PDF Chat](https://pdfdukan.com/tools/ai-pdf-chat.html)
-- [AI Summarize Text](https://pdfdukan.com/tools/ai-summarize.html)
-- [MCQ Generator](https://pdfdukan.com/tools/mcq-generator.html)
-- [Notes Generator](https://pdfdukan.com/tools/notes-generator.html)
-- [Research Summarizer](https://pdfdukan.com/tools/research-summarizer.html)
-- [Resume Analyzer](https://pdfdukan.com/tools/resume-analyzer.html)
-- [Cover Letter Generator](https://pdfdukan.com/tools/cover-letter-generator.html)
-
-### Calculators
-- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc.html) — Faraid calculator with full Islamic inheritance law
-- [Advanced Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html)
-- [BMI Calculator](https://pdfdukan.com/tools/bmi-calc.html)
-- [Age Calculator](https://pdfdukan.com/tools/age-calc.html)
-- [Discount Calculator](https://pdfdukan.com/tools/discount-calc.html)
+### Specialist Tool
+- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html) — educational Faraid estimate
 
 ### Document Scanner
 - [CamMaster Scanner](https://pdfdukan.com/scanner.html) — Scan documents with your phone camera, auto-crop, enhance, OCR, export to PDF

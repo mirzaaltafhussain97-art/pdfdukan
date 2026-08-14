@@ -41,7 +41,7 @@
   var headerHTML = '<header class="header" role="banner">'
 
     /* Brand */
-    + '<a href="' + base + 'index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">'
+    + '<a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">'
     + SVG
     + '<div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>'
     + '</a>'
@@ -49,7 +49,7 @@
     /* Navigation */
     + '<nav class="nav-links" aria-label="Site navigation">'
 
-      + '<a href="' + base + 'index.html" class="nav-item">Home</a>'
+      + '<a href="/" class="nav-item">Home</a>'
 
       /* Tools mega-dropdown */
       + '<div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">'
@@ -68,9 +68,7 @@
             + '<a href="' + base + 'tools/pdf-to-word.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>'
             + '<a href="' + base + 'tools/word-to-pdf.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">Convert DOCX to PDF</div></div></a>'
             + '<a href="' + base + 'tools/pdf-to-ppt.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>'
-            + '<a href="' + base + 'tools/ppt-to-pdf.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">&#127919;</span><div class="nd-link-body"><div class="nd-link-name">PowerPoint &#8594; PDF</div><div class="nd-link-desc">PPTX to PDF</div></div></a>'
             + '<a href="' + base + 'tools/pdf-to-excel.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>'
-            + '<a href="' + base + 'tools/excel-to-pdf.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Excel &#8594; PDF</div><div class="nd-link-desc">Spreadsheet to PDF</div></div></a>'
             + '<a href="' + base + 'tools/html-to-pdf.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>'
           + '</div>'
 
@@ -81,18 +79,15 @@
             + '<a href="' + base + 'tools/fill-sign.html"     class="nd-link" role="menuitem"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>'
             + '<a href="' + base + 'tools/watermark.html"     class="nd-link" role="menuitem"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp text or image</div></div></a>'
             + '<a href="' + base + 'tools/page-numbers.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number all pages</div></div></a>'
-            + '<a href="' + base + 'tools/delete-pages.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>'
+            + '<a href="' + base + 'tools/pdf-organizer.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128451;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Organizer</div><div class="nd-link-desc">Rotate, reorder &amp; delete</div></div></a>'
             + '<div class="nd-divider"></div>'
             + '<span class="nd-section-head">&#128247; Image &amp; Scan</span>'
             + '<a href="' + base + 'scanner.html"             class="nd-link" role="menuitem"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>'
             + '<a href="' + base + 'tools/compress.html"      class="nd-link" role="menuitem"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor &amp; Resizer</div><div class="nd-link-desc">JPG, PNG, WebP optimizer</div></div></a>'
             + '<a href="' + base + 'tools/ocr.html"           class="nd-link" role="menuitem"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to editable text</div></div></a>'
             + '<div class="nd-divider"></div>'
-            + '<span class="nd-section-head">&#128295; Calculators</span>'
-            + '<a href="' + base + 'tools/age-calc.html"         class="nd-link" role="menuitem"><span class="nd-link-icon">&#128197;</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div><div class="nd-link-desc">Real-time age</div></div></a>'
-            + '<a href="' + base + 'tools/bmi-calc.html"         class="nd-link" role="menuitem"><span class="nd-link-icon">&#9878;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div><div class="nd-link-desc">Metric &amp; imperial</div></div></a>'
-            + '<a href="' + base + 'tools/discount-calc.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div><div class="nd-link-desc">Price, % &amp; tax/GST</div></div></a>'
-            + '<a href="' + base + 'tools/inheritance-calc.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#9764;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div><div class="nd-link-desc">Warasat Intikal calculator</div></div></a>'
+            + '<span class="nd-section-head">&#128295; Specialist Tool</span>'
+            + '<a href="' + base + 'tools/inheritance-calc-advanced.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#9764;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div><div class="nd-link-desc">Warasat Intikal calculator</div></div></a>'
           + '</div>'
 
         + '</div>' /* /.nav-dropdown.mega */
@@ -148,7 +143,7 @@
 
   /* ── MOBILE NAV DRAWER ─────────────────────────────────────────── */
   var mobileHTML = '<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">'
-    + '<a href="' + base + 'index.html"               class="mnd-link">&#127968; Home</a>'
+    + '<a href="/" class="mnd-link">&#127968; Home</a>'
     + '<div class="mnd-section">&#128196; PDF Tools</div>'
     + '<a href="' + base + 'tools/img-to-pdf.html"    class="mnd-link">&#128209; Image to PDF</a>'
     + '<a href="' + base + 'tools/pdf-to-img.html"    class="mnd-link">&#128247; PDF to JPG</a>'
@@ -163,15 +158,13 @@
     + '<a href="' + base + 'tools/fill-sign.html"     class="mnd-link">&#9997;&#65039; Fill &amp; Sign</a>'
     + '<a href="' + base + 'tools/watermark.html"     class="mnd-link">&#128167; Watermark</a>'
     + '<a href="' + base + 'tools/page-numbers.html"  class="mnd-link">&#128290; Page Numbers</a>'
-    + '<a href="' + base + 'tools/delete-pages.html"  class="mnd-link">&#128465;&#65039; Delete Pages</a>'
+    + '<a href="' + base + 'tools/pdf-organizer.html" class="mnd-link">&#128451;&#65039; PDF Organizer</a>'
     + '<div class="mnd-section">&#128247; Image &amp; Scan</div>'
     + '<a href="' + base + 'scanner.html"             class="mnd-link">&#128247; Smart Scan</a>'
     + '<a href="' + base + 'tools/compress.html"      class="mnd-link">&#128284; Image Compressor</a>'
     + '<a href="' + base + 'tools/ocr.html"           class="mnd-link">&#128292; OCR Text</a>'
-    + '<div class="mnd-section">&#128295; Tools &amp; More</div>'
-    + '<a href="' + base + 'tools/age-calc.html"      class="mnd-link">&#128197; Age Calculator</a>'
-    + '<a href="' + base + 'tools/bmi-calc.html"      class="mnd-link">&#9878;&#65039; BMI Calculator</a>'
-    + '<a href="' + base + 'tools/discount-calc.html" class="mnd-link">&#127991;&#65039; Discount Calc</a>'
+    + '<div class="mnd-section">&#128295; Specialist Tool</div>'
+    + '<a href="' + base + 'tools/inheritance-calc-advanced.html" class="mnd-link">&#9764;&#65039; Islamic Inheritance</a>'
     + '<a href="' + base + 'blog/index.html"          class="mnd-link">&#128203; Blog</a>'
     + '<a href="' + base + 'about.html"               class="mnd-link">&#127970; About</a>'
     + '<a href="' + base + 'privacy.html"             class="mnd-link">&#128274; Privacy</a>'

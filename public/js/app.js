@@ -1456,7 +1456,7 @@ function handleNavClick(nav) {
   );
   const prefix = isInTools ? '../' : '';
   const routes = {
-    home:      prefix + 'index.html',
+    home:      '/',
     docs:      function() {
       // "My Documents" — scroll to recent docs on homepage, or go home if elsewhere
       if (isOnHome) {
@@ -1471,7 +1471,7 @@ function handleNavClick(nav) {
           toast('No documents yet — scan or upload a file to get started', 'info');
         }
       } else {
-        window.location.href = prefix + 'index.html';
+        window.location.href = '/';
       }
     },
     tools:     prefix + 'tools.html',
@@ -1503,9 +1503,6 @@ const TOOL_PAGES = {
   'compress':      'tools/compress.html',
   'img-compress':  'tools/compress.html',
   'ocr':           'tools/ocr.html',
-  'age':           'tools/age-calc.html',
-  'bmi':           'tools/bmi-calc.html',
-  'discount':      'tools/discount-calc.html',
   'pdf-to-word':   'tools/pdf-to-word.html',
   'word-to-pdf':   'tools/word-to-pdf.html',
   /* ── New tools ── */
@@ -1513,24 +1510,20 @@ const TOOL_PAGES = {
   'fill-sign':     'tools/fill-sign.html',
   'watermark':     'tools/watermark.html',
   'page-numbers':  'tools/page-numbers.html',
-  'delete-pages':  'tools/delete-pages.html',
+  'delete-pages':  'tools/pdf-organizer.html',
   'html-to-pdf':   'tools/html-to-pdf.html',
   'pdf-editor':    'tools/pdf-editor.html',
   'pdf-to-ppt':    'tools/pdf-to-ppt.html',
-  'ppt-to-pdf':    'tools/ppt-to-pdf.html',
   'pdf-to-excel':  'tools/pdf-to-excel.html',
-  'excel-to-pdf':  'tools/excel-to-pdf.html',
   'inheritance':   'tools/inheritance-calc-advanced.html',
   'warasat':       'tools/inheritance-calc-advanced.html',
   /* ── PDF utilities & generators (Part 5) ── */
-  'rotate-pdf':         'tools/rotate-pdf.html',
-  'reorder-pdf':        'tools/reorder-pdf.html',
+  'rotate-pdf':         'tools/pdf-organizer.html',
+  'reorder-pdf':        'tools/pdf-organizer.html',
   'unlock-pdf':         'tools/unlock-pdf.html',
   'pdf-metadata':       'tools/pdf-metadata.html',
   'pdf-text-extractor': 'tools/pdf-text-extractor.html',
   'searchable-pdf':     'tools/searchable-pdf.html',
-  'qr-generator':       'tools/qr-generator.html',
-  'barcode-generator':  'tools/barcode-generator.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');
@@ -1578,16 +1571,11 @@ const TOOL_SEARCH_INDEX = [
   { id:'fill-sign',    name:'Fill & Sign PDF',       desc:'Add text blocks and signatures to any PDF',    icon:'✍️', category:'PDF Tools',   keywords:['sign','signature','fill','form','annotate','draw','ink'] },
   { id:'watermark',    name:'Watermark PDF',         desc:'Stamp text or image watermarks on all pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
   { id:'page-numbers', name:'Add Page Numbers',      desc:'Auto-number PDF pages at custom positions',    icon:'🔢', category:'PDF Tools',   keywords:['page numbers','numbering','header','footer','pagination'] },
-  { id:'delete-pages', name:'Delete PDF Pages',      desc:'Remove specific pages from a PDF file',        icon:'🗑️', category:'PDF Tools',   keywords:['delete','remove','pages','trim','exclude','specific'] },
-  { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Convert URL or raw HTML/CSS to a PDF file',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
+  { id:'pdf-organizer', name:'PDF Organizer',         desc:'Rotate, reorder or delete PDF pages',          icon:'🗂️', category:'PDF Tools',   keywords:['delete','remove','rotate','reorder','organize','pages'] },
+  { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Print pasted HTML or one web page to PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit text, images and objects inside PDFs',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
-  { id:'pdf-to-ppt',   name:'PDF to PowerPoint',     desc:'Convert PDF pages to editable PPTX slides',   icon:'📊', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation','office'] },
-  { id:'ppt-to-pdf',   name:'PowerPoint to PDF',     desc:'Convert PPTX presentation to PDF output',     icon:'🎯', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation'] },
+  { id:'pdf-to-ppt',   name:'PDF to PowerPoint',     desc:'Export PDF pages as image-based PPTX slides',   icon:'📊', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation','office'] },
   { id:'pdf-to-excel', name:'PDF to Excel',          desc:'Extract tables from PDF to XLSX spreadsheet', icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','xls','table','spreadsheet','data'] },
-  { id:'excel-to-pdf', name:'Excel to PDF',          desc:'Convert XLSX spreadsheets to PDF format',     icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','spreadsheet','convert'] },
-  { id:'age',          name:'Age Calculator',         desc:'Calculate exact age from any birthdate',       icon:'📅', category:'Calculators', keywords:['age','birthday','date','born','calculate','years','months'] },
-  { id:'bmi',          name:'BMI Calculator',         desc:'Body mass index — metric & imperial',          icon:'⚖️', category:'Calculators', keywords:['bmi','body','weight','height','health','mass','index'] },
-  { id:'discount',     name:'Discount Calculator',    desc:'Calculate discounts, savings, tax & GST',      icon:'🏷️', category:'Calculators', keywords:['discount','price','percent','tax','gst','sale','savings'] },
   { id:'inheritance', name:'Islamic Inheritance Calc', desc:'Warasat Intikal — Sharia estate distribution', icon:'☪️', category:'Calculators', keywords:['islamic','inheritance','warasat','intikal','sharia','quran','fara\'id','estate','muslim','mother','brother','sister'] },
 ];
 
