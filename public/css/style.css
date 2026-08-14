@@ -1121,24 +1121,6 @@ input[type="file"]{display:none}
 }
 
 /* ================================================================
-   3D PARTICLE SPHERE CANVAS (Three.js background)
-   JavaScript overrides position/z-index at runtime,
-   but these base styles act as a safe fallback.
-================================================================ */
-#particleCanvas {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: -999 !important;
-  pointer-events: none !important;
-  opacity: 1;
-  display: block;
-}
-/* Everything else renders in normal flow above the fixed canvas */
-
-/* ================================================================
    AUTH MODAL — SIGN IN / SIGN UP TABS
 ================================================================ */
 .auth-tabs {
@@ -1644,20 +1626,6 @@ input[type="file"]{display:none}
   color: rgba(255,255,255,0.5);
   text-align: center;
   margin-top: 2px;
-}
-
-/* ── 4. THREE.JS CANVAS — FINAL LAYER FIX ────────────────────── */
-/* Override previous z-index:-999 rules */
-#particleCanvas {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: -10 !important;
-  pointer-events: none !important;
-  opacity: 0.4 !important;
-  display: block;
 }
 
 /* ── 5. BLOG READABILITY ─────────────────────────────────────── */
@@ -2294,14 +2262,6 @@ html[dir="rtl"] .lang-dropdown { right: auto; left: 0; }
 
 /* Nav links sit on RHS, logo anchors left */
 .header { justify-content: flex-start; }
-
-/* ================================================================
-   SPEC 7 — ENHANCED THREE.JS CANVAS (final z-index lock)
-================================================================ */
-#particleCanvas {
-  z-index: -10 !important;
-  opacity: 0.45 !important;
-}
 
 /* ================================================================
    SPEC 7 — BLOG CARD & ARTICLE CONTENT SHIELDS
