@@ -36,6 +36,17 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      // Friendly extensionless hub URLs shared by users and search engines.
+      {
+        source: '/tools',
+        destination: '/tools.html',
+        permanent: true,
+      },
+      {
+        source: '/blog',
+        destination: '/blog/index.html',
+        permanent: true,
+      },
       // Duplicate blog pages — canonical is the -guide version
       {
         source: '/blog/going-paperless.html',
