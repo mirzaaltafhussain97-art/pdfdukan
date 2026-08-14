@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -134,6 +134,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
 <body data-tool="searchable-pdf"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -179,7 +181,7 @@
         </div>
         <div class="nd-col">
           <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
-          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
           <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
           <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
@@ -251,7 +253,8 @@
     <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128247;</div><div class="dz-text">Drop a JPG/PNG scan here or <span class="dz-link">browse</span></div><div class="dz-sub">For multi-page PDFs, convert pages to images first</div></div><input type="file" id="fileInput" accept="image/*" style="display:none"></div>
     <div class="progress-wrap" id="prog" style="display:none;margin-top:16px"><div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div><div class="progress-label" id="progLbl">Starting…</div></div>
   </div>
-  <section class="seo-section" style="margin-top:24px">
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Turn a scanned image into a searchable PDF with an invisible OCR text layer. Free, runs in your browser, no upload.</div>
+<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>About This Tool</h2><p>A scanned document is just a picture &mdash; you cannot search or copy its words. This free tool runs OCR on your scan and builds a PDF with a hidden text layer behind the image. The result looks the same but is fully searchable. Everything happens in your browser, so your scan stays private.</p>
     <h2>How to Use</h2><ol><li>Upload a clear JPG or PNG scan.</li><li>Wait while OCR reads the text.</li><li>The searchable PDF downloads automatically.</li><li>Open it and try searching or copying text.</li></ol>
     <h2>Frequently Asked Questions</h2>
@@ -278,6 +281,8 @@
       var buf=await file.arrayBuffer();
       var res=await Tesseract.recognize(file,'eng',{logger:function(m){ if(m.status==='recognizing text'){ setProg(0.1+m.progress*0.8,'Reading text… '+Math.round(m.progress*100)+'%'); } }});
       var words=(res.data&&res.data.words)||[];
+      words=words.filter(function(w){ return w&&w.text&&w.text.trim()&&w.bbox; });
+      if(!words.length){ throw new Error('No readable English text was detected. Try a sharper, higher-contrast scan or use the OCR Text tool.'); }
       setProg(0.92,'Building searchable PDF…');
       var doc=await PDFLib.PDFDocument.create();
       var img=file.type.indexOf('png')>-1?await doc.embedPng(buf):await doc.embedJpg(buf);
@@ -285,13 +290,13 @@
       var page=doc.addPage([W,H]);
       page.drawImage(img,{x:0,y:0,width:W,height:H});
       var font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
-      words.forEach(function(w){ if(!w.text||!w.text.trim()||!w.bbox) return; var b=w.bbox; var fh=Math.max(4,(b.y1-b.y0)); var y=H-b.y1; try{ page.drawText(w.text,{x:b.x0,y:y,size:fh,font:font,opacity:0}); }catch(e){} });
+      words.forEach(function(w){ var b=w.bbox; var fh=Math.max(4,(b.y1-b.y0)); var y=H-b.y1; try{ page.drawText(w.text,{x:b.x0,y:y,size:fh,font:font,opacity:0}); }catch(e){} });
       var out=await doc.save();
       var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob);
       var a=document.createElement('a'); a.href=url; a.download=fname+'_searchable.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000);
       setProg(1,'Done! Searchable PDF downloaded.');
       if(window.toast) toast('Searchable PDF created!','success'); if(window.trackToolUse) trackToolUse('searchable-pdf');
-    }catch(e){ document.getElementById('prog').style.display='none'; if(window.toast) toast('Failed to create searchable PDF','error'); console.error(e); }
+    }catch(e){ document.getElementById('prog').style.display='none'; if(window.toast) toast(e.message||'Failed to create searchable PDF','error'); console.error(e); }
   }
   document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){run(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)run(e.dataTransfer.files[0]);}); });
 })();

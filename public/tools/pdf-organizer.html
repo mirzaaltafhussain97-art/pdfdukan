@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -150,6 +150,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
 <body data-tool="pdf-organizer"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -195,7 +197,7 @@
         </div>
         <div class="nd-col">
           <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
-          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
           <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
           <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
@@ -350,7 +352,8 @@
 
   <div class="ad-slot" style="margin-top:24px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px">
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.</div>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>What is the PDF Organizer?</h2>
     <p>The PDF Organizer lets you rearrange, rotate, and remove pages from any PDF file — all visually, in your browser. No upload to any server, no account needed.</p>
     <h2>Key Features</h2>
@@ -704,7 +707,8 @@ const OrgPDF = (() => {
       document.getElementById('progressCard').style.display = 'none';
       document.getElementById('statPages').textContent = activePgs.length;
       document.getElementById('statSize').textContent  = _fmtBytes(_resultBlob.size);
-      document.getElementById('resultSection').style.display = '';
+      document.getElementById('resultSection').classList.add('show');
+      document.getElementById('resultSection').style.display = 'block';
       document.getElementById('downloadBtn').disabled = false;
       document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
       toast('PDF organized — ' + activePgs.length + ' pages', 'success');
@@ -746,6 +750,7 @@ const OrgPDF = (() => {
     if (_sortable) { _sortable.destroy(); _sortable = null; }
     document.getElementById('orgGrid').innerHTML = '<div class="org-grid-empty">Upload a PDF to see pages here</div>';
     document.getElementById('orgCard').style.display      = 'none';
+    document.getElementById('resultSection').classList.remove('show');
     document.getElementById('resultSection').style.display = 'none';
     document.getElementById('pdfInfo').style.display       = 'none';
     document.getElementById('fileInput').value = '';

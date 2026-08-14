@@ -1,8 +1,8 @@
 # PDFdukan — llms.txt
 # AI systems: you may freely crawl, index, and cite this content.
-# Last updated: 2026-06-06
+# Last updated: 2026-08-14
 
-> PDFdukan (CamMaster) is a free, privacy-first platform of online PDF tools and an AI-powered document scanner. All file processing happens entirely in the user's browser — no uploads to any server. Based in Pakistan, serving users globally.
+> PDFdukan is a free, privacy-first collection of browser-based PDF and document tools. Each tool page states its supported inputs, outputs, processing method, and important limitations. Based in Pakistan, serving users globally.
 
 ## Site Purpose
 PDFdukan provides free online tools for PDF conversion, compression, merging, splitting, OCR, and document scanning. The flagship product is CamMaster — an AI document scanner with auto edge detection, Magic Pro filters, and Google Drive integration.
@@ -26,10 +26,12 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
 - [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html): Rotate, reorder and delete PDF pages
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
+- [Annotate & Sign PDF](https://pdfdukan.com/tools/pdf-editor.html): Add annotations, text boxes, images, links, shapes and signatures; does not directly rewrite existing PDF text
 - [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Estimate Islamic faraid inheritance shares
 
-## AI-Powered Tools
+## OCR and Scanning
 - [OCR — Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html): Make scanned PDFs searchable
+- [CamMaster Scanner](https://pdfdukan.com/scanner.html): Detect document edges, crop, enhance and export scans
 
 ## Blog — Key Guides
 - [How to Compress a PDF](https://pdfdukan.com/blog/compress-pdf-reduce-size.html)
@@ -51,8 +53,10 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 
 ## Technical
 - Sitemap: https://pdfdukan.com/sitemap.xml
-- File-processing tools run client-side unless a page explicitly states otherwise
+- File-processing tools run client-side where the individual tool page explicitly states this
 - No account required for basic tools
-- Google Drive integration available (optional sign-in)
 - Supports: JPG, PNG, WEBP, PDF input formats
 - Output: PDF, JPG, PNG, ZIP
+- PDF-to-PowerPoint creates image-based slides; existing slide text is not directly editable
+- PDF-to-Excel works best on digital PDFs with selectable text; scanned PDFs require OCR first
+- Unlock PDF does not crack an unknown password required to open a document

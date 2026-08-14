@@ -1,67 +1,67 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <!-- ── Core Pages ── -->
-  <url><loc>https://pdfdukan.com/</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://pdfdukan.com/scanner.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://pdfdukan.com/tools.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdfdukan.com/</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://pdfdukan.com/scanner.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdfdukan.com/tools.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 
   <!-- ── PDF Tools ── -->
-  <url><loc>https://pdfdukan.com/tools/img-to-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/merge-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/split-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/compress-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-to-img.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/crop-pdf.html</loc><lastmod>2026-06-17</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/ocr.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/compress.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-to-word.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/word-to-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/unlock-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-metadata.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-text-extractor.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/searchable-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/img-to-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/merge-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/split-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/compress-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-to-img.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/crop-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/ocr.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/compress.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-to-word.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/word-to-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/unlock-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-metadata.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-text-extractor.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/searchable-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <!-- essay-writer, assignment-writer, ai-humanizer, ai-detector intentionally omitted: noindex (academic-integrity / AdSense policy) -->
-  <url><loc>https://pdfdukan.com/tools/pdf-to-ppt.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-to-excel.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/html-to-pdf.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-editor.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/fill-sign.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/watermark.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/page-numbers.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/inheritance-calc-advanced.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://pdfdukan.com/tools/pdf-organizer.html</loc><lastmod>2026-08-13</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-to-ppt.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-to-excel.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/html-to-pdf.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-editor.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/fill-sign.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/watermark.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/page-numbers.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/inheritance-calc-advanced.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdfdukan.com/tools/pdf-organizer.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
   <!-- ── Blog ── -->
-  <url><loc>https://pdfdukan.com/blog/index.html</loc><lastmod>2026-06-08</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/document-digitization-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/pdf-workflows.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/how-ocr-works.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/compress-images-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/scan-documents-phone.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/jpg-to-pdf-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/pdf-vs-word.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/best-free-pdf-tools.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/going-paperless-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/merge-pdf-without-losing-quality.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/compress-pdf-reduce-size.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/pdf-to-word-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/split-pdf-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/pdf-to-jpg-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/scan-cnic-documents-pdf-pakistan.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/index.html</loc><lastmod>2026-08-14</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/document-digitization-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/pdf-workflows.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/how-ocr-works.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/compress-images-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/scan-documents-phone.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/jpg-to-pdf-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/pdf-vs-word.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/best-free-pdf-tools.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/going-paperless-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/merge-pdf-without-losing-quality.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/compress-pdf-reduce-size.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/pdf-to-word-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/split-pdf-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/pdf-to-jpg-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/scan-cnic-documents-pdf-pakistan.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
   <!-- ── Company/Support Pages ── -->
-  <url><loc>https://pdfdukan.com/help.html</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pdfdukan.com/about.html</loc><lastmod>2026-06-08</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pdfdukan.com/contact.html</loc><lastmod>2026-06-08</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdfdukan.com/help.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdfdukan.com/about.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdfdukan.com/contact.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
 
   <!-- ── Legal ── -->
-  <url><loc>https://pdfdukan.com/privacy.html</loc><lastmod>2026-06-08</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://pdfdukan.com/terms.html</loc><lastmod>2026-06-08</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://pdfdukan.com/cookies.html</loc><lastmod>2026-06-08</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://pdfdukan.com/disclaimer.html</loc><lastmod>2026-05-31</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://pdfdukan.com/press.html</loc><lastmod>2026-05-31</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://pdfdukan.com/alternatives.html</loc><lastmod>2026-05-31</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdfdukan.com/privacy.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pdfdukan.com/terms.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pdfdukan.com/cookies.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pdfdukan.com/disclaimer.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://pdfdukan.com/press.html</loc><lastmod>2026-08-14</lastmod><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdfdukan.com/alternatives.html</loc><lastmod>2026-08-14</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
 
 </urlset>

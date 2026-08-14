@@ -685,10 +685,11 @@ const ScannerApp = (() => {
     const c = document.createElement('canvas');
     c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
     c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
+    if (!c.width || !c.height) throw new Error('A scan page has not finished loading. Please wait and try again.');
     const ctx = c.getContext('2d');
     ctx.drawImage(page.croppedImg, 0, 0);
     applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
-    return await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
+    return await new Promise((resolve, reject) => c.toBlob(blob => blob ? resolve(blob) : reject(new Error('The browser could not encode a scan page.')), 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
   }
 
   // Strip illegal filename characters and any extension the user typed.
@@ -733,14 +734,21 @@ const ScannerApp = (() => {
 
       // Multiple pages → one ZIP so they all download together, every page named
       // in the same pattern. padStart width grows with page count (01.. / 001..).
+      if (typeof JSZip === 'undefined') throw new Error('ZIP support did not load. Refresh the page and try again.');
       const zip = new JSZip();
       const pad = Math.max(2, String(state.pages.length).length);
       for (let i = 0; i < state.pages.length; i++) {
         const blob = await _pageToBlob(state.pages[i], format);
         zip.file(`${base}_${String(i + 1).padStart(pad, '0')}.${ext}`, blob);
       }
-      const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `${base}.zip`);
+      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } }, meta => {
+        showProcessing(`Packaging ${state.pages.length} ${ext.toUpperCase()} images… ${Math.round(meta.percent)}%`);
+      });
+      const zipUrl = URL.createObjectURL(content);
+      const zipLink = document.createElement('a');
+      zipLink.href = zipUrl; zipLink.download = `${base}.zip`;
+      document.body.appendChild(zipLink); zipLink.click(); document.body.removeChild(zipLink);
+      setTimeout(() => URL.revokeObjectURL(zipUrl), 4000);
       hideProcessing();
       toast(`${state.pages.length} ${ext.toUpperCase()} images downloaded as ${base}.zip ✓`, 'success');
     } catch (e) {

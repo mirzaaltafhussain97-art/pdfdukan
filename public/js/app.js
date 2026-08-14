@@ -1941,6 +1941,90 @@ function _acceptCookies() {
 }
 window._acceptCookies = _acceptCookies;
 
+/* ── SEARCH / AI TRUST SIGNALS ──────────────────────────────── */
+function _initSearchTrustSignals() {
+  const canonical = document.querySelector('link[rel="canonical"]')?.href || location.href.split('#')[0];
+  const description = document.querySelector('meta[name="description"]')?.content || '';
+  const title = document.querySelector('h1')?.textContent?.trim() || document.title.split('|')[0].trim();
+  const toolId = document.body.dataset.tool;
+  const featureMap = {
+    'compress-pdf':['Three compression levels','Never returns a file larger than the original','Client-side PDF processing'],
+    'compress':['JPG, PNG and WEBP compression','Quality controls','Client-side image processing'],
+    'crop-pdf':['Visual crop selection','Multi-page PDF support','Client-side processing'],
+    'fill-sign':['Draw, type or upload a signature','Add movable text fields','Export a signed PDF'],
+    'html-to-pdf':['Convert pasted HTML to PDF','Preview before export','Client-side generation'],
+    'img-to-pdf':['JPG, PNG and WEBP input','Page size and orientation controls','Multi-image PDF export'],
+    'inheritance-calc-advanced':['Islamic inheritance share estimator','Multiple heir types','Step-by-step share summary'],
+    'merge-pdf':['Reorder and combine PDFs','Multiple file support','Client-side merge'],
+    'ocr':['English OCR','Copy or download recognized text','Client-side recognition'],
+    'page-numbers':['Six number positions','Custom start and skipped pages','Custom format and color'],
+    'pdf-editor':['Add annotations and text boxes','Insert images, links and signatures','Does not directly rewrite original PDF text'],
+    'pdf-metadata':['View and edit title, author, subject and keywords','Clear metadata fields','Client-side export'],
+    'pdf-organizer':['Drag to reorder pages','Rotate individual pages','Delete unwanted pages'],
+    'pdf-text-extractor':['Extract selectable PDF text','Page-by-page output','Copy or download text'],
+    'pdf-to-excel':['Layout-aware table extraction','One sheet per page or combined output','Scanned PDFs require OCR first'],
+    'pdf-to-img':['Convert PDF pages to JPG','Individual or ZIP download','Client-side rendering'],
+    'pdf-to-ppt':['One PDF page per image-based slide','PPTX export','Slide text is not directly editable'],
+    'pdf-to-word':['Extract selectable text to a Word-compatible document','Best for digital PDFs','Complex layouts may need cleanup'],
+    'searchable-pdf':['English OCR text layer','Rejects zero-text results','Image input'],
+    'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
+    'unlock-pdf':['Compatible owner-restriction removal','Does not crack unknown open passwords','Client-side processing'],
+    'watermark':['Custom text watermark','Opacity, angle and position controls','Apply across PDF pages'],
+    'word-to-pdf':['DOCX input','Browser-based document rendering','Complex Word layouts may vary']
+  };
+
+  if (toolId) {
+    const features = featureMap[toolId] || ['Free browser-based utility','Client-side processing where stated'];
+    const schema = {
+      '@context':'https://schema.org', '@type':'WebApplication', name:title, url:canonical,
+      description:description, applicationCategory:'UtilitiesApplication', operatingSystem:'Any',
+      browserRequirements:'Requires a modern browser with JavaScript enabled',
+      offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}, featureList:features,
+      publisher:{'@type':'Organization',name:'PDFdukan',url:'https://pdfdukan.com/'},
+      dateModified:'2026-08-14'
+    };
+    const schemaEl = document.createElement('script');
+    schemaEl.type = 'application/ld+json';
+    schemaEl.dataset.generated = 'tool-application';
+    schemaEl.textContent = JSON.stringify(schema);
+    document.head.appendChild(schemaEl);
+
+    const seo = document.querySelector('.seo-section');
+    if (seo && !document.querySelector('.cm-review-note')) {
+      const note = document.createElement('aside');
+      note.className = 'cm-review-note';
+      note.setAttribute('aria-label','Tool review information');
+      note.innerHTML = '<strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span>';
+      seo.insertBefore(note, seo.firstChild);
+    }
+  }
+
+  if (location.pathname.includes('/blog/') && !location.pathname.endsWith('/blog/') && !location.pathname.endsWith('/blog/index.html')) {
+    const article = document.querySelector('article, .blog-post, .post-content, main');
+    if (article && !document.querySelector('.cm-article-byline')) {
+      const byline = document.createElement('div');
+      byline.className = 'cm-article-byline';
+      byline.textContent = 'Written and reviewed by the PDFdukan Editorial Team · Updated 14 August 2026';
+      const firstHeading = article.querySelector('h1');
+      if (firstHeading) firstHeading.insertAdjacentElement('afterend', byline);
+    }
+    document.querySelectorAll('script[type="application/ld+json"]').forEach(el => {
+      try {
+        const data = JSON.parse(el.textContent);
+        const records = data['@graph'] || [data];
+        records.forEach(record => {
+          if (record && (record['@type'] === 'Article' || record['@type'] === 'BlogPosting')) {
+            if (!record.author) record.author = {'@type':'Organization','name':'PDFdukan Editorial Team','url':'https://pdfdukan.com/about.html'};
+            if (!record.publisher) record.publisher = {'@type':'Organization','name':'PDFdukan','url':'https://pdfdukan.com/'};
+            record.dateModified = '2026-08-14';
+          }
+        });
+        el.textContent = JSON.stringify(data);
+      } catch (e) {}
+    });
+  }
+}
+
 /* ── INIT ─────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme(STATE.theme);
@@ -1970,5 +2054,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   _initCookieBanner();
   _initGlobalError();
+  _initSearchTrustSignals();
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });

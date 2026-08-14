@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
@@ -134,6 +134,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
 <body data-tool="pdf-metadata"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -179,7 +181,7 @@
         </div>
         <div class="nd-col">
           <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
-          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
           <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
           <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
@@ -259,7 +261,8 @@
       <button class="btn btn-primary" id="mSaveBtn" style="margin-top:14px">Save &amp; Download</button>
     </div>
   </div>
-  <section class="seo-section" style="margin-top:24px">
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Free online PDF metadata editor. View and change title, author, subject, and keywords of any PDF. Runs in your browser, no upload.</div>
+<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>About This Tool</h2><p>Every PDF carries hidden details called metadata &mdash; the title, author, subject, and keywords. This free tool lets you read and change those fields. It is useful for organizing files, fixing wrong author names, or improving how a PDF appears in search. Your file stays in your browser the whole time.</p>
     <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Edit the fields shown.</li><li>Click <strong>Save &amp; Download</strong>.</li><li>Open the new PDF to confirm.</li></ol>
     <h2>Frequently Asked Questions</h2>
@@ -277,7 +280,8 @@
 <script>
 (function(){
   var bytes=null, fname='document';
-  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } fname=f.name.replace(/\.pdf$/i,''); var r=new FileReader(); r.onload=async function(e){ bytes=e.target.result; try{ var d=await PDFLib.PDFDocument.load(bytes); document.getElementById('mTitle').value=d.getTitle()||''; document.getElementById('mAuthor').value=d.getAuthor()||''; document.getElementById('mSubject').value=d.getSubject()||''; document.getElementById('mKeywords').value=(d.getKeywords()||''); document.getElementById('metaForm').style.display='block'; }catch(err){ if(window.toast) toast('Could not read PDF','error'); } }; r.readAsArrayBuffer(f); }
+  function clearForm(){ ['mTitle','mAuthor','mSubject','mKeywords'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('metaForm').style.display='none'; }
+  function onFile(f){ clearForm(); bytes=null; if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } fname=f.name.replace(/\.pdf$/i,''); var r=new FileReader(); r.onload=async function(e){ try{ var candidate=e.target.result; var d=await PDFLib.PDFDocument.load(candidate); bytes=candidate; document.getElementById('mTitle').value=d.getTitle()||''; document.getElementById('mAuthor').value=d.getAuthor()||''; document.getElementById('mSubject').value=d.getSubject()||''; document.getElementById('mKeywords').value=(d.getKeywords()||''); document.getElementById('metaForm').style.display='block'; }catch(err){ bytes=null; clearForm(); if(window.toast) toast('Could not read this PDF','error'); } }; r.onerror=function(){ bytes=null; clearForm(); if(window.toast) toast('Could not read this PDF','error'); }; r.readAsArrayBuffer(f); }
   async function save(){ if(!bytes){ if(window.toast) toast('Upload a PDF first','error'); return; } try{ var d=await PDFLib.PDFDocument.load(bytes); d.setTitle(document.getElementById('mTitle').value); d.setAuthor(document.getElementById('mAuthor').value); d.setSubject(document.getElementById('mSubject').value); var kw=document.getElementById('mKeywords').value; d.setKeywords(kw?kw.split(',').map(function(s){return s.trim();}):[]); var out=await d.save(); var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fname+'_metadata.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); if(window.toast) toast('Saved!','success'); if(window.trackToolUse) trackToolUse('pdf-metadata'); }catch(e){ if(window.toast) toast('Failed to save','error'); console.error(e); } }
   document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('mSaveBtn').onclick=save; });
 })();
