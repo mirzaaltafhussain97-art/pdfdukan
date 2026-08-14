@@ -12,11 +12,11 @@ const nextConfig = {
   //
   // Local dev: a single `npm run dev` now serves the WHOLE site on :3000.
 
-  // Serve /public/index.html at the site root "/" (the app router has no
+  // Serve the internal static homepage at the site root "/" (the app router has no
   // root page, so without this "/" would 404 — that was the deploy bug).
   async rewrites() {
     return [
-      { source: '/', destination: '/index.html' },
+      { source: '/', destination: '/home.html' },
     ];
   },
 

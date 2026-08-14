@@ -11,7 +11,7 @@
   /* ── Path prefix ──────────────────────────────────────────────── */
   var p     = window.location.pathname;
   var depth = (p.match(/\//g) || []).length;
-  /* /index.html → depth 1 → base = ""
+  /* / or /home.html → depth 1 → base = ""
      /tools/foo.html → depth 2 → base = "../"  */
   var base  = (depth >= 2 && p.indexOf('/tools/') !== -1) ? '../' : '';
 
