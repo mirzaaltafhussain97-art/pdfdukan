@@ -56,6 +56,8 @@
 .ic-total{display:flex;justify-content:space-between;padding:12px 0 2px;font-weight:800;color:var(--text);border-top:2px solid var(--primary);margin-top:4px}
 .ic-badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px}
 .ic-badge.aul{background:#fef3c7;color:#92400e}.ic-badge.radd{background:#d1fae5;color:#065f46}
+.ic-source{font-size:10px;color:var(--text-3);margin-top:3px;line-height:1.45}
+.ic-safety{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:14px;margin:16px 0}
 .ic-disclaimer{background:var(--card-2);border-left:4px solid var(--warning);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:12.5px;line-height:1.6;color:var(--text-2);margin:14px 0}
 .ic-err{background:rgba(239,68,68,.12);border:1px solid var(--error);color:var(--error);padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-top:12px}
 </style>
@@ -123,7 +125,11 @@
       </div>
       <div class="ic-field"><label for="icTotal">Total Estate</label><input type="number" id="icTotal" min="0" step="any" value="3500000"></div>
     </div>
-    <div class="ic-field"><label for="icDeductions">Deductions — funeral, debts &amp; wasiyyah (optional)</label><input type="number" id="icDeductions" min="0" step="any" value="0"></div>
+    <div class="ic-row-3">
+      <div class="ic-field"><label for="icFuneral">Reasonable funeral expenses</label><input type="number" id="icFuneral" min="0" step="any" value="0"></div>
+      <div class="ic-field"><label for="icDebts">Enforceable debts (including unpaid mahr)</label><input type="number" id="icDebts" min="0" step="any" value="0"></div>
+      <div class="ic-field"><label for="icWasiyyah">Valid Wasiyyah (max 1/3)</label><input type="number" id="icWasiyyah" min="0" step="any" value="0"></div>
+    </div>
 
     <div class="ic-group-title">Spouse &amp; Parents</div>
     <div class="ic-row-3">
@@ -137,7 +143,8 @@
       <div class="ic-field"><label for="icFather">Father alive?</label><select id="icFather"><option value="no">No</option><option value="yes">Yes</option></select></div>
       <div class="ic-field"><label for="icGFather">Grandfather? (if no father)</label><select id="icGFather"><option value="no">No</option><option value="yes">Yes</option></select></div>
     </div>
-    <div class="ic-field"><label for="icGMothers">Grandmothers (if mother not alive) — 0 to 2</label><input type="number" id="icGMothers" min="0" max="2" step="1" value="0"></div>
+    <div class="ic-row"><div class="ic-field"><label for="icMGMother">Mother's mother alive?</label><select id="icMGMother"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <div class="ic-field"><label for="icPGMother">Father's mother alive?</label><select id="icPGMother"><option value="no">No</option><option value="yes">Yes</option></select></div></div>
 
     <div class="ic-group-title">Children &amp; Grandchildren</div>
     <div class="ic-row"><div class="ic-field"><label for="icSons">Sons</label><input type="number" id="icSons" min="0" step="1" value="5"></div>
@@ -151,6 +158,19 @@
     <div class="ic-row"><div class="ic-field"><label for="icPBro">Paternal brothers</label><input type="number" id="icPBro" min="0" step="1" value="0"></div>
       <div class="ic-field"><label for="icPSis">Paternal sisters</label><input type="number" id="icPSis" min="0" step="1" value="0"></div></div>
     <div class="ic-field"><label for="icUSib">Maternal (uterine) siblings — male &amp; female equal</label><input type="number" id="icUSib" min="0" step="1" value="0"></div>
+
+    <div class="ic-group-title">Extended male residuaries (only when nearer heirs are absent)</div>
+    <div class="ic-row"><div class="ic-field"><label for="icFNephews">Full brother's sons</label><input type="number" id="icFNephews" min="0" step="1" value="0"></div>
+      <div class="ic-field"><label for="icPNephews">Paternal brother's sons</label><input type="number" id="icPNephews" min="0" step="1" value="0"></div></div>
+    <div class="ic-row"><div class="ic-field"><label for="icFUncles">Full paternal uncles</label><input type="number" id="icFUncles" min="0" step="1" value="0"></div>
+      <div class="ic-field"><label for="icPUncles">Paternal half-uncles</label><input type="number" id="icPUncles" min="0" step="1" value="0"></div></div>
+    <div class="ic-row"><div class="ic-field"><label for="icFUncleSons">Full paternal uncle's sons</label><input type="number" id="icFUncleSons" min="0" step="1" value="0"></div>
+      <div class="ic-field"><label for="icPUncleSons">Paternal half-uncle's sons</label><input type="number" id="icPUncleSons" min="0" step="1" value="0"></div></div>
+
+    <div class="ic-safety">
+      <div class="ic-row"><div class="ic-field"><label for="icPredeceasedChild">Did any son or daughter die before the deceased and leave children?</label><select id="icPredeceasedChild"><option value="no">No</option><option value="yes">Yes — Pakistan Section 4 / branch calculation needed</option></select></div>
+        <div class="ic-field"><label for="icExceptional">Pregnancy, missing person, homicide, religion/nasab dispute, or uncertain death order?</label><select id="icExceptional"><option value="no">No</option><option value="yes">Yes — specialist ruling needed</option></select></div></div>
+    </div>
 
     <button class="ic-btn" onclick="IC.calculate()">☪️ Calculate Full Distribution</button>
     <div id="icError" style="display:none"></div>
@@ -172,14 +192,20 @@
     <ul style="font-size:13px;line-height:1.9;color:var(--text-2)">
       <li><strong>Grandfather with siblings:</strong> the <em>muqasama</em> rules differ between schools — handled simply here.</li>
       <li><strong>Akdariyya</strong> (husband + mother + grandfather + one full sister) and <strong>Mushtaraka</strong> are special cases not separately modelled.</li>
-      <li><strong>Grandmothers:</strong> paternal vs maternal distinctions and their blocking are simplified to a shared 1/6.</li>
-      <li>Non-Muslim heirs, missing persons, and pregnancy shares are not handled.</li>
+      <li><strong>Remote generations:</strong> more distant grandfathers/grandchildren and dhawu al-arham require a scholar.</li>
+      <li>Pregnancy, missing persons, homicide, religion/nasab disputes and uncertain death order are deliberately stopped rather than estimated.</li>
+      <li><strong>Pakistan law:</strong> a predeceased son/daughter branch requires a separate per-stirpes Section 4 calculation and is deliberately stopped here.</li>
     </ul>
     <h2>References &amp; Sources</h2>
     <ul style="font-size:13px;line-height:1.9;color:var(--text-2)">
       <li>Quran — An-Nisa 4:11: <a href="https://quran.com/4/11" target="_blank" rel="noopener" style="color:var(--primary)">quran.com/4/11</a></li>
       <li>Quran — An-Nisa 4:12: <a href="https://quran.com/4/12" target="_blank" rel="noopener" style="color:var(--primary)">quran.com/4/12</a></li>
-      <li><a href="https://en.wikipedia.org/wiki/Islamic_inheritance_jurisprudence" target="_blank" rel="noopener" style="color:var(--primary)">Islamic inheritance jurisprudence (Wikipedia)</a></li>
+      <li>Quran — An-Nisa 4:176: <a href="https://quran.com/4/176" target="_blank" rel="noopener" style="color:var(--primary)">quran.com/4/176</a></li>
+      <li>Sahih al-Bukhari — Book of Inheritance: <a href="https://sunnah.com/bukhari/85" target="_blank" rel="noopener" style="color:var(--primary)">Bukhari 6723–6742</a></li>
+      <li>Sahih Muslim — one-third Wasiyyah limit: <a href="https://sunnah.com/muslim:1628a" target="_blank" rel="noopener" style="color:var(--primary)">Muslim 1628a</a></li>
+      <li>Pakistan Code — MFLO 1961, Section 4: <a href="https://pakistancode.gov.pk/pdffiles/administratordf5df7bd70945d88e28f6a85c1a9ef6b.pdf" target="_blank" rel="noopener" style="color:var(--primary)">official statutory text</a></li>
+      <li>National Commission on the Status of Women — Hanafi inheritance shares and examples: <a href="https://ncsw.gov.pk/SiteImage/Downloads/Women%27s%20Rights%20of%20Inherence%20and%20its%20Implementation.pdf" target="_blank" rel="noopener" style="color:var(--primary)">official research report</a></li>
+      <li>Federal Shariat Court of Pakistan — inheritance jurisprudence: <a href="https://www.federalshariatcourt.gov.pk/Judgments/Shariat%20Petition%20No.%2029%20-%20I%20-%20of%201993.pdf" target="_blank" rel="noopener" style="color:var(--primary)">official judgment</a></li>
     </ul>
   </section>
 </div>
@@ -235,6 +261,15 @@ const IC = (() => {
   function clearErr(){ const e=$('icError'); e.style.display='none'; e.innerHTML=''; }
   function toggleSpouse(){ const m=$('icGender').value==='male'; $('icWivesField').style.display=m?'':'none'; $('icHusbandField').style.display=m?'none':''; }
   function frac2(f){ const m=[[1/8,'1/8'],[1/4,'1/4'],[1/2,'1/2'],[1/6,'1/6'],[1/3,'1/3'],[2/3,'2/3']]; for(const [v,s] of m) if(Math.abs(f-v)<1e-9) return s; return (f*100).toFixed(2)+'%'; }
+  function ruleSource(label){
+    if(/wife|husband/i.test(label)) return 'Qur’an 4:12';
+    if(/maternal sibling/i.test(label)) return 'Qur’an 4:12';
+    if(/^mother$|^father$|^son$|^each son$|^daughter|^daughters$/i.test(label)) return 'Qur’an 4:11';
+    if(/son's son|son's daughter/i.test(label)) return 'Sahih al-Bukhari 6742; Hanafi faraid';
+    if(/full sister|full brother|paternal sister|paternal brother/i.test(label)) return 'Qur’an 4:176; Sahih al-Bukhari 6742';
+    if(/grandmother|mother's mother|father's mother/i.test(label)) return 'Sunnah and Hanafi rules of eligible grandmothers';
+    return 'Sahih al-Bukhari 6732; Hanafi order of nearest male residuaries';
+  }
 
   function computeFaraid(I){
     const sons=I.sons, daughters=I.daughters;
@@ -243,7 +278,10 @@ const IC = (() => {
     const anyDesc = sons>0||daughters>0||gsons>0||gdaughters>0;
     const femaleDesc = (daughters>0||gdaughters>0) && !maleDesc;
     const father=I.father; let gfather=I.gFather && !father;
-    const mother=I.mother; let gmothers = mother?0:Math.min(2,I.gMothers);
+    const mother=I.mother;
+    const maternalGM=!mother&&I.maternalGM;
+    const paternalGM=!mother&&!father&&I.paternalGM;
+    const gmothers=(maternalGM?1:0)+(paternalGM?1:0);
     const totalSibs = I.fBro+I.fSis+I.pBro+I.pSis+I.uSib;
     let fBro=I.fBro,fSis=I.fSis,pBro=I.pBro,pSis=I.pSis,ut=I.uSib;
     if(maleDesc||father||gfather){ fBro=0;fSis=0;pBro=0;pSis=0; }
@@ -264,7 +302,7 @@ const IC = (() => {
       if(umariyya){ fixed('Mother',1,(1-spouseFrac)/3,'1/3 of remainder (Umariyyatayn)'); }
       else { const mf=(anyDesc||totalSibs>=2)?1/6:1/3; fixed('Mother',1,mf,frac2(mf)); }
     }
-    if(gmothers>0) fixed(gmothers>1?'Grandmothers':'Grandmother',gmothers,1/6,'1/6 shared');
+    if(gmothers>0) fixed(gmothers>1?'Eligible grandmothers':(maternalGM?"Mother's mother":"Father's mother"),gmothers,1/6,'1/6 shared');
 
     let fatherAsaba=false,gfatherAsaba=false;
     if(father){ if(maleDesc) fixed('Father',1,1/6,'1/6'); else if(femaleDesc){ fixed('Father',1,1/6,'1/6 + residue'); fatherAsaba=true; } else fatherAsaba=true; }
@@ -297,6 +335,12 @@ const IC = (() => {
       else if(fullSisAsaba){ pushA(fSis>1?'Full sisters':'Full sister',fSis,residue,'residue (with daughters)'); }
       else if(pBro>0){ const u=pBro*2+pSis; pushA(pBro>1?'Paternal brothers':'Paternal brother',pBro,residue*(pBro*2)/u,'residue 2:1'); if(pSis>0) pushA('Paternal sisters',pSis,residue*pSis/u,'residue 2:1'); }
       else if(patSisAsaba){ pushA(pSis>1?'Paternal sisters':'Paternal sister',pSis,residue,'residue (with daughters)'); }
+      else if(I.fNephews>0){ pushA("Full brother's sons",I.fNephews,residue,'nearest male residuary'); }
+      else if(I.pNephews>0){ pushA("Paternal brother's sons",I.pNephews,residue,'nearest male residuary'); }
+      else if(I.fUncles>0){ pushA('Full paternal uncles',I.fUncles,residue,'nearest male residuary'); }
+      else if(I.pUncles>0){ pushA('Paternal half-uncles',I.pUncles,residue,'nearest male residuary'); }
+      else if(I.fUncleSons>0){ pushA("Full paternal uncle's sons",I.fUncleSons,residue,'nearest male residuary'); }
+      else if(I.pUncleSons>0){ pushA("Paternal half-uncle's sons",I.pUncleSons,residue,'nearest male residuary'); }
       if(asabaAssigned) residue=0;
     }
 
@@ -311,19 +355,27 @@ const IC = (() => {
 
   function calculate(){
     clearErr();
+    if($('icPredeceasedChild').value==='yes'){ showErr('This case needs a branch-by-branch calculation. Pakistan MFLO 1961 Section 4 may give the children of a predeceased son or daughter their parent’s notional share. Please use a qualified Mufti and Pakistani inheritance lawyer.'); return; }
+    if($('icExceptional').value==='yes'){ showErr('This case can change heir eligibility and must not be estimated automatically. Please consult a qualified Mufti and inheritance lawyer.'); return; }
     const cur=$('icCurrency').value;
     const gross=parseFloat($('icTotal').value);
-    const ded=parseFloat($('icDeductions').value)||0;
+    const funeral=parseFloat($('icFuneral').value)||0;
+    const debts=parseFloat($('icDebts').value)||0;
+    const wasiyyah=parseFloat($('icWasiyyah').value)||0;
     if(!gross||gross<=0){ showErr('Please enter a valid total estate value.'); return; }
-    if(ded<0){ showErr('Deductions cannot be negative.'); return; }
-    if(ded>=gross){ showErr('Deductions cannot be equal to or more than the estate.'); return; }
-    const E=gross-ded;
+    if(funeral<0||debts<0||wasiyyah<0){ showErr('Estate expenses, debts and Wasiyyah cannot be negative.'); return; }
+    const afterObligations=gross-funeral-debts;
+    if(afterObligations<=0){ showErr('Funeral expenses and enforceable debts cannot consume more than the estate entered.'); return; }
+    if(wasiyyah>afterObligations/3+0.000001){ showErr('Wasiyyah exceeds one-third of the estate remaining after funeral expenses and debts (Sahih al-Bukhari 2742; Sahih Muslim 1628a). Excess requires the heirs’ valid post-death consent and specialist review.'); return; }
+    const E=afterObligations-wasiyyah;
     const I={
       gender:$('icGender').value, wives:Math.min(4,num('icWives')), husband:$('icHusband').value==='yes',
       mother:$('icMother').value==='yes', father:$('icFather').value==='yes',
-      gFather:$('icGFather').value==='yes', gMothers:num('icGMothers'),
+      gFather:$('icGFather').value==='yes', maternalGM:$('icMGMother').value==='yes', paternalGM:$('icPGMother').value==='yes',
       sons:num('icSons'), daughters:num('icDaughters'), gsons:num('icGSons'), gdaughters:num('icGDaughters'),
-      fBro:num('icFBro'), fSis:num('icFSis'), pBro:num('icPBro'), pSis:num('icPSis'), uSib:num('icUSib')
+      fBro:num('icFBro'), fSis:num('icFSis'), pBro:num('icPBro'), pSis:num('icPSis'), uSib:num('icUSib'),
+      fNephews:num('icFNephews'), pNephews:num('icPNephews'), fUncles:num('icFUncles'), pUncles:num('icPUncles'),
+      fUncleSons:num('icFUncleSons'), pUncleSons:num('icPUncleSons')
     };
     const res = computeFaraid(I);
     if(!res.rows.length){ showErr('No eligible heirs entered, or all are blocked. Please review the inputs or consult a scholar.'); return; }
@@ -333,13 +385,13 @@ const IC = (() => {
       const per = r.frac / r.count;
       total += r.frac;
       const pct = (per*100).toFixed(2);
-      html += '<div class="ic-res-row"><div><div class="ic-res-who">'+r.label+'</div><div class="ic-res-sub">'+(r.note||'')+'</div></div>'+
+      html += '<div class="ic-res-row"><div><div class="ic-res-who">'+r.label+'</div><div class="ic-res-sub">'+(r.note||'')+'</div><div class="ic-source">Rule source: '+ruleSource(r.label)+'</div></div>'+
               '<div><div class="ic-res-amt">'+fmt(per*E,cur)+'</div><div class="ic-res-pct">'+pct+'% each</div></div></div>';
     });
     if(res.residue>0.0001) html += '<div class="ic-res-row"><div><div class="ic-res-who">Unassigned</div><div class="ic-res-sub">No eligible residuary — consult a scholar</div></div><div><div class="ic-res-amt">'+fmt(res.residue*E,cur)+'</div></div></div>';
     html += '<div class="ic-total"><span>Total distributed</span><span>'+fmt((total+res.residue)*E,cur)+'</span></div>';
     $('icResList').innerHTML = html;
-    $('icBadges').innerHTML = (res.aul?'<span class="ic-badge aul">Aul applied</span>':'') + (res.radd?'<span class="ic-badge radd">Radd applied</span>':'');
+    $('icBadges').innerHTML = (res.aul?'<span class="ic-badge aul">Hanafi ‘Awl applied</span>':'') + (res.radd?'<span class="ic-badge radd">Hanafi Radd applied</span>':'');
     const box=$('icResults'); box.style.display='block';
     setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'start'}),80);
   }

@@ -1,151 +1,68 @@
-// Faraid engine — test harness. Validate before embedding in the advanced page.
-function computeFaraid(I){
-  const E = I.E;
-  const sons=I.sons||0, daughters=I.daughters||0;
-  let gsons = sons>0?0:(I.gsons||0);
-  let gdaughters = sons>0?0:(I.gdaughters||0);
-  const maleDesc = sons>0 || gsons>0;
-  const anyDesc = sons>0||daughters>0||gsons>0||gdaughters>0;
-  const femaleDesc = (daughters>0||gdaughters>0) && !maleDesc;
-  const father=!!I.father;
-  let gfather = !!I.gFather && !father;
-  const mother=!!I.mother;
-  let gmothers = mother?0:Math.min(2,I.gMothers||0);
-  const totalSibs = (I.fBro||0)+(I.fSis||0)+(I.pBro||0)+(I.pSis||0)+(I.uSib||0);
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
 
-  // Sibling blocking (Hanafi): male descendant, father, or grandfather block full+paternal siblings
-  let fBro=I.fBro||0,fSis=I.fSis||0,pBro=I.pBro||0,pSis=I.pSis||0,ut=I.uSib||0;
-  if (maleDesc || father || gfather){ fBro=0;fSis=0;pBro=0;pSis=0; }
-  if (fBro>0){ pBro=0;pSis=0; }
-  if (fSis>=2 && fBro===0 && pBro===0){ pSis=0; }  // 2 full sisters block paternal SISTERS (not the paternal brother, who takes residue)
-  if (anyDesc || father || gfather) ut=0;   // uterine blocked by any descendant + father + grandfather
+/* Test the exact engine shipped in the HTML page so the regression suite
+   cannot silently drift away from production. */
+const html=fs.readFileSync('public/tools/inheritance-calc-advanced.html','utf8');
+const start=html.indexOf('const IC = (() => {');
+const end=html.indexOf('window.IC = IC;',start);
+assert(start>=0&&end>start,'Embedded Faraid engine not found');
+const source=html.slice(start,end)
+  .replace('const IC =','return')
+  .replace('return { calculate, toggleSpouse };','return { calculate, toggleSpouse, computeFaraid };');
+const {computeFaraid}=new Function(source)();
 
-  const rows=[]; let fixedSum=0;
-  const fixed=(label,count,frac,note)=>{ rows.push({label,count,frac,note,kind:'fixed'}); fixedSum+=frac; };
-
-  // Spouse
-  let spouseFrac=0, spouseLabel='', spouseCount=1;
-  if(I.gender==='male' && (I.wives||0)>0){ spouseFrac=anyDesc?1/8:1/4; spouseCount=I.wives; spouseLabel=I.wives>1?'Each wife':'Wife'; }
-  else if(I.gender==='female' && I.husband){ spouseFrac=anyDesc?1/4:1/2; spouseLabel='Husband'; }
-
-  const umariyya = spouseFrac>0 && father && mother && !anyDesc && totalSibs===0;
-  if(spouseFrac>0) fixed(spouseLabel, spouseCount, spouseFrac, frac2(spouseFrac));
-
-  // Mother
-  if(mother){
-    if(umariyya){ const mf=(1-spouseFrac)/3; fixed('Mother',1,mf,'1/3 of remainder (Umariyyatayn)'); }
-    else { const mf=(anyDesc||totalSibs>=2)?1/6:1/3; fixed('Mother',1,mf,frac2(mf)); }
-  }
-  if(gmothers>0) fixed(gmothers>1?'Grandmothers':'Grandmother', gmothers, 1/6, '1/6 shared');
-
-  // Father / Grandfather
-  let fatherAsaba=false, gfatherAsaba=false;
-  if(father){
-    if(maleDesc) fixed('Father',1,1/6,'1/6');
-    else if(femaleDesc){ fixed('Father',1,1/6,'1/6 + residue'); fatherAsaba=true; }
-    else fatherAsaba=true;
-  } else if(gfather){
-    if(maleDesc) fixed('Grandfather',1,1/6,'1/6');
-    else if(femaleDesc){ fixed('Grandfather',1,1/6,'1/6 + residue'); gfatherAsaba=true; }
-    else gfatherAsaba=true;
-  }
-
-  // Daughters (no sons)
-  if(sons===0 && daughters>0){ const df=daughters===1?1/2:2/3; fixed(daughters>1?'Daughters':'Daughter',daughters,df,frac2(df)); }
-  // Granddaughters via son (no sons)
-  if(sons===0 && gsons===0 && gdaughters>0){
-    if(daughters===0){ const g=gdaughters===1?1/2:2/3; fixed(gdaughters>1?"Son's daughters":"Son's daughter",gdaughters,g,frac2(g)); }
-    else if(daughters===1){ fixed(gdaughters>1?"Son's daughters":"Son's daughter",gdaughters,1/6,'1/6 (completes 2/3)'); }
-  }
-  // Uterine siblings
-  if(ut>0){ const uf=ut===1?1/6:1/3; fixed(ut>1?'Maternal siblings':'Maternal sibling',ut,uf,frac2(uf)); }
-
-  // Full / paternal sisters as fixed sharers (no brothers, no female-descendant)
-  let fullSisAsaba=false, patSisAsaba=false;
-  if(fSis>0 && fBro===0){
-    if(femaleDesc) fullSisAsaba=true;
-    else { const s=fSis===1?1/2:2/3; fixed(fSis>1?'Full sisters':'Full sister',fSis,s,frac2(s)); }
-  }
-  if(pSis>0 && pBro===0 && fBro===0 && fSis<2){
-    if(femaleDesc) patSisAsaba=true;
-    else if(fSis===1) fixed(pSis>1?'Paternal sisters':'Paternal sister',pSis,1/6,'1/6 (completes 2/3)');
-    else if(fSis===0){ const s=pSis===1?1/2:2/3; fixed(pSis>1?'Paternal sisters':'Paternal sister',pSis,s,frac2(s)); }
-  }
-
-  // AWL — fixed shares exceed estate
-  let aul=false;
-  if(fixedSum > 1.0000001){
-    aul=true; const k=fixedSum;
-    rows.forEach(r=>r.frac=r.frac/k);
-    fixedSum=1;
-  }
-
-  // ASABA residue
-  let residue = 1 - fixedSum;
-  if(residue < 1e-9) residue = 0;
-  let asabaAssigned=false;
-  const pushA=(label,count,frac,note)=>{ rows.push({label,count,frac,note,kind:'asaba'}); asabaAssigned=true; };
-  if(!aul && residue>0){
-    if(sons>0){ const u=sons*2+daughters; pushA(sons>1?'Each son':'Son',sons,residue*(sons*2)/u,'residue 2:1'); if(daughters>0) pushA(daughters>1?'Daughters':'Daughter',daughters,residue*daughters/u,'residue 2:1'); }
-    else if(gsons>0){ const u=gsons*2+gdaughters; pushA("Son's sons",gsons,residue*(gsons*2)/u,'residue 2:1'); if(gdaughters>0) pushA("Son's daughters",gdaughters,residue*gdaughters/u,'residue 2:1'); }
-    else if(fatherAsaba){ mergeAdd(rows,'Father',1,residue,'1/6 + residue (asaba)'); asabaAssigned=true; }
-    else if(gfatherAsaba){ mergeAdd(rows,'Grandfather',1,residue,'1/6 + residue (asaba)'); asabaAssigned=true; }
-    else if(fBro>0){ const u=fBro*2+fSis; pushA(fBro>1?'Full brothers':'Full brother',fBro,residue*(fBro*2)/u,'residue 2:1'); if(fSis>0) pushA('Full sisters',fSis,residue*fSis/u,'residue 2:1'); }
-    else if(fullSisAsaba){ pushA(fSis>1?'Full sisters':'Full sister',fSis,residue,'residue (with daughters)'); }
-    else if(pBro>0){ const u=pBro*2+pSis; pushA(pBro>1?'Paternal brothers':'Paternal brother',pBro,residue*(pBro*2)/u,'residue 2:1'); if(pSis>0) pushA('Paternal sisters',pSis,residue*pSis/u,'residue 2:1'); }
-    else if(patSisAsaba){ pushA(pSis>1?'Paternal sisters':'Paternal sister',pSis,residue,'residue (with daughters)'); }
-  }
-
-  // RADD — leftover with no asaba: redistribute to fixed sharers except spouse
-  let radd=false;
-  if(!aul && residue>0 && !asabaAssigned){
-    const isSpouse = r => /wife|husband/i.test(r.label);
-    const base = rows.filter(r=>r.kind==='fixed' && !isSpouse(r)).reduce((s,r)=>s+r.frac,0);
-    if(base>0){
-      radd=true;
-      rows.forEach(r=>{ if(r.kind==='fixed' && !isSpouse(r)) r.frac += residue*(r.frac/base); });
-      residue=0;
-    }
-  }
-
-  return { rows, E, aul, radd, residue };
-
-  function frac2(f){ const m=[[1/8,'1/8'],[1/4,'1/4'],[1/2,'1/2'],[1/6,'1/6'],[1/3,'1/3'],[2/3,'2/3']]; for(const [v,s] of m) if(Math.abs(f-v)<1e-9) return s; return (f*100).toFixed(2)+'%'; }
-  function mergeAdd(rows,label,count,addFrac,note){ const r=rows.find(x=>x.label===label); if(r){ r.frac+=addFrac; r.note=note; r.kind='asaba'; } else rows.push({label,count,frac:addFrac,note,kind:'asaba'}); }
+const B={gender:'male',wives:0,husband:false,mother:false,father:false,gFather:false,
+  maternalGM:false,paternalGM:false,sons:0,daughters:0,gsons:0,gdaughters:0,
+  fBro:0,fSis:0,pBro:0,pSis:0,uSib:0,fNephews:0,pNephews:0,fUncles:0,
+  pUncles:0,fUncleSons:0,pUncleSons:0};
+const near=(a,b)=>Math.abs(a-b)<1e-9;
+function verify(name,input,expected,flags={}){
+  const result=computeFaraid({...B,...input});
+  const got=Object.fromEntries(result.rows.map(row=>[row.label,row.frac]));
+  for(const [label,fraction] of Object.entries(expected))
+    assert(near(got[label]??-1,fraction),`${name}: ${label} expected ${fraction}, got ${got[label]}`);
+  assert.equal(result.aul,!!flags.aul,`${name}: unexpected Aul state`);
+  assert.equal(result.radd,!!flags.radd,`${name}: unexpected Radd state`);
+  const total=result.rows.reduce((sum,row)=>sum+row.frac,0)+result.residue;
+  assert(near(total,1),`${name}: total is ${total}`);
+  console.log(`PASS  ${name}`);
 }
 
-// ── TESTS ──
-function run(name,I,expect){
-  const r=computeFaraid(I);
-  let total=0; const out=[];
-  r.rows.forEach(row=>{ const per=row.frac/row.count; total+=row.frac; out.push(`${row.label}: ${(per*100).toFixed(2)}% each (grp ${(row.frac*100).toFixed(2)}%) [${row.note}]`); });
-  console.log('\n=== '+name+(r.aul?' [AUL]':'')+(r.radd?' [RADD]':'')+' ===');
-  out.forEach(o=>console.log('  '+o));
-  console.log('  GROUP TOTAL: '+(total*100).toFixed(2)+'%'+(r.residue>1e-6?'  (leftover '+(r.residue*100).toFixed(2)+'%)':''));
-  if(expect) console.log('  EXPECT: '+expect);
+verify('son and daughter 2:1',{sons:1,daughters:1},{Son:2/3,Daughter:1/3});
+verify('wife and parents Umariyya',{wives:1,mother:true,father:true},{Wife:1/4,Mother:1/4,Father:1/2});
+verify('husband and parents Umariyya',{gender:'female',husband:true,mother:true,father:true},{Husband:1/2,Mother:1/6,Father:1/3});
+verify('husband and two full sisters Aul',{gender:'female',husband:true,fSis:2},{Husband:3/7,'Full sisters':4/7},{aul:true});
+verify('daughter only Radd',{daughters:1},{Daughter:1},{radd:true});
+verify('wife and daughter Radd',{wives:1,daughters:1},{Wife:1/8,Daughter:7/8},{radd:true});
+verify('daughter and father',{daughters:1,father:true},{Daughter:1/2,Father:1/2});
+verify('mother reduced by two blocked siblings',{mother:true,father:true,fBro:2},{Mother:1/6,Father:5/6});
+verify('Bukhari 6742 daughter granddaughter sister',{daughters:1,gdaughters:1,fSis:1},{Daughter:1/2,"Son's daughter":1/6,'Full sister':1/3});
+verify('two daughters block sons daughter',{daughters:2,gdaughters:1},{Daughters:1},{radd:true});
+verify('son grandson blocks siblings',{gsons:1,fBro:2,fSis:1},{"Son's son":1});
+verify('maternal sibling single',{uSib:1},{'Maternal sibling':1},{radd:true});
+verify('full brother and sister 2:1',{fBro:1,fSis:1},{'Full brother':2/3,'Full sisters':1/3});
+verify('full sisters and paternal brother',{fSis:2,pBro:1},{'Full sisters':2/3,'Paternal brother':1/3});
+verify('father blocks paternal grandmother',{father:true,paternalGM:true,maternalGM:true},{"Mother's mother":1/6,Father:5/6});
+verify('mother blocks both grandmothers',{mother:true,maternalGM:true,paternalGM:true},{Mother:1},{radd:true});
+verify('two eligible grandmothers share sixth',{maternalGM:true,paternalGM:true},{'Eligible grandmothers':1},{radd:true});
+verify('full nephew receives residue',{wives:1,fNephews:2},{Wife:1/4,"Full brother's sons":3/4});
+verify('full nephew blocks paternal nephew',{fNephews:1,pNephews:2},{"Full brother's sons":1});
+verify('full uncle precedes paternal uncle',{fUncles:1,pUncles:1},{'Full paternal uncles':1});
+verify('paternal uncle son as remote residuary',{pUncleSons:2},{"Paternal half-uncle's sons":1});
+
+let fuzzFailures=0;
+for(let n=0;n<50000;n++){
+  const count=()=>Math.floor(Math.random()*4);
+  const input={...B,gender:Math.random()<.5?'male':'female',wives:count(),husband:Math.random()<.5,
+    mother:Math.random()<.5,father:Math.random()<.5,gFather:Math.random()<.5,
+    maternalGM:Math.random()<.5,paternalGM:Math.random()<.5,sons:count(),daughters:count(),
+    gsons:count(),gdaughters:count(),fBro:count(),fSis:count(),pBro:count(),pSis:count(),uSib:count(),
+    fNephews:count(),pNephews:count(),fUncles:count(),pUncles:count(),fUncleSons:count(),pUncleSons:count()};
+  const result=computeFaraid(input);
+  const total=result.rows.reduce((sum,row)=>sum+row.frac,0)+result.residue;
+  if(!Number.isFinite(total)||!near(total,1)||result.rows.some(row=>!Number.isFinite(row.frac)||row.frac<0)) fuzzFailures++;
 }
-
-run('Wife + 5 sons + 3 daughters', {E:3500000,gender:'male',wives:1,sons:5,daughters:3}, 'wife 12.5, son 13.46 each, daughter 6.73 each');
-run('Husband+mother+father (Umariyyatayn)', {E:1,gender:'female',husband:true,mother:true,father:true}, 'husband 1/2, mother 1/6, father 1/3');
-run('Wife+mother+father (Umariyyatayn)', {E:1,gender:'male',wives:1,mother:true,father:true}, 'wife 1/4, mother 1/4, father 1/2');
-run('Husband+mother+2 daughters (AUL)', {E:1,gender:'female',husband:true,mother:true,daughters:2}, 'husband 3/13=23.08, mother 2/13=15.38, daughters 8/13=61.54');
-run('Daughter + full sister', {E:1,gender:'male',daughters:1,fSis:1}, 'daughter 1/2, full sister residue 1/2');
-run('Mother + 2 daughters (RADD, no spouse)', {E:1,gender:'male',mother:true,daughters:2}, 'mother 1/5=20, daughters 4/5=80 (40 each)');
-run('Husband + mother + 1 full sister', {E:1,gender:'female',husband:true,mother:true,fSis:1}, 'husband 1/2, mother 1/3, full sister 1/2 -> AUL 6/8,? actually sum=1/2+1/3+1/2=4/3 aul');
-run('Wife + 2 uterine siblings + 1 full brother', {E:1,gender:'male',wives:1,uSib:2,fBro:1}, 'wife 1/4, uterine 1/3, full brother residue 5/12');
-run('Father + mother + 1 son (no spouse)', {E:1,gender:'female',father:true,mother:true,sons:1}, 'father 1/6, mother 1/6, son residue 2/3');
-
-console.log('\n--- DEEP AUDIT CASES ---');
-run('Wife + 2 daughters (RADD)', {E:1,gender:'male',wives:1,daughters:2}, 'wife 1/8=12.5, daughters 7/8 (43.75 each)');
-run('Husband ALONE (no other heir)', {E:1,gender:'female',husband:true}, 'husband 1/2, rest 1/2 unassigned (no radd to spouse)');
-run('2 sons only', {E:1,gender:'male',sons:2}, 'each son 1/2');
-run('Father + mother + 2 full brothers (blocked, mother still 1/6)', {E:1,gender:'male',father:true,mother:true,fBro:2}, 'mother 1/6, father 5/6, brothers BLOCKED (nothing)');
-run('1 daughter + 1 son-daughter (granddaughter completes 2/3 then RADD)', {E:1,gender:'male',daughters:1,gdaughters:1}, 'daughter 3/4, son-daughter 1/4 (after radd)');
-run('2 daughters + 1 son-daughter (granddaughter BLOCKED)', {E:1,gender:'male',daughters:2,gdaughters:1}, 'daughters get all (each 1/2), granddaughter 0');
-run('1 daughter + 1 son-son (grandson)', {E:1,gender:'male',daughters:1,gsons:1}, 'daughter 1/2, grandson 1/2');
-run('Son-son + son-daughter only', {E:1,gender:'male',gsons:1,gdaughters:1}, 'grandson 2/3, granddaughter 1/3');
-run('Wife + mother + 2 uterine (RADD)', {E:1,gender:'male',wives:1,mother:true,uSib:2}, 'wife 1/4, mother 1/4, uterine 1/2 (after radd)');
-run('Husband + 2 full sisters (AUL)', {E:1,gender:'female',husband:true,fSis:2}, 'husband 1/2 + sisters 2/3 = 7/6 aul -> husband 3/7, sisters 4/7');
-run('Mother + father (no spouse, no kids) — mother 1/3 of WHOLE', {E:1,gender:'male',mother:true,father:true}, 'mother 1/3, father 2/3 (NOT umariyyatayn, no spouse)');
-run('BUG CHECK: 2 full sisters + 1 paternal brother', {E:1,gender:'male',fSis:2,pBro:1}, 'full sisters 2/3 (each 1/3), paternal brother residue 1/3');
-run('BUG CHECK: 2 full sisters + 1 paternal sister (no pat brother)', {E:1,gender:'male',fSis:2,pSis:1}, 'full sisters get all via radd; paternal sister BLOCKED (0)');
+assert.equal(fuzzFailures,0,'Random invariant failures detected');
+console.log('PASS  50,000 randomized arithmetic/blocking invariants');
+console.log('All 21 canonical regressions passed.');
