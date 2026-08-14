@@ -1520,8 +1520,8 @@ const TOOL_PAGES = {
   'ppt-to-pdf':    'tools/ppt-to-pdf.html',
   'pdf-to-excel':  'tools/pdf-to-excel.html',
   'excel-to-pdf':  'tools/excel-to-pdf.html',
-  'inheritance':   'tools/inheritance-calc.html',
-  'warasat':       'tools/inheritance-calc.html',
+  'inheritance':   'tools/inheritance-calc-advanced.html',
+  'warasat':       'tools/inheritance-calc-advanced.html',
   /* ── PDF utilities & generators (Part 5) ── */
   'rotate-pdf':         'tools/rotate-pdf.html',
   'reorder-pdf':        'tools/reorder-pdf.html',
