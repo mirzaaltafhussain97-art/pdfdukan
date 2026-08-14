@@ -264,6 +264,7 @@ const IC = (() => {
   function ruleSource(label){
     if(/wife|husband/i.test(label)) return 'Qur’an 4:12';
     if(/maternal sibling/i.test(label)) return 'Qur’an 4:12';
+    if(/brother's sons|paternal uncles|uncle's sons/i.test(label)) return 'Sahih al-Bukhari 6732; Hanafi order of nearest male residuaries';
     if(/^mother$|^father$|^son$|^each son$|^daughter|^daughters$/i.test(label)) return 'Qur’an 4:11';
     if(/son's son|son's daughter/i.test(label)) return 'Sahih al-Bukhari 6742; Hanafi faraid';
     if(/full sister|full brother|paternal sister|paternal brother/i.test(label)) return 'Qur’an 4:176; Sahih al-Bukhari 6742';
