@@ -1913,7 +1913,7 @@ function _initCookieBanner() {
     '<span class="ccb-text">We use cookies for basic functionality and to show relevant ads. ' +
     'By continuing, you agree to our <a href="' + base + 'cookies.html">Cookie Policy</a>.</span>' +
     '<div class="ccb-btns">' +
-      '<a href="' + base + 'cookies.html" class="ccb-more" aria-label="Learn more about our cookie policy">Learn More</a>' +
+      '<a href="' + base + 'cookies.html" class="ccb-more" aria-label="Learn more about our cookie policy">Cookie Policy details</a>' +
       '<button class="ccb-accept" onclick="_acceptCookies()">Accept</button>' +
     '</div>';
   const st = document.createElement('style');

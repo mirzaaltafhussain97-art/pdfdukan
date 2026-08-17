@@ -233,7 +233,7 @@
     </button>
     <button class="icon-btn notif-btn-wrap" id="notifBtn" onclick="toggleNotifications()" aria-label="Notifications" style="position:relative">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--error);color:#fff;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+      <span id="notifBadge" aria-hidden="true" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--error);color:#fff;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
     </button>
     <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -373,12 +373,12 @@
           </div>
         </div>
 
-        <div class="upload-box" id="uploadBox" role="button" tabindex="0" aria-label="Upload or scan document">
+        <div class="upload-box" id="uploadBox" role="button" tabindex="0">
           <div class="upload-icon" aria-hidden="true">📁</div>
           <h2 class="upload-text" data-i18n="upload.drop">Drop documents here or click to upload</h2>
           <p class="upload-hint" data-i18n="upload.hint">Supports JPG, PNG, PDF — process multiple files at once</p>
           <div class="upload-actions">
-            <button class="action-btn primary" onclick="event.stopPropagation();window.location.href='scanner.html'" aria-label="Open scanner">
+            <button class="action-btn primary" onclick="event.stopPropagation();window.location.href='scanner.html'" aria-label="Smart Scan">
               <span>📷</span> <span data-i18n="hero.btn.scan">Smart Scan</span>
             </button>
             <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputImg').click()" aria-label="Import images">
@@ -470,7 +470,7 @@
         <!-- Image & Scan & OCR -->
         <div class="tool-category-label">🖼️ Image, Scan &amp; OCR</div>
         <div class="tools-grid" style="margin-bottom:22px">
-          <div class="tool-card" onclick="openTool('scan')" role="button" tabindex="0" aria-label="Smart Scan"><div class="tool-icon-wrap scan">📷</div><div class="tc-name">Smart Scan</div><div class="tc-desc">AI edge detection</div><span class="tc-badge" style="background:var(--primary)">AI</span></div>
+          <div class="tool-card" onclick="openTool('scan')" role="button" tabindex="0"><div class="tool-icon-wrap scan">📷</div><div class="tc-name">Smart Scan</div><div class="tc-desc">AI edge detection</div><span class="tc-badge" style="background:var(--primary)">AI</span></div>
           <div class="tool-card" onclick="openTool('ocr')" role="button" tabindex="0"><div class="tool-icon-wrap ocr">🔤</div><div class="tc-name">OCR Text</div><div class="tc-desc">Image to text</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('img-compress')" role="button" tabindex="0"><div class="tool-icon-wrap img-compress">🗜️</div><div class="tc-name">Image Compressor</div><div class="tc-desc">JPG, PNG, WebP</div><span class="tc-badge">FREE</span></div>
           <div class="tool-card" onclick="openTool('searchable-pdf')" role="button" tabindex="0"><div class="tool-icon-wrap" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div><div class="tc-name">Searchable PDF</div><div class="tc-desc">OCR text layer</div><span class="tc-badge">FREE</span></div>
@@ -533,7 +533,7 @@
       <!-- SEO: Keyword-rich intro paragraph -->
       <div class="page-section" style="max-width:800px;margin:0 auto 40px;padding:0 20px;text-align:center">
         <p style="font-size:15px;line-height:1.8;color:var(--text-2)">
-          PDFdukan is a completely free online PDF converter and document scanner that works directly in your browser — no installation, no app download, and no sign-up required for basic use. Convert images to PDF, merge multiple PDFs into one, split large PDFs by page range, compress JPG and PNG images without quality loss, and extract text from scanned documents using AI-powered OCR. The <a href="scanner.html" style="color:var(--primary)">CamMaster document scanner</a> uses computer vision to automatically detect document edges, apply perspective correction, and enhance scan quality — turning any smartphone photo into a crisp, professional-quality scan. All tools work on any device including mobile phones, tablets, and desktops, and support dozens of formats including JPG, PNG, WEBP, DOCX, PPTX, and XLSX. Your files are processed entirely on your device — they never leave your browser, ensuring complete privacy for sensitive documents like contracts, IDs, and financial records.
+          PDFdukan is a completely free online PDF converter and document scanner that works directly in your browser — no installation, no app download, and no sign-up required for basic use. Convert images to PDF, merge multiple PDFs into one, split large PDFs by page range, compress JPG and PNG images without quality loss, and extract text from scanned documents using AI-powered OCR. The <a href="scanner.html" style="color:var(--primary);text-decoration:underline;text-underline-offset:2px">CamMaster document scanner</a> uses computer vision to automatically detect document edges, apply perspective correction, and enhance scan quality — turning any smartphone photo into a crisp, professional-quality scan. All tools work on any device including mobile phones, tablets, and desktops, and support dozens of formats including JPG, PNG, WEBP, DOCX, PPTX, and XLSX. Your files are processed entirely on your device — they never leave your browser, ensuring complete privacy for sensitive documents like contracts, IDs, and financial records.
         </p>
       </div>
 
@@ -637,11 +637,11 @@
       </button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field">
-        <label>Email Address</label>
+        <label for="siEmail">Email Address</label>
         <input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="auth-field">
-        <label>Password</label>
+        <label for="siPass">Password</label>
         <input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"
                onkeydown="if(event.key==='Enter')signInEmail()">
       </div>
@@ -662,13 +662,13 @@
       <!-- Row 1: Username + Full Name -->
       <!-- Full Name -->
       <div class="auth-field">
-        <label>Full Name</label>
+        <label for="suName">Full Name</label>
         <input type="text" id="suName" placeholder="Your full name" autocomplete="name">
       </div>
 
       <!-- Row 3: Email -->
       <div class="auth-field">
-        <label>Gmail / Email Address</label>
+        <label for="suEmail">Gmail / Email Address</label>
         <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email">
       </div>
 
@@ -678,13 +678,13 @@
       <!-- Row 5: Passwords -->
       <div class="auth-field-row">
         <div class="auth-field">
-          <label>Password</label>
+          <label for="suPass">Password</label>
           <input type="password" id="suPass" placeholder="Min. 8 chars"
                  autocomplete="new-password" oninput="updatePwStrength(this.value)">
           <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
         </div>
         <div class="auth-field">
-          <label>Confirm Password</label>
+          <label for="suPassConf">Confirm Password</label>
           <input type="password" id="suPassConf" placeholder="Repeat password"
                  autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
         </div>
@@ -697,8 +697,8 @@
 </div>
 
 <!-- Hidden file inputs — capture files before redirect for unified UX -->
-<input type="file" id="fileInputImg" accept="image/*" multiple>
-<input type="file" id="fileInputPDF" accept=".pdf" multiple>
+<input type="file" id="fileInputImg" accept="image/*" multiple aria-label="Import images">
+<input type="file" id="fileInputPDF" accept=".pdf" multiple aria-label="Import PDF">
 
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
