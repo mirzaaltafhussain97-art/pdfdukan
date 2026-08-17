@@ -36,6 +36,22 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/home.html',
+        destination: '/',
+        permanent: true,
+      },
+      // Preserve useful legacy URLs found in Google crawl reports.
+      {
+        source: '/about',
+        destination: '/about.html',
+        permanent: true,
+      },
+      {
+        source: '/image-resize',
+        destination: '/tools/compress.html',
+        permanent: true,
+      },
       // Friendly extensionless hub URLs shared by users and search engines.
       {
         source: '/tools',
