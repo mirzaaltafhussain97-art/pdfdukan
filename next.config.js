@@ -16,7 +16,7 @@ const nextConfig = {
   // root page, so without this "/" would 404 — that was the deploy bug).
   async rewrites() {
     return [
-      { source: '/', destination: '/home.html' },
+      { source: '/', destination: '/site-root-internal.html' },
     ];
   },
 
@@ -199,6 +199,11 @@ const nextConfig = {
       {
         source: '/:path*.html',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' }],
+      },
+      {
+        // Internal rewrite target for "/"; do not index this implementation URL.
+        source: '/site-root-internal.html',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
     ];
   },
