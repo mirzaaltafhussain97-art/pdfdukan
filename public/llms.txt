@@ -10,21 +10,29 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 ## Primary Pages
 - [Home — Free PDF Tools & Document Scanner](https://pdfdukan.com/): Overview of all tools and CamMaster scanner
 - [CamMaster Scanner](https://pdfdukan.com/scanner.html): AI-powered document scanner — scan, crop, enhance, export to PDF/JPG
+- [CamScanner Alternatives](https://pdfdukan.com/alternatives.html): Evidence-linked comparison of current browser, Android and iPhone document-scanning workflows
 - [All Tools](https://pdfdukan.com/tools.html): Curated PDF and document tools
 - [Blog](https://pdfdukan.com/blog/index.html): In-depth guides on PDF tools, document scanning, and productivity
 
 ## Core PDF Tools
-- [Image to PDF](https://pdfdukan.com/tools/img-to-pdf.html): Convert JPG, PNG, WEBP images to PDF
-- [PDF to JPG](https://pdfdukan.com/tools/pdf-to-img.html): Extract PDF pages as JPG images
-- [Merge PDF](https://pdfdukan.com/tools/merge-pdf.html): Combine multiple PDFs into one
-- [Split PDF](https://pdfdukan.com/tools/split-pdf.html): Split PDF into individual pages or ranges
-- [Compress PDF](https://pdfdukan.com/tools/compress-pdf.html): Reduce PDF file size
-- [OCR](https://pdfdukan.com/tools/ocr.html): Extract text from scanned documents
-- [Word to PDF](https://pdfdukan.com/tools/word-to-pdf.html): Convert DOCX to PDF
-- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html): Extract PDF content into a Word-compatible document
-- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html): Remove an open password when the correct password is supplied
+- [JPG and PNG to PDF](https://pdfdukan.com/tools/img-to-pdf.html): Combine source images into PDF pages; output sharpness depends on source pixels and page sizing
+- [PDF to JPG or PNG](https://pdfdukan.com/tools/pdf-to-img.html): Rasterize selected PDF pages at a chosen DPI; text becomes pixels
+- [Merge PDF](https://pdfdukan.com/tools/merge-pdf.html): Combine and reorder selected PDF pages locally; verify complex forms and annotations
+- [Split PDF](https://pdfdukan.com/tools/split-pdf.html): Extract PDF pages or ranges locally, subject to browser memory
+- [Compress PDF](https://pdfdukan.com/tools/compress-pdf.html): Rasterize PDF pages at a selected quality to attempt file-size reduction
+- [Image to Text OCR](https://pdfdukan.com/tools/ocr.html): Recognize editable English, Urdu, Arabic and other printed text with browser-based Tesseract.js
+- [Smart Document Scan](https://pdfdukan.com/scanner.html): ONNX corner detection with OpenCV fallback, manual crop correction, filters and PDF/JPG export
+- [Image Compressor and Resizer](https://pdfdukan.com/tools/compress.html): Resize or re-encode JPG, PNG and WebP; quality and target-size results vary
+- [Searchable PDF from English Scan](https://pdfdukan.com/tools/searchable-pdf.html): Add an approximate invisible OCR word layer to one English JPG or PNG scan
+- [HTML to PDF Print Preview](https://pdfdukan.com/tools/html-to-pdf.html): Prepare one HTML document for the browser Print to PDF workflow; rendering can vary
+- [Hanafi Islamic Inheritance Estimate](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Educational faraid estimate, not a fatwa or legal distribution
+- [Word to PDF](https://pdfdukan.com/tools/word-to-pdf.html): Reconstruct common DOCX content as PDF; complex Word layouts can differ
+- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word.html): Reconstruct searchable PDF text and supported content into DOCX; manual cleanup may be required
+- [PDF to Excel](https://pdfdukan.com/tools/pdf-to-excel.html): Infer worksheet rows and columns from positioned searchable-PDF text; verify extracted data
+- [PDF to PowerPoint](https://pdfdukan.com/tools/pdf-to-ppt.html): Place each PDF page as a non-editable full-slide image in PPTX
+- [PDF Restriction Compatibility Check](https://pdfdukan.com/tools/unlock-pdf.html): Re-save supported unencrypted PDFs; does not decrypt files or bypass unknown passwords
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
-- [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html): Rotate, reorder and delete PDF pages
+- [Rotate, Reorder and Delete PDF Pages](https://pdfdukan.com/tools/pdf-organizer.html): One visual PDF Organizer for page rotation, ordering and removal
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
 - [Edit, Annotate & Sign PDF](https://pdfdukan.com/tools/pdf-editor.html): Visually replace selectable text lines and add annotations, images, links, shapes and signatures; flattened output does not structurally rewrite PDF text objects
 - [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Estimate Islamic faraid inheritance shares
@@ -41,6 +49,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [How to Split a PDF](https://pdfdukan.com/blog/split-pdf-guide.html)
 - [How to Scan CNIC & Documents in Pakistan](https://pdfdukan.com/blog/scan-cnic-documents-pdf-pakistan.html)
 - [How to Scan Documents with Your Phone](https://pdfdukan.com/blog/scan-documents-phone.html)
+- [Best Free CamScanner Alternatives](https://pdfdukan.com/alternatives.html)
 - [How OCR Works](https://pdfdukan.com/blog/how-ocr-works.html)
 - [Islamic Inheritance (Faraid) Guide](https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html)
 

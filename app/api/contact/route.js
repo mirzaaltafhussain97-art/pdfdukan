@@ -94,7 +94,7 @@ function buildConfirmationEmail(name) {
           <td style="padding:32px;">
             <h2 style="margin:0 0 12px;color:#f0f0f0;font-size:18px;font-weight:700;">✅ We received your message, ${escapeHtml(name)}!</h2>
             <p style="margin:0 0 16px;color:#aaa;font-size:14px;line-height:1.7;">
-              Thank you for reaching out to PDFdukan support. We've received your message and will reply to this email address within <strong style="color:#f0f0f0;">24 hours</strong>.
+              Thank you for reaching out to PDFdukan support. We've received your message and will reply to this email address after it has been reviewed.
             </p>
             <p style="margin:0 0 16px;color:#aaa;font-size:14px;line-height:1.7;">
               While you wait, you might find answers in our <a href="https://pdfdukan.com/help.html" style="color:#ff6333;text-decoration:underline;">Help &amp; FAQ Center</a>.
@@ -221,7 +221,7 @@ export async function POST(request) {
     }).catch(err => console.warn('[contact] Confirmation email failed:', err));
 
     return NextResponse.json(
-      { success: true, message: 'Your message has been sent successfully! We\'ll reply within 24 hours.' },
+      { success: true, message: 'Your message has been sent successfully. Response time depends on message volume.' },
       { status: 200 }
     );
 

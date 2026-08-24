@@ -41,6 +41,11 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/site-root-internal.html',
+        destination: '/',
+        permanent: true,
+      },
       // Preserve useful legacy URLs found in Google crawl reports.
       {
         source: '/about',
@@ -52,6 +57,24 @@ const nextConfig = {
         destination: '/tools/compress.html',
         permanent: true,
       },
+      { source: '/ocr', destination: '/tools/ocr.html', permanent: true },
+      { source: '/merge-pdf', destination: '/tools/merge-pdf.html', permanent: true },
+      { source: '/split-pdf', destination: '/tools/split-pdf.html', permanent: true },
+      { source: '/compress-pdf', destination: '/tools/compress-pdf.html', permanent: true },
+      { source: '/image-to-pdf', destination: '/tools/img-to-pdf.html', permanent: true },
+      { source: '/pdf-to-jpg', destination: '/tools/pdf-to-img.html', permanent: true },
+      { source: '/pdf-to-word', destination: '/tools/pdf-to-word.html', permanent: true },
+      { source: '/word-to-pdf', destination: '/tools/word-to-pdf.html', permanent: true },
+      { source: '/pdf-to-excel', destination: '/tools/pdf-to-excel.html', permanent: true },
+      { source: '/pdf-to-ppt', destination: '/tools/pdf-to-ppt.html', permanent: true },
+      { source: '/rotate-pdf', destination: '/tools/pdf-organizer.html', permanent: true },
+      { source: '/reorder-pdf', destination: '/tools/pdf-organizer.html', permanent: true },
+      { source: '/unlock-pdf', destination: '/tools/unlock-pdf.html', permanent: true },
+      { source: '/smart-scan', destination: '/scanner.html', permanent: true },
+      { source: '/image-compressor', destination: '/tools/compress.html', permanent: true },
+      { source: '/searchable-pdf', destination: '/tools/searchable-pdf.html', permanent: true },
+      { source: '/html-to-pdf', destination: '/tools/html-to-pdf.html', permanent: true },
+      { source: '/islamic-inheritance', destination: '/tools/inheritance-calc-advanced.html', permanent: true },
       // Friendly extensionless hub URLs shared by users and search engines.
       {
         source: '/tools',
@@ -199,11 +222,6 @@ const nextConfig = {
       {
         source: '/:path*.html',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' }],
-      },
-      {
-        // Internal rewrite target for "/"; do not index this implementation URL.
-        source: '/site-root-internal.html',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
     ];
   },

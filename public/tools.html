@@ -13,7 +13,7 @@
 [
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Image to PDF Converter","url":"https://pdfdukan.com/tools/img-to-pdf.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free PDF Merge Tool","url":"https://pdfdukan.com/tools/merge-pdf.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
-  {"@context":"https://schema.org","@type":"WebApplication","name":"Free OCR Text Extractor","url":"https://pdfdukan.com/tools/ocr.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Image to Text (OCR)","url":"https://pdfdukan.com/tools/ocr.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Image Compressor","url":"https://pdfdukan.com/tools/compress.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Online Document Scanner","url":"https://pdfdukan.com/scanner.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 ]
@@ -343,7 +343,7 @@
       <a href="tools/ocr.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#f57f17,#ffca28)">🔤</div>
         <div class="btc-body">
-          <div class="btc-name">OCR Text Extraction</div>
+          <div class="btc-name">Image to Text (OCR)</div>
           <div class="btc-desc">Extract text from images and scanned documents. Supports 100+ languages via Tesseract.js.</div>
           <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">AI OCR</span><span class="btc-tag">100+ langs</span></div>
         </div>
@@ -373,7 +373,7 @@
     <div class="big-tools-grid">
       <a href="tools/unlock-pdf.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">🔓</div>
-        <div class="btc-body"><div class="btc-name">Unlock PDF</div><div class="btc-desc">Remove printing, copying, and editing restrictions from a PDF.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Unlock</span></div></div>
+        <div class="btc-body"><div class="btc-name">PDF Restriction Check</div><div class="btc-desc">Compatibility re-save for supported unencrypted PDFs; no password bypass.</div><div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">Check</span></div></div>
         <span class="btc-arrow">→</span>
       </a>
       <a href="tools/pdf-metadata.html" class="big-tool-card">
@@ -405,8 +405,8 @@
     <div class="feature-grid">
       <div class="feature-card"><div class="fc-icon">🔒</div><div class="fc-title">100% Private</div><div class="fc-desc">All processing happens locally. Files never leave your device.</div></div>
       <div class="feature-card"><div class="fc-icon">⚡</div><div class="fc-title">Instant Processing</div><div class="fc-desc">No uploads, no waiting. Results appear immediately in your browser.</div></div>
-      <div class="feature-card"><div class="fc-icon">📱</div><div class="fc-title">Works Everywhere</div><div class="fc-desc">Mobile, tablet, desktop — any device with a modern browser works perfectly.</div></div>
-      <div class="feature-card"><div class="fc-icon">💰</div><div class="fc-title">Always Free</div><div class="fc-desc">All basic features are free forever. No hidden fees, no credit card required.</div></div>
+      <div class="feature-card"><div class="fc-icon">📱</div><div class="fc-title">Responsive Tools</div><div class="fc-desc">Designed for current mobile, tablet and desktop browsers; large files may require more device memory.</div></div>
+      <div class="feature-card"><div class="fc-icon">💰</div><div class="fc-title">Free Basic Tools</div><div class="fc-desc">The listed basic tools are currently available without a credit card.</div></div>
     </div>
   </section>
 
@@ -432,7 +432,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTools" style="margin-bottom:6px;text-align:center">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px;text-align:center">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px;text-align:center">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email Address</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
@@ -460,7 +460,7 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20260814a"></script>
+<script src="js/app.js?v=20260824c"></script>
 <script>
 // Tool search filter — hides non-matching cards, empty category sections, and shows a no-results note.
 (function(){
@@ -494,7 +494,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

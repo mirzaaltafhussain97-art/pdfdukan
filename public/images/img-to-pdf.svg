@@ -8,7 +8,7 @@
     <rect x="4" y="4" width="110" height="130" rx="6" fill="#0d0d1a" opacity="0.4"/>
     <rect width="110" height="130" rx="6" fill="#2a2a42"/>
     <rect width="110" height="130" rx="6" fill="none" stroke="#444466" stroke-width="1"/>
-    <rect x="0" y="90" width="110" height="40" rx="0" fill="#222240" rx="0"/>
+    <rect x="0" y="90" width="110" height="40" fill="#222240"/>
     <rect x="0" y="90" width="110" height="40" rx="6" fill="#222240"/>
     <text x="55" y="113" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="12" fill="#888899">JPG</text>
   </g>

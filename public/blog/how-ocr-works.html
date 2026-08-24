@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>How OCR Works in 2026: Extract Text from Any Image | PDFdukan Blog</title>
+<title>How OCR Works: Extract Text from Images | PDFdukan</title>
 <meta name="description" content="Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/blog/how-ocr-works.html">
@@ -148,13 +148,13 @@
     <span class="am-date">By PDFdukan Team</span>
   </div>
 
-  <p>Optical Character Recognition — OCR — is the technology that reads printed or handwritten text from images and converts it into machine-readable characters. In 2026, OCR accuracy for clean printed text is effectively perfect. Modern engines handle multiple scripts, degraded photocopies, and even difficult handwriting with remarkable reliability. Understanding how OCR works helps you get better results, troubleshoot failures, and choose the right settings for your documents. This guide explains the full pipeline, from pixel to text, and provides actionable tips for using <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster's free OCR tool</a> effectively.</p>
+  <p>Optical Character Recognition — OCR — converts text visible in images into machine-readable characters. Results vary widely with the language model, typeface, handwriting, resolution, contrast, skew and page layout. Understanding the pipeline helps you improve inputs and recognize when manual correction is necessary. This guide explains practical factors for using <a href="../tools/ocr.html" style="color:var(--primary)">PDFdukan's browser OCR tool</a>.</p>
 
   <h2>1. A Brief History of OCR</h2>
 
   <p>OCR technology dates to 1914 when Emanuel Goldberg developed a machine that read characters and converted them to telegraph code. Commercial OCR systems emerged in the 1950s to automate postal sorting and bank cheque processing. These early systems used optical template matching — a physical stencil of each character was compared against the scanned image pixel-by-pixel.</p>
 
-  <p>The modern era began with Tesseract, originally developed at Hewlett-Packard in the 1980s and open-sourced by Google in 2005. Tesseract 4 (2018) introduced LSTM neural networks, pushing accuracy from around 85% to above 99% for clean printed Latin-script documents. Today, browser-based OCR using Tesseract.js — a WebAssembly compilation of Tesseract — brings professional-grade text extraction to any device without installing software or uploading files.</p>
+  <p>Tesseract began as an OCR engine at Hewlett-Packard and later became open source. Version 4 introduced an LSTM-based recognition engine. Tesseract.js makes the engine available in web applications, but browser OCR accuracy still depends on the selected language model and the quality and structure of the source image.</p>
 
   <h2>2. The OCR Processing Pipeline</h2>
 
@@ -199,7 +199,7 @@
   <p>CamMaster's scanner applies all of these automatically at capture time. The perspective correction warp handles the keystone distortion from off-angle photography, and the Magic filter boosts ink contrast while suppressing paper grain — both critical preprocessing steps before any OCR pass.</p>
 
   <h3>LSTM-Based Character Recognition</h3>
-  <p>Modern Tesseract uses a Long Short-Term Memory (LSTM) recurrent neural network that reads sequences of characters rather than recognizing each character in isolation. This is a significant architectural advantage: the letter "l" in isolation is easily confused with "1" or "I", but in the context of the word "letter," the LSTM's sequence model resolves the ambiguity correctly. The network was trained on millions of document images across all supported languages and produces not just a character guess but a probability distribution — the confidence score you see highlighted in OCR output.</p>
+  <p>Tesseract's current recognition models use LSTM-based sequence recognition. Context can help distinguish similar characters such as “l”, “1” and “I”, but it does not guarantee the correct result. Training data and behavior differ by language model, and a displayed confidence value is an estimate rather than proof that the text is correct.</p>
 
   <h2>3. How Browser-Based OCR Works with Tesseract.js</h2>
 
@@ -256,7 +256,7 @@
   <h2>5. Getting the Best OCR Results: Practical Tips</h2>
 
   <h3>Lighting and Capture Technique</h3>
-  <p>Even illumination is the most controllable factor in OCR quality. A shadow band across the middle of a page caused by holding a phone at an angle can drop OCR accuracy by 30–40% in that region. When photographing with a phone, use overhead lighting (not a desk lamp at an angle), hold the camera directly above the document (not at an angle), and make sure the entire page is within the frame with at least 1 cm of margin on all sides. Flat surfaces produce better results than curved ones — if scanning a book, press the binding flat or use a book holder.</p>
+  <p>Even illumination is one of the most controllable factors in OCR quality. Shadows, glare and perspective distortion can obscure character shapes. When photographing a page, use diffuse lighting, hold the camera parallel to the paper and keep every edge visible. Flat pages generally recognize better than curved book pages.</p>
 
   <h3>Use the Scanner Before OCR</h3>
   <p>Running OCR directly on a raw camera photo is less effective than first processing it through <a href="../scanner.html" style="color:var(--primary)">CamMaster's document scanner</a>. The scanner applies perspective correction, contrast normalization, and binarization — the exact preprocessing steps that most improve OCR accuracy. Scan first, then OCR on the processed output.</p>
@@ -280,7 +280,7 @@
   <p>Digitizing physical books for personal reference is legal under most jurisdictions' fair use provisions for personal use. For long documents, process chapter by chapter rather than the entire book at once — this keeps individual file sizes manageable and lets you correct OCR errors in focused batches rather than facing a single enormous document to review.</p>
 
   <div class="warn-box">
-    <strong>⚠️ Always Proofread Critical Documents:</strong> OCR accuracy for clean printed text is above 99%, meaning roughly 1 error per 100 characters — about 5–8 errors per A4 page. For documents where accuracy is critical (legal contracts, medical records, financial data), always proofread the extracted text before relying on it.
+    <strong>⚠️ Always Proofread Critical Documents:</strong> There is no fixed accuracy rate that applies to every page. For legal, medical, financial or identity documents, compare the complete extracted text with the source before relying on it.
   </div>
 
   <h2>7. Multi-Language OCR</h2>
@@ -317,7 +317,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleOCR" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
@@ -341,13 +341,13 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="../js/i18n.js?v=20260616c"></script>
-<script src="../js/app.js?v=20260814a"></script>
+<script src="../js/app.js?v=20260824c"></script>
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

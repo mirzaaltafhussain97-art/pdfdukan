@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Compress &amp; Resize Image — Free Online | CamMaster by PDFdukan</title>
-<meta name="description" content="Compress and resize JPG, PNG, WEBP images online for free. Set exact dimensions, social media presets, quality slider. 100% private, no upload.">
+<title>Compress & Resize JPG, PNG or WebP Image | PDFdukan</title>
+<meta name="description" content="Resize and re-encode JPG, PNG or WebP images with dimensions, quality and target-size controls. Results vary by format and image content; compare the output preview.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/compress.html">
 <meta property="og:title" content="Compress &amp; Resize Image — Free Online | CamMaster by PDFdukan">
-<meta property="og:description" content="Compress and resize JPG, PNG, WEBP images online for free. Set exact px dimensions, social media templates, target file size, quality slider. 100% private, no upload.">
+<meta property="og:description" content="Resize and re-encode JPG, PNG or WebP images with dimensions, format, quality and approximate target-size controls.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,7 +31,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="Compress &amp; Resize Image — Free Online | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Compress and resize JPG, PNG, WEBP images online for free. Set exact px dimensions, social media templates, target file size, quality slider. 100% private, no upload.">
+<meta name="twitter:description" content="Resize and re-encode JPG, PNG or WebP images with dimensions, format, quality and approximate target-size controls.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -269,7 +269,7 @@
 #compressBtn:not(:disabled):hover { opacity: .88; }
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Compress Images Online","description":"Reduce JPG, PNG, and WebP image file sizes without visible quality loss using PDFdukan.","step":[{"@type":"HowToStep","name":"Upload Image","text":"Drag and drop or click to upload your JPG, PNG, or WEBP image file."},{"@type":"HowToStep","name":"Adjust Quality and Settings","text":"Set your target quality level or file size. Choose output format JPG, PNG, or WebP."},{"@type":"HowToStep","name":"Download Compressed Image","text":"Click Compress to optimize your image, then download the compressed result."}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Compress or Resize an Image Online","description":"Resize or re-encode a JPG, PNG or WebP image and compare the result before downloading.","step":[{"@type":"HowToStep","name":"Upload Image","text":"Add a supported image from your device."},{"@type":"HowToStep","name":"Choose Output Settings","text":"Set dimensions, output format and quality, or enter an approximate target size."},{"@type":"HowToStep","name":"Review and Download","text":"Process the image, compare the displayed dimensions and bytes, then download the result if it meets your needs."}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Compress & Resize Image","item":"https://pdfdukan.com/tools/compress.html"}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -403,12 +403,12 @@
     <h1>Compress &amp; Resize Image</h1>
     <div style="text-align:center;margin:0 auto 24px;max-width:500px">
       <img src="/images/compress-image.svg"
-           alt="Compress JPG, PNG, WebP images online without quality loss — reduce file size free"
+           alt="Image compressor interface for JPG, PNG and WebP resize and quality controls"
            width="500" height="300"
            loading="eager"
            style="width:100%;max-width:500px;height:auto;border-radius:12px">
     </div>
-    <p>Reduce file size, set exact pixel dimensions, apply social media templates, and hit a target KB — all client-side, 100% private.</p>
+    <p>Resize or re-encode JPG, PNG and WebP images with pixel, preset, quality and target-size controls. File-size targets are approximate and output quality depends on the source and format.</p>
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -434,12 +434,12 @@
     <div class="cr-row">
       <div class="cr-input-group">
         <label>Width (px)</label>
-        <input type="number" id="outWidth" min="1" max="20000" placeholder="Auto">
+        <input type="number" id="outWidth" min="1" max="16000" placeholder="Auto">
       </div>
       <button class="lock-btn locked" id="lockAspect" title="Lock / unlock aspect ratio">🔒</button>
       <div class="cr-input-group">
         <label>Height (px)</label>
-        <input type="number" id="outHeight" min="1" max="20000" placeholder="Auto">
+        <input type="number" id="outHeight" min="1" max="16000" placeholder="Auto">
       </div>
     </div>
 
@@ -553,18 +553,18 @@
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
     <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
-    📖 <strong>Related guide:</strong> <a href="../blog/compress-images-guide.html" style="color:var(--primary);font-weight:600">Compress Images Without Losing Quality →</a>
+    📖 <strong>Related guide:</strong> <a href="../blog/compress-images-guide.html" style="color:var(--primary);font-weight:600">Compress Images While Managing Quality →</a>
   </div>
 
-<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Compress and resize JPG, PNG, WEBP images online for free. Set exact dimensions, social media presets, quality slider. 100% private, no upload.</div>
+<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Choose dimensions and output format, then adjust quality or an approximate target size. JPEG/WebP quality is lossy; PNG may remain large. Compare dimensions, bytes and visible detail before replacing the original.</div>
 <section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>Image Compressor &amp; Resizer — Free &amp; Private</h2>
-    <p class="lead">Reduce image sizes by up to 90%, set exact pixel dimensions, use social media presets, and hit a specific file-size target — all processed locally in your browser. No files leave your device.</p>
+    <p class="lead">Resize or re-encode an image with exact pixel dimensions, presets, format and quality controls. An optional target-size search applies to lossy output, but the final size and visible quality depend on the source.</p>
     <div class="feature-grid">
-      <div class="feature-card"><div class="fc-icon">🗜️</div><div class="fc-title">Up to 90% Reduction</div><div class="fc-desc">Smart quality-reduction removes metadata and optimises encoding without visible artefacts.</div></div>
+      <div class="feature-card"><div class="fc-icon">🗜️</div><div class="fc-title">Measured Size Comparison</div><div class="fc-desc">See original and output bytes, dimensions and the calculated reduction. Some inputs may not become smaller.</div></div>
       <div class="feature-card"><div class="fc-icon">📐</div><div class="fc-title">Exact Pixel Resize</div><div class="fc-desc">Lock aspect ratio and enter exact W×H in pixels, or use the percentage scale slider.</div></div>
       <div class="feature-card"><div class="fc-icon">📱</div><div class="fc-title">Social Templates</div><div class="fc-desc">One-click presets for Facebook, Instagram, YouTube, Twitter/X, and LinkedIn.</div></div>
-      <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">Target File Size</div><div class="fc-desc">Enter a KB limit and the engine recursively reduces quality until the target is met.</div></div>
+      <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">Approximate Target Size</div><div class="fc-desc">For JPG or WebP, the tool searches for the highest tested quality under the requested size when the encoder can reach it.</div></div>
     </div>
   </section>
 
@@ -581,19 +581,19 @@
   <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best format for web images — JPG, PNG, or WebP?</button>
-    <div class="faq-a">WebP provides the best compression for web use — typically 25–35% smaller than JPG at the same visual quality. JPG is best for photographs and images with many colors. PNG is best for images with transparent backgrounds or sharp color boundaries like logos and screenshots. For websites, WebP is the modern standard recommendation.</div>
+    <div class="faq-a">There is no universal winner. JPG is widely used for photographs, PNG is useful for transparency and sharp graphics, and WebP supports both lossy and lossless modes. Compare browser support, output bytes and visible detail for your image.</div>
   </div>
   <div class="faq-item">
-    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How much can I compress an image without visible quality loss?</button>
-    <div class="faq-a">For photographs, 70–85% quality is generally indistinguishable from the original at normal viewing sizes, typically reducing file size by 60–75%. For document scans and text-heavy images, 80–90% is recommended to preserve text legibility. The tool shows a live preview so you can compare quality before downloading.</div>
+    <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How should I balance image size and quality?</button>
+    <div class="faq-a">No single quality percentage is visually lossless for every image. Start with a high setting, inspect text and edges at the intended viewing size, and lower quality gradually. Keep the original because lossy compression cannot be reversed.</div>
   </div>
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I resize the image dimensions as well?</button>
-    <div class="faq-a">Yes. The compression tool includes a resize option where you can set a maximum width or height in pixels. Reducing dimensions is often the most effective way to reduce file size for web use — a 4000×3000px photo resized to 1200×900px can be 85% smaller without any quality tuning.</div>
+    <div class="faq-a">Yes. Enter output width and height, keep the aspect ratio locked when appropriate, or use the scale control. Reducing pixel dimensions often reduces bytes, but the amount varies with the image and output format.</div>
   </div>
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does compression preserve PNG transparent backgrounds?</button>
-    <div class="faq-a">Yes. When you select PNG as the output format, transparency is preserved. When converting to JPG (which does not support transparency), transparent areas are replaced with a white background. WebP supports transparency like PNG while achieving better compression ratios.</div>
+    <div class="faq-a">Yes. PNG output preserves transparency. JPG does not support transparency, so this tool places transparent areas on a white background. WebP output can preserve transparency, although its final size varies by image.</div>
   </div>
 </div>
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
@@ -605,7 +605,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
@@ -640,9 +640,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260814a"></script>
+<script src="../js/app.js?v=20260824c"></script>
 <script src="../js/header.js?v=20260616c"></script>
-<script src="../js/tools.js?v=20260619b"></script>
+<script src="../js/tools.js?v=20260824d"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
@@ -670,7 +670,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

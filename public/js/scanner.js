@@ -616,6 +616,11 @@ const ScannerApp = (() => {
   function _renderExportPreview() {
     const count = document.getElementById('exportPageCount');
     if (count) count.textContent = `${state.pages.length} page${state.pages.length !== 1 ? 's' : ''}`;
+    const jpgButton = document.getElementById('btnDownloadJPG');
+    const zipButton = document.getElementById('btnDownloadZIP');
+    const isMultiPage = state.pages.length > 1;
+    if (jpgButton) jpgButton.style.display = isMultiPage ? 'none' : '';
+    if (zipButton) zipButton.style.display = isMultiPage ? '' : 'none';
   }
 
   function _bindExportControls() {

@@ -1910,11 +1910,11 @@ function _initCookieBanner() {
   const banner = document.createElement('div');
   banner.id = 'cmCookieBanner';
   banner.innerHTML =
-    '<span class="ccb-text">We use cookies for basic functionality and to show relevant ads. ' +
-    'By continuing, you agree to our <a href="' + base + 'cookies.html">Cookie Policy</a>.</span>' +
+    '<span class="ccb-text">PDFdukan uses browser storage for preferences, and Google Analytics may use cookies or similar identifiers. ' +
+    'Read our <a href="' + base + 'cookies.html">Cookies and Local Storage Policy</a>.</span>' +
     '<div class="ccb-btns">' +
-      '<a href="' + base + 'cookies.html" class="ccb-more" aria-label="Learn more about our cookie policy">Cookie Policy details</a>' +
-      '<button class="ccb-accept" onclick="_acceptCookies()">Accept</button>' +
+      '<a href="' + base + 'cookies.html" class="ccb-more" aria-label="Learn more about our cookie policy">Details</a>' +
+      '<button class="ccb-accept" onclick="_acceptCookies()">Got it</button>' +
     '</div>';
   const st = document.createElement('style');
   st.textContent =
@@ -1926,7 +1926,7 @@ function _initCookieBanner() {
     '.ccb-text{font-size:13px;color:var(--text-2,#ccc);flex:1;min-width:200px;line-height:1.5}' +
     '.ccb-text a{color:var(--primary,#ff6333);text-decoration:underline}' +
     '.ccb-btns{display:flex;gap:10px;align-items:center;flex-shrink:0}' +
-    '.ccb-more{font-size:13px;color:var(--text-3,#888);padding:8px 14px;border-radius:7px;' +
+    '.ccb-more{font-size:13px;color:var(--text-2,#ccc);padding:8px 14px;border-radius:7px;' +
     'text-decoration:none;border:1px solid var(--border,#333);background:transparent;white-space:nowrap}' +
     '.ccb-accept{font-size:13px;font-weight:700;color:#fff;background:#ff6333;border:none;' +
     'padding:9px 22px;border-radius:7px;cursor:pointer;white-space:nowrap}' +

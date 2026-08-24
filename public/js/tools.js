@@ -1677,6 +1677,10 @@ const CompressImage = (() => {
 
         // Pre-fill dimension inputs
         _setDimInputs(_origW, _origH, true);
+        _result = null;
+        const previousResult = document.getElementById('resultSection');
+        if (previousResult) previousResult.style.display = 'none';
+        _el('targetKbStatus', 'Enter a KB limit to auto-reduce quality');
 
         // Show settings card
         const sc = document.getElementById('settingsCard');
@@ -1715,6 +1719,12 @@ const CompressImage = (() => {
     const qualSlider = document.getElementById('quality');
     const qualGroup  = qualSlider ? qualSlider.closest('.slider-group') : null;
     if (qualGroup) qualGroup.style.opacity = _outputFormat === 'image/png' ? '0.4' : '1';
+    if (qualSlider) qualSlider.disabled = _outputFormat === 'image/png';
+    const targetKb = document.getElementById('targetKb');
+    if (targetKb) targetKb.disabled = _outputFormat === 'image/png';
+    _el('targetKbStatus', _outputFormat === 'image/png'
+      ? 'PNG uses lossless encoding; quality and target-KB controls do not apply'
+      : 'Enter a KB limit to auto-reduce quality');
   }
 
   /* ── MAIN COMPRESS ────────────────────────────────────────── */
@@ -1731,9 +1741,14 @@ const CompressImage = (() => {
       let outW = wIn  > 0 ? wIn  : _origW;
       let outH = hIn  > 0 ? hIn  : _origH;
 
-      // Clamp to sane maximums
-      outW = Math.max(1, Math.min(outW, 16000));
-      outH = Math.max(1, Math.min(outH, 16000));
+      // Guard browser canvas limits instead of silently changing requested dimensions.
+      outW = Math.round(outW);
+      outH = Math.round(outH);
+      const maxDimension = 16000;
+      const maxArea = 64000000;
+      if (outW < 1 || outH < 1 || outW > maxDimension || outH > maxDimension || outW * outH > maxArea) {
+        throw new Error('Output is too large for safe browser processing. Use dimensions up to 16,000 px and 64 megapixels.');
+      }
 
       const targetKbEl = document.getElementById('targetKb');
       const targetKb   = targetKbEl ? +targetKbEl.value : 0;
@@ -1744,18 +1759,27 @@ const CompressImage = (() => {
       const srcCanvas  = document.createElement('canvas');
       srcCanvas.width  = outW;
       srcCanvas.height = outH;
-      srcCanvas.getContext('2d').drawImage(_srcImg, 0, 0, outW, outH);
+      const srcCtx = srcCanvas.getContext('2d');
+      if (format === 'image/jpeg') {
+        srcCtx.fillStyle = '#ffffff';
+        srcCtx.fillRect(0, 0, outW, outH);
+      }
+      srcCtx.drawImage(_srcImg, 0, 0, outW, outH);
 
       let blob;
       let finalQuality = quality;
 
       if (targetKb > 0 && format !== 'image/png') {
         // Target-size mode: binary search quality until under targetKb
-        blob = await _compressToTargetKb(srcCanvas, format, targetKb);
-        finalQuality = blob._quality; // stashed by helper
-        _el('targetKbStatus', `✓ Hit ${(blob.size / 1024).toFixed(1)} KB at ${Math.round(finalQuality * 100)}% quality`);
+        const targetResult = await _compressToTargetKb(srcCanvas, format, targetKb);
+        blob = targetResult.blob;
+        finalQuality = targetResult.quality;
+        _el('targetKbStatus', targetResult.metTarget
+          ? `✓ ${(blob.size / 1024).toFixed(1)} KB at ${Math.round(finalQuality * 100)}% quality`
+          : `Could not reach ${targetKb} KB at these dimensions; smallest tested output is ${(blob.size / 1024).toFixed(1)} KB`);
       } else {
         blob = await _canvasToBlob(srcCanvas, format, quality);
+        if (format !== 'image/png') _el('targetKbStatus', 'No target size selected');
       }
 
       _result = { blob, format, w: outW, h: outH, quality: finalQuality };
@@ -1780,7 +1804,7 @@ const CompressImage = (() => {
       _el('statCompSize',      _fmtBytes(blob.size));
       _el('cpCompSizeTag',     _fmtBytes(blob.size));
       _el('statCompDims',      `${outW} × ${outH}`);
-      _el('statFinalQuality',  Math.round(finalQuality * 100) + '%');
+      _el('statFinalQuality',  format === 'image/png' ? 'Lossless PNG' : Math.round(finalQuality * 100) + '%');
       const savEl = document.getElementById('statSaving');
       if (savEl) {
         savEl.textContent  = saving > 0 ? `${saving}% smaller` : 'No reduction';
@@ -1789,7 +1813,10 @@ const CompressImage = (() => {
 
       // Show result card
       const rs = document.getElementById('resultSection');
-      if (rs) rs.style.display = '';
+      if (rs) {
+        rs.style.display = 'block';
+        rs.classList.add('show', 'visible');
+      }
       rs?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     } catch (err) {
@@ -1812,7 +1839,6 @@ const CompressImage = (() => {
 
       if (blob.size <= targetBytes) {
         bestBlob = blob;
-        bestBlob._quality = mid;
         lo = mid; // try higher quality while still under target
       } else {
         hi = mid;
@@ -1824,11 +1850,10 @@ const CompressImage = (() => {
     if (!bestBlob) {
       // Even quality=0.01 is too large — return it anyway
       const blob = await _canvasToBlob(canvas, format, 0.01);
-      blob._quality = 0.01;
       toast('Image too large to meet target KB at current dimensions', 'warning');
-      return blob;
+      return { blob, quality: 0.01, metTarget: false };
     }
-    return bestBlob;
+    return { blob: bestBlob, quality: lo, metTarget: true };
   }
 
   /* ── HELPERS ──────────────────────────────────────────────── */

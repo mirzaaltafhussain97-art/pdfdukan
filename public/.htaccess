@@ -59,6 +59,28 @@
 # rewrites /blog/index.html or /blog/<post>.html, which are real files.
 RedirectMatch 301 ^/blog/?$ /blog/index.html
 
+# The implementation file is served at the canonical homepage URL. Redirect
+# direct requests so crawlers and analytics see only one homepage URL.
+Redirect 301 /site-root-internal.html /
+Redirect 301 /ocr /tools/ocr.html
+Redirect 301 /merge-pdf /tools/merge-pdf.html
+Redirect 301 /split-pdf /tools/split-pdf.html
+Redirect 301 /compress-pdf /tools/compress-pdf.html
+Redirect 301 /image-to-pdf /tools/img-to-pdf.html
+Redirect 301 /pdf-to-jpg /tools/pdf-to-img.html
+Redirect 301 /pdf-to-word /tools/pdf-to-word.html
+Redirect 301 /word-to-pdf /tools/word-to-pdf.html
+Redirect 301 /pdf-to-excel /tools/pdf-to-excel.html
+Redirect 301 /pdf-to-ppt /tools/pdf-to-ppt.html
+Redirect 301 /rotate-pdf /tools/pdf-organizer.html
+Redirect 301 /reorder-pdf /tools/pdf-organizer.html
+Redirect 301 /unlock-pdf /tools/unlock-pdf.html
+Redirect 301 /smart-scan /scanner.html
+Redirect 301 /image-compressor /tools/compress.html
+Redirect 301 /searchable-pdf /tools/searchable-pdf.html
+Redirect 301 /html-to-pdf /tools/html-to-pdf.html
+Redirect 301 /islamic-inheritance /tools/inheritance-calc-advanced.html
+
 # 301 redirects for retired duplicate blog URLs (canonical = the -guide versions).
 # Hostinger serves /public files from its static layer, so next.config.js
 # redirects never fire for files that exist — these rules cover that layer.

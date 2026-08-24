@@ -41,8 +41,8 @@
   "mainEntity": [
     {"@type":"Question","name":"How do I convert an image (JPG/PNG) to PDF?","acceptedAnswer":{"@type":"Answer","text":"Go to the Image to PDF tool at pdfdukan.com/tools/img-to-pdf.html. Click 'Choose Images' or drag and drop your JPG, PNG, or WEBP files. Set your preferred page size (A4, Letter, or custom), margin, and orientation. Click 'Generate PDF' and then 'Download PDF'. All processing happens in your browser — your files never leave your device."}},
     {"@type":"Question","name":"Is PDFdukan really 100% free with no hidden charges?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every single tool on PDFdukan — scanning, converting, merging, splitting, compressing, OCR, and all calculators — is 100% free forever. There are no premium tiers, no monthly subscriptions, no per-download fees, and no feature limits. The tools are free because the site is supported by non-intrusive advertising."}},
-    {"@type":"Question","name":"Are my documents and files safe on PDFdukan?","acceptedAnswer":{"@type":"Answer","text":"Yes, completely. All file processing on PDFdukan happens entirely inside your web browser using JavaScript. Your files are never uploaded to any server. PDFdukan's backend never receives, sees, or stores any of your document content. Even the OCR processing uses Tesseract.js running locally in your browser."}},
-    {"@type":"Question","name":"Do I need to create an account to use PDFdukan tools?","acceptedAnswer":{"@type":"Answer","text":"No. All tools work without any account or sign-in. Creating a free account (optional) lets you save documents to Google Drive, access your recent document history across devices, and sync preferences. Basic tool usage is always 100% anonymous."}},
+    {"@type":"Question","name":"How are documents processed on PDFdukan?","acceptedAnswer":{"@type":"Answer","text":"Core processing identified as local on a tool page runs in your browser. Optional connected actions such as Google Drive saving send the selected output to that provider. Review each tool's notice before processing sensitive documents."}},
+    {"@type":"Question","name":"Do I need to create an account to use PDFdukan tools?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the basic document tools. Optional account, contact, analytics and Google Drive features have separate data flows described in the Privacy Policy."}},
     {"@type":"Question","name":"How does OCR text extraction work?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan uses Tesseract.js, a browser-based OCR engine. When you upload an image, the engine preprocesses it (adjusting contrast and threshold), then uses an LSTM neural network trained on millions of documents to recognize characters and reconstruct the text. The accuracy improves with high-contrast, clearly-lit images at 300 DPI or higher."}},
     {"@type":"Question","name":"What file formats does PDFdukan support?","acceptedAnswer":{"@type":"Answer","text":"Input: JPG, JPEG, PNG, WEBP, PDF, DOCX, DOC, PPTX, XLSX, XLS, and HTML. Output: PDF (single or multi-page), JPG, PNG, DOCX, PPTX, XLSX, and ZIP archives. The specific formats available depend on which tool you use."}},
     {"@type":"Question","name":"Why is my PDF not downloading after processing?","acceptedAnswer":{"@type":"Answer","text":"This is usually caused by a browser popup blocker. When the PDF is ready, PDFdukan triggers a download dialog which some browsers block by default. Try: (1) Look for a popup blocked notification in your browser bar and click Allow. (2) Try a different browser (Chrome or Firefox recommended). (3) Disable your adblocker temporarily. (4) Check that JavaScript is enabled."}},
@@ -188,7 +188,7 @@
 
   <div class="faq-item">
     <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my documents uploaded to any server?</button>
-    <div class="faq-a"><strong>No.</strong> All file processing in CamMaster happens entirely inside your browser using JavaScript. Your files never leave your device. PDFdukan's servers only serve the HTML, CSS, and JavaScript files needed to run the application — they never receive your document data.</div>
+    <div class="faq-a">CamMaster's core crop, filter and export workflow runs in your browser. Optional connected actions, such as saving an output to Google Drive, communicate with that provider only when selected. Analytics and normal page requests are separate from document processing; see the Privacy Policy.</div>
   </div>
 
   <div class="faq-item">
@@ -225,7 +225,7 @@
   </div>
 
   <hr>
-  <p>Still need help? <a href="contact.html">Send us a message</a> and we'll reply within 24 hours. 📬</p>
+  <p>Still need help? <a href="contact.html">Send us a message</a>. Response time depends on message volume. 📬</p>
 
 </div>
 
@@ -245,7 +245,7 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="js/app.js?v=20260814a"></script>
+<script src="js/app.js?v=20260824c"></script>
 <script>
 function scrollToSection(id) {
   const el = document.getElementById(id);
@@ -257,7 +257,7 @@ function scrollToSection(id) {
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

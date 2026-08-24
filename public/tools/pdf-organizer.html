@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PDF Organizer — Reorder, Rotate &amp; Delete Pages | PDFdukan</title>
+<title>Rotate, Reorder & Delete PDF Pages Online | PDFdukan</title>
 <meta name="description" content="Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
@@ -275,7 +275,7 @@
 
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔀</div>
-    <h1>PDF Organizer</h1>
+    <h1>Rotate, Reorder &amp; Delete PDF Pages</h1>
     <p>Reorder, rotate, and delete PDF pages visually. Drag thumbnails to rearrange — then download your organized PDF.</p>
   </div>
 
@@ -352,7 +352,7 @@
 
   <div class="ad-slot" style="margin-top:24px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Organize PDF pages visually. Drag to reorder, rotate individual pages, delete unwanted pages — then download. Free online tool, no upload required.</div>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> One visual PDF Organizer handles all three tasks: drag thumbnails to reorder pages, rotate one or all pages in 90-degree steps, and remove unwanted pages before downloading a rebuilt PDF.</div>
 <section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>What is the PDF Organizer?</h2>
     <p>The PDF Organizer lets you rearrange, rotate, and remove pages from any PDF file — all visually, in your browser. No upload to any server, no account needed.</p>
@@ -367,7 +367,7 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I rearrange pages in a PDF for free?</button><div class="faq-a">Yes. Upload your PDF to the organizer, drag thumbnails into any order, then click Apply &amp; Download. The reorganized PDF downloads instantly — free with no watermark.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I rotate just one page in a PDF?</button><div class="faq-a">Hover over the page thumbnail and click the ↻ (clockwise) or ↺ (counter-clockwise) button. Each click rotates that page by 90°. Only that page is affected.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I delete pages from a PDF without Adobe?</button><div class="faq-a">Yes. Hover any page thumbnail and click ✕ to mark it for deletion. The page fades out. Click Apply &amp; Download and the deleted pages will be excluded from the output PDF.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files safe?</button><div class="faq-a">Completely. All processing happens inside your browser using PDF-lib and PDF.js. Your file never leaves your device — no server ever sees it.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How is the selected PDF processed?</button><div class="faq-a">The organizer's PDF.js preview and PDF-lib page operations run in the browser. Keep the original file and verify forms, annotations, signatures, links and unusual PDFs after rebuilding because complex interactive content can behave differently.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a page limit?</button><div class="faq-a">No hard limit. The organizer handles PDFs up to 200+ pages on any modern device. Very large files may take a few extra seconds to render thumbnails.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile?</button><div class="faq-a">Yes. The organizer is fully touch-compatible. On mobile, press and hold a page thumbnail to drag it. The rotate and delete buttons appear on tap.</div></div>
   </section>
@@ -384,7 +384,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
@@ -417,7 +417,7 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260814a"></script>
+<script src="../js/app.js?v=20260824c"></script>
 
 <script>
 /* ── PDF Organizer Engine ─────────────────────────────────────── */
@@ -764,7 +764,7 @@ document.addEventListener('DOMContentLoaded', () => OrgPDF.init());
 window.OrgPDF = OrgPDF;
 </script>
 
-<script src="../js/tools.js?v=20260619b"></script>
+<script src="../js/tools.js?v=20260824d"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
@@ -804,7 +804,7 @@ window.OrgPDF = OrgPDF;
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

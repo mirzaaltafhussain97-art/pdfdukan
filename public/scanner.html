@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>CamMaster Scanner — PDFdukan | Free Document Scanner</title>
-<meta name="description" content="Scan documents online free with CamMaster. AI edge detection, auto-crop, Magic Pro filters, export to PDF or JPG. Works on any device. No installation needed.">
+<meta name="description" content="Scan document photos with browser-based edge detection, crop adjustment, perspective correction and filters. Export JPG or multi-page PDF.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/scanner.html">
 <!-- Open Graph -->
@@ -33,7 +33,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- OpenCV.js (self-hosted 4.8.0 — avoids docs.opencv.org 403 to crawlers + external dependency) -->
-<script async src="/vendor/opencv/opencv.js?v=4.8.0" onload="onOpenCvReady()"></script>
+<script async src="/vendor/opencv/opencv.js?v=4.8.0"></script>
 
 <!-- CDN Libraries -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -129,7 +129,7 @@
   .scanner-wrap { padding: 16px 12px 90px; }
   .scanner-shell{padding:10px;border-radius:16px}
   .scanner-stage-head{display:block}.scanner-kicker{margin-bottom:6px}
-  .scanner-steps{justify-content:flex-start;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}.scanner-steps::-webkit-scrollbar{display:none}.scanner-step{flex:0 0 auto;min-width:92px;scroll-snap-align:start}
+  .scanner-steps{justify-content:stretch;overflow:hidden}.scanner-step{flex:1 1 20%;min-width:0;padding:7px 3px;font-size:10px;white-space:nowrap}
   .scanner-trust-row{grid-template-columns:1fr}
   .scanner-action-bar{align-items:stretch;flex-direction:column}.scanner-action-buttons{display:grid;grid-template-columns:1fr 1fr}.scanner-action-buttons .btn{width:100%}
   .scanner-primary-row{position:sticky;bottom:76px;z-index:30;background:var(--card);padding:8px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg)}
@@ -144,8 +144,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the smart document scanner work?","acceptedAnswer":{"@type":"Answer","text":"CamMaster uses AI-powered edge detection (ONNX neural network) running inside your browser to detect document corners and automatically apply perspective correction."}},{"@type":"Question","name":"Can I scan multiple pages into one PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use Batch Mode to scan as many pages as you need. The scanner auto-processes each one and combines them into a single multi-page PDF."}},{"@type":"Question","name":"Does the scanner upload my photos to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All AI processing, edge detection, and PDF export happen locally in your browser. Your photos and documents never leave your device."}},{"@type":"Question","name":"What is the best lighting for scanning documents?","acceptedAnswer":{"@type":"Answer","text":"Good ambient lighting with no harsh shadows gives the best results. Avoid backlit backgrounds. The auto-enhance filter can correct mild brightness issues."}},{"@type":"Question","name":"What export formats does CamMaster support?","acceptedAnswer":{"@type":"Answer","text":"CamMaster exports scanned documents as multi-page PDF or individual JPG images. PDF export is ideal for sharing; JPG is best for further image editing."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI document scanner work?","acceptedAnswer":{"@type":"Answer","text":"CamMaster attempts an ONNX document-corner model in the browser, with OpenCV.js fallbacks. Perspective correction uses the four selected points, so users should inspect and adjust the crop handles."}},{"@type":"Question","name":"Can I scan multiple pages into one PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Batch Mode processes pages individually and combines the selected pages into one multi-page PDF. Practical batch size depends on device memory and source-image dimensions."}},{"@type":"Question","name":"Does CamMaster upload my photos to a server?","acceptedAnswer":{"@type":"Answer","text":"Core edge detection, enhancement and export run locally. Optional connected actions such as Google Drive saving communicate with that provider only when selected."}},{"@type":"Question","name":"What is the best lighting for scanning documents?","acceptedAnswer":{"@type":"Answer","text":"Use even, diffuse light and avoid glare, strong shadows and backlighting. Inspect the preview because enhancement cannot recover detail that was not captured."}},{"@type":"Question","name":"What export formats does CamMaster support?","acceptedAnswer":{"@type":"Answer","text":"CamMaster exports a multi-page PDF, a JPG for a single page, or a ZIP of JPG images for multiple pages."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-24T00:00:00+05:00">
 </head>
 <body>
 
@@ -332,7 +332,7 @@
             <span>📂</span> Import PDF
           </button>
         </div>
-        <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">🔒 All processing is local — files never leave your device</p>
+        <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">🔒 Core scan processing runs locally in this browser</p>
       </div>
 
       <div class="scanner-trust-row"><div class="scanner-trust-item">🔒 <strong>Private on-device</strong></div><div class="scanner-trust-item">✂️ <strong>Smart edge crop</strong></div><div class="scanner-trust-item">📄 <strong>Multi-page PDF</strong></div></div>
@@ -519,31 +519,6 @@
   </div>
 </nav>
 
-<div class="scanner-wrap" style="padding-top:0">
-  <div class="scanner-seo-desc">
-    CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
-  </div>
-  <div style="max-width:700px;margin:28px auto;padding:0 20px">
-    <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the automatic edge detection?</button>
-      <div class="faq-a">CamMaster's AI edge detection (powered by OpenCV.js Canny edge detection and contour analysis) accurately finds document corners in over 95% of photos with reasonable contrast between the document and background. For best results, place documents on a dark, non-reflective surface with good, even lighting. Manual corner adjustment is always available if auto-detection misses.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
-      <div class="faq-a">Yes. After processing your first image through the crop and filter steps, you arrive at the Pages view. Click "Add More" to upload additional images or PDF pages. All pages appear as thumbnails you can drag to reorder. Export all pages as a single multi-page PDF or as individual JPG files in a ZIP archive.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the Magic Pro filter?</button>
-      <div class="faq-a">Magic Pro is CamMaster's most powerful scan enhancement filter. It applies deep shadow removal using local contrast normalization, aggressive sharpening, and adaptive thresholding to produce crisp, print-quality document scans from phone photos. It's especially effective for documents photographed in low light or with shadows from the photographer's hand.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster work on mobile phones?</button>
-      <div class="faq-a">Yes — CamMaster is fully mobile-optimized. On smartphones, you can upload images directly from your camera roll or take a new photo. The interface adapts to touch controls with larger crop handles and buttons. The entire scanning and export workflow works in mobile browsers without any app installation required.</div>
-    </div>
-  </div>
-</div>
-
 <!-- AUTH MODAL — tabbed Sign In / Sign Up -->
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleScanner">
   <div class="auth-modal">
@@ -567,7 +542,7 @@
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">The basic scanner is currently free. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">
         <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Sign Up with Google
@@ -628,26 +603,26 @@
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20260814a"></script>
-<script src="js/crop.js?v=20260616c"></script>
+<script src="js/app.js?v=20260824c"></script>
+<script src="js/crop.js?v=20260824b"></script>
 <script src="js/filters.js?v=20260616c"></script>
-<script src="js/scanner.js?v=20260814a"></script>
+<script src="js/scanner.js?v=20260824b"></script>
 
 <!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
   <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
-    📖 <strong>Related guide:</strong> <a href="blog/scan-documents-phone.html" style="color:var(--primary);font-weight:600">How to Scan Documents on Your Phone for Free →</a>
+    📖 <strong>Related guides:</strong> <a href="blog/scan-documents-phone.html" style="color:var(--primary);font-weight:600">How to scan documents on your phone</a> · <a href="alternatives.html" style="color:var(--primary);font-weight:600">Compare current CamScanner alternatives</a>
   </div>
 
 <section class="tool-seo-section" aria-label="CamMaster Scanner Info">
   <h2>CamMaster — Free AI Document Scanner Online</h2>
-  <p>CamMaster by PDFdukan is a free, browser-based document scanner that turns photos of documents into clean, professional scans — without any app download. Point your phone camera at any document, upload the photo, and CamMaster automatically detects the document edges, corrects the perspective, removes shadows, and enhances the contrast to produce a sharp, readable scan.</p>
-  <p>The entire process runs in your browser using AI and WebGL — no photo is uploaded to any server. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, salary slips, academic certificates, property papers, and medical reports. Your data stays completely on your device.</p>
+  <p>CamMaster by PDFdukan is a browser-based document scanner that turns document photos into cropped, readable scans without an app download. It detects document edges, corrects perspective, offers enhancement filters, and lets you adjust corners before exporting.</p>
+  <p>Core image processing and PDF export run in your browser. Optional connected features, such as saving to Google Drive, communicate with that service only when you choose them. For sensitive documents, always review the result and the destination before sharing.</p>
 
   <h2>What Makes CamMaster Different from Other Scanners?</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>🤖 AI Edge Detection</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">An ONNX neural network running in your browser automatically finds document corners and corrects perspective — even for documents held at an angle.</p>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">A browser ONNX model attempts corner detection first, with OpenCV.js fallbacks. Review and adjust all four crop handles before perspective correction.</p>
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>📷 No App Needed</strong>
@@ -655,11 +630,11 @@
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>📄 Batch Scanning</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Scan multiple pages and combine them all into one multi-page PDF. Perfect for multi-page forms, booklets, and multi-document submissions.</p>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Scan multiple pages and combine them into one multi-page PDF for forms, booklets or document submissions.</p>
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>🔒 100% Private</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Photos never leave your device. AI processing, enhancement, and PDF export all happen locally. No cloud, no server, no privacy risk.</p>
+      <strong>🔒 Local Core Processing</strong>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Core detection, enhancement, and PDF export run locally. Optional cloud-saving features transfer a file only when you choose to use them.</p>
     </div>
   </div>
 
@@ -696,8 +671,8 @@
 
   <ol>
     <li><strong>Take a photo or upload an image</strong> — Use your phone camera to photograph the document, or upload an existing photo from your gallery. Place the document on a flat, dark surface with good lighting for best results.</li>
-    <li><strong>Auto-detect and crop</strong> — CamMaster's AI automatically detects the four corners of your document and applies perspective correction to remove any tilt or angle. You can also adjust the crop corners manually.</li>
-    <li><strong>Enhance the scan</strong> — Apply the auto-enhance filter to increase contrast, remove shadows, and make text sharper. Choose between colour, greyscale, or black-and-white output.</li>
+    <li><strong>Detect and crop</strong> — CamMaster attempts to detect four document corners and applies perspective correction from the selected points. Inspect and adjust the handles manually when needed.</li>
+    <li><strong>Enhance the scan</strong> — Try an enhancement preset to adjust contrast, shadows and perceived sharpness. Choose colour, greyscale or black-and-white output, and compare the preview with the original.</li>
     <li><strong>Export as PDF or JPG</strong> — Download your scan as a high-quality PDF (ideal for submitting documents) or JPG image. For multi-page documents, all pages are combined into one PDF.</li>
   </ol>
 
@@ -725,7 +700,7 @@
   <h2>Frequently Asked Questions</h2>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How does the AI document scanner work?</button>
-      <div class="faq-a"><p>CamMaster uses an ONNX neural network running inside your browser to detect document edges and automatically apply perspective correction. This AI model identifies the four corners of a document even when photographed at an angle, then warps the image to produce a straight, flat scan — all without sending any data to a server.</p></div>
+      <div class="faq-a"><p>CamMaster attempts an ONNX document-corner model in the browser, with an OpenCV.js multi-method fallback when the model cannot load or detect a reliable quadrilateral. Perspective correction uses the selected four corners. Always inspect the crop handles because automatic detection can be wrong.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
@@ -733,11 +708,11 @@
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster upload my photos to a server?</button>
-      <div class="faq-a"><p>No. All AI processing, edge detection, image enhancement, and PDF export happen locally in your browser using WebGL and JavaScript. Your photos and documents never leave your device. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, financial records, and medical reports.</p></div>
+      <div class="faq-a"><p>Core edge detection, enhancement and export run locally in your browser. Optional connected actions, such as saving an output to Google Drive, communicate with that provider only when selected. For sensitive documents, inspect the destination and output before sharing.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to install an app?</button>
-      <div class="faq-a"><p>No app download is required. CamMaster works directly in your mobile browser — Chrome on Android, Safari on iPhone, Samsung Internet, or any modern browser. Just open pdfdukan.com on your phone and start scanning immediately.</p></div>
+      <div class="faq-a"><p>No app download is required. CamMaster is designed for current Chrome, Safari and Samsung Internet releases. Available memory, browser features and file size can affect performance.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best way to scan a CNIC with CamMaster?</button>
@@ -753,7 +728,7 @@
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is CamMaster completely free?</button>
-      <div class="faq-a"><p>Yes. CamMaster is 100% free — no subscription, no per-scan fee, no account required, no daily limit. Scan as many documents as you need every day without any cost.</p></div>
+      <div class="faq-a"><p>The basic scanner is currently available without a subscription, credit card or account. Practical batch size depends on your device memory and the dimensions of the source images.</p></div>
     </div>
 </section>
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
@@ -771,7 +746,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>

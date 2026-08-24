@@ -42,12 +42,9 @@ function onOpenCvReady() {
   }
 }
 
-/* Robust readiness latch — DO NOT rely solely on the inline
-   onload="onOpenCvReady()" in the HTML. When opencv.js is served from the
-   browser cache, its onload can fire BEFORE this script has defined
-   onOpenCvReady (a ReferenceError that silently kills the latch), leaving
-   window.cvReady stuck false → Magic Pro/crop fall back to the weak JS path.
-   This self-poll guarantees the flag latches regardless of load order. */
+/* Robust readiness latch. OpenCV loads asynchronously and may finish before
+   this file executes, so polling avoids a load-order race and reliably enables
+   the OpenCV path whether the library came from cache or the network. */
 (function pollCvReady() {
   if (window.cvReady) return;
   if (typeof cv !== 'undefined' && cv.Mat) { onOpenCvReady(); }

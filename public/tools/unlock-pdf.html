@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Remove PDF Owner Restrictions Online | PDFdukan</title>
-<meta name="description" content="Free online tool to remove restrictions (printing, copying, editing locks) from a PDF. Runs in your browser, no upload.">
+<title>PDF Restriction Compatibility Check | PDFdukan</title>
+<meta name="description" content="Check whether a PDF can be re-saved by the browser library. Encrypted PDFs are unsupported; this tool does not decrypt or crack passwords.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -124,7 +124,7 @@
 }
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Merge PDF Files Online","description":"Combine multiple PDF files into one using PDFdukan free Merge PDF tool.","step":[{"@type":"HowToStep","name":"Upload PDF Files","text":"Click Add PDFs or drag your PDF files onto the upload area."},{"@type":"HowToStep","name":"Select Pages and Order","text":"Drag files to reorder them. Select specific pages from each file using the page checkboxes."},{"@type":"HowToStep","name":"Download Merged PDF","text":"Click Merge PDFs to combine all selected pages into one PDF and download."}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PDF Restriction Compatibility Check","url":"https://pdfdukan.com/tools/unlock-pdf.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Checks whether the browser PDF library can load and re-save a PDF. It does not decrypt encrypted PDFs or bypass unknown passwords."}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Unlock PDF","item":"https://pdfdukan.com/tools/unlock-pdf.html"}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -247,25 +247,25 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Unlock PDF</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">&#128275;</div><h1>Remove PDF Owner Restrictions</h1><p>Remove compatible no-printing or no-copying owner restrictions in your browser. This tool cannot open a PDF that requires an unknown password.</p></div>
+  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">&#128275;</div><h1>PDF Restriction Compatibility Check</h1><p>Check whether the current browser PDF library can re-save your file. It cannot decrypt encrypted PDFs, remove an unknown password, or guarantee removal of permission restrictions.</p></div>
   <div class="tool-card">
-    <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5d4037">&#9888;&#65039; <strong>Note:</strong> This removes owner restrictions (printing, copying, editing locks). It cannot open a PDF that needs a password just to view it &mdash; you must know that password first.</div>
+    <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5d4037">&#9888;&#65039; <strong>Limitation:</strong> Encrypted and password-protected PDFs are not supported. A successful re-save is not proof that every permission restriction was removed.</div>
     <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
     <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
     <p id="ulInfo" style="font-size:13px;color:var(--text-3);margin-top:12px"></p>
   </div>
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Free online tool to remove restrictions (printing, copying, editing locks) from a PDF. Runs in your browser, no upload.</div>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> The current PDF-lib engine does not support decrypting encrypted PDFs. This page can only attempt a compatibility re-save of PDFs the library can safely load; it is not a password cracker or guaranteed restriction remover.</div>
 <section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
     <h2>Remove Compatible PDF Owner Restrictions</h2>
-    <p>PDFdukan's Unlock PDF tool removes owner restrictions from PDF files — the locks that stop you from printing, copying text, or editing a document you legitimately have. The unlocking happens entirely in your browser using pdf-lib: your file is never uploaded to a server, never stored anywhere, and never seen by anyone else.</p>
-    <p>Many PDFs you receive — bank statements, reports, e-books you purchased, official forms — come with usage restrictions applied by the creator. These restrictions can stop you printing a form you need to fill by hand, or copying a paragraph you need to quote. This tool removes those owner-level locks in seconds so you can use your own documents freely.</p>
-    <p><strong>Important:</strong> this tool removes <em>usage restrictions</em> (no-print, no-copy, no-edit) from PDFs you can already open. It does <strong>not</strong> crack open-passwords — if a PDF asks for a password just to view it, you must know that password. Only unlock documents you own or have the right to use.</p>
+    <p>This page uses PDF-lib to test whether a PDF can be loaded and written again in the browser. PDF-lib's official documentation states that encrypted documents are not supported. Re-saving an ordinary unencrypted PDF is not the same as decrypting it or reliably removing its permission controls.</p>
+    <p>If a PDF asks for a password, reports encryption, contains a digital signature, or has permissions you must preserve, use the document owner's password and a PDF application that explicitly supports that encryption method. Do not rely on a compatibility re-save for legal, signed or archival records.</p>
+    <p><strong>Important:</strong> only process documents you own or are authorised to modify. This tool does not bypass unknown passwords and now fails closed on encrypted input instead of using PDF-lib's discouraged <code>ignoreEncryption</code> option.</p>
 
     <h2>What This Tool Can Remove</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖨️ Print Lock</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Removes the restriction that greys out the Print button — print your forms, statements, and tickets normally.</p></div>
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>📋 Copy Lock</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Removes the restriction that blocks selecting and copying text — quote, reference, and reuse your content.</p></div>
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>✏️ Edit Lock</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Removes the restriction that prevents annotation, form-filling, and modification in PDF editors.</p></div>
+      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖨️ Printing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">A successful re-save does not guarantee that every viewer's printing permission will change.</p></div>
+      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>📋 Copying</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Text selection depends on the PDF content and viewer, not only a permission flag.</p></div>
+      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>✏️ Editing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Forms, signatures and annotations can change when a PDF is rewritten; verify them independently.</p></div>
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 Privacy Kept</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Everything runs locally in your browser. Your bank statements and private documents never touch a server.</p></div>
     </div>
 
@@ -289,7 +289,7 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can it open a password-locked PDF I can't view?</button><div class="faq-a"><p>No. If a PDF requires a password just to open and view it, you must know that password — this tool cannot and will not bypass it. It only removes usage restrictions from PDFs you can already open and read.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it legal to unlock a PDF?</button><div class="faq-a"><p>Removing restrictions from documents you own or have the legal right to use — your own bank statements, forms sent to you, your own authored files — is generally fine. Do not use this tool to violate copyright or the document owner's rights.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are my files uploaded to a server?</button><div class="faq-a"><p>No. The unlocking runs entirely in your browser using the pdf-lib JavaScript library. Your document never leaves your device — which matters for bank statements and personal records.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Will unlocking change the content or quality of my PDF?</button><div class="faq-a"><p>No. The pages, text, images, and layout stay exactly the same. Only the restriction flags are removed — the unlocked PDF looks identical to the original.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can re-saving change the PDF?</button><div class="faq-a"><p>Yes. Rewriting a PDF can change metadata or affect complex forms, annotations, signatures, links and unsupported structures even when visible pages appear similar. Keep the original and verify the result.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is this tool completely free?</button><div class="faq-a"><p>Yes. Unlocking PDFs on PDFdukan is 100% free — no subscription, no signup, no daily limits, and no watermarks added to your file.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on mobile phones?</button><div class="faq-a"><p>Yes. Open PDFdukan in any phone browser — Chrome, Safari, Samsung Internet — upload the locked PDF, and download the unlocked version straight to your phone.</p></div></div>
     <h2>Related Tools</h2>
@@ -301,7 +301,7 @@
 </div>
 <script>
 (function(){
-  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } var fname=f.name.replace(/\.pdf$/i,''); document.getElementById('ulInfo').textContent='Processing '+f.name+'…'; var r=new FileReader(); r.onload=async function(e){ try{ var d=await PDFLib.PDFDocument.load(e.target.result,{ignoreEncryption:true}); var out=await d.save(); var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fname+'_unlocked.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); document.getElementById('ulInfo').textContent='Done! Your unlocked PDF was downloaded.'; if(window.toast) toast('PDF unlocked!','success'); if(window.trackToolUse) trackToolUse('unlock-pdf'); }catch(err){ document.getElementById('ulInfo').textContent=''; if(window.toast) toast('This PDF needs a password to open — cannot unlock it.','error'); console.error(err); } }; r.readAsArrayBuffer(f); }
+  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } var fname=f.name.replace(/\.pdf$/i,''); document.getElementById('ulInfo').textContent='Checking '+f.name+'…'; var r=new FileReader(); r.onload=async function(e){ try{ var d=await PDFLib.PDFDocument.load(e.target.result); if(d.isEncrypted) throw new Error('Encrypted PDFs are not supported by this browser engine.'); var out=await d.save(); var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fname+'_resaved.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); document.getElementById('ulInfo').textContent='Compatibility re-save complete. Verify the downloaded PDF; no restriction removal is guaranteed.'; if(window.toast) toast('PDF re-saved — please verify the result.','success'); if(window.trackToolUse) trackToolUse('pdf-compatibility-resave'); }catch(err){ document.getElementById('ulInfo').textContent='This PDF cannot be processed safely by the current browser engine.'; if(window.toast) toast('Encrypted or unsupported PDF — no file was created.','error'); console.error(err); } }; r.readAsArrayBuffer(f); }
   document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); });
 })();
 </script>
@@ -319,7 +319,7 @@
     </div>
     <div id="panelSignIn">
       <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Sign in with Google to get up to 5 GB of free storage — your files save directly to your own Google Drive. Private and secure.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
       <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
@@ -354,8 +354,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260814a"></script>
-<script src="../js/tools.js?v=20260619b"></script>
+<script src="../js/app.js?v=20260824c"></script>
+<script src="../js/tools.js?v=20260824d"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
@@ -383,7 +383,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>
