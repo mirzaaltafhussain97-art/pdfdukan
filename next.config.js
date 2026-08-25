@@ -207,6 +207,16 @@ const nextConfig = {
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
+        // The document-corner model is about 4.7 MB and changes rarely. Keep a
+        // bounded browser cache so repeat scans do not re-download it, while a
+        // future replacement at the same path still reaches users within a week.
+        source: '/models/:path*',
+        headers: [
+          { key: 'Content-Type', value: 'application/octet-stream' },
+          { key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' },
+        ],
+      },
+      {
         source: '/favicon:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
