@@ -22,8 +22,8 @@
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/searchable-pdf.html">
 <meta property="og:title" content="Create Searchable PDF from Scan (OCR) Free | PDFdukan">
-<meta property="og:description" content="Turn a scanned image into a searchable PDF with an invisible OCR text layer. Free, runs in your browser, no upload.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:description" content="Create a searchable PDF from one English JPG or PNG scan, review the recognised word count, then download and verify the approximate hidden text layer.">
+<meta property="og:image" content="https://pdfdukan.com/images/searchable-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -31,14 +31,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="Create Searchable PDF from Scan (OCR) Free | PDFdukan">
-<meta name="twitter:description" content="Turn a scanned image into a searchable PDF with an invisible OCR text layer. Free, runs in your browser, no upload.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:description" content="Create a searchable PDF from one English JPG or PNG scan and verify the approximate OCR text layer.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/searchable-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
 
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -123,6 +123,7 @@
   display: flex; align-items: center; gap: 6px; margin-top: 10px;
 }
 </style>
+<style>.search-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.search-feature img{display:block;width:100%;height:auto}.search-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.search-feature{grid-template-columns:1fr}.search-feature img{max-width:300px;margin:auto}}</style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to create a searchable PDF from an English scan","description":"Run English OCR on one JPG or PNG image and add an invisible approximate text layer.","step":[{"@type":"HowToStep","name":"Choose a clear image","text":"Select one English JPG or PNG scan."},{"@type":"HowToStep","name":"Run OCR","text":"Tesseract recognises words and approximate bounding boxes in the browser."},{"@type":"HowToStep","name":"Verify the PDF","text":"Download the PDF, then verify search, selection, names and numbers against the image."}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Create Searchable PDF","item":"https://pdfdukan.com/tools/searchable-pdf.html"}]}</script>
@@ -247,21 +248,23 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Searchable PDF</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">&#128269;</div><h1>Create Searchable PDF</h1><p>Turn a scanned image into a PDF you can search and copy text from. OCR runs in your browser.</p></div>
+  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">&#128269;</div><h1>Create Searchable PDF</h1><p>Place an approximate invisible English OCR layer over one JPG or PNG scan, then download and verify search and copying.</p></div>
+  <section class="search-feature" aria-labelledby="searchFeatureTitle"><div><h2 id="searchFeatureTitle" style="font-size:20px;margin:0">Original scan appearance plus searchable OCR words</h2><p>The image remains visible while an invisible text layer is positioned from OCR word boxes. Recognition and alignment are estimates, not a certified transcript.</p></div><img src="../images/searchable-pdf.svg" alt="Illustration of a scanned page receiving a hidden searchable text layer" width="640" height="420"></section>
   <div class="tool-card">
     <h3><span class="tc-icon">&#128228;</span> Upload Scanned Image</h3>
-    <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128247;</div><div class="dz-text">Drop a JPG/PNG scan here or <span class="dz-link">browse</span></div><div class="dz-sub">For multi-page PDFs, convert pages to images first</div></div><input type="file" id="fileInput" accept="image/*" style="display:none"></div>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Choose one English JPG or PNG scan"><div class="dz-inner"><div class="dz-icon">&#128247;</div><div class="dz-text">Drop one JPG/PNG scan here or <span class="dz-link">browse</span></div><div class="dz-sub">Up to 30 MB and 40 megapixels · English OCR · one image per PDF</div></div><input type="file" id="fileInput" accept="image/jpeg,image/png" style="display:none"></div>
     <div class="progress-wrap" id="prog" style="display:none;margin-top:16px"><div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div><div class="progress-label" id="progLbl">Starting…</div></div>
   </div>
+  <div class="tool-card" id="searchResult" style="display:none"><h3><span class="tc-icon">&#9989;</span> Searchable PDF Ready</h3><p id="searchResultInfo" style="font-size:13px;color:var(--text-2);line-height:1.6"></p><button class="btn btn-primary" id="searchDownload" type="button">&#11015;&#65039; Download Searchable PDF</button></div>
   <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Add one clear English JPG or PNG scan. Tesseract OCR creates an invisible approximate word layer behind the image. Search and copy can work, but OCR spelling and text positioning are not guaranteed—verify important content.</div>
-<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>English image OCR · Approximate word layer · Verify important text</span></aside>
     <h2>About This Tool</h2><p>A scanned document is an image without selectable page text. This tool recognises English words and adds invisible Helvetica text using OCR bounding boxes. It can improve search and copying, but fonts, line structure, reading order, spelling and exact selection alignment may differ from the scan.</p>
-    <h2>How to Use</h2><ol><li>Upload a clear JPG or PNG scan.</li><li>Wait while OCR reads the text.</li><li>The searchable PDF downloads automatically.</li><li>Open it and try searching or copying text.</li></ol>
+    <h2>How to Use</h2><ol><li>Select one clear English JPG or PNG scan.</li><li>Wait while OCR reads and positions detected words.</li><li>Review the word count, then download the PDF.</li><li>Open it and verify search, selection, names and numbers against the scan.</li></ol>
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What does searchable mean?</button><div class="faq-a">The PDF gets a hidden text layer, so you can search and select the words even though it looks like a scan.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Which languages work?</button><div class="faq-a">This tool uses English OCR. For other languages, try our OCR tool.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free and private?</button><div class="faq-a">Yes. OCR runs in your browser and nothing is uploaded.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Why is the first run slow?</button><div class="faq-a">The OCR model (~8 MB) loads once. After that it is faster.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Where does OCR processing run?</button><div class="faq-a">Recognition runs in client-side code. The page downloads Tesseract code and English language data from third-party CDNs and can also load normal site assets and analytics.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Why can the first run be slower?</button><div class="faq-a">The browser must download and initialise the OCR engine and English language data. Time varies with network speed, image size and device performance.</div></div>
     <h2>Related Tools</h2>
     <div class="related-tools-grid">
     <a href="ocr.html" class="related-tool-card"><span class="rtc-icon">🔤</span>OCR Text</a>
@@ -272,12 +275,19 @@
 </div>
 <script>
 (function(){
+  var busy=false,lastBlob=null,lastName='searchable.pdf';
   function setProg(p,msg){ document.getElementById('prog').style.display='block'; document.getElementById('progFill').style.width=Math.round(p*100)+'%'; document.getElementById('progLbl').textContent=msg||''; }
+  function safeWinAnsi(text){return String(text||'').replace(/[‘’]/g,"'").replace(/[“”]/g,'"').replace(/[–—]/g,'-').replace(/[^\x20-\x7E\xA0-\xFF]/g,'?');}
+  async function dimensions(file){if(typeof createImageBitmap==='function'){var b=await createImageBitmap(file);var d={w:b.width,h:b.height};b.close();return d;}return new Promise(function(resolve,reject){var im=new Image(),u=URL.createObjectURL(file);im.onload=function(){URL.revokeObjectURL(u);resolve({w:im.naturalWidth,h:im.naturalHeight});};im.onerror=function(){URL.revokeObjectURL(u);reject(new Error('Image decode failed'));};im.src=u;});}
   async function run(file){
-    if(!file||!file.type.startsWith('image/')){ if(window.toast) toast('Please upload an image (JPG/PNG)','error'); return; }
+    if(busy)return;
+    if(!file||!['image/jpeg','image/png'].includes(file.type)){ if(window.toast) toast('Please choose a JPG or PNG image','error'); return; }
+    if(!file.size||file.size>30*1024*1024){if(window.toast)toast(file&&file.size?'Please choose an image no larger than 30 MB':'This image file is empty','error');return;}
     var fname=file.name.replace(/\.[^.]+$/,'');
+    busy=true;lastBlob=null;document.getElementById('searchResult').style.display='none';
     try{
       setProg(0.05,'Loading OCR engine…');
+      var dim=await dimensions(file);if(!dim.w||!dim.h||dim.w*dim.h>40000000)throw new Error('This image exceeds the 40-megapixel browser safeguard. Crop it into smaller sections first.');
       var buf=await file.arrayBuffer();
       var res=await Tesseract.recognize(file,'eng',{logger:function(m){ if(m.status==='recognizing text'){ setProg(0.1+m.progress*0.8,'Reading text… '+Math.round(m.progress*100)+'%'); } }});
       var words=(res.data&&res.data.words)||[];
@@ -286,19 +296,21 @@
       setProg(0.92,'Building searchable PDF…');
       var doc=await PDFLib.PDFDocument.create();
       var img=file.type.indexOf('png')>-1?await doc.embedPng(buf):await doc.embedJpg(buf);
-      var W=img.width,H=img.height;
-      var page=doc.addPage([W,H]);
-      page.drawImage(img,{x:0,y:0,width:W,height:H});
+      var W=img.width,H=img.height,S=72/150,pageW=W*S,pageH=H*S;
+      doc.setTitle(fname);doc.setProducer('PDFdukan Searchable PDF');doc.setSubject('Image with approximate English OCR text layer');
+      var page=doc.addPage([pageW,pageH]);
+      page.drawImage(img,{x:0,y:0,width:pageW,height:pageH});
       var font=await doc.embedFont(PDFLib.StandardFonts.Helvetica);
-      words.forEach(function(w){ var b=w.bbox; var fh=Math.max(4,(b.y1-b.y0)); var y=H-b.y1; try{ page.drawText(w.text,{x:b.x0,y:y,size:fh,font:font,opacity:0}); }catch(e){} });
+      var placed=0;words.forEach(function(w){ var b=w.bbox; var fh=Math.max(3,(b.y1-b.y0)*S); var y=pageH-b.y1*S; var text=safeWinAnsi(w.text); try{ page.drawText(text,{x:b.x0*S,y:y,size:fh,font:font,opacity:0});placed++; }catch(e){} });
       var out=await doc.save();
-      var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob);
-      var a=document.createElement('a'); a.href=url; a.download=fname+'_searchable.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000);
-      setProg(1,'Done! Searchable PDF downloaded.');
-      if(window.toast) toast('Searchable PDF created!','success'); if(window.trackToolUse) trackToolUse('searchable-pdf');
+      lastBlob=new Blob([out],{type:'application/pdf'});lastName=fname+'_searchable.pdf';
+      document.getElementById('searchResultInfo').textContent=placed+' OCR word'+(placed===1?'':'s')+' placed on a 150-DPI page. Download, then verify search, copied text, names, numbers and alignment.';document.getElementById('searchResult').style.display='';
+      setProg(1,'Done! Review the summary, then download.');
+      if(window.toast) toast('Searchable PDF created — verify the OCR layer.','success'); if(window.trackToolUse) trackToolUse('searchable-pdf');
     }catch(e){ document.getElementById('prog').style.display='none'; if(window.toast) toast(e.message||'Failed to create searchable PDF','error'); console.error(e); }
+    finally{busy=false;}
   }
-  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){run(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)run(e.dataTransfer.files[0]);}); });
+  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();};dz.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click();}}; inp.onchange=function(e){run(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)run(e.dataTransfer.files[0]);});document.getElementById('searchDownload').onclick=function(){if(!lastBlob)return;var u=URL.createObjectURL(lastBlob),a=document.createElement('a');a.href=u;a.download=lastName;document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u);},2000);}; });
 })();
 </script>
 <nav class="mobile-nav"><div class="mob-nav-items">
@@ -350,8 +362,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

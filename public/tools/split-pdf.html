@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Split PDF Online — Extract Pages & Ranges | PDFdukan</title>
-<meta name="description" content="Split PDF by dragging visual breakpoints between page thumbnails. Or split every page, every N pages, or custom ranges. Free online tool. PDFdukan CamMaster.">
+<meta name="description" content="Split a PDF into page ranges, every page, fixed-size groups or visual sections. Download separate PDFs or one ZIP. Runs in your browser without an account.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -21,18 +21,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/split-pdf.html">
-<meta property="og:title" content="Split PDF — Visual Page Breakpoints | CamMaster by PDFdukan">
-<meta property="og:description" content="Split PDF by dragging visual breakpoints between page thumbnails. Or split every page, every N pages, or custom ranges. Free online tool. PDFdukan CamMaster.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:title" content="Split PDF Online — Pages, Ranges &amp; ZIP | PDFdukan">
+<meta property="og:description" content="Split a PDF by exact ranges, every page, fixed-size groups or visual breakpoints. Download individual PDFs or one ZIP.">
+<meta property="og:image" content="https://pdfdukan.com/images/split-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Split PDF — Visual Page Breakpoints | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Split PDF by dragging visual breakpoints between page thumbnails. Or split every page, every N pages, or custom ranges. Free online tool. PDFdukan CamMaster.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:title" content="Split PDF Online — Pages, Ranges &amp; ZIP | PDFdukan">
+<meta name="twitter:description" content="Create separate PDFs by exact page ranges or visual breakpoints, with a ZIP for multiple results.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/split-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -40,7 +40,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* ── Split mode cards ──────────────────────────────────────── */
 .split-mode-cards {
@@ -55,6 +55,8 @@
   border-color: var(--primary); background: var(--primary-soft);
 }
 .mode-card input[type=radio] { display: none; }
+.mode-card.mode-disabled { opacity:.55; cursor:not-allowed; }
+.mode-card.mode-disabled * { pointer-events:none; }
 .mc-icon  { font-size: 26px; margin-bottom: 6px; }
 .mc-title { font-size: 12px; font-weight: 700; margin-bottom: 3px; }
 .mc-desc  { font-size: 10px; color: var(--text-3); line-height: 1.4; }
@@ -126,6 +128,10 @@
   font-size: 12px; color: var(--text-2); margin-bottom: 12px;
   display: flex; align-items: center; gap: 8px;
 }
+.tool-hero.split-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,330px);text-align:left;align-items:center;gap:22px}
+.tool-hero.split-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.split-tool-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.split-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.split-tool-hero .tool-feature-visual{max-height:170px}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Split PDF","item":"https://pdfdukan.com/tools/split-pdf.html"}]}</script>
@@ -137,8 +143,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I extract a specific page range instead of splitting the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter any range \u2014 for example pages 3\u20137 \u2014 and the tool creates a new PDF containing only those pages. You can also extract a single page or several separate ranges, one after another."}},{"@type":"Question","name":"Can I split a PDF into every individual page?","acceptedAnswer":{"@type":"Answer","text":"Yes. The \"Split every page\" option creates one separate PDF per page and packages all of them into a single ZIP archive so you download everything in one click."}},{"@type":"Question","name":"Is my PDF uploaded to a server when splitting?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan splits your file entirely inside your browser using the PDF-lib JavaScript library. Your document never leaves your device \u2014 safe for bank statements, legal papers, ID documents, and anything confidential."}},{"@type":"Question","name":"Will splitting reduce the quality of my PDF?","acceptedAnswer":{"@type":"Answer","text":"No. Pages are copied into the new file exactly as they are \u2014 no re-rendering, no recompression. Text, images, and graphics in the split PDFs are identical to the original."}},{"@type":"Question","name":"What is the maximum number of pages I can split?","acceptedAnswer":{"@type":"Answer","text":"There is no hard limit \u2014 it depends on your device's RAM. PDFs up to 200 pages split reliably on most phones and computers. Very large files work best on a laptop or desktop."}},{"@type":"Question","name":"Can I split a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"Locked PDFs need to be unlocked first. Use the Unlock PDF tool to remove the password, then split the unlocked file. Both tools are free and run in your browser."}},{"@type":"Question","name":"Can I merge the split files back together later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use the Merge PDF tool to combine any split files \u2014 or any other PDFs \u2014 back into a single document, in any order you choose."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Splitting PDFs on PDFdukan is 100% free \u2014 no subscription, no per-file charges, no daily limit, and no account required."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. Open PDFdukan in Chrome, Safari, or any modern phone browser, upload your PDF, choose the pages, and download the result \u2014 all from your phone, no app required."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I extract a specific page range instead of splitting the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter any range — for example pages 3–7 — and the tool creates a new PDF containing only those pages. You can also extract a single page or several separate ranges, one after another."}},{"@type":"Question","name":"Can I split a PDF into every individual page?","acceptedAnswer":{"@type":"Answer","text":"Yes. The \"Split every page\" option creates one separate PDF per page and packages all of them into a single ZIP archive so you download everything in one click."}},{"@type":"Question","name":"Does the tool upload my selected PDF?","acceptedAnswer":{"@type":"Answer","text":"The split operation is performed by client-side PDF code in your browser. The page can still request site assets, analytics and third-party libraries, so assess your browser and network before handling highly sensitive files."}},{"@type":"Question","name":"Will splitting reduce the quality of my PDF?","acceptedAnswer":{"@type":"Answer","text":"Selected pages are copied with PDF-lib rather than intentionally rendered as images, so the tool does not deliberately lower image resolution. Complex forms, links, annotations, signatures or unusual PDFs should still be checked after export."}},{"@type":"Question","name":"What is the maximum number of pages I can split?","acceptedAnswer":{"@type":"Answer","text":"The tool does not state a fixed split count. Practical capacity varies with file size, page complexity, browser and available memory. Visual Split supports preview breakpoints for up to 60 pages; use Custom Ranges for a larger PDF."}},{"@type":"Question","name":"Can I split a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"Locked PDFs need to be unlocked first. Use the Unlock PDF tool to remove the password, then split the unlocked file. Both tools are free and run in your browser."}},{"@type":"Question","name":"Can I merge the split files back together later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use the Merge PDF tool to combine any split files — or any other PDFs — back into a single document, in any order you choose."}},{"@type":"Question","name":"Is an account required?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the current split workflow. The tool does not intentionally add a PDFdukan watermark."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"It is designed for current mobile and desktop browsers. Actual capacity depends on the PDF, browser downloads, device memory and storage; large or complex files are safer to process on a desktop."}}]}</script><meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="split-pdf"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -256,10 +262,13 @@
     <span>Split PDF</span>
   </nav>
 
-  <div class="tool-hero">
-    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#00838f,#26c6da)">✂️</div>
-    <h1>Split PDF</h1>
-    <p>Divide a PDF visually — click between pages to add split breakpoints, or use custom ranges. Download as ZIP.</p>
+  <div class="tool-hero split-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#00838f,#26c6da)">✂️</div>
+      <h1>Split PDF Online</h1>
+      <p>Extract exact page ranges, split every page, make fixed-size groups or choose visual breakpoints. Download one PDF or a ZIP of multiple parts.</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/split-pdf.svg?v=20260825" width="720" height="420" alt="Six PDF pages split into three clearly labelled page-range files">
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -270,7 +279,7 @@
     <div class="drop-zone" id="dropZone">
       <div class="dz-icon">📄</div>
       <div class="dz-title">Drop a PDF here or click to browse</div>
-      <div class="dz-hint">Any standard PDF file — page thumbnails will load below</div>
+      <div class="dz-hint">Choose an unlocked PDF. Capacity depends on file complexity and your device memory.</div>
       <span class="dz-btn">Choose PDF</span>
       <input type="file" id="fileInput" accept=".pdf,application/pdf">
     </div>
@@ -338,7 +347,7 @@
     </button>
   </div>
 
-  <!-- Visual Page Grid (shown when mode=visual or always after load) -->
+  <!-- Visual Page Grid (shown only in Visual Split mode) -->
   <div class="tool-card" id="pageGridSection" style="display:none">
     <div class="pg-header">
       <h3><span class="tc-icon">📑</span> Page Preview</h3>
@@ -374,10 +383,10 @@
     📖 <strong>Related guide:</strong> <a href="../blog/split-pdf-guide.html" style="color:var(--primary);font-weight:600">How to Split a PDF into Separate Files →</a>
   </div>
 
-<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Split PDF by dragging visual breakpoints between page thumbnails. Or split every page, every N pages, or custom ranges. Free online tool. PDFdukan CamMaster.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Browser memory sets the practical limit · Verify each output file</span></aside>
+<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Upload an unlocked PDF, choose Every Page, Every N Pages, Custom Ranges or Visual Split, then download each result separately or all parts in one ZIP.</div>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Browser memory sets the practical limit · Verify each output file</span></aside>
 <h2>Split PDF Online — Extract Pages Free &amp; Private</h2>
-<p>PDFdukan's Split PDF tool divides any PDF document into separate files — extract a custom page range (like pages 3–7), pull out a single page, or split every page into its own PDF. The whole process runs in your browser: your file is never uploaded to a server, never stored anywhere, and never seen by anyone else.</p>
+<p>PDFdukan's Split PDF tool divides an unlocked PDF into separate files: extract a custom page range such as 3–7, create one file for page 12, split every page, or make groups of a chosen size. The split operation runs in your browser; the page still requests ordinary site assets, analytics and PDF libraries from configured providers.</p>
 <p>Long merged PDFs are common — a batch of contracts in one file, a complete e-book when you only need one chapter, or a 50-page scanned bundle where only two pages matter. Instead of sharing the entire document, split out exactly the pages you need in seconds.</p>
 
 <h2>Why Use PDFdukan to Split PDFs?</h2>
@@ -391,8 +400,8 @@
 <h2>How to Split a PDF in 3 Steps</h2>
 <ol>
 <li><strong>Upload your PDF</strong> — Click the upload area or drag and drop the PDF you want to split. Page thumbnails load instantly.</li>
-<li><strong>Choose your split mode</strong> — Select a custom page range (e.g. 3–7), pick individual pages, or choose "Split every page" to separate all pages at once.</li>
-<li><strong>Download the result</strong> — A single extracted range downloads as one PDF; splitting every page gives you a ZIP archive with one PDF per page.</li>
+<li><strong>Choose your split mode</strong> — Enter separate ranges such as 1–3, 5, 8–10; choose a group size; split every page; or click visual breakpoints on PDFs up to 60 pages.</li>
+<li><strong>Download and verify</strong> — Download one result directly, pick individual parts, or save all multiple results in a ZIP. Check important links, forms, annotations and signatures after export.</li>
 </ol>
 
 <h2>Common Uses for Splitting PDFs</h2>
@@ -407,13 +416,13 @@
 <h2>Frequently Asked Questions</h2>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract a specific page range instead of splitting the whole PDF?</button><div class="faq-a"><p>Yes. Enter any range — for example pages 3–7 — and the tool creates a new PDF containing only those pages. You can also extract a single page or several separate ranges, one after another.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I split a PDF into every individual page?</button><div class="faq-a"><p>Yes. The "Split every page" option creates one separate PDF per page and packages all of them into a single ZIP archive so you download everything in one click.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded to a server when splitting?</button><div class="faq-a"><p>No. PDFdukan splits your file entirely inside your browser using the PDF-lib JavaScript library. Your document never leaves your device — safe for bank statements, legal papers, ID documents, and anything confidential.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does the tool upload my selected PDF?</button><div class="faq-a"><p>The split operation is performed by client-side PDF code in your browser. The page can still request site assets, analytics and third-party libraries, so assess your browser and network before handling highly sensitive files.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will splitting reduce the quality of my PDF?</button><div class="faq-a"><p>Selected pages are copied with PDF-lib rather than intentionally rendered as images, so the tool does not deliberately lower image resolution. Complex forms, links, annotations, signatures or unusual PDFs should still be checked after export.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the maximum number of pages I can split?</button><div class="faq-a"><p>The tool does not impose a fixed page limit. Practical capacity varies with file size, page complexity, browser and available memory. Large PDFs may work better on a desktop, but no universal page count can be guaranteed.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the maximum number of pages I can split?</button><div class="faq-a"><p>The tool does not state a fixed split count. Practical capacity varies with file size, page complexity, browser and available memory. Visual Split supports preview breakpoints for up to 60 pages; use Custom Ranges for a larger PDF.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I split a password-protected PDF?</button><div class="faq-a"><p>Locked PDFs need to be unlocked first. Use the <a href="unlock-pdf.html">Unlock PDF tool</a> to remove the password, then split the unlocked file. Both tools are free and run in your browser.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I merge the split files back together later?</button><div class="faq-a"><p>Yes. Use the <a href="merge-pdf.html">Merge PDF tool</a> to combine any split files — or any other PDFs — back into a single document, in any order you choose.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>Yes. Splitting PDFs on PDFdukan is 100% free — no subscription, no per-file charges, no daily limit, and no account required.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>Yes. Open PDFdukan in Chrome, Safari, or any modern phone browser, upload your PDF, choose the pages, and download the result — all from your phone, no app required.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is an account required?</button><div class="faq-a"><p>No account is required for the current split workflow. The tool does not intentionally add a PDFdukan watermark.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>It is designed for current mobile and desktop browsers. Actual capacity depends on the PDF, browser downloads, device memory and storage; large or complex files are safer to process on a desktop.</p></div></div>
 </section>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
@@ -465,8 +474,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 <script>
 // Wire mode card selection visual state
 document.querySelectorAll('.mode-card').forEach(card => {

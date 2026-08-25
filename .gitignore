@@ -20,6 +20,8 @@ test-doc.png
 _*.jpg
 _*.png
 _*.html
+tmp/
+.qa-teacher-video/
 
 # ── editor / OS ──
 .DS_Store

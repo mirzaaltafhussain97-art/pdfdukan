@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Crop PDF to Image — Any Region, High Quality | PDFdukan</title>
-<meta name="description" content="Crop any region of a PDF page and save as high-quality JPG, PNG or WebP. Perfect for maps, plans and scans. Full resolution, no upload, 100% private.">
+<meta name="description" content="Select one or more regions on a PDF page and export JPG, PNG or WebP images. Rotate, zoom, compare output dimensions and review browser limits.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -22,7 +22,7 @@
 <meta property="og:url" content="https://pdfdukan.com/tools/crop-pdf.html">
 <meta property="og:title" content="Crop PDF to Image — Any Region, High Quality | PDFdukan">
 <meta property="og:description" content="Crop any region of a PDF page and save it as a high-quality JPG, PNG or WebP image. Perfect for large maps, plans and scans — full resolution, no upload.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image" content="https://pdfdukan.com/images/crop-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -31,14 +31,14 @@
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="Crop PDF to Image — Any Region, High Quality | PDFdukan">
 <meta name="twitter:description" content="Crop any region of a PDF page and save it as a high-quality JPG, PNG or WebP image. Perfect for large maps, plans and scans — full resolution, no upload.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:image" content="https://pdfdukan.com/images/crop-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* Crop stage */
 .crop-stage-wrap{margin-top:14px;overflow:auto;max-height:72vh;border:1px solid var(--border);border-radius:12px;background:var(--card-2);padding:10px}
@@ -54,6 +54,7 @@
 .ct-btn{padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap}
 .ct-btn:hover{border-color:var(--primary);color:var(--primary)}
 .ct-angle{padding:7px 12px;border-radius:8px;background:var(--card-2);border:1px solid var(--border);font-weight:700;font-size:13px;color:var(--primary);min-width:56px;text-align:center}
+.crop-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,340px);gap:22px;align-items:center;max-width:800px;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.crop-feature img{display:block;width:100%;height:auto}.crop-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.crop-feature{grid-template-columns:1fr}.crop-feature img{max-width:320px;margin:auto}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Crop PDF to Image","item":"https://pdfdukan.com/tools/crop-pdf.html"}]}</script>
@@ -185,8 +186,12 @@
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">✂️</div>
     <h1>Crop PDF to Image</h1>
-    <p>Cut out any region of a PDF page and save just that part as a high-quality JPG, PNG or WebP image. Drag corner &amp; edge handles to select, rotate to any angle, and crop several areas at once. Built for large maps, plans, certificates and scans — every crop is rendered at full resolution, right in your browser.</p>
+    <p>Select one or more regions on a PDF page, rotate or reshape the selection, and export raster JPG, PNG or WebP images. The displayed dimensions and DPI reflect any browser-safe output cap.</p>
   </div>
+  <section class="crop-feature" aria-labelledby="cropFeatureTitle">
+    <div><h2 id="cropFeatureTitle" style="font-size:20px;margin:0">Select a region, then export only that area</h2><p>The page remains a preview until download. Exporting creates a new raster image, so inspect fine lines and text at the intended use size.</p></div>
+    <img src="../images/crop-pdf.svg" alt="Illustration of a selected rectangular region being cropped from a PDF page" width="640" height="420">
+  </section>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
@@ -196,7 +201,7 @@
     <div class="drop-zone" id="dropZone">
       <div class="dz-icon">📄</div>
       <div class="dz-title">Drop a PDF here or click to browse</div>
-      <div class="dz-hint">Supports any standard PDF — maps, plans, scans, documents</div>
+      <div class="dz-hint">One unencrypted .pdf file up to 200 MB; practical limits depend on device memory</div>
       <span class="dz-btn">Choose PDF</span>
       <input type="file" id="fileInput" accept=".pdf,application/pdf">
     </div>
@@ -248,8 +253,8 @@
         <label>Output Format</label>
         <select id="cropFormat">
           <option value="image/jpeg" selected>JPG — smaller files</option>
-          <option value="image/png">PNG — lossless, best quality</option>
-          <option value="image/webp">WebP — smallest size</option>
+          <option value="image/png">PNG — lossless image encoding</option>
+          <option value="image/webp">WebP — compare size and quality</option>
         </select>
       </div>
       <div class="option-group">
@@ -269,7 +274,7 @@
         <input type="range" id="cropQuality" min="60" max="100" value="95" step="1" style="width:100%;accent-color:var(--primary)">
       </div>
       <div class="option-group">
-        <label>Crops</label>
+        <label>Crops on current page</label>
         <div id="cropInfo" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card-2);font-size:13px;color:var(--text-2)">No crop yet</div>
       </div>
     </div>
@@ -285,18 +290,18 @@
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Crop any region of a PDF page and save as high-quality JPG, PNG or WebP. Perfect for maps, plans and scans. Full resolution, no upload, 100% private.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Select one or more regions on the current PDF page, straighten them if needed, then export JPG, PNG or WebP. Output resolution can be reduced automatically to stay within browser canvas limits.</div>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Current-page crops · Raster image output · Browser limits stated</span></aside>
 <h2>Crop a PDF Region to a High-Quality Image — Free &amp; Private</h2>
-<p>PDFdukan's Crop PDF tool lets you draw a box over any part of a PDF page and export just that region as a sharp JPG, PNG or WebP image. Instead of converting a whole page, you keep only the part you need — a single district on a large map, a stamp on a certificate, a detail on an engineering plan, or one figure from a report. Everything runs inside your browser, so even confidential documents never leave your device.</p>
-<p>This is also the smartest way to get <strong>full quality</strong> out of very large pages. A giant map exported at 96×96 inches is far too big to render in one piece at high DPI — browsers cap canvas size, so the whole page can only be rendered at a limited resolution. By cropping a smaller region first, that region can be rendered at a much higher DPI, giving you a crisp, detailed image with no loss.</p>
+<p>PDFdukan's Crop PDF tool lets you draw a box over part of the current PDF page and export that region as a JPG, PNG or WebP image. Instead of converting a whole page, you can keep one map area, stamp, plan detail or figure. Processing uses client-side PDF.js; the page can still request ordinary site assets, analytics and third-party libraries.</p>
+<p>Cropping a smaller region can allow more output pixels than rendering an entire oversized page, but it cannot recover detail that is absent from the source. The tool automatically lowers the requested scale if an output would exceed its 8,000-pixel or 64-megapixel safety limits.</p>
 
 <h2>Why Use PDFdukan Crop PDF?</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Full-Resolution Crops</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Your selected region is re-rendered straight from the PDF at up to ~576 DPI — sharper than screenshotting, with no blur.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Measured Raster Output</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The selected region is rendered from the PDF at the chosen scale, subject to the displayed browser-safe output cap.</p></div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🗺️ Made for Big Maps</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Pull one area out of a huge GIS map or site plan that's otherwise too large to convert in full quality.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖼️ JPG, PNG or WebP</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Choose lossless PNG for the best quality, JPG for sharing, or WebP for the smallest file.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 100% Private</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The PDF is rendered locally with PDF.js. Nothing is uploaded — safe for plans, IDs and confidential files.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖼️ JPG, PNG or WebP</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">PNG uses lossless image encoding; JPG and WebP use the selected quality. File size varies by content.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 Client-Side File Processing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The selected PDF is opened and rendered locally with PDF.js rather than uploaded for server processing.</p></div>
 </div>
 
 <h2>How to Crop a PDF in 3 Steps</h2>
@@ -316,18 +321,18 @@
 </ul>
 
 <h2>Frequently Asked Questions</h2>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I get the highest possible quality from my crop?</button><div class="faq-a"><p>Select a smaller region and choose a higher Crop Resolution (High, Very High or Ultra) with the PNG format. Smaller selections can be rendered at very high DPI without hitting browser limits, so the result stays razor-sharp. For raster maps, quality is ultimately limited by the resolution of the image embedded in the PDF.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I choose output quality?</button><div class="faq-a"><p>Start with PNG and a moderate resolution for text or line art, then inspect the pixel dimensions and detail. A smaller region may allow a higher render scale, but output is capped for browser stability and cannot restore detail missing from the PDF.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why crop instead of converting the whole page?</button><div class="faq-a"><p>Very large pages (like 96×96 inch maps) are too big to render at high DPI in one go — browsers cap how large a canvas can be, so the full page is limited to a safe size. Cropping renders only your selected region, so that part can be captured at a much higher resolution and far more detail.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I rotate the crop to straighten a tilted map or scan?</button><div class="faq-a"><p>Yes. Each crop box has a rotation handle (the dot above the top edge) — drag it to rotate to any angle, or use the 90° buttons for quick quarter-turns. The exported image is automatically straightened to your chosen angle, so a tilted region comes out perfectly upright.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I rotate the crop to straighten a tilted map or scan?</button><div class="faq-a"><p>Yes. Each crop box has a rotation handle (the dot above the top edge) — drag it to rotate to any angle, or use the 90° buttons for quick quarter-turns. The exported image is rotated to the angle you selected; inspect the preview and fine-tune the handle when exact alignment matters.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop multiple areas from one page at once?</button><div class="faq-a"><p>Yes. Click <strong>➕ Add crop</strong> to place additional boxes on the same page, position each one independently, then use <strong>Download all (ZIP)</strong> to get every region as a separate high-quality image in one ZIP file.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I zoom in to select a small area on a big map?</button><div class="faq-a"><p>Yes. Use the 🔍 zoom buttons to enlarge the page — it re-renders sharp at higher resolution (not a blurry stretch), so you can place the crop box precisely on fine map detail. Your selections stay in place as you zoom in and out.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded to a server?</button><div class="faq-a"><p>No. The PDF is opened and rendered entirely inside your browser using Mozilla's PDF.js. Your file never leaves your device — safe for maps, plans, ID documents and anything confidential.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Which format should I choose?</button><div class="faq-a"><p>Pick <strong>PNG</strong> for the best, lossless quality (ideal for maps, line art and documents), <strong>JPG</strong> for smaller files that are easy to share, or <strong>WebP</strong> for the smallest size at good quality. For JPG and WebP you can fine-tune the quality with the slider.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop a password-protected PDF?</button><div class="faq-a"><p>Remove the password first with the <a href="unlock-pdf.html">Unlock PDF tool</a>, then crop the unlocked file. Both tools are free and run in your browser.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile?</button><div class="faq-a"><p>Yes. On a phone, drag your finger across the page preview to draw the crop box, then download the image straight to your gallery — no app required.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded for cropping?</button><div class="faq-a"><p>The selected PDF is opened and rendered by client-side PDF.js rather than sent to PDFdukan for crop processing. The page can still load normal site assets, analytics and third-party libraries.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Which format should I choose?</button><div class="faq-a"><p>PNG uses lossless image encoding and supports transparency; JPG uses lossy compression and a white background; WebP supports transparency and uses the selected quality in this tool. No format is always smallest, so compare output bytes and visible detail.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop a password-protected PDF?</button><div class="faq-a"><p>No. This tool does not request or bypass passwords. Use software authorized to open the file and save an unprotected copy first. PDFdukan's Restriction Check is only a compatibility re-save for supported unencrypted PDFs.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile?</button><div class="faq-a"><p>The interface is responsive and pointer controls support touch. Large pages and high-resolution crops may exceed a phone's available memory, so use a smaller selection or lower resolution if processing fails.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do you want the whole page instead?</button><div class="faq-a"><p>Use the <a href="pdf-to-img.html">PDF to JPG converter</a> to turn every page into an image and download them all as a ZIP.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the Crop PDF tool?","acceptedAnswer":{"@type":"Answer","text":"It lets you draw a box over any region of a PDF page and save just that region as a high-quality JPG, PNG or WebP image. All processing happens in your browser."}},{"@type":"Question","name":"How do I get the highest quality crop?","acceptedAnswer":{"@type":"Answer","text":"Select a smaller region and choose a higher Crop Resolution with the PNG format. Smaller selections can be rendered at very high DPI without hitting browser canvas limits, keeping the result sharp."}},{"@type":"Question","name":"Why crop instead of converting the whole page?","acceptedAnswer":{"@type":"Answer","text":"Very large pages are too big to render at high DPI in one piece because browsers cap canvas size. Cropping renders only the selected region, so it can be captured at much higher resolution and detail."}},{"@type":"Question","name":"Can I rotate the crop to straighten a tilted map or scan?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each crop box has a rotation handle you can drag to any angle, plus 90° buttons. The exported image is automatically straightened to the chosen angle."}},{"@type":"Question","name":"Can I crop multiple areas from one page at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Add multiple crop boxes to the same page, position each independently, then download all regions as separate high-quality images in one ZIP file."}},{"@type":"Question","name":"Can I zoom in to select a small area on a big map?","acceptedAnswer":{"@type":"Answer","text":"Yes. The zoom buttons re-render the page sharp at higher resolution so you can place the crop precisely on fine detail, and your selections stay in place as you zoom."}},{"@type":"Question","name":"Is my PDF uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The PDF is rendered entirely inside your browser using PDF.js. Your file never leaves your device."}},{"@type":"Question","name":"Which image format should I choose?","acceptedAnswer":{"@type":"Answer","text":"PNG for lossless best quality, JPG for smaller shareable files, or WebP for the smallest size. JPG and WebP also offer a quality slider."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. Drag your finger across the page preview to draw the crop box, then save the image to your gallery. No app needed."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Cropping PDFs on PDFdukan is 100% free with no watermarks, no sign-up and no daily limits."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I choose output quality?","acceptedAnswer":{"@type":"Answer","text":"Start with PNG and a moderate resolution for text or line art, then inspect the pixel dimensions and detail. A smaller region may allow a higher render scale, but output is capped for browser stability and cannot restore detail missing from the PDF."}},{"@type":"Question","name":"Why crop instead of converting the whole page?","acceptedAnswer":{"@type":"Answer","text":"Very large pages (like 96×96 inch maps) are too big to render at high DPI in one go — browsers cap how large a canvas can be, so the full page is limited to a safe size. Cropping renders only your selected region, so that part can be captured at a much higher resolution and far more detail."}},{"@type":"Question","name":"Can I rotate the crop to straighten a tilted map or scan?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each crop box has a rotation handle (the dot above the top edge) — drag it to rotate to any angle, or use the 90° buttons for quick quarter-turns. The exported image is rotated to the angle you selected; inspect the preview and fine-tune the handle when exact alignment matters."}},{"@type":"Question","name":"Can I crop multiple areas from one page at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click ➕ Add crop to place additional boxes on the same page, position each one independently, then use Download all (ZIP) to get every region as a separate high-quality image in one ZIP file."}},{"@type":"Question","name":"Can I zoom in to select a small area on a big map?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use the 🔍 zoom buttons to enlarge the page — it re-renders sharp at higher resolution (not a blurry stretch), so you can place the crop box precisely on fine map detail. Your selections stay in place as you zoom in and out."}},{"@type":"Question","name":"Is my PDF uploaded for cropping?","acceptedAnswer":{"@type":"Answer","text":"The selected PDF is opened and rendered by client-side PDF.js rather than sent to PDFdukan for crop processing. The page can still load normal site assets, analytics and third-party libraries."}},{"@type":"Question","name":"Which format should I choose?","acceptedAnswer":{"@type":"Answer","text":"PNG uses lossless image encoding and supports transparency; JPG uses lossy compression and a white background; WebP supports transparency and uses the selected quality in this tool. No format is always smallest, so compare output bytes and visible detail."}},{"@type":"Question","name":"Can I crop a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"No. This tool does not request or bypass passwords. Use software authorized to open the file and save an unprotected copy first. PDFdukan's Restriction Check is only a compatibility re-save for supported unencrypted PDFs."}},{"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"The interface is responsive and pointer controls support touch. Large pages and high-resolution crops may exceed a phone's available memory, so use a smaller selection or lower resolution if processing fails."}},{"@type":"Question","name":"Do you want the whole page instead?","acceptedAnswer":{"@type":"Answer","text":"Use the PDF to JPG converter to turn every page into an image and download them all as a ZIP."}}]}</script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
@@ -377,8 +382,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

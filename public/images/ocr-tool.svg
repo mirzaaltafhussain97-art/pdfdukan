@@ -103,5 +103,5 @@
 
   <!-- Title -->
   <text x="250" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="17" fill="#ffffff">OCR Text Extractor</text>
-  <text x="250" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#666688">Extract editable text from scanned images and PDFs</text>
+  <text x="250" y="288" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#8888aa">JPG, PNG or WEBP image to editable text</text>
 </svg>

@@ -32,7 +32,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css?v=20260814c">
+<link rel="stylesheet" href="css/style.css?v=20260825f">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -261,7 +261,7 @@
 
   <!-- ── WHO NEEDS IT / PROBLEM IT SOLVES ── -->
   <h2>Who is PDFdukan built for?</h2>
-  <p>PDFdukan is built for anyone who needs to work with PDFs or scanned documents without paying for expensive software or uploading sensitive files to unknown servers. This includes:</p>
+  <p>PDFdukan is built for people who need browser-based PDF and scan workflows without installing desktop software. Core file processing and important limitations are described on each tool page; connected features such as Drive, accounts, contact and analytics have separate data flows. This includes:</p>
   <ul>
     <li><strong>Students in Pakistan</strong> — scanning CNIC, assignments, and university documents</li>
     <li><strong>Office workers</strong> — merging, splitting, and compressing PDFs for email and portals</li>
@@ -271,11 +271,11 @@
 
   <!-- ── FOUNDER / ENTITY ── -->
   <h2>Who built PDFdukan?</h2>
-  <p>PDFdukan was founded in 2025 by <strong>Sher Azam Khan</strong>, a developer based in Pakistan. The project was created after observing that most online PDF tools either charge a fee, require an account, or upload your files to a third-party server. PDFdukan was built to solve all three problems at once.</p>
+  <p>PDFdukan was founded in 2025 by <strong>Sher Azam Khan</strong>, a developer based in Pakistan. The project focuses on free browser-based document utilities with clear per-tool limitations and no account requirement for the listed basic tools.</p>
 
   <!-- ── WHAT PROBLEM IT SOLVES ── -->
   <h2>What problem does PDFdukan solve?</h2>
-  <p>Traditional document tools force users to choose between convenience and privacy. Cloud-based tools upload your files — sometimes permanently. Desktop software costs money and requires installation. PDFdukan processes everything inside the browser using WebAssembly and JavaScript, so:</p>
+  <p>Document tools use different processing models. PDFdukan's core operations use browser JavaScript or WebAssembly where each tool page says so; optional connected features and ordinary page resources can still communicate with external services. As a result:</p>
   <ul>
     <li>Core processing described as local stays in the browser; connected services are optional</li>
     <li>There is <strong>no installation</strong> required</li>
@@ -285,7 +285,7 @@
 
   <!-- ── FLAGSHIP PRODUCT ── -->
   <h2>CamMaster — Our AI Document Scanner</h2>
-  <p><strong>CamMaster</strong> is PDFdukan's flagship product. It uses <strong>OpenCV.js computer vision</strong> to automatically detect document edges, correct perspective, remove shadows, and enhance scan quality — all in real time inside your browser. It is the free alternative to CamScanner and Adobe Scan, with no upload and no account required.</p>
+  <p><strong>CamMaster</strong> is PDFdukan's document-scanning tool. It attempts document-corner detection with an ONNX model and an OpenCV.js fallback, lets the user correct four crop points, applies perspective correction and offers selectable readability filters. Automatic detection and enhancement can be wrong, so every crop and export should be inspected. Core scan processing is client-side; no account is currently required for the basic scanner.</p>
   <p>Key features of CamMaster:</p>
   <ul>
     <li>Auto edge detection and corner adjustment</li>
@@ -452,7 +452,7 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="js/app.js?v=20260824c"></script>
-<script src="js/header.js?v=20260616c"></script>
+<script src="js/app.js?v=20260825f"></script>
+<script src="js/header.js?v=20260825f"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Hanafi Islamic Inheritance Estimate (Faraid) | PDFdukan</title>
-<meta name="description" content="Advanced faraid calculator — spouse, parents, grandparents, sons, daughters, siblings — with Hajb, Aul and Radd adjustments. Shows each heir's share.">
+<meta name="description" content="Educational Hanafi faraid estimate for selected inheritance cases, with fixed shares, Hajb, Awl and Radd. Complex and disputed cases are stopped for specialist review.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -17,21 +17,21 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/inheritance-calc-advanced.html">
-<meta property="og:title" content="Advanced Faraid Calculator (Full Heirs) Free | PDFdukan">
-<meta property="og:description" content="Full faraid heirs with Hajb (blocking), Aul and Radd — each heir's individual share. Free and private.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:title" content="Hanafi Islamic Inheritance Estimate (Faraid) | PDFdukan">
+<meta property="og:description" content="Educational estimate for selected Hanafi faraid cases. Complex, disputed and legally sensitive cases are stopped for specialist review.">
+<meta property="og:image" content="https://pdfdukan.com/images/islamic-inheritance-estimate.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Advanced Faraid Calculator (Full Heirs) Free | PDFdukan">
-<meta name="twitter:description" content="Full faraid heirs with blocking, Aul and Radd — each heir's individual share. Free.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:title" content="Hanafi Islamic Inheritance Estimate (Faraid) | PDFdukan">
+<meta name="twitter:description" content="Educational estimate for selected Hanafi faraid cases, with clear limitations and specialist stops.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/islamic-inheritance-estimate.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Advanced Islamic Inheritance Calculator","item":"https://pdfdukan.com/tools/inheritance-calc-advanced.html"}]}</script>
 <style>
 .ic-wrap{max-width:780px;margin:0 auto;padding:24px 20px 0}
@@ -60,6 +60,8 @@
 .ic-safety{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:14px;margin:16px 0}
 .ic-disclaimer{background:var(--card-2);border-left:4px solid var(--warning);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:12.5px;line-height:1.6;color:var(--text-2);margin:14px 0}
 .ic-err{background:rgba(239,68,68,.12);border:1px solid var(--error);color:var(--error);padding:10px 14px;border-radius:var(--radius);font-size:13px;margin-top:12px}
+.inheritance-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,290px);gap:18px;align-items:center;margin:14px 0 18px;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:14px}.inheritance-feature img{display:block;width:100%;height:auto}.inheritance-feature h2{font-size:18px;margin:0}.inheritance-feature p{font-size:13px;line-height:1.65;color:var(--text-2);margin:7px 0 0}
+@media(max-width:680px){.inheritance-feature{grid-template-columns:1fr}.inheritance-feature img{max-width:290px;margin:auto}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <!-- Google Analytics 4 -->
@@ -71,7 +73,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="inheritance-calc-advanced"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -105,16 +107,17 @@
 
 <div class="ic-wrap">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:12px">
-    <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Advanced</span>
+    <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Hanafi Inheritance Estimate</span>
   </nav>
 
   <div class="ic-hero">
     <div class="ic-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
     <h1>☪️ Islamic Inheritance Calculator (Faraid)</h1>
-    <p>Spouse, parents, grandparents, children, grandchildren &amp; all siblings — with Hajb (blocking), Aul &amp; Radd.</p>
+    <p>Educational estimates for selected spouse, parent, child, grandchild and sibling cases using Hanafi rules.</p>
   </div>
 
-  <div class="ic-disclaimer"><strong>Read first:</strong> This advanced tool models the mainstream (Hanafi) rules for the great majority of cases, including blocking, Aul and Radd. A few rare scenarios still need a scholar — see <a href="#limits" style="color:var(--primary)">Known limitations</a> below. It is an estimate, not a fatwa: confirm the final distribution with a qualified Mufti or inheritance lawyer.</div>
+  <div class="ic-disclaimer"><strong>Read first:</strong> This tool estimates selected Hanafi cases; it does not determine who legally owns an asset, validate a will, resolve disputed family facts, or issue a fatwa. Complex combinations are deliberately stopped. Confirm every final distribution with a qualified Mufti and a lawyer familiar with the law that applies to the estate.</div>
+  <section class="inheritance-feature" aria-labelledby="inheritanceFeatureTitle"><div><h2 id="inheritanceFeatureTitle">Fractions first, verification before distribution</h2><p>The calculator separates estate deductions, applies supported share rules, labels adjustments, and leaves unsupported residue unassigned. It cannot replace verified family records or specialist judgment.</p></div><img src="../images/islamic-inheritance-estimate.svg" alt="Estate share chart beside a verification shield, representing an educational estimate requiring specialist confirmation" width="640" height="420"></section>
 
   <div class="tool-card">
     <h3><span class="tc-icon">📋</span> Estate &amp; Heirs</h3>
@@ -123,19 +126,19 @@
       <div class="ic-field"><label for="icCurrency">Currency</label>
         <select id="icCurrency"><option value="PKR">PKR ₨</option><option value="USD">USD $</option><option value="GBP">GBP £</option><option value="EUR">EUR €</option><option value="SAR">SAR ﷼</option><option value="AED">AED د.إ</option><option value="INR">INR ₹</option><option value="BDT">BDT ৳</option></select>
       </div>
-      <div class="ic-field"><label for="icTotal">Total Estate</label><input type="number" id="icTotal" min="0" step="any" value="3500000"></div>
+      <div class="ic-field"><label for="icTotal">Estate owned by the deceased</label><input type="number" id="icTotal" min="0" step="any" value="1000000"></div>
     </div>
     <div class="ic-row-3">
       <div class="ic-field"><label for="icFuneral">Reasonable funeral expenses</label><input type="number" id="icFuneral" min="0" step="any" value="0"></div>
       <div class="ic-field"><label for="icDebts">Enforceable debts (including unpaid mahr)</label><input type="number" id="icDebts" min="0" step="any" value="0"></div>
-      <div class="ic-field"><label for="icWasiyyah">Valid Wasiyyah (max 1/3)</label><input type="number" id="icWasiyyah" min="0" step="any" value="0"></div>
+      <div class="ic-field"><label for="icWasiyyah">Entered valid Wasiyyah (maximum 1/3)</label><input type="number" id="icWasiyyah" min="0" step="any" value="0"></div>
     </div>
 
     <div class="ic-group-title">Spouse &amp; Parents</div>
     <div class="ic-row-3">
       <div class="ic-field"><label for="icGender">Deceased is</label>
         <select id="icGender" onchange="IC.toggleSpouse()"><option value="male">Male</option><option value="female">Female</option></select></div>
-      <div class="ic-field" id="icWivesField"><label for="icWives">Wives</label><input type="number" id="icWives" min="0" max="4" step="1" value="1"></div>
+      <div class="ic-field" id="icWivesField"><label for="icWives">Wives</label><input type="number" id="icWives" min="0" max="4" step="1" value="0"></div>
       <div class="ic-field" id="icHusbandField" style="display:none"><label for="icHusband">Husband alive?</label><select id="icHusband"><option value="no">No</option><option value="yes">Yes</option></select></div>
     </div>
     <div class="ic-row-3">
@@ -147,8 +150,8 @@
       <div class="ic-field"><label for="icPGMother">Father's mother alive?</label><select id="icPGMother"><option value="no">No</option><option value="yes">Yes</option></select></div></div>
 
     <div class="ic-group-title">Children &amp; Grandchildren</div>
-    <div class="ic-row"><div class="ic-field"><label for="icSons">Sons</label><input type="number" id="icSons" min="0" step="1" value="5"></div>
-      <div class="ic-field"><label for="icDaughters">Daughters</label><input type="number" id="icDaughters" min="0" step="1" value="3"></div></div>
+    <div class="ic-row"><div class="ic-field"><label for="icSons">Sons</label><input type="number" id="icSons" min="0" step="1" value="0"></div>
+      <div class="ic-field"><label for="icDaughters">Daughters</label><input type="number" id="icDaughters" min="0" step="1" value="0"></div></div>
     <div class="ic-row"><div class="ic-field"><label for="icGSons">Son's sons (if no sons)</label><input type="number" id="icGSons" min="0" step="1" value="0"></div>
       <div class="ic-field"><label for="icGDaughters">Son's daughters (if no sons)</label><input type="number" id="icGDaughters" min="0" step="1" value="0"></div></div>
 
@@ -170,15 +173,16 @@
     <div class="ic-safety">
       <div class="ic-row"><div class="ic-field"><label for="icPredeceasedChild">Did any son or daughter die before the deceased and leave children?</label><select id="icPredeceasedChild"><option value="no">No</option><option value="yes">Yes — Pakistan Section 4 / branch calculation needed</option></select></div>
         <div class="ic-field"><label for="icExceptional">Pregnancy, missing person, homicide, religion/nasab dispute, or uncertain death order?</label><select id="icExceptional"><option value="no">No</option><option value="yes">Yes — specialist ruling needed</option></select></div></div>
+      <div class="ic-field"><label for="icWasiyyahIssue">Does the Wasiyyah benefit an heir, depend on heirs' consent, or have any validity dispute?</label><select id="icWasiyyahIssue"><option value="no">No / no Wasiyyah entered</option><option value="yes">Yes or unsure — specialist review needed</option></select></div>
     </div>
 
-    <button class="ic-btn" onclick="IC.calculate()">☪️ Calculate Full Distribution</button>
+    <button class="ic-btn" onclick="IC.calculate()">☪️ Calculate Educational Estimate</button>
     <div id="icError" style="display:none"></div>
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <div class="tool-card" id="icResults" style="display:none">
+  <div class="tool-card" id="icResults" role="region" aria-live="polite" aria-label="Educational inheritance estimate" style="display:none">
     <h3><span class="tc-icon">📊</span> Distribution <span id="icBadges"></span></h3>
     <div id="icResList"></div>
     <div class="ic-disclaimer"><strong>Disclaimer:</strong> Estimate for educational use — not a fatwa or legal ruling. Confirm with a qualified Islamic scholar (Mufti) or inheritance lawyer. See our <a href="../blog/islamic-inheritance-calculator-guide.html" style="color:var(--primary)">inheritance guide</a>.</div>
@@ -190,11 +194,12 @@
     <p>This tool applies the fixed Quranic shares (faraid), then assigns the remaining estate to the residuary (asaba) heirs, and finally adjusts with <strong>Aul</strong> (when fixed shares exceed the estate) or <strong>Radd</strong> (when there is a surplus and no residuary). It also applies <strong>Hajb</strong> — the rules by which nearer heirs block more distant ones (for example, a son blocks grandchildren and siblings; the father blocks siblings and the grandfather).</p>
     <h2 id="limits">Known limitations (consult a scholar)</h2>
     <ul style="font-size:13px;line-height:1.9;color:var(--text-2)">
-      <li><strong>Grandfather with siblings:</strong> the <em>muqasama</em> rules differ between schools — handled simply here.</li>
+      <li><strong>Grandfather with siblings:</strong> the applicable Hanafi calculations and school differences need specialist review, so this combination is stopped.</li>
       <li><strong>Akdariyya</strong> (husband + mother + grandfather + one full sister) and <strong>Mushtaraka</strong> are special cases not separately modelled.</li>
       <li><strong>Remote generations:</strong> more distant grandfathers/grandchildren and dhawu al-arham require a scholar.</li>
       <li>Pregnancy, missing persons, homicide, religion/nasab disputes and uncertain death order are deliberately stopped rather than estimated.</li>
-      <li><strong>Pakistan law:</strong> a predeceased son/daughter branch requires a separate per-stirpes Section 4 calculation and is deliberately stopped here.</li>
+      <li><strong>Pakistan law:</strong> a predeceased son/daughter branch requires a separate Section 4 calculation and is deliberately stopped here. The official text uses the wording “per stripes”; obtain professional advice on its application.</li>
+      <li><strong>Ownership and Wasiyyah:</strong> joint ownership, gifts, nominations, disputed debts, and a bequest benefiting an heir or depending on consent are outside this calculator.</li>
     </ul>
     <h2>References &amp; Sources</h2>
     <ul style="font-size:13px;line-height:1.9;color:var(--text-2)">
@@ -248,10 +253,10 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260824c"></script>
+<script src="../js/app.js?v=20260825f"></script>
 <script>
-/* Advanced faraid engine — validated against canonical cases (Aul, Radd,
-   Umariyyatayn, asaba-with-daughters, uterine, father/grandfather). */
+/* Selected Hanafi faraid rules. High-risk and unmodelled combinations are
+   stopped in calculate() for specialist review. */
 const IC = (() => {
   const SYM = { PKR:'₨', USD:'$', GBP:'£', EUR:'€', SAR:'﷼', AED:'د.إ', INR:'₹', BDT:'৳' };
   const $ = id => document.getElementById(id);
@@ -265,7 +270,8 @@ const IC = (() => {
     if(/wife|husband/i.test(label)) return 'Qur’an 4:12';
     if(/maternal sibling/i.test(label)) return 'Qur’an 4:12';
     if(/brother's sons|paternal uncles|uncle's sons/i.test(label)) return 'Sahih al-Bukhari 6732; Hanafi order of nearest male residuaries';
-    if(/^mother$|^father$|^son$|^each son$|^daughter|^daughters$/i.test(label)) return 'Qur’an 4:11';
+    if(/^mother$|^son$|^each son$|^daughter|^daughters$/i.test(label)) return 'Qur’an 4:11';
+    if(/^father$/i.test(label)) return 'Qur’an 4:11; Sahih al-Bukhari 6732 for residue';
     if(/son's son|son's daughter/i.test(label)) return 'Sahih al-Bukhari 6742; Hanafi faraid';
     if(/full sister|full brother|paternal sister|paternal brother/i.test(label)) return 'Qur’an 4:176; Sahih al-Bukhari 6742';
     if(/grandmother|mother's mother|father's mother/i.test(label)) return 'Sunnah and Hanafi rules of eligible grandmothers';
@@ -321,7 +327,7 @@ const IC = (() => {
     if(pSis>0 && pBro===0 && fBro===0 && fSis<2){ if(femaleDesc) patSisAsaba=true; else if(fSis===1) fixed(pSis>1?'Paternal sisters':'Paternal sister',pSis,1/6,'1/6 (completes 2/3)'); else if(fSis===0){ const s=pSis===1?1/2:2/3; fixed(pSis>1?'Paternal sisters':'Paternal sister',pSis,s,frac2(s)); } }
 
     let aul=false;
-    if(fixedSum>1.0000001){ aul=true; const k=fixedSum; rows.forEach(r=>r.frac/=k); fixedSum=1; }
+    if(fixedSum>1.0000001){ aul=true; const k=fixedSum; rows.forEach(r=>{r.frac/=k;r.note=(r.note?r.note+'; ':'')+'adjusted by ‘Awl';}); fixedSum=1; }
 
     let residue = 1 - fixedSum; if(residue<1e-9) residue=0;
     let asabaAssigned=false;
@@ -349,22 +355,28 @@ const IC = (() => {
     if(!aul && residue>0 && !asabaAssigned){
       const isSp = r=>/wife|husband/i.test(r.label);
       const base = rows.filter(r=>r.kind==='fixed' && !isSp(r)).reduce((s,r)=>s+r.frac,0);
-      if(base>0){ radd=true; rows.forEach(r=>{ if(r.kind==='fixed' && !isSp(r)) r.frac+=residue*(r.frac/base); }); residue=0; }
+      if(base>0){ radd=true; rows.forEach(r=>{ if(r.kind==='fixed' && !isSp(r)){r.frac+=residue*(r.frac/base);r.note=(r.note?r.note+'; ':'')+'adjusted by Radd';} }); residue=0; }
     }
     return { rows, aul, radd, residue };
   }
 
   function calculate(){
     clearErr();
+    $('icResults').style.display='none'; $('icResList').innerHTML=''; $('icBadges').innerHTML='';
     if($('icPredeceasedChild').value==='yes'){ showErr('This case needs a branch-by-branch calculation. Pakistan MFLO 1961 Section 4 may give the children of a predeceased son or daughter their parent’s notional share. Please use a qualified Mufti and Pakistani inheritance lawyer.'); return; }
     if($('icExceptional').value==='yes'){ showErr('This case can change heir eligibility and must not be estimated automatically. Please consult a qualified Mufti and inheritance lawyer.'); return; }
+    if($('icWasiyyahIssue').value==='yes'){ showErr('A Wasiyyah benefiting an heir, depending on heirs’ consent, or having a validity dispute needs specialist review before any estate figure is used.'); return; }
+    const countInputs=Array.from(document.querySelectorAll('.ic-field input[type="number"][step="1"]'));
+    const invalidCount=countInputs.find(el=>el.value===''||!Number.isFinite(Number(el.value))||Number(el.value)<0||!Number.isInteger(Number(el.value))||Number(el.value)>10000);
+    if(invalidCount){ showErr('Enter every heir count as a whole number from 0 to 10,000. Please check '+(invalidCount.previousElementSibling?invalidCount.previousElementSibling.textContent:'the highlighted heir field')+'.'); invalidCount.focus(); return; }
+    if(Number($('icWives').value)>4){ showErr('The wives field cannot exceed 4. Please correct the family details instead of relying on an automatic clamp.'); $('icWives').focus(); return; }
     const cur=$('icCurrency').value;
     const gross=parseFloat($('icTotal').value);
     const funeral=parseFloat($('icFuneral').value)||0;
     const debts=parseFloat($('icDebts').value)||0;
     const wasiyyah=parseFloat($('icWasiyyah').value)||0;
-    if(!gross||gross<=0){ showErr('Please enter a valid total estate value.'); return; }
-    if(funeral<0||debts<0||wasiyyah<0){ showErr('Estate expenses, debts and Wasiyyah cannot be negative.'); return; }
+    if(!Number.isFinite(gross)||gross<=0){ showErr('Please enter a finite estate value greater than zero.'); return; }
+    if(!Number.isFinite(funeral)||!Number.isFinite(debts)||!Number.isFinite(wasiyyah)||funeral<0||debts<0||wasiyyah<0){ showErr('Funeral expenses, debts and Wasiyyah must be finite values and cannot be negative.'); return; }
     const afterObligations=gross-funeral-debts;
     if(afterObligations<=0){ showErr('Funeral expenses and enforceable debts cannot consume more than the estate entered.'); return; }
     if(wasiyyah>afterObligations/3+0.000001){ showErr('Wasiyyah exceeds one-third of the estate remaining after funeral expenses and debts (Sahih al-Bukhari 2742; Sahih Muslim 1628a). Excess requires the heirs’ valid post-death consent and specialist review.'); return; }
@@ -378,10 +390,14 @@ const IC = (() => {
       fNephews:num('icFNephews'), pNephews:num('icPNephews'), fUncles:num('icFUncles'), pUncles:num('icPUncles'),
       fUncleSons:num('icFUncleSons'), pUncleSons:num('icPUncleSons')
     };
+    const siblingCount=I.fBro+I.fSis+I.pBro+I.pSis;
+    if(I.gFather&&siblingCount>0){ showErr('Grandfather together with full or paternal siblings is deliberately not calculated here. Hanafi grandfather-with-siblings rules and special cases require a qualified Mufti.'); return; }
+    const hasDesc=I.sons+I.daughters+I.gsons+I.gdaughters>0;
+    if(I.gender==='female'&&I.husband&&!hasDesc&&!I.father&&!I.gFather&&I.uSib>=2&&I.fBro>0){ showErr('This heir combination may raise the Mushtaraka/Himariyya special-case difference between schools. It is deliberately stopped for a qualified Mufti.'); return; }
     const res = computeFaraid(I);
     if(!res.rows.length){ showErr('No eligible heirs entered, or all are blocked. Please review the inputs or consult a scholar.'); return; }
 
-    let total=0, html='';
+    let total=0, html='<div class="ic-res-row"><div><div class="ic-res-who">Estate used for this estimate</div><div class="ic-res-sub">Gross '+fmt(gross,cur)+' − funeral '+fmt(funeral,cur)+' − debts '+fmt(debts,cur)+' − entered Wasiyyah '+fmt(wasiyyah,cur)+'</div></div><div><div class="ic-res-amt">'+fmt(E,cur)+'</div></div></div>';
     res.rows.forEach(r=>{
       const per = r.frac / r.count;
       total += r.frac;
@@ -389,8 +405,10 @@ const IC = (() => {
       html += '<div class="ic-res-row"><div><div class="ic-res-who">'+r.label+'</div><div class="ic-res-sub">'+(r.note||'')+'</div><div class="ic-source">Rule source: '+ruleSource(r.label)+'</div></div>'+
               '<div><div class="ic-res-amt">'+fmt(per*E,cur)+'</div><div class="ic-res-pct">'+pct+'% each</div></div></div>';
     });
-    if(res.residue>0.0001) html += '<div class="ic-res-row"><div><div class="ic-res-who">Unassigned</div><div class="ic-res-sub">No eligible residuary — consult a scholar</div></div><div><div class="ic-res-amt">'+fmt(res.residue*E,cur)+'</div></div></div>';
-    html += '<div class="ic-total"><span>Total distributed</span><span>'+fmt((total+res.residue)*E,cur)+'</span></div>';
+    if(res.residue>0.0001) html += '<div class="ic-res-row"><div><div class="ic-res-who">Unassigned by this calculator</div><div class="ic-res-sub">No supported eligible residuary was found. Do not treat this amount as distributed; consult a qualified Mufti.</div></div><div><div class="ic-res-amt">'+fmt(res.residue*E,cur)+'</div></div></div>';
+    html += '<div class="ic-total"><span>Total assigned to listed heirs</span><span>'+fmt(total*E,cur)+'</span></div>';
+    if(res.residue>0.0001) html += '<div class="ic-total"><span>Estate accounted for (assigned + unassigned)</span><span>'+fmt((total+res.residue)*E,cur)+'</span></div>';
+    html += '<p style="font-size:12px;color:var(--text-3);margin:12px 0 0">Percentages and currency amounts are rounded for display. Verify the exact fractions, heirs, ownership, deductions and applicable law before distribution.</p>';
     $('icResList').innerHTML = html;
     $('icBadges').innerHTML = (res.aul?'<span class="ic-badge aul">Hanafi ‘Awl applied</span>':'') + (res.radd?'<span class="ic-badge radd">Hanafi Radd applied</span>':'');
     const box=$('icResults'); box.style.display='block';

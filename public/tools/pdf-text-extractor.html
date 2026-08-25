@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PDF Text Extractor — Extract Text from PDF Free | PDFdukan</title>
-<meta name="description" content="Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.">
+<meta name="description" content="Extract embedded text from an unencrypted PDF by page, then review, copy or download a UTF-8 TXT file. Scanned image PDFs require OCR.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-text-extractor.html">
 <meta property="og:title" content="PDF Text Extractor — Extract Text from PDF Free | PDFdukan">
 <meta property="og:description" content="Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image" content="https://pdfdukan.com/images/pdf-text-extractor.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -32,13 +32,13 @@
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="PDF Text Extractor — Extract Text from PDF Free | PDFdukan">
 <meta name="twitter:description" content="Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-text-extractor.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -123,6 +123,7 @@
   display: flex; align-items: center; gap: 6px; margin-top: 10px;
 }
 </style>
+<style>.text-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.text-feature img{display:block;width:100%;height:auto}.text-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.text-feature{grid-template-columns:1fr}.text-feature img{max-width:300px;margin:auto}}</style>
 <meta name="theme-color" content="#ff6333">
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Text Extractor","item":"https://pdfdukan.com/tools/pdf-text-extractor.html"}]}</script>
@@ -247,10 +248,11 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>PDF Text Extractor</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#283593,#3f51b5)">&#128196;</div><h1>PDF Text Extractor</h1><p>Pull all the text out of a PDF and copy it or save it as a .txt file. Works in your browser.</p></div>
+  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#283593,#3f51b5)">&#128196;</div><h1>PDF Text Extractor</h1><p>Read embedded PDF text in page order, then review, edit, copy or save it as a UTF-8 .txt file.</p></div>
+  <section class="text-feature" aria-labelledby="textFeatureTitle"><div><h2 id="textFeatureTitle" style="font-size:20px;margin:0">Embedded text extraction, not OCR</h2><p>Page separators and PDF.js line endings help preserve basic reading structure. Complex columns, tables and visual layout can still differ.</p></div><img src="../images/pdf-text-extractor.svg" alt="Illustration of embedded text being extracted from a multi-page PDF into a text document" width="640" height="420"></section>
   <div class="tool-card">
     <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
-    <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Choose one PDF for embedded text extraction"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div><div class="dz-sub">One unencrypted .pdf file up to 100 MB; large files depend on browser memory</div></div><input type="file" id="fileInput" accept="application/pdf,.pdf" style="display:none"></div>
     <p id="txtInfo" style="font-size:13px;color:var(--text-3);margin-top:12px"></p>
   </div>
   <div class="tool-card" id="txtResult" style="display:none">
@@ -259,9 +261,9 @@
     <textarea id="txtOut" rows="12" style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card-2);color:var(--text);font-size:13px"></textarea>
     <div style="display:flex;gap:10px;margin-top:12px"><button class="btn btn-primary" id="txtDl">&#11015;&#65039; Download .txt</button><button class="btn btn-secondary" id="txtCopy">&#128203; Copy</button></div>
   </div>
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.</div>
-<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
-    <h2>About This Tool</h2><p>This free tool reads a PDF and gives you all of its text. It is perfect for quoting, editing, or moving content into another document. It works on PDFs that contain real text. For scanned image PDFs, use our OCR tool first. Everything runs in your browser, so your file stays private.</p>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> This tool extracts embedded PDF text; it does not recognise words inside scanned images. Page order is retained, but columns, tables, spacing and reading order may need editing.</div>
+<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and extraction behavior tested 25 August 2026</span><span>Embedded text only · Page separators added · Layout may differ</span></aside>
+    <h2>About This Tool</h2><p>This tool reads the text layer already stored in an unencrypted PDF. It labels each page and uses available PDF.js line-ending signals, but visual columns, tables, headers and reading order may not reproduce exactly. For image-only scans, use an OCR workflow. File parsing happens in client-side code; the page can still load ordinary site assets, analytics and third-party libraries.</p>
     <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Wait for the text to appear.</li><li>Copy it or download a .txt file.</li><li>Paste it wherever you need.</li></ol>
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on scanned PDFs?</button><div class="faq-a">Only if they contain real text. For image scans, use our OCR tool first.</div></div>
@@ -277,8 +279,23 @@
 </div>
 <script>
 (function(){
-  function onFile(f){ if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } document.getElementById('txtInfo').textContent='Reading '+f.name+'…'; var r=new FileReader(); r.onload=async function(e){ try{ var pdf=await pdfjsLib.getDocument({data:e.target.result}).promise; var all=''; for(var p=1;p<=pdf.numPages;p++){ var page=await pdf.getPage(p); var tc=await page.getTextContent(); all+=tc.items.map(function(i){return i.str;}).join(' ')+'\n\n'; } all=all.trim(); document.getElementById('txtOut').value=all; document.getElementById('wc').textContent=(all.match(/\S+/g)||[]).length; document.getElementById('cc').textContent=all.length; document.getElementById('txtResult').style.display=''; document.getElementById('txtInfo').textContent=''; if(!all){ if(window.toast) toast('No text found — this may be a scanned PDF. Try OCR.','info'); } if(window.trackToolUse) trackToolUse('pdf-text-extractor'); }catch(err){ document.getElementById('txtInfo').textContent=''; if(window.toast) toast('Could not read PDF','error'); console.error(err); } }; r.readAsArrayBuffer(f); }
-  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('txtDl').onclick=function(){ var t=document.getElementById('txtOut').value; var blob=new Blob([t],{type:'text/plain'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='extracted_text.txt'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); }; document.getElementById('txtCopy').onclick=function(){ navigator.clipboard.writeText(document.getElementById('txtOut').value).then(function(){ if(window.toast) toast('Copied!','success'); }); }; });
+  var busy=false, sourceName='document';
+  function pageText(tc){ var out=''; (tc.items||[]).forEach(function(i){ if(!i||typeof i.str!=='string')return; out+=i.str; out+=i.hasEOL?'\n':' '; }); return out.replace(/[ \t]+\n/g,'\n').replace(/[ \t]{2,}/g,' ').trim(); }
+  async function onFile(f){
+    if(busy)return;
+    if(!f||(!(f.type==='application/pdf')&&!/\.pdf$/i.test(f.name||''))){ if(window.toast) toast('Please choose a PDF file','error'); return; }
+    if(!f.size){ if(window.toast) toast('This PDF file is empty','error'); return; }
+    if(f.size>100*1024*1024){ if(window.toast) toast('Please choose a PDF no larger than 100 MB','error'); return; }
+    busy=true; sourceName=(f.name||'document').replace(/\.pdf$/i,''); document.getElementById('txtResult').style.display='none'; document.getElementById('txtOut').value=''; document.getElementById('txtInfo').textContent='Reading '+f.name+'…';
+    try{
+      var data=await f.arrayBuffer(); var pdf=await pdfjsLib.getDocument({data:data}).promise; var pages=[];
+      for(var p=1;p<=pdf.numPages;p++){ document.getElementById('txtInfo').textContent='Reading page '+p+' of '+pdf.numPages+'…'; var page=await pdf.getPage(p); var tc=await page.getTextContent(); pages.push('--- Page '+p+' ---\n'+pageText(tc)); }
+      var all=pages.join('\n\n').trim(); document.getElementById('txtOut').value=all; document.getElementById('wc').textContent=(all.match(/\S+/g)||[]).length; document.getElementById('cc').textContent=all.length; document.getElementById('txtResult').style.display=''; document.getElementById('txtInfo').textContent=pdf.numPages+' page'+(pdf.numPages===1?'':'s')+' read. Review layout and reading order.';
+      if(!all.replace(/--- Page \d+ ---/g,'').trim()&&window.toast) toast('No embedded text found — this may be a scanned PDF. Try OCR.','info'); if(window.trackToolUse) trackToolUse('pdf-text-extractor');
+    }catch(err){ var msg=/password|encrypted/i.test(String(err&&err.message))?'This encrypted PDF could not be opened. Save an authorized unprotected copy first.':'Could not read this PDF.'; document.getElementById('txtInfo').textContent=msg; if(window.toast) toast(msg,'error'); console.error(err); }
+    finally{busy=false;}
+  }
+  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; dz.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click();}}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('txtDl').onclick=function(){ var t=document.getElementById('txtOut').value; if(!t)return; var blob=new Blob(['\uFEFF',t],{type:'text/plain;charset=utf-8'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=(sourceName||'document')+'_extracted_text.txt'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); }; document.getElementById('txtCopy').onclick=async function(){var area=document.getElementById('txtOut');if(!area.value)return;try{await navigator.clipboard.writeText(area.value);}catch(e){area.focus();area.select();document.execCommand('copy');}if(window.toast)toast('Copied!','success');}; });
 })();
 </script>
 <nav class="mobile-nav"><div class="mob-nav-items">
@@ -330,8 +347,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

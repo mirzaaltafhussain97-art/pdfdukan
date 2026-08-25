@@ -86,7 +86,7 @@ function _markOTPVerified(email) {
 const NOTIFICATIONS_DATA = [
   { id: 1, icon: '🎉', title: 'Welcome to CamMaster!',       body: 'Scan, convert and manage documents — all free, all in your browser. No uploads, no sign-up required.',            date: '2026-05-20' },
   { id: 2, icon: '✨', title: 'New: Smart PDF Merge',         body: 'Select specific pages per file before merging. More control than ever — try it in the Merge PDF tool!',           date: '2026-05-22' },
-  { id: 3, icon: '🔒', title: '100% Private Processing',      body: 'All files stay on your device. Nothing is ever uploaded to our servers. Your documents are yours alone.',          date: '2026-05-24' },
+  { id: 3, icon: '🔒', title: 'Browser-Based File Processing', body: 'Core document operations run in your browser. Check each tool page for its exact processing, third-party assets and limitations.', date: '2026-08-25' },
   { id: 4, icon: '📱', title: 'Mobile-Ready Scanner',         body: 'Use CamMaster from your smartphone browser. Auto-detect edges, enhance images, export PDFs instantly.',            date: '2026-05-25' },
 ];
 
@@ -1560,13 +1560,13 @@ const TOOL_SEARCH_INDEX = [
   { id:'scan',         name:'Smart Scan',          desc:'AI document scanner with auto edge detection', icon:'📷', category:'Scanner',     keywords:['scan','camera','photo','capture','edge','crop','opencv'] },
   { id:'img-to-pdf',   name:'Image to PDF',         desc:'Convert JPG, PNG, WEBP images to PDF',         icon:'📑', category:'PDF Tools',   keywords:['image','jpg','png','webp','convert','picture','photo'] },
   { id:'pdf-to-img',   name:'PDF to JPG',            desc:'Extract PDF pages as image files',             icon:'🖼️', category:'PDF Tools',   keywords:['extract','jpg','jpeg','image','page'] },
-  { id:'crop-pdf',     name:'Crop PDF',              desc:'Crop any region of a PDF page to a sharp image', icon:'✂️', category:'PDF Tools',   keywords:['crop','region','cut','area','map','extract','image','rotate','perspective','warp'] },
+  { id:'crop-pdf',     name:'Crop PDF',              desc:'Export selected PDF page regions as images',    icon:'✂️', category:'PDF Tools',   keywords:['crop','region','cut','area','map','extract','image','rotate','perspective','warp'] },
   { id:'merge',        name:'Merge PDF',             desc:'Combine multiple PDF files into one',          icon:'🔗', category:'PDF Tools',   keywords:['merge','combine','join','unite','two','multiple'] },
   { id:'split',        name:'Split PDF',             desc:'Divide PDF into separate files by page range', icon:'✂️', category:'PDF Tools',   keywords:['split','divide','separate','range','pages','cut'] },
   { id:'compress',     name:'Compress Image',        desc:'Reduce image file size — JPG, PNG, WEBP',      icon:'🗜️', category:'Image Tools', keywords:['compress','reduce','optimize','image','size','quality','jpg'] },
-  { id:'compress-pdf', name:'Compress PDF',          desc:'Shrink PDF file size with quality tiers',      icon:'📉', category:'PDF Tools',   keywords:['compress','reduce','pdf','size','optimize','shrink','smaller'] },
+  { id:'compress-pdf', name:'Compress PDF',          desc:'Rasterise PDF pages with three size tiers',     icon:'📉', category:'PDF Tools',   keywords:['compress','reduce','pdf','size','optimize','shrink','smaller'] },
   { id:'ocr',          name:'OCR Text',              desc:'Extract text from scanned images',             icon:'🔤', category:'PDF Tools',   keywords:['ocr','text','extract','recognize','scan','tesseract'] },
-  { id:'pdf-to-word',  name:'PDF to Word',           desc:'Convert PDF to editable .doc document',        icon:'📝', category:'PDF Tools',   keywords:['word','doc','docx','convert','editable','text'] },
+  { id:'pdf-to-word',  name:'PDF to Word',           desc:'Extract PDF text to a .docx document',         icon:'📝', category:'PDF Tools',   keywords:['word','doc','docx','convert','editable','text'] },
   { id:'word-to-pdf',  name:'Word to PDF',           desc:'Convert DOCX/DOC to PDF format',               icon:'📄', category:'PDF Tools',   keywords:['word','docx','doc','convert','microsoft'] },
   { id:'fill-sign',    name:'Fill & Sign PDF',       desc:'Add text blocks and signatures to any PDF',    icon:'✍️', category:'PDF Tools',   keywords:['sign','signature','fill','form','annotate','draw','ink'] },
   { id:'watermark',    name:'Watermark PDF',         desc:'Stamp text or image watermarks on all pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
@@ -1576,7 +1576,7 @@ const TOOL_SEARCH_INDEX = [
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit text, images and objects inside PDFs',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
   { id:'pdf-to-ppt',   name:'PDF to PowerPoint',     desc:'Export PDF pages as image-based PPTX slides',   icon:'📊', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation','office'] },
   { id:'pdf-to-excel', name:'PDF to Excel',          desc:'Extract tables from PDF to XLSX spreadsheet', icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','xls','table','spreadsheet','data'] },
-  { id:'inheritance', name:'Islamic Inheritance Calc', desc:'Warasat Intikal — Sharia estate distribution', icon:'☪️', category:'Calculators', keywords:['islamic','inheritance','warasat','intikal','sharia','quran','fara\'id','estate','muslim','mother','brother','sister'] },
+  { id:'inheritance', name:'Hanafi Inheritance Estimate', desc:'Educational faraid estimate with specialist stops', icon:'☪️', category:'Calculators', keywords:['islamic','inheritance','warasat','intikal','hanafi','quran','fara\'id','estate','muslim','mother','brother','sister'] },
 ];
 
 /* ── SEARCH ──────────────────────────────────────────────────── */
@@ -1705,8 +1705,11 @@ function updatePwStrength(val) {
 function toggleMobileNav() {
   const drawer = document.getElementById('mobileNavDrawer');
   if (!drawer) return;
+  const btn = document.getElementById('hamburgerBtn');
   const isOpen = drawer.classList.contains('open');
   drawer.classList.toggle('open', !isOpen);
+  drawer.setAttribute('aria-hidden', String(isOpen));
+  btn?.setAttribute('aria-expanded', String(!isOpen));
   if (!isOpen) {
     setTimeout(() => {
       document.addEventListener('click', _closeMobileNavOutside, { once: true });
@@ -1718,6 +1721,8 @@ function _closeMobileNavOutside(e) {
   const btn    = document.getElementById('hamburgerBtn');
   if (drawer && !drawer.contains(e.target) && !btn?.contains(e.target)) {
     drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    btn?.setAttribute('aria-expanded', 'false');
   }
 }
 
@@ -1948,27 +1953,27 @@ function _initSearchTrustSignals() {
   const title = document.querySelector('h1')?.textContent?.trim() || document.title.split('|')[0].trim();
   const toolId = document.body.dataset.tool;
   const featureMap = {
-    'compress-pdf':['Three compression levels','Never returns a file larger than the original','Client-side PDF processing'],
+    'compress-pdf':['Three raster compression levels','Keeps the original bytes when raster output is larger','Raster output removes selectable text and interactive PDF features'],
     'compress':['JPG, PNG and WEBP compression','Quality controls','Client-side image processing'],
-    'crop-pdf':['Visual crop selection','Multi-page PDF support','Client-side processing'],
+    'crop-pdf':['Visual crop selection on the current page','PNG, JPG or WebP region export','Multiple current-page crops can download as a ZIP'],
     'fill-sign':['Draw, type or upload a signature','Add movable text fields','Export a signed PDF'],
     'html-to-pdf':['Convert pasted HTML to PDF','Preview before export','Client-side generation'],
     'img-to-pdf':['JPG, PNG and WEBP input','Page size and orientation controls','Multi-image PDF export'],
-    'inheritance-calc-advanced':['Islamic inheritance share estimator','Multiple heir types','Step-by-step share summary'],
+    'inheritance-calc-advanced':['Educational estimates for selected Hanafi cases','Complex and legally sensitive combinations are stopped','Net-estate, share and unassigned-residue breakdown'],
     'merge-pdf':['Reorder and combine PDFs','Multiple file support','Client-side merge'],
-    'ocr':['English OCR','Copy or download recognized text','Client-side recognition'],
+    'ocr':['JPG, PNG and WebP image OCR','Multiple selectable OCR languages','Editable text with confidence and TXT download'],
     'page-numbers':['Six number positions','Custom start and skipped pages','Custom format and color'],
     'pdf-editor':['Add annotations and text boxes','Insert images, links and signatures','Does not directly rewrite original PDF text'],
-    'pdf-metadata':['View and edit title, author, subject and keywords','Clear metadata fields','Client-side export'],
+    'pdf-metadata':['View and edit title, author, subject and keywords','Output bytes are reopened and metadata values checked','PDF rewrite may affect signatures or unsupported interactive structures'],
     'pdf-organizer':['Drag to reorder pages','Rotate individual pages','Delete unwanted pages'],
-    'pdf-text-extractor':['Extract selectable PDF text','Page-by-page output','Copy or download text'],
+    'pdf-text-extractor':['Extract embedded selectable PDF text without OCR','Page separators and basic line endings','Copy or UTF-8 TXT download'],
     'pdf-to-excel':['Layout-aware table extraction','One sheet per page or combined output','Scanned PDFs require OCR first'],
     'pdf-to-img':['Convert PDF pages to JPG','Individual or ZIP download','Client-side rendering'],
     'pdf-to-ppt':['One PDF page per image-based slide','PPTX export','Slide text is not directly editable'],
     'pdf-to-word':['Extract selectable text to a Word-compatible document','Best for digital PDFs','Complex layouts may need cleanup'],
-    'searchable-pdf':['English OCR text layer','Rejects zero-text results','Image input'],
+    'searchable-pdf':['JPG or PNG input with a searchable OCR text layer','Selectable OCR language','Manual review before downloading the generated PDF'],
     'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
-    'unlock-pdf':['Compatible owner-restriction removal','Does not crack unknown open passwords','Client-side processing'],
+    'unlock-pdf':['Unencrypted PDF compatibility re-save','Encrypted and password-protected input is rejected','No decryption or guaranteed permission removal'],
     'watermark':['Custom text watermark','Opacity, angle and position controls','Apply across PDF pages'],
     'word-to-pdf':['DOCX input','Browser-based document rendering','Complex Word layouts may vary']
   };
@@ -1981,20 +1986,29 @@ function _initSearchTrustSignals() {
       browserRequirements:'Requires a modern browser with JavaScript enabled',
       offers:{'@type':'Offer',price:'0',priceCurrency:'USD'}, featureList:features,
       publisher:{'@type':'Organization',name:'PDFdukan',url:'https://pdfdukan.com/'},
-      dateModified:'2026-08-14'
+      dateModified:'2026-08-25'
     };
-    const schemaEl = document.createElement('script');
-    schemaEl.type = 'application/ld+json';
-    schemaEl.dataset.generated = 'tool-application';
-    schemaEl.textContent = JSON.stringify(schema);
-    document.head.appendChild(schemaEl);
+    const hasAppSchema = Array.from(document.querySelectorAll('script[type="application/ld+json"]')).some(el => {
+      try {
+        const data = JSON.parse(el.textContent);
+        const records = data['@graph'] || [data];
+        return records.some(record => record && ['WebApplication','SoftwareApplication'].includes(record['@type']));
+      } catch (e) { return false; }
+    });
+    if (!hasAppSchema) {
+      const schemaEl = document.createElement('script');
+      schemaEl.type = 'application/ld+json';
+      schemaEl.dataset.generated = 'tool-application';
+      schemaEl.textContent = JSON.stringify(schema);
+      document.head.appendChild(schemaEl);
+    }
 
     const seo = document.querySelector('.seo-section');
     if (seo && !document.querySelector('.cm-review-note')) {
       const note = document.createElement('aside');
       note.className = 'cm-review-note';
       note.setAttribute('aria-label','Tool review information');
-      note.innerHTML = '<strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span>';
+      note.innerHTML = '<strong>PDFdukan product review</strong><span>Page and feature claims reviewed 25 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span>';
       seo.insertBefore(note, seo.firstChild);
     }
   }
@@ -2004,7 +2018,7 @@ function _initSearchTrustSignals() {
     if (article && !document.querySelector('.cm-article-byline')) {
       const byline = document.createElement('div');
       byline.className = 'cm-article-byline';
-      byline.textContent = 'Written and reviewed by the PDFdukan Editorial Team · Updated 14 August 2026';
+      byline.textContent = 'Written by the PDFdukan Editorial Team · Updated 25 August 2026';
       const firstHeading = article.querySelector('h1');
       if (firstHeading) firstHeading.insertAdjacentElement('afterend', byline);
     }
@@ -2016,13 +2030,106 @@ function _initSearchTrustSignals() {
           if (record && (record['@type'] === 'Article' || record['@type'] === 'BlogPosting')) {
             if (!record.author) record.author = {'@type':'Organization','name':'PDFdukan Editorial Team','url':'https://pdfdukan.com/about.html'};
             if (!record.publisher) record.publisher = {'@type':'Organization','name':'PDFdukan','url':'https://pdfdukan.com/'};
-            record.dateModified = '2026-08-14';
+            record.dateModified = '2026-08-25';
           }
         });
         el.textContent = JSON.stringify(data);
       } catch (e) {}
     });
   }
+}
+
+/* ── HOMEPAGE AMBIENT DOT GLOBE ────────────────────────────────
+   Decorative only: contained in the hero, pauses off-screen, becomes static
+   on touch/reduced-motion devices, and never intercepts input. */
+function initAmbientGlobe() {
+  const homePath = location.pathname === '/' || /\/site-root-internal\.html$/.test(location.pathname);
+  const hero = document.querySelector('.hero-section');
+  if (!homePath || !hero || document.getElementById('ambientGlobe')) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.id = 'ambientGlobe';
+  canvas.className = 'ambient-globe';
+  canvas.setAttribute('aria-hidden', 'true');
+  hero.prepend(canvas);
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) { canvas.remove(); return; }
+
+  const points = [];
+  for (let lat = -75; lat <= 75; lat += 25) {
+    for (let lon = 0; lon < 360; lon += 30) {
+      points.push({ lat: lat * Math.PI / 180, lon: lon * Math.PI / 180 });
+    }
+  }
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(hover: none), (pointer: coarse)').matches;
+  const compact = matchMedia('(max-width: 700px)').matches;
+  let width = 1, height = 1, dpr = 1, angle = 0, shiftX = 0, shiftY = 0;
+  let targetX = 0, targetY = 0, visible = true, frame = 0, last = performance.now();
+
+  function resize() {
+    const rect = hero.getBoundingClientRect();
+    width = Math.max(1, Math.round(rect.width));
+    height = Math.max(1, Math.round(rect.height));
+    dpr = Math.min(devicePixelRatio || 1, 1.5);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    draw();
+  }
+
+  function draw() {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    const light = document.documentElement.dataset.theme === 'light';
+    const rgb = light ? '201,71,36' : '255,128,85';
+    const cx = width * (width < 700 ? 0.72 : 0.67) + shiftX;
+    const cy = height * (width < 700 ? 0.22 : 0.25) + shiftY;
+    const radius = Math.min(width * (width < 700 ? 0.32 : 0.23), height * 0.25, 205);
+    points.forEach(point => {
+      const cosLat = Math.cos(point.lat);
+      const x3 = cosLat * Math.cos(point.lon + angle);
+      const y3 = Math.sin(point.lat);
+      const z3 = cosLat * Math.sin(point.lon + angle);
+      const depth = (z3 + 1) / 2;
+      const perspective = 0.78 + depth * 0.22;
+      const x = cx + x3 * radius * perspective;
+      const y = cy + y3 * radius;
+      const dot = 0.7 + depth * 1.8;
+      ctx.beginPath();
+      ctx.arc(x, y, dot, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + rgb + ',' + (0.045 + depth * (light ? 0.13 : 0.18)) + ')';
+      ctx.fill();
+    });
+  }
+
+  function loop(now) {
+    if (!visible || document.hidden) { frame = requestAnimationFrame(loop); last = now; return; }
+    const dt = Math.min(32, now - last); last = now;
+    angle += dt * 0.00006;
+    shiftX += (targetX - shiftX) * 0.035;
+    shiftY += (targetY - shiftY) * 0.035;
+    draw();
+    frame = requestAnimationFrame(loop);
+  }
+
+  if (!reduced && !coarse && !compact) {
+    hero.addEventListener('pointermove', event => {
+      const rect = hero.getBoundingClientRect();
+      targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 24;
+      targetY = ((event.clientY - rect.top) / rect.height - 0.5) * 16;
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => { targetX = 0; targetY = 0; }, { passive: true });
+    frame = requestAnimationFrame(loop);
+  }
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => { visible = entries[0]?.isIntersecting !== false; }, { rootMargin: '100px' }) : null;
+  observer?.observe(hero);
+  const resizer = 'ResizeObserver' in window ? new ResizeObserver(resize) : null;
+  resizer?.observe(hero);
+  if (!resizer) window.addEventListener('resize', resize, { passive: true });
+  new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  resize();
 }
 
 /* ── INIT ─────────────────────────────────────────────────────── */
@@ -2055,5 +2162,6 @@ document.addEventListener('DOMContentLoaded', () => {
   _initCookieBanner();
   _initGlobalError();
   _initSearchTrustSignals();
+  initAmbientGlobe();
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });

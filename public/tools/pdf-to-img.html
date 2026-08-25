@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PDF to JPG or PNG — Convert PDF Pages | PDFdukan</title>
-<meta name="description" content="Convert PDF to JPG images online for free. Extract every page as a high-quality image. Download individually or as ZIP. No upload needed. PDFdukan CamMaster.">
+<meta name="description" content="Convert selected PDF pages to JPG, PNG or WebP. Choose requested DPI and image quality, then download one image or multiple pages in a ZIP.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -21,18 +21,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-to-img.html">
-<meta property="og:title" content="PDF to JPG Converter — Free Online | CamMaster by PDFdukan">
-<meta property="og:description" content="Convert PDF to JPG images online for free. Extract every page as a high-quality image. Download individually or as ZIP. No upload needed. PDFdukan CamMaster.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:title" content="PDF to JPG, PNG or WebP Converter | PDFdukan">
+<meta property="og:description" content="Render selected PDF pages as JPG, PNG or WebP at a chosen resolution, with individual image and ZIP downloads.">
+<meta property="og:image" content="https://pdfdukan.com/images/pdf-to-jpg.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="PDF to JPG Converter — Free Online | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Convert PDF to JPG images online for free. Extract every page as a high-quality image. Download individually or as ZIP. No upload needed. PDFdukan CamMaster.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:title" content="PDF to JPG, PNG or WebP Converter | PDFdukan">
+<meta name="twitter:description" content="Render selected PDF pages as images with resolution, quality and ZIP controls.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-to-jpg.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -40,7 +40,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 .pages-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
 /* Page selection */
@@ -51,6 +51,10 @@
 .page-thumb:not(.pt-selected){opacity:.92}
 .pt-dl-btn{display:block;width:100%;margin-top:8px;padding:7px 0;font-size:13px;font-weight:700;border:1.5px solid var(--primary);border-radius:8px;background:var(--card);color:var(--primary);cursor:pointer;text-align:center;transition:background .15s,color .15s}
 .pt-dl-btn:hover{background:var(--primary);color:#fff}
+.tool-hero.pdf-image-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.pdf-image-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.pdf-image-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.pdf-image-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.pdf-image-tool-hero .tool-feature-visual{max-height:180px}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF to JPG Converter","item":"https://pdfdukan.com/tools/pdf-to-img.html"}]}</script>
@@ -63,7 +67,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="pdf-to-img"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -179,10 +183,13 @@
     <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>PDF to JPG</span>
   </nav>
 
-  <div class="tool-hero">
-    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#e53935,#ef5350)">🖼️</div>
-    <h1>PDF to JPG Converter</h1>
-    <p>Extract every page from a PDF as a high-quality image — JPG, lossless PNG, or compact WebP — at up to 400 DPI. Pick a page range and download all pages as a ZIP archive.</p>
+  <div class="tool-hero pdf-image-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#e53935,#ef5350)">🖼️</div>
+      <h1>PDF to JPG, PNG or WebP</h1>
+      <p>Render all or selected PDF pages as images. Choose requested DPI and quality, then download one page or multiple numbered files in a ZIP.</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/pdf-to-jpg.svg?v=20260825" width="720" height="420" alt="PDF pages rendered as separate numbered JPG and PNG image files">
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -193,7 +200,7 @@
     <div class="drop-zone" id="dropZone">
       <div class="dz-icon">📄</div>
       <div class="dz-title">Drop a PDF here or click to browse</div>
-      <div class="dz-hint">Supports any standard PDF file</div>
+      <div class="dz-hint">Choose an unlocked PDF. Large pages or high DPI can be capped for browser safety.</div>
       <span class="dz-btn">Choose PDF</span>
       <input type="file" id="fileInput" accept=".pdf,application/pdf">
     </div>
@@ -220,10 +227,10 @@
       <div class="option-group">
         <label>Render Quality</label>
         <select id="renderScale">
-          <option value="4">Max (400 DPI) — sharpest</option>
-          <option value="3">High (300 DPI)</option>
-          <option value="2" selected>Medium (200 DPI) — recommended</option>
-          <option value="1.5">Low (150 DPI)</option>
+          <option value="5.5556">Max (400 DPI requested) — largest</option>
+          <option value="4.1667">High (300 DPI requested)</option>
+          <option value="2.7778" selected>Medium (200 DPI requested) — recommended</option>
+          <option value="2.0833">Low (150 DPI requested)</option>
           <option value="1">Draft (72 DPI)</option>
         </select>
       </div>
@@ -259,7 +266,7 @@
     <h3><span class="tc-icon">✅</span> Pages Ready</h3>
     <div class="result-stats">
       <div class="result-stat"><div class="rs-label">Pages</div><div class="rs-value" id="statPages">—</div></div>
-      <div class="result-stat"><div class="rs-label">Dimensions</div><div class="rs-value" id="statDims">—</div></div>
+      <div class="result-stat"><div class="rs-label">First Page Output</div><div class="rs-value" id="statDims">—</div></div>
     </div>
     <div id="pageSelectBar" style="display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px">
       <span style="font-size:13px;font-weight:600;color:var(--text-2)" id="selCount"></span>
@@ -280,17 +287,17 @@
   </div>
 
 <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Render selected PDF pages as JPG, PNG or WebP, choose output DPI and quality, then download one page or a ZIP. Text becomes pixels and is no longer selectable.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Raster output is not pixel-identical · Browser canvas limits apply</span></aside>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Raster output is not pixel-identical · Browser canvas limits apply</span></aside>
 <h2>Convert PDF to JPG Online — Free, High Quality &amp; Private</h2>
-<p>PDFdukan's PDF to JPG converter turns every page of a PDF into a sharp, high-quality JPG image. Each page appears as a thumbnail with its own download button, so you can save a single page, several pages, or download all pages together as a ZIP archive. Rendering happens entirely in your browser — your PDF is never uploaded to any server.</p>
-<p>Images work everywhere PDFs don't. A JPG can be posted on WhatsApp status, Instagram, or Facebook, inserted into a PowerPoint slide, used as a website graphic, or previewed instantly on any device without a PDF reader. Converting your PDF pages to JPG makes them universally shareable.</p>
+<p>PDFdukan's PDF page renderer converts all or selected pages into JPG, PNG or WebP images. Each rendered page has its own download button; select several pages for one ZIP. The conversion code reads the PDF in your browser, while the page can still request ordinary site assets, analytics and third-party libraries.</p>
+<p>An image can be inserted into slides, websites and services that accept image uploads. Compatibility still depends on the destination service, supported image format, dimensions and file-size rules.</p>
 
 <h2>Why Use PDFdukan PDF to JPG Converter?</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖼️ Per-Page Download</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Every page gets its own download button. Need only page 5 of a 40-page PDF? Save just that one page as a JPG.</p></div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>📦 ZIP for All Pages</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">One click downloads every page as a JPG inside a single ZIP file — neatly numbered and ready to use.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Up to 400 DPI</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Choose JPG, lossless PNG, or compact WebP and render up to 400 DPI — crisp enough for large prints, presentations, and social media. Text stays fully readable.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 No Upload, No Risk</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The PDF is rendered locally in your browser using PDF.js. Private documents never touch a server.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Requested DPI + Actual Output</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Choose 72–400 requested DPI. The result reports actual first-page pixels and DPI; very large pages can be capped to browser-safe dimensions.</p></div>
+  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 Client-side Rendering</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">PDF.js renders selected pages in the browser. Assess your browser and network before handling highly sensitive files.</p></div>
 </div>
 
 <h2>How to Convert PDF to JPG in 3 Steps</h2>
@@ -302,8 +309,8 @@
 
 <h2>Common Uses for PDF to JPG Conversion</h2>
 <ul>
-<li><strong>Social media sharing:</strong> Post a notice, poster, or announcement page from a PDF directly to WhatsApp, Facebook, or Instagram — platforms that don't preview PDFs.</li>
-<li><strong>Presentations:</strong> Insert PDF pages into PowerPoint or Google Slides as images, keeping the exact layout.</li>
+<li><strong>Social media sharing:</strong> Export a notice, poster or announcement page as an image, then check the destination platform's dimension, format and file-size requirements.</li>
+<li><strong>Presentations:</strong> Insert a rendered PDF page into PowerPoint or Google Slides as a fixed raster image; text will not remain selectable.</li>
 <li><strong>Website graphics:</strong> Use a PDF page (menu, price list, certificate) as an image on a website or online store.</li>
 <li><strong>Quick previews:</strong> Send a single page as an image so the recipient can view it instantly without opening a PDF reader.</li>
 <li><strong>Documents as photos:</strong> Some portals and apps only accept image uploads — convert your PDF page to JPG to meet the requirement.</li>
@@ -313,16 +320,16 @@
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract just one page instead of converting the whole PDF?</button><div class="faq-a"><p>Yes. After upload, each page appears as a thumbnail with its own ⬇ JPG download button. Click it on any page to save only that page — no need to download the rest.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What resolution will the output image be?</button><div class="faq-a"><p>You choose the requested DPI, up to 400. Very large pages may be capped to protect browser memory, and high DPI can be slow or fail on limited devices. JPG is lossy; choose PNG when lossless raster output matters.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert to PNG or WebP instead of JPG?</button><div class="faq-a"><p>Yes. In Output Options pick <strong>JPG</strong> (smallest, best for sharing), <strong>PNG</strong> (lossless, best quality — ideal for documents and maps), or <strong>WebP</strong> (modern format with the smallest file size). For JPG and WebP you can also fine-tune the quality with a slider.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why did my converted image come out black? (Fixed)</button><div class="faq-a"><p>Some PDFs — especially maps and graphics exported from design or GIS software — have no painted background. Older converters flatten these to a black image when saving as JPG. PDFdukan now paints a clean white background before exporting, so these PDFs convert correctly. If you still want transparency, choose the PNG format.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded to a server during conversion?</button><div class="faq-a"><p>No. The PDF is rendered into images entirely inside your browser using Mozilla's PDF.js library. Your file never leaves your device — safe for ID documents, certificates, financial papers, and anything private.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the text in my PDF be readable in the JPG?</button><div class="faq-a"><p>Yes. Text, graphics, tables, and images are all rendered into the JPG at high quality — the output is a pixel-accurate picture of each page, exactly as it appears in a PDF viewer.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How are transparent PDF areas handled?</button><div class="faq-a"><p>JPG and WebP outputs receive a white canvas background to avoid transparent areas becoming black. PNG keeps transparent canvas areas where the browser renderer produces them.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Where does conversion happen?</button><div class="faq-a"><p>Mozilla PDF.js renders the selected pages with client-side code in your browser. The page can still request normal site assets, analytics and third-party libraries.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will text remain selectable in the image?</button><div class="faq-a"><p>No. JPG, PNG and WebP are raster images, so text becomes pixels. Readability depends on requested and actual resolution, the source PDF, and any browser safety cap.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I convert the JPGs back into a PDF later?</button><div class="faq-a"><p>Use the <a href="img-to-pdf.html">Image to PDF tool</a> — upload the JPGs, arrange the page order, and download a single PDF. Both tools are free and run in your browser.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a limit on the number of pages?</button><div class="faq-a"><p>No enforced limit. The practical limit is your device's memory — PDFs up to 100 pages convert smoothly on most phones and computers. Very long documents work best on a laptop or desktop.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a password-protected PDF to JPG?</button><div class="faq-a"><p>Remove the password first with the <a href="unlock-pdf.html">Unlock PDF tool</a>, then convert the unlocked file. Both steps take under a minute and are free.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>Yes. PDF to JPG conversion on PDFdukan is 100% free — no subscription, no watermarks, no daily limits, and no account required.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>Yes. Open PDFdukan in Chrome, Safari, or Samsung Internet on your phone, upload the PDF, and save the JPGs straight to your gallery — no app download needed.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a limit on the number of pages?</button><div class="faq-a"><p>The form does not state a fixed page count. Practical capacity depends on selected pages, requested DPI, page dimensions, PDF complexity, browser and available memory. Convert a smaller range if processing fails.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a password-protected PDF to JPG?</button><div class="faq-a"><p>A locked or encrypted PDF must be unlocked with permission before this renderer can process it.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is an account required?</button><div class="faq-a"><p>No account is required for the current PDF-to-image workflow. The output is not intentionally given a PDFdukan watermark.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>The layout is designed for current mobile browsers. High-DPI or many-page conversions can exceed phone memory, and download behavior depends on the browser and operating system.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"This tool converts each page of a PDF into a high-quality JPG image. You can download images individually (one per page) or as a ZIP archive. All processing happens in your browser."}},{"@type":"Question","name":"Who needs a PDF to JPG Converter?","acceptedAnswer":{"@type":"Answer","text":"Designers extracting page previews, students sharing a single page as an image, social media users posting document content, and anyone who needs a PDF page as a picture."}},{"@type":"Question","name":"What problem does the PDF to JPG Converter solve?","acceptedAnswer":{"@type":"Answer","text":"PDFs cannot be viewed on all platforms or inserted into presentations and social posts as images. Converting PDF pages to JPG makes them universally shareable."}},{"@type":"Question","name":"Can I extract just one page instead of the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. After upload, each page appears as a thumbnail with its own download button. Click the download icon on any specific page to save just that page as a JPG."}},{"@type":"Question","name":"What resolution will the output image be?","acceptedAnswer":{"@type":"Answer","text":"You control the quality. The default is 200 DPI and you can render up to 400 DPI for the sharpest result. You can also choose JPG, lossless PNG, or compact WebP. Very large pages are automatically capped to a browser-safe size so the conversion never fails."}},{"@type":"Question","name":"Will the text in my PDF be readable in the JPG?","acceptedAnswer":{"@type":"Answer","text":"Yes. Text, graphics, and images from the PDF are all rendered into the JPG at high quality. The output is a pixel-perfect screenshot of each page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is 100% free with no hidden charges, no subscription, and no credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed to use this browser-based tool."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All processing happens entirely inside your browser using JavaScript. Your files never leave your device and are never seen by any server."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Yes. All PDFdukan tools work in any modern browser — Chrome, Safari, Firefox, Edge — on phones, tablets, and computers."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I extract just one page instead of converting the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. After upload, each page appears as a thumbnail with its own ⬇ JPG download button. Click it on any page to save only that page — no need to download the rest."}},{"@type":"Question","name":"What resolution will the output image be?","acceptedAnswer":{"@type":"Answer","text":"You choose the requested DPI, up to 400. Very large pages may be capped to protect browser memory, and high DPI can be slow or fail on limited devices. JPG is lossy; choose PNG when lossless raster output matters."}},{"@type":"Question","name":"Can I convert to PNG or WebP instead of JPG?","acceptedAnswer":{"@type":"Answer","text":"Yes. In Output Options pick JPG (smallest, best for sharing), PNG (lossless, best quality — ideal for documents and maps), or WebP (modern format with the smallest file size). For JPG and WebP you can also fine-tune the quality with a slider."}},{"@type":"Question","name":"How are transparent PDF areas handled?","acceptedAnswer":{"@type":"Answer","text":"JPG and WebP outputs receive a white canvas background to avoid transparent areas becoming black. PNG keeps transparent canvas areas where the browser renderer produces them."}},{"@type":"Question","name":"Where does conversion happen?","acceptedAnswer":{"@type":"Answer","text":"Mozilla PDF.js renders the selected pages with client-side code in your browser. The page can still request normal site assets, analytics and third-party libraries."}},{"@type":"Question","name":"Will text remain selectable in the image?","acceptedAnswer":{"@type":"Answer","text":"No. JPG, PNG and WebP are raster images, so text becomes pixels. Readability depends on requested and actual resolution, the source PDF, and any browser safety cap."}},{"@type":"Question","name":"How do I convert the JPGs back into a PDF later?","acceptedAnswer":{"@type":"Answer","text":"Use the Image to PDF tool — upload the JPGs, arrange the page order, and download a single PDF. Both tools are free and run in your browser."}},{"@type":"Question","name":"Is there a limit on the number of pages?","acceptedAnswer":{"@type":"Answer","text":"The form does not state a fixed page count. Practical capacity depends on selected pages, requested DPI, page dimensions, PDF complexity, browser and available memory. Convert a smaller range if processing fails."}},{"@type":"Question","name":"Can I convert a password-protected PDF to JPG?","acceptedAnswer":{"@type":"Answer","text":"A locked or encrypted PDF must be unlocked with permission before this renderer can process it."}},{"@type":"Question","name":"Is an account required?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the current PDF-to-image workflow. The output is not intentionally given a PDFdukan watermark."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"The layout is designed for current mobile browsers. High-DPI or many-page conversions can exceed phone memory, and download behavior depends on the browser and operating system."}}]}</script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
@@ -373,8 +380,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 <script>
 const _origLoad = PDFToImages.loadPDF;
 PDFToImages.loadPDF = function(files) {

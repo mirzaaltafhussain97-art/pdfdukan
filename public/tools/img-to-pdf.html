@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JPG & PNG to PDF — Combine Images Online | PDFdukan</title>
-<meta name="description" content="Convert JPG, PNG, WEBP images to PDF online for free. Multi-page PDF, A4/Letter/custom sizes. No installation, no signup. PDFdukan CamMaster.">
+<meta name="description" content="Convert JPG, PNG or WebP images into one PDF. Reorder, rotate, choose A4/Letter/A3/A5, orientation, margins and image encoding quality.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -21,24 +21,24 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/img-to-pdf.html">
-<meta property="og:title" content="Image to PDF Converter — Free Online | CamMaster by PDFdukan">
-<meta property="og:description" content="Convert JPG, PNG, WEBP images to PDF online for free. Multi-page PDF, A4/Letter/custom sizes. No installation, no signup. PDFdukan CamMaster.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:title" content="JPG, PNG &amp; WebP to PDF Converter | PDFdukan">
+<meta property="og:description" content="Arrange JPG, PNG or WebP images into one PDF with page size, orientation, margin, rotation and quality controls.">
+<meta property="og:image" content="https://pdfdukan.com/images/img-to-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Image to PDF Converter — Free Online | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Convert JPG, PNG, WEBP images to PDF online for free. Multi-page PDF, A4/Letter/custom sizes. No installation, no signup. PDFdukan CamMaster.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:title" content="JPG, PNG &amp; WebP to PDF Converter | PDFdukan">
+<meta name="twitter:description" content="Arrange images into one PDF with page, margin, rotation and quality controls.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/img-to-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* Image thumbnail grid: drag to reorder, rotate, remove */
 #fileList.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
@@ -53,10 +53,16 @@
 .img-card-actions{display:flex;gap:6px;margin-top:6px}
 .img-card-actions button{flex:1;padding:4px 0;font-size:13px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text-2);cursor:pointer;transition:all .15s}
 .img-card-actions button:hover{border-color:var(--primary);color:var(--primary)}
+.img-card-actions button:disabled{opacity:.35;cursor:not-allowed}
 .img-card-actions .img-card-del:hover{border-color:#ef4444;color:#ef4444}
+.tool-hero.image-pdf-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.image-pdf-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.image-pdf-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.image-pdf-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.image-pdf-tool-hero .tool-feature-visual{max-height:180px}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Image to PDF Converter","item":"https://pdfdukan.com/tools/img-to-pdf.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many images can I convert to PDF at once?","acceptedAnswer":{"@type":"Answer","text":"There is no honest universal batch number. Available memory, image dimensions, browser limits and output settings determine how many pages a device can process reliably."}},{"@type":"Question","name":"Where does conversion run?","acceptedAnswer":{"@type":"Answer","text":"The core image-to-PDF operation runs with client-side code in your browser. The page can still request ordinary site assets, analytics and third-party libraries."}},{"@type":"Question","name":"How is image quality handled?","acceptedAnswer":{"@type":"Answer","text":"Best mode preserves an unrotated supported source where possible. A rotated image or lower quality setting is rendered on white and JPEG-encoded. No setting can create detail beyond the source pixels; inspect the PDF before printing."}},{"@type":"Question","name":"Can I convert images saved from messaging apps?","acceptedAnswer":{"@type":"Answer","text":"Yes when the saved file is JPEG, PNG or WebP. HEIC, GIF, SVG and TIFF are not accepted by this tool."}},{"@type":"Question","name":"What page size should I choose — A4 or Letter?","acceptedAnswer":{"@type":"Answer","text":"Use the page size required by the recipient or printer. A4 is 210×297mm and Letter is 8.5×11in; A3 and A5 are also available. This workflow does not provide a fit-to-image page option."}},{"@type":"Question","name":"Can I convert a screenshot to PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Screenshots are PNG files and work perfectly with this tool. This is useful for saving web pages, chat conversations, receipts from online stores, or any screen content as a PDF document."}},{"@type":"Question","name":"Does it work on Android and iPhone?","acceptedAnswer":{"@type":"Answer","text":"The interface is designed for current mobile browsers and includes ↑/↓ order controls. File selection and download behavior depend on the browser and operating system; large images may exceed phone memory."}},{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"The listed conversion is currently available without a subscription or account. Practical image count and file-size limits depend on the memory available in your browser and device."}}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
 <script>
@@ -66,7 +72,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="img-to-pdf"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -182,17 +188,13 @@
     <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Image to PDF</span>
   </nav>
 
-  <div class="tool-hero">
-    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#1e88e5,#42a5f5)">📑</div>
-    <h1>Image to PDF Converter</h1>
-    <div style="text-align:center;margin:0 auto 24px;max-width:500px">
-      <img src="/images/img-to-pdf.svg?v=20260824"
-           alt="Convert JPG, PNG and WEBP images to PDF online for free — drag and drop multi-page converter"
-           width="500" height="300"
-           loading="eager"
-           style="width:100%;max-width:500px;height:auto;border-radius:12px">
+  <div class="tool-hero image-pdf-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#1e88e5,#42a5f5)">📑</div>
+      <h1>JPG, PNG &amp; WebP to PDF</h1>
+      <p>Arrange supported images into one PDF. Rotate pages, choose paper size, orientation, margins and whether to preserve or recompress image data.</p>
     </div>
-    <p>Combine JPG, PNG or WEBP images into a PDF in your browser. Processing time and output size depend on the images and device.</p>
+    <img class="tool-feature-visual" src="../images/img-to-pdf.svg?v=20260825" alt="JPG, PNG and WebP images arranged into one multi-page PDF" width="500" height="300">
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -205,7 +207,7 @@
       <div class="dz-title">Drop images here or click to browse</div>
       <div class="dz-hint">Supports JPG, PNG, WEBP — drag to reorder after adding</div>
       <span class="dz-btn">Choose Images</span>
-      <input type="file" id="fileInput" accept="image/*" multiple>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" multiple>
     </div>
     <div class="file-sort-bar" id="imgSortBar">
       <span class="fsb-label">Sort by name:</span>
@@ -238,10 +240,10 @@
       <div class="option-group">
         <label>Image Quality</label>
         <select id="imgQuality">
-          <option value="0.97">Best (larger file)</option>
-          <option value="0.85" selected>High (recommended)</option>
-          <option value="0.72">Medium</option>
-          <option value="0.55">Low (smallest)</option>
+          <option value="0.97" selected>Best — preserve unrotated source</option>
+          <option value="0.85">High — re-encode as JPG</option>
+          <option value="0.72">Medium — smaller JPG</option>
+          <option value="0.55">Low — smallest JPG</option>
         </select>
       </div>
       <div class="option-group">
@@ -290,7 +292,7 @@
     📖 <strong>Related guide:</strong> <a href="../blog/jpg-to-pdf-guide.html" style="color:var(--primary);font-weight:600">How to Convert JPG to PDF Free →</a>
   </div>
 
-<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Output sharpness depends on source images and selected page size</span></aside>
+<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Output sharpness depends on source pixels, encoding and page size</span></aside>
     <h2>Convert Images to PDF Online — Free, Fast &amp; Private</h2>
     <p class="lead">Combine multiple JPG, PNG or WEBP images into one PDF. Arrange pages, rotate an image, choose page size, orientation, margin and image quality, then generate the output locally.</p>
     <p>This is useful for photographed document pages, receipts or image collections. Large batches and high-resolution images consume more memory and may be slower or fail on resource-constrained devices.</p>
@@ -303,22 +305,22 @@
       </div>
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
         <strong>🔀 Drag to Reorder</strong>
-        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Drag your images into the exact page order you want before converting. Asc/desc sort buttons let you quickly sort by filename or size.</p>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Drag images, use mobile-friendly ↑/↓ controls, or sort A–Z/Z–A by filename before converting.</p>
       </div>
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
         <strong>📐 Choose Page Size</strong>
-        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Select A4, Letter, or fit-to-image page size. Portrait and landscape orientation supported. Your PDF will be formatted correctly for printing or digital viewing.</p>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Select A4, Letter, A3 or A5, portrait or landscape, plus 0–20mm margins. Check the recipient's paper-size requirements before submission.</p>
       </div>
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
         <strong>🔒 Local Core Conversion</strong>
-        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Images are processed entirely in your browser. Nothing is uploaded to a server. Personal photos, ID documents, and sensitive files stay on your device.</p>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The core PDF generation runs with browser-side code. The page can still request ordinary site assets, analytics and third-party libraries.</p>
       </div>
     </div>
 
     <h2>How to Convert Images to PDF in 3 Steps</h2>
     <ol>
       <li><strong>Upload your images</strong> — Click the upload area or drag and drop your JPG, PNG, or WEBP files. You can select multiple images at once from your phone gallery or computer folder.</li>
-      <li><strong>Arrange and configure</strong> — Drag images into the order you want in the PDF. Choose your page size (A4, Letter, or fit to image) and orientation (portrait or landscape).</li>
+      <li><strong>Arrange and configure</strong> — Drag images or use ↑/↓ for page order. Choose A4, Letter, A3 or A5, orientation, margin and image encoding quality.</li>
       <li><strong>Generate and inspect</strong> — Create the PDF, confirm its page count and file size, then download and check important pages before sharing.</li>
     </ol>
 
@@ -333,16 +335,16 @@
     </ul>
 
     <h2>Supported Image Formats</h2>
-    <p>The converter supports <strong>JPG/JPEG</strong>, <strong>PNG</strong>, and <strong>WEBP</strong> image formats — the three most common formats from phone cameras, scanners, and WhatsApp. Screenshots (which are typically PNG) also work perfectly. Each image becomes one page in the output PDF.</p>
+    <p>The converter accepts <strong>JPG/JPEG</strong>, <strong>PNG</strong>, and <strong>WebP</strong>. Other formats such as HEIC, GIF, SVG and TIFF are not accepted by this workflow. Each supported image becomes one PDF page.</p>
 
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How many images can I convert to PDF at once?</button><div class="faq-a"><p>There is no honest universal batch number. Available memory, image dimensions, browser limits and output settings determine how many pages a device can process reliably.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my photos uploaded to a server?</button><div class="faq-a"><p>No. All conversion happens locally in your browser using JavaScript. Your images never leave your device. This is especially important when converting personal documents like CNIC copies, passports, medical records, or private photos.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the image quality be reduced in the PDF?</button><div class="faq-a"><p>The source image is embedded rather than deliberately downscaled, but displayed sharpness depends on its pixels, rotation, page size and margins. A small image stretched across A4 cannot gain detail. Inspect the PDF before printing.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert WhatsApp photos to PDF?</button><div class="faq-a"><p>Yes. Photos received or saved from WhatsApp are standard JPG or PNG files. Save them to your phone's gallery or downloads folder, then upload them to this tool. They convert to PDF exactly like any other photo.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What page size should I choose — A4 or Letter?</button><div class="faq-a"><p>Choose A4 for documents you'll submit in Pakistan, India, or Europe — A4 is the standard paper size in these regions. Choose Letter (8.5" x 11") for US-format submissions. Choose "Fit to image" if you want the PDF page to be exactly the same dimensions as your image, with no white borders.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Where does conversion run?</button><div class="faq-a"><p>The core image-to-PDF operation runs with client-side code in your browser. The page can still request ordinary site assets, analytics and third-party libraries.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How is image quality handled?</button><div class="faq-a"><p>Best mode preserves an unrotated supported source where possible. A rotated image or lower quality setting is rendered on white and JPEG-encoded. No setting can create detail beyond the source pixels; inspect the PDF before printing.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert images saved from messaging apps?</button><div class="faq-a"><p>Yes when the saved file is JPEG, PNG or WebP. HEIC, GIF, SVG and TIFF are not accepted by this tool.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What page size should I choose — A4 or Letter?</button><div class="faq-a"><p>Use the page size required by the recipient or printer. A4 is 210×297mm and Letter is 8.5×11in; A3 and A5 are also available. This workflow does not provide a fit-to-image page option.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a screenshot to PDF?</button><div class="faq-a"><p>Yes. Screenshots are PNG files and work perfectly with this tool. This is useful for saving web pages, chat conversations, receipts from online stores, or any screen content as a PDF document.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on Android and iPhone?</button><div class="faq-a"><p>Yes. Open PDFdukan in Chrome (Android) or Safari (iPhone), tap the upload area, and select images from your phone gallery. The entire conversion happens on your phone — no app download needed.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on Android and iPhone?</button><div class="faq-a"><p>The interface is designed for current mobile browsers and includes ↑/↓ order controls. File selection and download behavior depend on the browser and operating system; large images may exceed phone memory.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool free?</button><div class="faq-a"><p>The listed conversion is currently available without a subscription or account. Practical image count and file-size limits depend on the memory available in your browser and device.</p></div></div>
   </section>
 
@@ -398,8 +400,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 <script>
 // Override generate to show progress card
 const _origGenerate = ImageToPDF.generate;

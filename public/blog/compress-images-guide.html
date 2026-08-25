@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Compress Images Without Losing Quality | PDFdukan Blog</title>
-<meta name="description" content="Learn how to compress JPG, PNG, and WebP images without visible quality loss. Best practices for web, email, and document sharing.">
+<title>How to Compress Images While Managing Quality | PDFdukan</title>
+<meta name="description" content="Learn how JPG, PNG and WebP compression affects image quality, dimensions, transparency, metadata and file size before you export.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/blog/compress-images-guide.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/blog/compress-images-guide.html">
@@ -17,8 +17,8 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/blog/compress-images-guide.html">
-<meta property="og:title" content="Compress Images Without Losing Quality | PDFdukan Blog">
-<meta property="og:description" content="Learn how to compress JPG, PNG, and WebP images without visible quality loss. Best practices for web, email, and document sharing.">
+<meta property="og:title" content="How to Compress Images While Managing Quality">
+<meta property="og:description" content="Practical guidance for resizing and compressing JPG, PNG and WebP images without making unsupported quality promises.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,15 +26,15 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Compress Images Without Losing Quality | PDFdukan Blog">
-<meta name="twitter:description" content="Learn how to compress JPG, PNG, and WebP images without visible quality loss. Best practices for web, email, and document sharing.">
+<meta name="twitter:title" content="How to Compress Images While Managing Quality">
+<meta name="twitter:description" content="Practical guidance for resizing and compressing JPG, PNG and WebP images and checking the result.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"How to Compress Images Without Losing Quality: The Complete Guide","description":"Master image compression techniques for web, email, and documents. Learn about WebP, lossy vs lossless compression, target file sizes, and free tools.","url":"https://pdfdukan.com/blog/compress-images-guide.html","datePublished":"2026-05-30","dateModified":"2026-05-30","author":{"@type":"Organization","name":"PDFdukan Team","url":"https://pdfdukan.com"},"publisher":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com","logo":{"@type":"ImageObject","url":"https://pdfdukan.com/og-image.jpg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://pdfdukan.com/blog/compress-images-guide.html"},"image":{"@type":"ImageObject","url":"https://pdfdukan.com/images/blog-compress.svg","width":800,"height":400}}
+{"@context":"https://schema.org","@type":"Article","headline":"How to Compress Images While Managing Quality","description":"Practical guidance for resizing and compressing JPG, PNG and WebP images while checking dimensions, transparency and visible detail.","url":"https://pdfdukan.com/blog/compress-images-guide.html","datePublished":"2026-05-30","dateModified":"2026-08-25","author":{"@type":"Organization","name":"PDFdukan Editorial Team","url":"https://pdfdukan.com"},"publisher":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com","logo":{"@type":"ImageObject","url":"https://pdfdukan.com/og-image.jpg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://pdfdukan.com/blog/compress-images-guide.html"},"image":{"@type":"ImageObject","url":"https://pdfdukan.com/images/blog-compress.svg","width":800,"height":400}}
 </script>
 <style>
 .article-hero { background: linear-gradient(135deg,#b45309 0%,#d97706 50%,#fbbf24 100%); padding: 60px 24px; text-align: center; }
@@ -65,20 +65,6 @@
 .size-bar { height: 10px; border-radius: 5px; }
 .size-val { font-size: 12px; font-weight: 700; color: var(--text); min-width: 56px; text-align: right; }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "Compress Images Without Losing Quality: The Complete Guide",
-  "description": "Learn how to compress JPG, PNG, and WebP images without visible quality loss. Best practices for web, email, and document sharing.",
-  "datePublished": "2026-05-30",
-  "dateModified": "2026-05-30",
-  "author": { "@type": "Organization", "name": "PDFdukan" },
-  "publisher": { "@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com" },
-  "image": "https://pdfdukan.com/og-image.jpg",
-  "url": "https://pdfdukan.com/blog/compress-images-guide"
-}
-</script>
 <meta name="theme-color" content="#ff6333">
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -89,7 +75,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Editorial Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -131,41 +117,41 @@
 
 <div class="article-hero">
   <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Image Compression · 5 min read</p>
-  <h1>Compress Images Without Losing Quality: The Complete Guide</h1><div class="cm-article-byline">Written and reviewed by the PDFdukan Editorial Team · Updated 14 August 2026</div>
-  <p>Shrink JPG, PNG, and WebP files dramatically without visible degradation — the right settings for every use case.</p>
+  <h1>How to Compress Images While Managing Quality</h1><div class="cm-article-byline">Written and reviewed by the PDFdukan Editorial Team · Updated 25 August 2026</div>
+  <p>Understand the trade-offs before resizing or re-encoding JPG, PNG and WebP images.</p>
 </div>
 
 <article class="page-prose article-shield">
   <nav style="font-size:12px;color:var(--text-3);margin-bottom:16px">
     <a href="/" style="color:var(--text-3)">Home</a> ›
-    <a href="/" style="color:var(--text-3)">Blog</a> ›
+    <a href="index.html" style="color:var(--text-3)">Blog</a> ›
     <span>Compress Images Guide</span>
   </nav>
 
   <div class="article-meta">
     <span class="am-tag">Image Compression</span>
-    <span class="am-date">📅 May 30, 2026</span>
+    <span class="am-date">📅 Updated August 25, 2026</span>
     <span class="am-read">⏱️ 5 min read</span>
     <span class="am-date">By PDFdukan Team</span>
   </div>
 
-  <p>A photo taken on a modern smartphone is typically 4–8 MB. Attached to an email with four other photos, you hit the 25 MB attachment limit. Embedded in a PDF report with ten images, the file becomes unwieldy to share. Uploaded to a website without compression, it slows page load times and costs visitors mobile data. Image compression solves all of these problems — and the right technique reduces file size by 70–90% with changes that are genuinely invisible to the human eye. This guide explains exactly how compression works and the settings to use for every scenario.</p>
+  <p>Large images can slow web pages, use more mobile data and make documents harder to share. Compression can help, but there is no universal percentage or quality setting that guarantees a smaller file with invisible changes. Results depend on pixel dimensions, image detail, source encoding, output format and encoder. This guide explains how to choose settings and verify the actual result.</p>
 
   <h2>1. Why Image Files Are So Large to Begin With</h2>
 
   <p>An uncompressed image stores color data for every single pixel. A 12-megapixel photo has 12 million pixels, each requiring 3 bytes for RGB color — that is 36 MB of raw data before any file format overhead. Image formats like JPG and PNG were designed specifically to reduce this through compression, but the camera-default settings prioritize quality over size, producing files far larger than most sharing or display use cases require.</p>
 
-  <p>The key insight: the human visual system is far more sensitive to <em>luminance</em> (brightness and contrast) than to <em>chrominance</em> (color detail). JPG compression exploits this by discarding high-frequency color information that your eyes barely perceive while preserving the brightness detail that makes images look sharp. Done well, the result is visually identical to the original at a fraction of the size.</p>
+  <p>Lossy encoders can reduce detail that may be less noticeable at a particular viewing size. The change is still real: smooth gradients, text edges and fine texture may show artifacts, so inspect the exported image at the size at which people will use it.</p>
 
   <h2>2. Lossy vs. Lossless Compression</h2>
 
   <p>Every compression method falls into one of two categories, and choosing the wrong one for your use case either wastes space or degrades quality unnecessarily.</p>
 
   <h3>Lossy Compression</h3>
-  <p><strong>Lossy compression permanently discards image data</strong> to achieve smaller file sizes. JPG is the classic example. When you save a JPG at "80% quality," the encoder discards the least-perceptible 20% of image information — primarily fine color transitions and high-frequency texture in smooth areas. The result looks almost identical on screen but cannot be restored to the original. Each time you re-save a lossy file, it loses another generation of quality — the so-called "generation loss" problem. Always work from your original and export a compressed copy; never re-compress an already-compressed JPG.</p>
+  <p><strong>Lossy compression permanently discards image data</strong> to reduce file size. JPG and lossy WebP are examples. A quality value is an encoder setting, not a literal percentage of information retained, and values are not directly comparable across formats or browsers. Repeated lossy exports can compound artifacts, so keep the original and export a separate copy.</p>
 
   <h3>Lossless Compression</h3>
-  <p><strong>Lossless compression reduces file size without discarding any data.</strong> The original can be perfectly reconstructed. PNG uses DEFLATE compression (the same algorithm as ZIP), which finds and eliminates repetitive patterns in pixel data without any quality loss. TIFF and WebP both support lossless modes. Lossless files are always larger than their lossy equivalents — sometimes significantly so. Use lossless formats when pixel-perfect accuracy matters: icons, logos, screenshots with text, diagrams, and document scans intended for OCR.</p>
+  <p><strong>Lossless compression reduces file size without discarding decoded pixel data.</strong> PNG uses DEFLATE compression to represent repeating patterns efficiently, and WebP also has a lossless mode. Lossless output is often larger than lossy output for photographs, but not in every comparison. It is useful when exact pixels or transparency matter, such as logos, screenshots, diagrams and OCR source images.</p>
 
   <div class="tip-box">
     <strong>💡 The Golden Rule:</strong> Use lossy (JPG/WebP) for photographs. Use lossless (PNG) for screenshots, diagrams, logos, and text-heavy images. Applying JPG compression to a screenshot with text produces blocky artifacts around characters — ugly and harder to read.
@@ -177,117 +163,80 @@
     <div class="fmt-card">
       <div class="fmt-name">JPG</div>
       <div class="fmt-tag">Lossy · Universal Support</div>
-      <div class="fmt-desc">Best for photographs and scanned documents. Quality setting 80–85% is the sweet spot — visually indistinguishable from the original at 60–75% of the file size. Avoid for logos, screenshots, or anything with sharp edges and text.</div>
+      <div class="fmt-desc">Often suitable for photographs and continuous-tone scans. It does not support transparency and can create visible artifacts around text or sharp edges. Start high, inspect the output and lower quality only when the result remains acceptable.</div>
     </div>
     <div class="fmt-card">
       <div class="fmt-name">PNG</div>
       <div class="fmt-tag">Lossless · Universal Support</div>
-      <div class="fmt-desc">Best for graphics, screenshots, illustrations, and any image with transparency. Lossless means no quality loss, but files are larger than JPG for photographic content. PNG-8 (256 colors) vs PNG-24 (full color) — choose PNG-8 for simple graphics to save space.</div>
+      <div class="fmt-desc">Lossless and useful for screenshots, graphics and transparency. PNG often uses more bytes than lossy formats for photographs. This browser tool exports standard full-colour PNG and does not offer indexed-colour PNG controls.</div>
     </div>
     <div class="fmt-card">
       <div class="fmt-name">WebP</div>
       <div class="fmt-tag">Both Modes · Modern Browsers</div>
-      <div class="fmt-desc">Google's format supports both lossy and lossless modes. WebP lossy is typically 25–35% smaller than equivalent-quality JPG. WebP lossless is 20–30% smaller than PNG. Supported by all modern browsers and most image editors. The best choice for web images in 2026.</div>
+      <div class="fmt-desc">Supports lossy and lossless compression plus transparency. Google's published corpus tests report smaller average files than comparable JPG or PNG, but an individual WebP can be larger. Check compatibility in the complete publishing workflow.</div>
     </div>
     <div class="fmt-card">
       <div class="fmt-name">AVIF</div>
       <div class="fmt-tag">Lossy/Lossless · Newer</div>
-      <div class="fmt-desc">The next-generation format — even smaller than WebP (another 20–30%). Excellent for web use but encoding is slower and editing tool support is still catching up. Use for web delivery; keep JPG/PNG as working originals.</div>
+      <div class="fmt-desc">A modern format that can provide efficient compression, but support in editing and delivery workflows varies. PDFdukan's current image compressor does not export AVIF, so use a compatible encoder and test the final workflow if you need it.</div>
     </div>
   </div>
 
-  <h2>4. DPI and Resolution for Different Use Cases</h2>
+  <h2>4. Pixel Dimensions, DPI and Print Size</h2>
 
-  <p>DPI (dots per inch) is frequently confused with pixel dimensions, but they are related in a specific way. DPI only matters when an image is <em>printed</em> — a 72 DPI image and a 300 DPI image can have identical pixel dimensions and look identical on screen. The DPI metadata tells a printer how large to render the image.</p>
+  <p>Pixel dimensions determine how much image data is available. DPI or PPI metadata helps describe an intended physical print size; changing only that metadata does not add detail. For example, a 2400-pixel-wide image can print at 8 inches at 300 pixels per inch, or 16 inches at 150 pixels per inch.</p>
 
   <ul>
-    <li><strong>Web / Screen display:</strong> 72–96 DPI. Screen resolution is fixed by the monitor — higher DPI metadata has no effect and adds no quality. Reduce high-DPI images to 96 DPI for web use to strip unnecessary metadata.</li>
-    <li><strong>Email attachments viewed on screen:</strong> 96–150 DPI is sufficient. Most recipients never print email attachments.</li>
-    <li><strong>Standard office printing (A4, letter):</strong> 150–200 DPI produces acceptable results. 300 DPI is professional quality.</li>
-    <li><strong>Professional print / press:</strong> 300–600 DPI. Magazine and brochure images require 300 DPI minimum at final print size.</li>
-    <li><strong>Document scanning for OCR:</strong> 300 DPI minimum — see the <a href="how-ocr-works.html" style="color:var(--primary)">OCR guide</a> for detail.</li>
+    <li><strong>Web and email:</strong> choose pixel dimensions for the intended layout and high-density screens. DPI metadata alone does not make the on-screen file sharper.</li>
+    <li><strong>Office or professional print:</strong> ask the printer for the required pixels per inch at final physical size; requirements vary by viewing distance, paper and process.</li>
+    <li><strong>OCR source:</strong> retain enough real pixels for small characters and avoid compression artifacts. See the <a href="how-ocr-works.html" style="color:var(--primary)">OCR guide</a> before downscaling a master scan.</li>
   </ul>
 
   <div class="tip-box">
-    <strong>💡 Resolution Downscaling:</strong> If you have a 300 DPI image for print and need a web version, resize the pixel dimensions to target screen size (typically 1200–1600px wide maximum) and set DPI to 96. This is not just a metadata change — it actually removes pixels and reduces file size proportionally to the square of the dimension reduction.
+    <strong>💡 What this tool changes:</strong> PDFdukan resizes the actual pixel grid and re-encodes through the browser canvas. It does not provide a separate DPI control. Browser-generated images commonly use 96 DPI metadata where the format supports resolution metadata, so keep the original for controlled print production.
   </div>
 
-  <h2>5. Real-World Size Comparisons</h2>
+  <h2>5. A Reliable Before-and-After Test</h2>
 
-  <p>Here is what compression actually achieves on typical files, based on a standard 12MP smartphone photo (4032×3024 pixels):</p>
+  <p>Do not rely on a generic file-size chart: the same settings can behave very differently on a noisy photo, a clean logo and an already optimized file. Use a repeatable check instead:</p>
 
-  <div class="size-example">
-    <div class="size-example-header">File size comparison — 12MP smartphone photo (typical)</div>
-    <div class="size-row">
-      <span class="size-label">Original HEIC (from phone)</span>
-      <div class="size-bar-wrap">
-        <div class="size-bar" style="width:120px;background:linear-gradient(90deg,#ef4444,#fca5a5)"></div>
-        <span class="size-val">~4.5 MB</span>
-      </div>
-    </div>
-    <div class="size-row">
-      <span class="size-label">JPG exported at 100% quality</span>
-      <div class="size-bar-wrap">
-        <div class="size-bar" style="width:100px;background:linear-gradient(90deg,#f97316,#fdba74)"></div>
-        <span class="size-val">~8 MB</span>
-      </div>
-    </div>
-    <div class="size-row">
-      <span class="size-label">JPG at 85% quality (recommended)</span>
-      <div class="size-bar-wrap">
-        <div class="size-bar" style="width:60px;background:linear-gradient(90deg,#f59e0b,#fde68a)"></div>
-        <span class="size-val">~1.8 MB</span>
-      </div>
-    </div>
-    <div class="size-row">
-      <span class="size-label">JPG at 70% quality</span>
-      <div class="size-bar-wrap">
-        <div class="size-bar" style="width:34px;background:linear-gradient(90deg,#22c55e,#86efac)"></div>
-        <span class="size-val">~750 KB</span>
-      </div>
-    </div>
-    <div class="size-row">
-      <span class="size-label">WebP at equivalent visual quality</span>
-      <div class="size-bar-wrap">
-        <div class="size-bar" style="width:26px;background:linear-gradient(90deg,#06b6d4,#67e8f9)"></div>
-        <span class="size-val">~520 KB</span>
-      </div>
-    </div>
-  </div>
-
-  <p>The jump from 100% JPG to 85% JPG is an 77% size reduction with no visible difference on any normal display. The 85% JPG vs. 70% JPG difference is visible only on close inspection of smooth gradients — acceptable for email and web use, not ideal for print.</p>
+  <ol>
+    <li>Keep the original and choose the pixel dimensions required by the destination.</li>
+    <li>Export a JPG or WebP copy at a high quality setting, then compare its measured bytes.</li>
+    <li>Inspect faces, text, gradients and high-contrast edges at 100% zoom and at the intended display size.</li>
+    <li>Lower quality gradually only if more reduction is needed. If output becomes larger, retain the original or try another format.</li>
+  </ol>
 
   <h2>6. Best Settings for Documents vs. Photos</h2>
 
   <h3>Scanned Documents (Text-Heavy)</h3>
-  <p>For document scans where OCR is not needed and the output will be viewed on screen: convert to grayscale, use JPG at 80% quality, and resize to 150 DPI equivalent. This produces files under 100 KB per page — perfectly readable on screen and email-safe. If OCR will be run on the file, keep the original at 300 DPI in PNG or TIFF format and compress a separate viewing copy. Use the <a href="../tools/compress.html" style="color:var(--primary)">CamMaster compressor</a> to batch process multiple pages.</p>
+  <p>Keep a high-resolution master when OCR, fine print or later printing matters. For a screen-viewing copy, reduce pixel dimensions cautiously and compare small characters before download. JPG may work for continuous-tone scans, while PNG can preserve sharper text edges but may use more bytes. PDFdukan's <a href="../tools/compress.html" style="color:var(--primary)">image compressor</a> processes one JPG, PNG or WebP image at a time.</p>
 
   <h3>Product or Portfolio Photos</h3>
-  <p>For photos shared via email or embedded in reports: JPG at 85% quality, maximum width 2000px (enough for full-screen display on any monitor). For website use, convert to WebP at equivalent quality for an additional 25–30% size reduction. Always strip EXIF metadata from photos before web publishing — it can contain GPS location data and camera serial numbers that you may not want public.</p>
+  <p>Match the pixel width to the actual layout instead of using one value for every screen. Start with a high-quality JPG or WebP export and compare detail and bytes. Re-encoding through the tool's browser canvas generally removes source EXIF metadata, which can include location or camera details, but verify the downloaded file when metadata removal is a privacy requirement.</p>
 
   <h3>Screenshots and UI Images</h3>
-  <p>Screenshots containing text and UI elements must use PNG or WebP lossless — never JPG. The block artifacts JPG produces around text edges and sharp lines are immediately visible and make screenshots look unprofessional. PNG-24 for screenshots with many colors; PNG-8 for screenshots with simple flat-color UI elements (can be 70% smaller).</p>
+  <p>PNG is a dependable starting point for screenshots containing text and sharp UI edges. JPG can introduce ringing or block artifacts, although it may still be acceptable for a screenshot dominated by photography. The current PDFdukan tool does not expose an explicit lossless WebP or indexed-PNG switch, so compare the actual output before choosing it.</p>
 
   <div class="warn-box">
     <strong>⚠️ Never Re-Compress a Compressed JPG:</strong> Opening a JPG, making no changes, and saving it again as JPG degrades quality even at 100% quality setting. The re-encoding process introduces a new round of compression artifacts on top of the existing ones. Keep your originals as originals and only compress when exporting a final deliverable copy.
   </div>
 
-  <h2>7. Batch Compression Workflow</h2>
+  <h2>7. Repeatable Multi-Image Workflow</h2>
 
-  <p>When you have dozens of images to compress — a folder of scanned documents, a product photo shoot, screenshots for a report — a methodical batch workflow saves time and ensures consistency.</p>
+  <p>The current PDFdukan tool handles one image at a time. For several images, use a consistent manual workflow and record the settings that worked for each content type.</p>
 
   <ol>
-    <li><strong>Audit your files first.</strong> Sort by file size (largest first) to identify the biggest compression wins. Focus effort on files over 2 MB.</li>
-    <li><strong>Decide on a target size or quality.</strong> For email attachments: target under 500 KB per image. For web: target under 200 KB. For document archives: target under 150 KB per page.</li>
-    <li><strong>Choose format by content type.</strong> Photos → JPG 85% or WebP. Screenshots/diagrams → PNG. Mixed → WebP handles both well.</li>
-    <li><strong>Use <a href="../tools/compress.html" style="color:var(--primary)">CamMaster's batch compressor</a></strong> to process multiple files at once with consistent settings. The output preview shows before/after file size so you can verify results before downloading.</li>
+    <li><strong>Audit the destination first.</strong> Note its accepted formats, maximum dimensions and file-size limit.</li>
+    <li><strong>Choose format by content.</strong> Try JPG or WebP for photos and PNG for transparency or sharp graphics, then compare rather than assuming.</li>
+    <li><strong>Use the <a href="../tools/compress.html" style="color:var(--primary)">PDFdukan compressor</a></strong> on each image. Record output dimensions, quality and bytes so similar images use consistent settings.</li>
     <li><strong>Keep originals.</strong> Save compressed versions to a separate folder (<code>/compressed/</code> or <code>/web/</code>). Never overwrite originals — storage is inexpensive and you will eventually need the full-resolution version for print.</li>
     <li><strong>Validate a sample.</strong> Open a few compressed files at 100% zoom on a monitor and compare against the originals. If you spot artifacts, increase quality by 5% and reprocess.</li>
   </ol>
 
   <div class="article-cta">
     <h3>🗜️ Compress Images Free — Instant Results</h3>
-    <p>Compress JPG, PNG, and WebP images in your browser. See before/after file size instantly. No upload to any server.</p>
+    <p>Resize or re-encode one JPG, PNG or WebP image in your browser and compare measured bytes before downloading. The page still loads ordinary site assets, analytics and third-party libraries.</p>
     <a href="https://pdfdukan.com/tools/compress.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Compress Images Free →</a>
   </div>
 
@@ -336,8 +285,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/i18n.js?v=20260616c"></script>
-<script src="../js/app.js?v=20260824c"></script>
+<script src="../js/i18n.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825f"></script>
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
     <div class="footer-grid">

@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-metadata.html">
 <meta property="og:title" content="PDF Metadata Editor — View & Edit PDF Properties | PDFdukan">
 <meta property="og:description" content="Free online PDF metadata editor. View and change title, author, subject, and keywords of any PDF. Runs in your browser, no upload.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image" content="https://pdfdukan.com/images/pdf-metadata.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -32,13 +32,13 @@
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="PDF Metadata Editor — View & Edit PDF Properties | PDFdukan">
 <meta name="twitter:description" content="Free online PDF metadata editor. View and change title, author, subject, and keywords of any PDF. Runs in your browser, no upload.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-metadata.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -123,6 +123,7 @@
   display: flex; align-items: center; gap: 6px; margin-top: 10px;
 }
 </style>
+<style>.metadata-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.metadata-feature img{display:block;width:100%;height:auto}.metadata-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.metadata-feature{grid-template-columns:1fr}.metadata-feature img{max-width:300px;margin:auto}}</style>
 <meta name="theme-color" content="#ff6333">
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Metadata Editor","item":"https://pdfdukan.com/tools/pdf-metadata.html"}]}</script>
@@ -251,25 +252,34 @@
   <div class="tool-card">
     <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
     <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
-    <div id="metaForm" style="display:none;margin-top:16px;display:none">
+    <p id="metaInfo" role="status" aria-live="polite" style="font-size:13px;color:var(--text-3);margin-top:12px"></p>
+    <div id="metaForm" style="display:none;margin-top:16px">
       <div style="display:grid;gap:12px">
         <label style="font-size:13px;color:var(--text-3)">Title<input id="mTitle" type="text" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)"></label>
         <label style="font-size:13px;color:var(--text-3)">Author<input id="mAuthor" type="text" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)"></label>
         <label style="font-size:13px;color:var(--text-3)">Subject<input id="mSubject" type="text" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)"></label>
-        <label style="font-size:13px;color:var(--text-3)">Keywords<input id="mKeywords" type="text" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)"></label>
+        <label style="font-size:13px;color:var(--text-3)">Keywords <span style="font-weight:400">(comma-separated)</span><input id="mKeywords" type="text" style="width:100%;padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--card-2);color:var(--text)"></label>
       </div>
-      <button class="btn btn-primary" id="mSaveBtn" style="margin-top:14px">Save &amp; Download</button>
+      <button class="btn btn-primary" id="mSaveBtn" type="button" style="margin-top:14px">Save Metadata</button>
+      <div id="metaResult" hidden style="margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--card-2)">
+        <strong>Verified PDF ready</strong>
+        <p id="metaResultText" style="font-size:13px;color:var(--text-2);margin:6px 0 12px"></p>
+        <button class="btn btn-primary" id="metaDownload" type="button">Download Edited PDF</button>
+      </div>
     </div>
   </div>
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Free online PDF metadata editor. View and change title, author, subject, and keywords of any PDF. Runs in your browser, no upload.</div>
+  <section class="metadata-feature" aria-labelledby="metadataFeatureTitle"><div><h2 id="metadataFeatureTitle" style="font-size:20px;margin:0">Edit four descriptive document properties</h2><p>Title, author, subject and keywords are saved into a separate PDF copy. They help identify a file, but they do not replace useful visible content or guarantee search performance.</p></div><img src="../images/pdf-metadata.svg" alt="Illustration of title, author, subject and keywords being edited beside a PDF" width="640" height="420"></section>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> View and edit a PDF's title, author, subject and comma-separated keywords in your browser. Metadata can help identify and organise a file, but it does not guarantee search indexing or higher rankings.</div>
 <section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
-    <h2>About This Tool</h2><p>Every PDF carries hidden details called metadata &mdash; the title, author, subject, and keywords. This free tool lets you read and change those fields. It is useful for organizing files, fixing wrong author names, or improving how a PDF appears in search. Your file stays in your browser the whole time.</p>
-    <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Edit the fields shown.</li><li>Click <strong>Save &amp; Download</strong>.</li><li>Open the new PDF to confirm.</li></ol>
+    <h2>About This Tool</h2><p>Many PDFs contain descriptive document properties such as title, author, subject and keywords. This tool reads and edits those four fields. They can help people identify and organise a file in compatible readers, but search engines decide indexing and ranking from many signals; changing metadata alone is not an SEO guarantee.</p><p>The edit runs in this browser tab. Rewriting a PDF may invalidate digital signatures or affect complex forms, annotations, attachments, links and other unsupported structures. Keep the original and verify important output.</p>
+    <h2>How to Use</h2><ol><li>Select an unencrypted PDF up to 100 MB.</li><li>Review or edit the four fields. Separate keywords with commas.</li><li>Click <strong>Save Metadata</strong>. The tool reopens the new bytes and checks the page count and entered values.</li><li>Download the verified copy, then inspect important pages and interactive features in your PDF reader.</li></ol>
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What is PDF metadata?</button><div class="faq-a">It is hidden info like title, author, and keywords stored inside the file.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes, free with no signup.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are my files uploaded?</button><div class="faq-a">No. Editing happens in your browser only.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I clear a field?</button><div class="faq-a">Yes. Empty a box and save to clear that value.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Will PDF metadata make the file rank in Google?</button><div class="faq-a">No guarantee. Descriptive properties may help identify a document, but indexing and ranking depend on crawlability, visible content, links, quality and many other signals.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can editing affect a signed or complex PDF?</button><div class="faq-a">Yes. Any rewrite can invalidate signatures or alter unsupported interactive structures. Keep the original and verify the edited copy.</div></div>
     <h2>Related Tools</h2>
     <div class="related-tools-grid">
     <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
@@ -279,11 +289,25 @@
 </div>
 <script>
 (function(){
-  var bytes=null, fname='document';
-  function clearForm(){ ['mTitle','mAuthor','mSubject','mKeywords'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('metaForm').style.display='none'; }
-  function onFile(f){ clearForm(); bytes=null; if(!f||f.type!=='application/pdf'){ if(window.toast) toast('Please upload a PDF','error'); return; } fname=f.name.replace(/\.pdf$/i,''); var r=new FileReader(); r.onload=async function(e){ try{ var candidate=e.target.result; var d=await PDFLib.PDFDocument.load(candidate); bytes=candidate; document.getElementById('mTitle').value=d.getTitle()||''; document.getElementById('mAuthor').value=d.getAuthor()||''; document.getElementById('mSubject').value=d.getSubject()||''; document.getElementById('mKeywords').value=(d.getKeywords()||''); document.getElementById('metaForm').style.display='block'; }catch(err){ bytes=null; clearForm(); if(window.toast) toast('Could not read this PDF','error'); } }; r.onerror=function(){ bytes=null; clearForm(); if(window.toast) toast('Could not read this PDF','error'); }; r.readAsArrayBuffer(f); }
-  async function save(){ if(!bytes){ if(window.toast) toast('Upload a PDF first','error'); return; } try{ var d=await PDFLib.PDFDocument.load(bytes); d.setTitle(document.getElementById('mTitle').value); d.setAuthor(document.getElementById('mAuthor').value); d.setSubject(document.getElementById('mSubject').value); var kw=document.getElementById('mKeywords').value; d.setKeywords(kw?kw.split(',').map(function(s){return s.trim();}):[]); var out=await d.save(); var blob=new Blob([out],{type:'application/pdf'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=fname+'_metadata.pdf'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); if(window.toast) toast('Saved!','success'); if(window.trackToolUse) trackToolUse('pdf-metadata'); }catch(e){ if(window.toast) toast('Failed to save','error'); console.error(e); } }
-  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('mSaveBtn').onclick=save; });
+  var bytes=null, fname='document', outputUrl='', busy=false;
+  function resetOutput(){ if(outputUrl){URL.revokeObjectURL(outputUrl);outputUrl='';} document.getElementById('metaResult').hidden=true; }
+  function clearForm(){ resetOutput(); ['mTitle','mAuthor','mSubject','mKeywords'].forEach(function(id){ document.getElementById(id).value=''; }); document.getElementById('metaForm').style.display='none'; }
+  function validPdf(f){ return !!f && /\.pdf$/i.test(f.name) && (!f.type || f.type==='application/pdf'); }
+  function clean(v){ return String(v||'').replace(/[\u0000-\u001F\u007F]/g,' ').replace(/\s+/g,' ').trim(); }
+  function keywords(v){ return String(v||'').split(',').map(clean).filter(Boolean); }
+  function onFile(f){
+    if(busy)return; clearForm(); bytes=null;
+    if(!validPdf(f)){document.getElementById('metaInfo').textContent='Select a .pdf file.';if(window.toast)toast('Please upload a PDF','error');return;}
+    if(!f.size){document.getElementById('metaInfo').textContent='The selected PDF is empty.';if(window.toast)toast('Empty PDF cannot be processed','error');return;}
+    if(f.size>100*1024*1024){document.getElementById('metaInfo').textContent='This browser tool accepts PDFs up to 100 MB.';if(window.toast)toast('PDF is larger than 100 MB','error');return;}
+    busy=true; fname=f.name.replace(/\.pdf$/i,'')||'document'; document.getElementById('metaInfo').textContent='Reading '+f.name+'…';
+    var r=new FileReader(); r.onload=async function(e){try{var candidate=e.target.result;var d=await PDFLib.PDFDocument.load(candidate);bytes=candidate;document.getElementById('mTitle').value=d.getTitle()||'';document.getElementById('mAuthor').value=d.getAuthor()||'';document.getElementById('mSubject').value=d.getSubject()||'';document.getElementById('mKeywords').value=d.getKeywords()||'';document.getElementById('metaForm').style.display='block';document.getElementById('metaInfo').textContent=d.getPageCount()+' page'+(d.getPageCount()===1?'':'s')+' loaded. Keep the original if this PDF is signed or interactive.';}catch(err){bytes=null;clearForm();document.getElementById('metaInfo').textContent='Encrypted, damaged, or unsupported PDF.';if(window.toast)toast('Could not read this PDF','error');console.error(err);}finally{busy=false;}};r.onerror=function(){busy=false;bytes=null;clearForm();document.getElementById('metaInfo').textContent='The file could not be read.';if(window.toast)toast('Could not read this PDF','error');};r.readAsArrayBuffer(f);
+  }
+  async function save(){
+    if(!bytes||busy){if(!bytes&&window.toast)toast('Upload a PDF first','error');return;} busy=true;resetOutput();var btn=document.getElementById('mSaveBtn');btn.disabled=true;btn.textContent='Saving…';
+    try{var d=await PDFLib.PDFDocument.load(bytes);var pageCount=d.getPageCount();var title=clean(document.getElementById('mTitle').value),author=clean(document.getElementById('mAuthor').value),subject=clean(document.getElementById('mSubject').value),kw=keywords(document.getElementById('mKeywords').value);d.setTitle(title);d.setAuthor(author);d.setSubject(subject);d.setKeywords(kw);var out=await d.save();var verified=await PDFLib.PDFDocument.load(out);if(verified.getPageCount()!==pageCount||clean(verified.getTitle())!==title||clean(verified.getAuthor())!==author||clean(verified.getSubject())!==subject)throw new Error('Saved metadata validation failed.');var blob=new Blob([out],{type:'application/pdf'});outputUrl=URL.createObjectURL(blob);document.getElementById('metaResultText').textContent=pageCount+' page'+(pageCount===1?'':'s')+' reopened successfully; title, author and subject match the edited values. Keywords saved: '+kw.length+'.';document.getElementById('metaResult').hidden=false;if(window.toast)toast('Edited PDF is ready to download.','success');if(window.trackToolUse)trackToolUse('pdf-metadata');}catch(e){resetOutput();if(window.toast)toast('Failed to create a verified PDF','error');console.error(e);}finally{busy=false;btn.disabled=false;btn.textContent='Save Metadata';}
+  }
+  document.addEventListener('DOMContentLoaded',function(){var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput');dz.onclick=function(){if(!busy)inp.click();};dz.onkeydown=function(e){if((e.key==='Enter'||e.key===' ')&&!busy){e.preventDefault();inp.click();}};inp.onchange=function(e){onFile(e.target.files[0]);};['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});});['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});});dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);});document.getElementById('mSaveBtn').onclick=save;document.getElementById('metaDownload').onclick=function(){if(!outputUrl)return;var a=document.createElement('a');a.href=outputUrl;a.download=fname+'_metadata.pdf';document.body.appendChild(a);a.click();a.remove();};window.addEventListener('beforeunload',resetOutput);});
 })();
 </script>
 <nav class="mobile-nav"><div class="mob-nav-items">
@@ -335,8 +359,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

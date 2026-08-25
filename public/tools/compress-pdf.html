@@ -23,7 +23,7 @@
 <meta property="og:url" content="https://pdfdukan.com/tools/compress-pdf.html">
 <meta property="og:title" content="Compress PDF — Reduce File Size Free | CamMaster by PDFdukan">
 <meta property="og:description" content="Reduce PDF file size in your browser with selectable quality levels. Results vary; review small text and graphics after compression.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image" content="https://pdfdukan.com/images/compress-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
@@ -32,14 +32,14 @@
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="Compress PDF — Reduce File Size Free | CamMaster by PDFdukan">
 <meta name="twitter:description" content="Reduce PDF file size in your browser. Results vary; review small text and graphics after compression.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:image" content="https://pdfdukan.com/images/compress-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
 @media(max-width:600px){ .tier-grid { grid-template-columns:1fr; } }
@@ -74,6 +74,7 @@
 }
 .progress-bar-wrap { background:var(--card-2); border-radius:var(--radius-pill); height:8px; overflow:hidden; margin:10px 0; }
 .progress-bar-fill { height:100%; background:linear-gradient(90deg,#c62828,#ef5350); border-radius:var(--radius-pill); transition:width .3s; width:0%; }
+.compress-pdf-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,340px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.compress-pdf-feature img{display:block;width:100%;height:auto}.compress-pdf-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.compress-pdf-feature{grid-template-columns:1fr}.compress-pdf-feature img{max-width:320px;margin:auto}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Compressor","item":"https://pdfdukan.com/tools/compress-pdf.html"}]}</script>
@@ -85,7 +86,7 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does compressing a PDF damage the content or make it unreadable?","acceptedAnswer":{"@type":"Answer","text":"This tool renders each page as a JPEG image before rebuilding the PDF, so selectable text becomes part of the page image. Higher compression can reduce sharpness. Use the High Quality setting for printing or small text, and inspect the downloaded result before relying on it."}},{"@type":"Question","name":"How much can this tool reduce my PDF size?","acceptedAnswer":{"@type":"Answer","text":"Results vary by page complexity, image content, and the selected quality level. Some files shrink substantially, while an already optimized PDF may not shrink at all. PDFdukan keeps the original bytes when its generated file would be larger."}},{"@type":"Question","name":"Is my PDF uploaded to a server when I compress it?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan uses client-side JavaScript (PDF.js and PDF-lib) to process the selected file inside your browser; the tool does not send the PDF to PDFdukan's server."}},{"@type":"Question","name":"What is the maximum file size I can compress?","acceptedAnswer":{"@type":"Answer","text":"There is no enforced file-size limit, but available memory, page count, page dimensions, and browser limits determine what your device can process. Large files can be slow or fail, especially on phones."}},{"@type":"Question","name":"Will the compressed PDF still be printable?","acceptedAnswer":{"@type":"Answer","text":"The result is a standard PDF and can be printed in mainstream readers. Because pages are rasterized and may be lossy, inspect fine text and graphics before printing."}},{"@type":"Question","name":"Can I compress a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"Password-protected PDFs need to be unlocked before they can be compressed. Use the Unlock PDF tool on PDFdukan to remove the password first, then compress the unlocked file. Both tools are free and work in your browser."}},{"@type":"Question","name":"Does the compressed PDF open correctly on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. The output is a standard PDF produced by PDF-lib and should open in current mainstream PDF readers. If a particular reader has trouble, try the original file or another current reader."}},{"@type":"Question","name":"How is PDFdukan different from iLovePDF or Smallpdf?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan performs this compression in your browser and does not require an account. Other services may use different processing methods, plans, or limits; check their current privacy and pricing pages when comparing them."}},{"@type":"Question","name":"Is this tool completely free with no hidden charges?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free with no subscription, no per-file fee, no credit card required, and no limit on how many files you compress. There is currently no paid tier for this tool."}},{"@type":"Question","name":"Does the tool work on mobile phones in Pakistan?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan works on any Android or iPhone browser \u2014 Chrome, Samsung Internet, Safari, Firefox. It is especially useful for students and job seekers in Pakistan who need to compress PDFs for PPSC, FPSC, NTS, and university portals that have strict file-size limits. No app download is needed."}},{"@type":"Question","name":"Can I compress multiple PDFs at once?","acceptedAnswer":{"@type":"Answer","text":"Currently the tool processes one PDF at a time. After compressing and downloading the first file, you can immediately upload and compress another. Batch compression for multiple files is on our roadmap. For now, the Merge PDF tool can combine multiple PDFs first, then you can compress the merged result."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does compressing a PDF damage the content or make it unreadable?","acceptedAnswer":{"@type":"Answer","text":"This tool renders each page as a JPEG image before rebuilding the PDF, so selectable text becomes part of the page image. Higher compression can reduce sharpness. Use the High Quality setting for printing or small text, and inspect the downloaded result before relying on it."}},{"@type":"Question","name":"How much can this tool reduce my PDF size?","acceptedAnswer":{"@type":"Answer","text":"Results vary by page complexity, image content, and the selected quality level. Some files shrink substantially, while an already optimized PDF may not shrink at all. PDFdukan keeps the original bytes when its generated file would be larger."}},{"@type":"Question","name":"Is my PDF uploaded to a server when I compress it?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan uses client-side JavaScript (PDF.js and PDF-lib) to process the selected file inside your browser; the tool does not send the PDF to PDFdukan's server."}},{"@type":"Question","name":"What is the maximum file size I can compress?","acceptedAnswer":{"@type":"Answer","text":"There is no enforced file-size limit, but available memory, page count, page dimensions, and browser limits determine what your device can process. Large files can be slow or fail, especially on phones."}},{"@type":"Question","name":"Will the compressed PDF still be printable?","acceptedAnswer":{"@type":"Answer","text":"The result is a standard PDF and can be printed in mainstream readers. Because pages are rasterized and may be lossy, inspect fine text and graphics before printing."}},{"@type":"Question","name":"Can I compress a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"No. This tool does not ask for or bypass a PDF password. Open the file with software that is authorized to decrypt it and save an unprotected copy before compression. PDFdukan's Restriction Check only re-saves supported unencrypted PDFs; it is not a password-removal tool."}},{"@type":"Question","name":"Does the compressed PDF open correctly on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. The output is a standard PDF produced by PDF-lib and should open in current mainstream PDF readers. If a particular reader has trouble, try the original file or another current reader."}},{"@type":"Question","name":"How is PDFdukan different from iLovePDF or Smallpdf?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan performs this compression in your browser and does not require an account. Other services may use different processing methods, plans, or limits; check their current privacy and pricing pages when comparing them."}},{"@type":"Question","name":"Is this tool completely free with no hidden charges?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free with no subscription, no per-file fee, no credit card required, and no limit on how many files you compress. There is currently no paid tier for this tool."}},{"@type":"Question","name":"Does the tool work on mobile phones in Pakistan?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan works on any Android or iPhone browser — Chrome, Samsung Internet, Safari, Firefox. It is especially useful for students and job seekers in Pakistan who need to compress PDFs for PPSC, FPSC, NTS, and university portals that have strict file-size limits. No app download is needed."}},{"@type":"Question","name":"Can I compress multiple PDFs at once?","acceptedAnswer":{"@type":"Answer","text":"Currently the tool processes one PDF at a time. After compressing and downloading the first file, you can immediately upload and compress another. Batch compression for multiple files is on our roadmap. For now, the Merge PDF tool can combine multiple PDFs first, then you can compress the merged result."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
 <body data-tool="compress-pdf"><header class="header" role="banner">
@@ -204,6 +205,10 @@
     <h1>PDF Compressor</h1>
     <p>Reduce PDF file size by rasterising pages at your chosen quality tier. Processing runs in your browser; results and processing time vary by document and device.</p>
   </div>
+  <section class="compress-pdf-feature" aria-labelledby="compressPdfFeatureTitle">
+    <div><h2 id="compressPdfFeatureTitle" style="font-size:20px;margin:0">Measured output, with the original retained when smaller</h2><p>The tool rasterises each page, compares final bytes and keeps the original file when re-encoding would increase its size.</p></div>
+    <img src="../images/compress-pdf.svg" alt="Illustration comparing a larger original PDF with a smaller rasterised PDF output" width="640" height="420">
+  </section>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
@@ -213,7 +218,7 @@
     <div class="drop-zone" id="dropZone">
       <div class="dz-icon">📄</div>
       <div class="dz-title">Drop PDF here or click to browse</div>
-      <div class="dz-hint">Accepts .pdf files up to 200 MB</div>
+      <div class="dz-hint">Accepts one .pdf file up to 200 MB; browser memory may impose a lower practical limit</div>
       <span class="dz-btn">Choose PDF</span>
       <input type="file" id="fileInput" accept=".pdf" style="display:none">
     </div>
@@ -235,22 +240,22 @@
         <input type="radio" name="tier" value="high" checked onchange="selectTier('high')">
         <div class="tier-icon">🟢</div>
         <div class="tier-name">High Quality</div>
-        <div class="tier-desc">Sharper text and graphics at about 180 DPI. Best for print and records.</div>
-        <span class="tier-badge">Smart · 90% JPEG</span>
+        <div class="tier-desc">Targets about 180 DPI with 90% JPEG. Inspect small text before print or records use.</div>
+        <span class="tier-badge">180 DPI target</span>
       </label>
       <label class="tier-card" id="tierBalanced">
         <input type="radio" name="tier" value="balanced" onchange="selectTier('balanced')">
         <div class="tier-icon">🟡</div>
         <div class="tier-name">Balanced</div>
-        <div class="tier-desc">Clear document text at about 144 DPI. Best for sharing and portals.</div>
-        <span class="tier-badge">Smart · 80% JPEG</span>
+        <div class="tier-desc">Targets about 144 DPI with 80% JPEG for a middle size/clarity trade-off.</div>
+        <span class="tier-badge">144 DPI target</span>
       </label>
       <label class="tier-card" id="tierMax">
         <input type="radio" name="tier" value="max" onchange="selectTier('max')">
         <div class="tier-icon">🔴</div>
         <div class="tier-name">Maximum</div>
-        <div class="tier-desc">Smaller output at about 108 DPI. Check fine print before use.</div>
-        <span class="tier-badge">Smart · 68% JPEG</span>
+        <div class="tier-desc">Targets about 108 DPI with 68% JPEG. Fine print and graphics may soften.</div>
+        <span class="tier-badge">108 DPI target</span>
       </label>
     </div>
   </div>
@@ -265,11 +270,12 @@
       </div>
       <div class="size-arrow">→</div>
       <div class="size-box">
-        <div class="size-label">Compressed</div>
+        <div class="size-label" id="outputSizeLabel">Output</div>
         <div class="size-value" id="newSizeResult">—</div>
       </div>
       <div class="savings-pill" id="savingsPill">0% saved</div>
     </div>
+    <p id="resultNote" style="font-size:12px;color:var(--text-3);margin:12px 0 0;text-align:center"></p>
   </div>
 
   <!-- Action -->
@@ -289,17 +295,17 @@
 
 <!-- Auth Modal -->
   <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">How can I compress a PDF without losing quality?</strong> PDFdukan's free PDF Compressor shrinks file size by re-encoding the embedded images at a quality tier you choose — so you control the balance between size and clarity. Upload your PDF, pick a compression level, and download the smaller file. It works entirely in your browser with no uploads, no signup, and no limits.
+    <strong style="color:var(--text)">Can I compress a PDF without changing quality?</strong> Not with this rasterising mode. It turns each page into a JPEG image, so selectable text and interactive structure are lost and visual detail can change. Choose a tier, inspect fine text, and keep the original.
   </div>
 
     <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
     📖 <strong>Related guide:</strong> <a href="../blog/compress-pdf-reduce-size.html" style="color:var(--primary);font-weight:600">How to Compress a PDF to Reduce File Size →</a>
   </div>
 
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Pages are rasterized · Selectable text can be lost · Verify the result</span></aside>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Pages are rasterized · Selectable text can be lost · Verify the result</span></aside>
 
 <h2>Compress PDF Files Online — Free, Fast &amp; Private</h2>
-<p>PDFdukan's PDF Compressor attempts to reduce file size by rendering each page at the quality tier you choose. Results vary, and selectable text becomes part of the page image. Whether you have a scanned document full of high-resolution images or a report that's too large to email, this tool handles it instantly. Everything runs inside your browser using JavaScript — your file is never sent to any server, never stored in the cloud, and never seen by anyone else.</p>
+<p>PDFdukan's PDF Compressor attempts to reduce file size by rendering each page at the quality tier you choose. Results and processing time vary, and selectable text becomes part of the page image. The selected file is processed by client-side code; the page can still request ordinary site assets, analytics and third-party libraries.</p>
 <p>This compressor processes the selected file with client-side PDF.js and PDF-lib code. Because each page is rasterized, selectable text, links, forms, annotations and accessibility structure may not survive. Keep the original file and inspect the result before submitting, printing or archiving it.</p>
 
 <h2>What This PDF Compressor Does</h2>
@@ -313,8 +319,8 @@
     <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Processing time depends on page count, resolution, quality setting and available memory. Large scans can take longer or fail on phones.</p>
   </div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-    <strong>📱 Works on Any Device</strong>
-    <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Works on any smartphone, tablet, or computer — Android, iPhone, Windows, Mac. No app download needed.</p>
+    <strong>📱 Responsive Interface</strong>
+    <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The controls adapt to phone and desktop widths. Large PDFs still need enough device memory and may fail on a phone.</p>
   </div>
   <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
     <strong>🆓 No Account Required</strong>
@@ -324,9 +330,9 @@
 
 <h2>How to Compress a PDF in 3 Easy Steps</h2>
 <ol>
-  <li><strong>Upload your PDF</strong> — Click the upload area or drag and drop your PDF file. You can also load a file from Google Drive if you're signed in.</li>
+  <li><strong>Select your PDF</strong> — Click the upload area or drag and drop one local PDF file.</li>
   <li><strong>Choose compression level</strong> — Select the quality setting that matches your need. Use higher compression for email attachments, lower compression for documents you'll print or archive.</li>
-  <li><strong>Download your compressed PDF</strong> — Click the Compress button. Your reduced-size PDF is ready to download in seconds. The original file is untouched on your device.</li>
+  <li><strong>Download and inspect</strong> — If the rasterised version is smaller, download it and check every important page. If it would be larger, the tool retains the original bytes.</li>
 </ol>
 
 <h2>When Should You Compress a PDF?</h2>
@@ -348,7 +354,7 @@
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded to a server when I compress it?</button><div class="faq-a"><p>No. PDFdukan uses client-side JavaScript (PDF.js and PDF-lib) to process the selected file inside your browser; the tool does not send the PDF to PDFdukan's server.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the maximum file size I can compress?</button><div class="faq-a"><p>There is no enforced file-size limit, but available memory, page count, page dimensions, and browser limits determine what your device can process. Large files can be slow or fail, especially on phones.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the compressed PDF still be printable?</button><div class="faq-a"><p>The result is a standard PDF and can be printed in mainstream readers. Because pages are rasterized and may be lossy, inspect fine text and graphics before printing.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a password-protected PDF?</button><div class="faq-a"><p>Password-protected PDFs need to be unlocked before they can be compressed. Use the <a href="unlock-pdf.html">Unlock PDF tool</a> on PDFdukan to remove the password first, then compress the unlocked file. Both tools are free and work in your browser.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a password-protected PDF?</button><div class="faq-a"><p>No. This tool does not ask for or bypass a PDF password. Open the file with software that is authorized to decrypt it and save an unprotected copy before compression. PDFdukan's Restriction Check only re-saves supported unencrypted PDFs; it is not a password-removal tool.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does the compressed PDF open correctly on mobile phones?</button><div class="faq-a"><p>Yes. The output is a standard PDF produced by PDF-lib and should open in current mainstream PDF readers. If a particular reader has trouble, try the original file or another current reader.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How is PDFdukan different from iLovePDF or Smallpdf?</button><div class="faq-a"><p>PDFdukan performs this compression in your browser and does not require an account. Other services may use different processing methods, plans, or limits; check their current privacy and pricing pages when comparing them.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free with no hidden charges?</button><div class="faq-a"><p>Yes. PDFdukan is free with no subscription, no per-file fee, no credit card required, and no limit on how many files you compress. There is currently no paid tier for this tool.</p></div></div>
@@ -398,16 +404,18 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260824c"></script>
+<script src="../js/app.js?v=20260825f"></script>
 <script>
 /* ── Compress PDF Engine ────────────────────────────────────── */
 const CP = (() => {
   let _file = null;
   let _tier = 'high';
+  let _downloadUrl = '';
   // PDF points use a 72-DPI coordinate system. These settings target roughly
   // 180/144/108 DPI and preserve substantially more detail than before.
   const QUALITY = { high: 0.90, balanced: 0.80, max: 0.68 };
   const SCALE   = { high: 2.5,  balanced: 2.0,  max: 1.5  };
+  const MAX_PAGE_PIXELS = 20000000;
 
   function pageLooksMonochrome(ctx, width, height) {
     const stepX = Math.max(1, Math.floor(width / 32));
@@ -465,11 +473,17 @@ const CP = (() => {
       // Create new pdf-lib document
       const { PDFDocument, rgb } = PDFLib;
       const newPdf = await PDFDocument.create();
+      newPdf.setTitle((_file.name || 'Compressed PDF').replace(/\.pdf$/i, ''));
+      newPdf.setProducer('PDFdukan PDF Compressor');
+      let lowestDpi = Math.round(scale * 72);
 
       for (let i = 1; i <= numPages; i++) {
         setProgress(5 + Math.round((i/numPages)*88), `Processing page ${i} of ${numPages}…`);
         const page = await pdfDoc.getPage(i);
-        const vp   = page.getViewport({ scale });
+        const origVp = page.getViewport({ scale: 1 });
+        const safeScale = Math.min(scale, Math.sqrt(MAX_PAGE_PIXELS / Math.max(1, origVp.width * origVp.height)));
+        lowestDpi = Math.min(lowestDpi, Math.round(safeScale * 72));
+        const vp   = page.getViewport({ scale: safeScale });
         const canvas  = document.createElement('canvas');
         canvas.width  = vp.width;
         canvas.height = vp.height;
@@ -478,24 +492,11 @@ const CP = (() => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         await page.render({ canvasContext: ctx, viewport: vp }).promise;
 
-        // Near-monochrome scans get scanner-like grayscale and mild contrast.
-        // Colour pages retain colour so logos, charts and photos are not damaged.
-        let outputCanvas = canvas;
-        if (pageLooksMonochrome(ctx, canvas.width, canvas.height)) {
-          outputCanvas = document.createElement('canvas');
-          outputCanvas.width = canvas.width; outputCanvas.height = canvas.height;
-          const outCtx = outputCanvas.getContext('2d', { alpha: false });
-          outCtx.fillStyle = '#fff'; outCtx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
-          outCtx.filter = 'grayscale(1) contrast(1.08)';
-          outCtx.drawImage(canvas, 0, 0); outCtx.filter = 'none';
-        }
-
         // Avoid the extra base64 memory copy caused by toDataURL.
-        const imgBytes = await canvasToJpegBytes(outputCanvas, quality);
+        const imgBytes = await canvasToJpegBytes(canvas, quality);
         const jpgImg  = await newPdf.embedJpg(imgBytes);
 
         // Original page dimensions (in pts)
-        const origVp = page.getViewport({ scale: 1 });
         const newPage = newPdf.addPage([origVp.width, origVp.height]);
         newPage.drawImage(jpgImg, { x:0, y:0, width: origVp.width, height: origVp.height });
       }
@@ -510,12 +511,18 @@ const CP = (() => {
       // Update result card
       document.getElementById('origSizeResult').textContent = fmt(origBytes);
       document.getElementById('newSizeResult').textContent  = fmt(newSize);
-      document.getElementById('savingsPill').textContent    = useOriginal ? 'Already optimized' : saved + '% saved';
+      document.getElementById('savingsPill').textContent    = useOriginal ? 'Original retained' : saved + '% saved';
+      document.getElementById('outputSizeLabel').textContent = useOriginal ? 'Original retained' : 'Rasterised output';
+      document.getElementById('resultNote').textContent = useOriginal
+        ? 'The generated PDF was larger, so the downloadable file keeps the original bytes and structure.'
+        : `Pages were rasterised at up to about ${lowestDpi} DPI. Selectable text, links, forms, annotations and accessibility structure may be lost.`;
       document.getElementById('resultCard').style.display   = 'block';
 
       // Create download link
       const blob = new Blob([compressedBytes], { type: 'application/pdf' });
-      var defaultName = _file.name.replace(/\.pdf$/i, '') + '_compressed.pdf';
+      if (_downloadUrl) URL.revokeObjectURL(_downloadUrl);
+      _downloadUrl = URL.createObjectURL(blob);
+      var defaultName = _file.name.replace(/\.pdf$/i, '') + (useOriginal ? '_original-retained.pdf' : '_compressed.pdf');
       const dl   = document.getElementById('downloadBtn');
       dl.style.display = 'inline-flex';
       dl.onclick = function(e) {
@@ -524,13 +531,13 @@ const CP = (() => {
           window.CMFilename.prompt(defaultName).then(function(chosenName) {
             if (!chosenName) return;
             var a = document.createElement('a');
-            a.href = URL.createObjectURL(blob); a.download = chosenName;
+            a.href = _downloadUrl; a.download = chosenName;
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
             if (window.CMLogs) window.CMLogs.log({ tool: 'Compress PDF', action: 'compress', input: _file.name, output: chosenName, size: blob.size });
           });
         } else {
           var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = defaultName;
+          a.href = _downloadUrl; a.download = defaultName;
           document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
       };
@@ -539,7 +546,8 @@ const CP = (() => {
       toast(useOriginal ? 'ℹ️ This PDF is already optimized; the original-size version was preserved.' : `✅ Compressed! Saved ${saved}% (${fmt(origBytes)} → ${fmt(newSize)})`);
     } catch(e) {
       console.error(e);
-      toast('❌ Compression failed: ' + e.message);
+      const passwordIssue = /password|encrypted/i.test(String(e && e.message));
+      toast(passwordIssue ? '❌ This PDF is password-protected or encrypted. Save an authorized unprotected copy first.' : '❌ Compression failed: ' + e.message);
     } finally {
       const done = document.getElementById('downloadBtn').style.display !== 'none';
       btn.disabled = false;
@@ -568,6 +576,8 @@ document.getElementById('fileInput').addEventListener('change', e => {
 
 function handleFile(f) {
   if (!f.name.toLowerCase().endsWith('.pdf')) { toast('Please select a PDF file.'); return; }
+  if (!f.size) { toast('This PDF file is empty.'); return; }
+  if (f.size > 200 * 1024 * 1024) { toast('Please choose a PDF no larger than 200 MB.'); return; }
   CP.setFile(f);
   const fmt = b => b < 1048576 ? (b/1024).toFixed(1)+' KB' : (b/1048576).toFixed(2)+' MB';
   document.getElementById('fileName').textContent = f.name;
@@ -596,6 +606,8 @@ function selectTier(t) {
   document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
   const map = { high:'tierHigh', balanced:'tierBalanced', max:'tierMax' };
   document.getElementById(map[t]).classList.add('selected');
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('downloadBtn').style.display = 'none';
 }
 
 function compressPDF() { CP.run(); }

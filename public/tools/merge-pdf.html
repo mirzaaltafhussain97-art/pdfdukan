@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Merge PDF Files Online — Combine & Reorder Pages | PDFdukan</title>
-<meta name="description" content="Merge multiple PDF files into one document. Choose specific pages from each file, drag to reorder, then merge instantly. Free, no upload. PDFdukan CamMaster.">
+<meta name="description" content="Merge two or more PDFs into one file. Choose pages, change file order, then download and verify the result. Browser-based and no account required.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -21,24 +21,24 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/merge-pdf.html">
-<meta property="og:title" content="Merge PDF Files — Select Pages Per File | CamMaster by PDFdukan">
-<meta property="og:description" content="Merge multiple PDF files into one document. Choose specific pages from each file, drag to reorder, then merge instantly. Free, no upload. PDFdukan CamMaster.">
-<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:title" content="Merge PDF Files Online — Choose Pages &amp; Order | PDFdukan">
+<meta property="og:description" content="Combine two or more PDFs, include selected pages and set file order before downloading one merged PDF.">
+<meta property="og:image" content="https://pdfdukan.com/images/merge-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="en_US">
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Merge PDF Files — Select Pages Per File | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Merge multiple PDF files into one document. Choose specific pages from each file, drag to reorder, then merge instantly. Free, no upload. PDFdukan CamMaster.">
-<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<meta name="twitter:title" content="Merge PDF Files Online — Choose Pages &amp; Order | PDFdukan">
+<meta name="twitter:description" content="Combine PDFs, include selected pages and set file order before downloading one merged file.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/merge-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 /* ── PDF File Card ─────────────────────────────────────────── */
 .pdf-file-card {
@@ -79,6 +79,7 @@
   transition: var(--t) var(--ease);
 }
 .pfc-btn:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.pfc-btn:disabled { opacity:.35; cursor:not-allowed; }
 .pfc-del {
   background: none; border: 1px solid transparent;
   color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm);
@@ -122,6 +123,10 @@
   padding: 10px 14px; font-size: 12px; color: var(--text-3);
   display: flex; align-items: center; gap: 6px; margin-top: 10px;
 }
+.tool-hero.merge-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.merge-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.merge-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.merge-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.merge-tool-hero .tool-feature-visual{max-height:180px}}
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Merge PDF Files","item":"https://pdfdukan.com/tools/merge-pdf.html"}]}</script>
@@ -133,8 +138,8 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many PDF files can I merge at once?","acceptedAnswer":{"@type":"Answer","text":"There is no enforced limit on the number of files. You can upload and merge as many PDFs as your device's memory allows. Most modern phones and computers handle 10\u201320 files easily."}},{"@type":"Question","name":"Are my files uploaded to a server when I merge?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan merges your PDFs entirely inside your browser using PDF-lib, a JavaScript library. Your files never leave your device. This makes PDFdukan safe to use with confidential documents \u2014 salary slips, passports, medical records \u2014 without any privacy concerns."}},{"@type":"Question","name":"Will the merged PDF lose quality compared to the originals?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan combines your PDFs at the page level without re-rendering or re-encoding the content. Images, text, fonts, and vector graphics are preserved exactly as they were in the original files."}},{"@type":"Question","name":"Can I merge PDFs and images together?","acceptedAnswer":{"@type":"Answer","text":"Yes. First convert your images to PDF using the JPG to PDF tool , then merge the resulting PDFs together. Both tools are free and work in your browser."}},{"@type":"Question","name":"Can I choose which pages from each PDF to include?","acceptedAnswer":{"@type":"Answer","text":"Yes. After uploading, click on any file card to open the page selector. You can deselect individual pages \u2014 for example, remove blank pages, duplicate covers, or confidential sections before merging."}},{"@type":"Question","name":"Will the merged PDF have a watermark?","acceptedAnswer":{"@type":"Answer","text":"No watermark is ever added. PDFdukan never adds any branding, watermarks, or markings to your documents. The output PDF is completely clean and ready to share or submit."}},{"@type":"Question","name":"Is there a file size limit?","acceptedAnswer":{"@type":"Answer","text":"No hard limit. The practical limit is your device's available RAM. Files up to 50MB each merge without issues on any modern device. If you have very large files, try compressing them first using the Compress PDF tool ."}},{"@type":"Question","name":"How is this different from Adobe Acrobat's merge feature?","acceptedAnswer":{"@type":"Answer","text":"Adobe Acrobat requires a paid subscription (around $15\u201320/month). PDFdukan is completely free with no subscription. The output quality is identical for standard PDFs. For everyday document merging, PDFdukan is more than sufficient."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many PDF files can I merge at once?","acceptedAnswer":{"@type":"Answer","text":"The interface does not set a fixed file-count limit, but the practical limit depends on total file size, PDF complexity, browser and available device memory. Add fewer or smaller files if processing fails."}},{"@type":"Question","name":"Where does the merge operation run?","acceptedAnswer":{"@type":"Answer","text":"The selected PDF data is processed by client-side PDF code in your browser. The page can still request normal site assets, analytics and third-party libraries, so assess your browser and network before handling highly sensitive material."}},{"@type":"Question","name":"Will the merged PDF lose quality compared to the originals?","acceptedAnswer":{"@type":"Answer","text":"The tool copies selected pages with PDF-lib instead of deliberately rasterising them, so image resolution is not intentionally reduced. Complex forms, signatures, annotations, links or unusual fonts may behave differently after rewriting; verify the output before relying on it."}},{"@type":"Question","name":"Can I merge PDFs and images together?","acceptedAnswer":{"@type":"Answer","text":"Yes. First convert your images to PDF using the JPG to PDF tool , then merge the resulting PDFs together. Both tools are free and work in your browser."}},{"@type":"Question","name":"Can I choose which pages from each PDF to include?","acceptedAnswer":{"@type":"Answer","text":"Yes. After uploading, click on any file card to open the page selector. You can deselect individual pages — for example, remove blank pages, duplicate covers, or confidential sections before merging."}},{"@type":"Question","name":"Will the merged PDF have a PDFdukan watermark?","acceptedAnswer":{"@type":"Answer","text":"The current merge code does not intentionally add a visible PDFdukan watermark. Always open the output and check it before sharing or submitting."}},{"@type":"Question","name":"Is there a file size limit?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed limit enforced in the form. Available memory, file complexity and browser limits determine what can be processed. Very large files may be slow or fail, particularly on phones."}},{"@type":"Question","name":"What are the limitations of browser-based PDF merging?","acceptedAnswer":{"@type":"Answer","text":"It depends on your device memory and the structure of the source PDFs. Password-protected, damaged or unusually complex PDFs may fail, and interactive elements should be checked in the result. Keep originals until the merged file has been verified."}}]}</script><meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="merge-pdf"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -252,17 +257,13 @@
     <span>Merge PDF</span>
   </nav>
 
-  <div class="tool-hero">
-    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7b1fa2,#ab47bc)">🔗</div>
-    <h1>Merge PDF Files</h1>
-    <div style="text-align:center;margin:0 auto 24px;max-width:500px">
-      <img src="/images/merge-pdf.svg"
-           alt="Merge multiple PDF files into one online — combine specific pages from each PDF free"
-           width="500" height="300"
-           loading="eager"
-           style="width:100%;max-width:500px;height:auto;border-radius:12px">
+  <div class="tool-hero merge-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7b1fa2,#ab47bc)">🔗</div>
+      <h1>Merge PDF Files Online</h1>
+      <p>Combine two or more unlocked PDFs. Select pages from each file, set file order, then download and verify one merged PDF.</p>
     </div>
-    <p>Combine multiple PDFs into one. Select specific pages from each file, drag to reorder, then merge.</p>
+    <img class="tool-feature-visual" src="../images/merge-pdf.svg?v=20260825" alt="Several PDF files arranged and combined into one ordered PDF" width="500" height="300">
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -290,7 +291,7 @@
 
     <div class="merge-hint">
       <span>💡</span>
-      Drag ⠿ to reorder files · Click page numbers to toggle · Use <strong>Range…</strong> for quick selection
+      Drag ⠿ or use ↑/↓ to reorder files · Click page numbers to toggle · Use <strong>Range…</strong> for quick selection
     </div>
   </div>
 
@@ -325,23 +326,23 @@
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
     <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">How do I merge PDF files for free?</strong> Open PDFdukan's Merge PDF tool, add two or more PDFs, pick the exact pages you want from each, drag to reorder, then click Merge to download one combined PDF. Everything runs in your browser — no uploads, no signup, no watermark. A fast, private way to combine documents on any device.
+    <strong style="color:var(--text)">How do I merge PDF files?</strong> Add two or more unlocked PDFs, choose pages from each, set the file order with drag or ↑/↓ controls, then merge and check the downloaded PDF. No account is required for the current workflow.
   </div>
 
     <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
     📖 <strong>Related guide:</strong> <a href="../blog/merge-pdf-without-losing-quality.html" style="color:var(--primary);font-weight:600">How to Merge PDF Files Without Losing Quality →</a>
   </div>
 
-<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Browser memory sets the practical limit · Check the downloaded file</span></aside>
+<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Browser memory sets the practical limit · Check the downloaded file</span></aside>
     <h2>Merge PDF Files Online — Free, Fast &amp; Private</h2>
-    <p class="lead">PDFdukan's Merge PDF tool lets you combine multiple PDF documents into one single file in seconds — with complete control over page selection and order. Upload two or more PDFs, choose exactly which pages to include from each file, drag to reorder them, then download the merged result instantly. No files are sent to any server. Everything runs in your browser.</p>
+    <p class="lead">PDFdukan's Merge PDF tool combines two or more unlocked PDFs into one file. Choose pages from each source and arrange the file cards before export; selected pages remain in their original order within each source PDF. The merge operation runs in the browser, while the page can still request ordinary site assets, analytics and third-party libraries.</p>
     <p>Whether you need to combine a cover letter with your CV, merge monthly bank statements into one document, or assemble scanned pages into a single report, this free online PDF merger handles it without any software installation, account registration, or file upload to a cloud server.</p>
 
     <h2>Why Use PDFdukan to Merge PDFs?</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-        <strong>🔒 Files Stay on Your Device</strong>
-        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Your PDFs are never uploaded to any server. Merging happens locally in your browser — confidential documents stay private.</p>
+        <strong>🔒 Client-side Merge</strong>
+        <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Selected files are read by the browser-based merge code. Assess your browser and network before handling highly sensitive documents.</p>
       </div>
       <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
         <strong>📄 Choose Exact Pages</strong>
@@ -359,9 +360,9 @@
 
     <h2>How to Merge PDFs in 4 Simple Steps</h2>
     <ol>
-      <li><strong>Upload your PDF files</strong> — Click the upload area or drag and drop two or more PDF files. You can add as many files as you need.</li>
-      <li><strong>Arrange the order</strong> — Drag the file cards to put them in the sequence you want in the final document.</li>
-      <li><strong>Select pages (optional)</strong> — Click on any file card to choose specific pages. Deselect pages you don't need, such as blank pages or duplicate covers.</li>
+      <li><strong>Add your PDF files</strong> — Choose two or more unlocked PDFs. Capacity depends on total size, PDF complexity, browser and available memory.</li>
+      <li><strong>Arrange the order</strong> — Drag the file cards or use the ↑/↓ buttons. This controls which source document comes first.</li>
+      <li><strong>Select pages (optional)</strong> — Click page numbers, use All/None, or enter a validated range. Pages from each source keep their source order.</li>
       <li><strong>Merge and verify</strong> — Click Merge PDFs, download the result, then open it and check page order, links, forms and fonts before submitting it.</li>
     </ol>
 
@@ -376,11 +377,11 @@
 
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How many PDF files can I merge at once?</button><div class="faq-a"><p>The interface does not set a fixed file-count limit, but the practical limit depends on total file size, PDF complexity, browser and available device memory. Add fewer or smaller files if processing fails.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files uploaded to a server when I merge?</button><div class="faq-a"><p>No. PDFdukan merges your PDFs entirely inside your browser using PDF-lib, a JavaScript library. Your files never leave your device. This makes PDFdukan safe to use with confidential documents — salary slips, passports, medical records — without any privacy concerns.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Where does the merge operation run?</button><div class="faq-a"><p>The selected PDF data is processed by client-side PDF code in your browser. The page can still request normal site assets, analytics and third-party libraries, so assess your browser and network before handling highly sensitive material.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the merged PDF lose quality compared to the originals?</button><div class="faq-a"><p>The tool copies selected pages with PDF-lib instead of deliberately rasterising them, so image resolution is not intentionally reduced. Complex forms, signatures, annotations, links or unusual fonts may behave differently after rewriting; verify the output before relying on it.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I merge PDFs and images together?</button><div class="faq-a"><p>Yes. First convert your images to PDF using the <a href="img-to-pdf.html">JPG to PDF tool</a>, then merge the resulting PDFs together. Both tools are free and work in your browser.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I choose which pages from each PDF to include?</button><div class="faq-a"><p>Yes. After uploading, click on any file card to open the page selector. You can deselect individual pages — for example, remove blank pages, duplicate covers, or confidential sections before merging.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the merged PDF have a watermark?</button><div class="faq-a"><p>No watermark is ever added. PDFdukan never adds any branding, watermarks, or markings to your documents. The output PDF is completely clean and ready to share or submit.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the merged PDF have a PDFdukan watermark?</button><div class="faq-a"><p>The current merge code does not intentionally add a visible PDFdukan watermark. Always open the output and check it before sharing or submitting.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a file size limit?</button><div class="faq-a"><p>There is no fixed limit enforced in the form. Available memory, file complexity and browser limits determine what can be processed. Very large files may be slow or fail, particularly on phones.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What are the limitations of browser-based PDF merging?</button><div class="faq-a"><p>It depends on your device memory and the structure of the source PDFs. Password-protected, damaged or unusually complex PDFs may fail, and interactive elements should be checked in the result. Keep originals until the merged file has been verified.</p></div></div>
   </section>
@@ -437,8 +438,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

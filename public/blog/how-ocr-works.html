@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://docs.opencv.org">
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>How OCR Works: Extract Text from Images | PDFdukan</title>
-<meta name="description" content="Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.">
+<title>How OCR Works: Improve Image-to-Text Accuracy | PDFdukan</title>
+<meta name="description" content="Learn how OCR converts images to text, what affects Tesseract accuracy, and how language, layout, resolution and preprocessing improve results.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/blog/how-ocr-works.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/blog/how-ocr-works.html">
@@ -17,8 +17,8 @@
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/blog/how-ocr-works.html">
-<meta property="og:title" content="How OCR Works in 2026: Extract Text from Any Image | PDFdukan Blog">
-<meta property="og:description" content="Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.">
+<meta property="og:title" content="How OCR Works: Improve Image-to-Text Accuracy | PDFdukan">
+<meta property="og:description" content="Learn how language, layout, resolution and preprocessing affect browser OCR results.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -26,15 +26,15 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="How OCR Works in 2026: Extract Text from Any Image | PDFdukan Blog">
-<meta name="twitter:description" content="Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.">
+<meta name="twitter:title" content="How OCR Works: Improve Image-to-Text Accuracy | PDFdukan">
+<meta name="twitter:description" content="Learn how language, layout, resolution and preprocessing affect browser OCR results.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Article","headline":"How OCR Works in 2026: Extract Text from Any Image or Scanned Document","description":"Understand how modern OCR technology extracts text from images and scanned documents. Covers Tesseract, neural networks, accuracy tips, and 100+ language support.","url":"https://pdfdukan.com/blog/how-ocr-works.html","datePublished":"2026-05-30","dateModified":"2026-05-30","author":{"@type":"Organization","name":"PDFdukan Team","url":"https://pdfdukan.com"},"publisher":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com","logo":{"@type":"ImageObject","url":"https://pdfdukan.com/og-image.jpg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://pdfdukan.com/blog/how-ocr-works.html"},"image":{"@type":"ImageObject","url":"https://pdfdukan.com/images/blog-ocr.svg","width":800,"height":400}}
+{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"How OCR Works: Improve Image-to-Text Accuracy","description":"Learn how OCR converts images to text and how language, layout, resolution and preprocessing affect Tesseract results.","url":"https://pdfdukan.com/blog/how-ocr-works.html","datePublished":"2026-05-30","dateModified":"2026-08-25","author":{"@type":"Organization","name":"PDFdukan Editorial Team","url":"https://pdfdukan.com/about.html"},"publisher":{"@type":"Organization","name":"PDFdukan","url":"https://pdfdukan.com","logo":{"@type":"ImageObject","url":"https://pdfdukan.com/og-image.jpg"}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://pdfdukan.com/blog/how-ocr-works.html"},"image":{"@type":"ImageObject","url":"https://pdfdukan.com/images/blog-ocr.svg","width":800,"height":400}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://pdfdukan.com/blog/index.html"},{"@type":"ListItem","position":3,"name":"How OCR Works","item":"https://pdfdukan.com/blog/how-ocr-works.html"}]}]}
 </script>
 <style>
 .article-hero { background: linear-gradient(135deg,#1b5e20 0%,#388e3c 50%,#66bb6a 100%); padding: 60px 24px; text-align: center; }
@@ -63,20 +63,6 @@
 .bar-wrap { display: flex; align-items: center; gap: 8px; }
 .bar-fill { height: 8px; border-radius: 4px; background: linear-gradient(90deg,#388e3c,#81c784); }
 </style>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "How OCR Works in 2026: Extract Text from Any Image",
-  "description": "Understand how OCR (Optical Character Recognition) works and how to get the best results extracting text from scanned documents and images.",
-  "datePublished": "2026-05-30",
-  "dateModified": "2026-05-30",
-  "author": { "@type": "Organization", "name": "PDFdukan" },
-  "publisher": { "@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com" },
-  "image": "https://pdfdukan.com/og-image.jpg",
-  "url": "https://pdfdukan.com/blog/how-ocr-works"
-}
-</script>
 <meta name="theme-color" content="#ff6333">
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -87,7 +73,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Editorial Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -130,20 +116,20 @@
 
 <div class="article-hero">
   <p style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px">OCR &amp; Text Extraction · 6 min read</p>
-  <h1>How OCR Works in 2026: Extract Text from Any Image</h1><div class="cm-article-byline">Written and reviewed by the PDFdukan Editorial Team · Updated 14 August 2026</div>
-  <p>From handwritten receipts to printed contracts — understand the technology that converts images of text into editable, searchable digital content.</p>
+  <h1>How OCR Works: Improve Image-to-Text Accuracy</h1><div class="cm-article-byline">Written and reviewed by the PDFdukan Editorial Team · Updated 25 August 2026</div>
+  <p>Understand how printed text in an image becomes editable text, which settings matter, and why every important OCR result still needs review.</p>
 </div>
 
 <article class="page-prose article-shield">
   <nav style="font-size:12px;color:var(--text-3);margin-bottom:16px">
     <a href="/" style="color:var(--text-3)">Home</a> ›
-    <a href="/" style="color:var(--text-3)">Blog</a> ›
-    <span>How OCR Works in 2026</span>
+    <a href="index.html" style="color:var(--text-3)">Blog</a> ›
+    <span>How OCR Works</span>
   </nav>
 
   <div class="article-meta">
     <span class="am-tag">OCR &amp; Text Extraction</span>
-    <span class="am-date">📅 May 30, 2026</span>
+    <span class="am-date">📅 Published May 30, 2026 · Updated Aug 25, 2026</span>
     <span class="am-read">⏱️ 6 min read</span>
     <span class="am-date">By PDFdukan Team</span>
   </div>
@@ -158,7 +144,7 @@
 
   <h2>2. The OCR Processing Pipeline</h2>
 
-  <p>Every OCR engine, regardless of vendor, performs the same fundamental sequence of operations. Understanding each stage tells you exactly where problems occur when results are poor.</p>
+  <p>A typical OCR workflow uses several of the stages below, although exact implementations differ between engines. Understanding them helps explain why a clean page and a suitable layout setting can change the result.</p>
 
   <div class="pipeline-steps">
     <div class="pip-step">
@@ -196,16 +182,16 @@
   <h3>Preprocessing: The Most Important Stage</h3>
   <p>Preprocessing is where OCR success or failure is determined. A poorly preprocessed image — skewed, low contrast, noisy background — will produce poor results no matter how sophisticated the recognition engine. The key preprocessing operations are: <strong>deskewing</strong> (rotating the image to make text lines horizontal), <strong>binarization</strong> (converting to pure black and white using adaptive thresholding so text stands out from background), and <strong>denoising</strong> (removing speckles, compression artifacts, and paper texture that the engine might confuse with ink).</p>
 
-  <p>CamMaster's scanner applies all of these automatically at capture time. The perspective correction warp handles the keystone distortion from off-angle photography, and the Magic filter boosts ink contrast while suppressing paper grain — both critical preprocessing steps before any OCR pass.</p>
+  <p>PDFdukan's <a href="../scanner.html" style="color:var(--primary)">document scanner</a> lets you correct page perspective and apply document filters before exporting an image. For OCR, export the corrected page as JPG or PNG and compare Original pixels with the OCR tool's optional Document contrast mode. No single filter improves every page.</p>
 
   <h3>LSTM-Based Character Recognition</h3>
   <p>Tesseract's current recognition models use LSTM-based sequence recognition. Context can help distinguish similar characters such as “l”, “1” and “I”, but it does not guarantee the correct result. Training data and behavior differ by language model, and a displayed confidence value is an estimate rather than proof that the text is correct.</p>
 
   <h2>3. How Browser-Based OCR Works with Tesseract.js</h2>
 
-  <p>Traditional OCR required server infrastructure — you uploaded your document, a server processed it, and returned the result. This created privacy concerns (your documents left your device), latency issues, and bandwidth costs. Tesseract.js solves this by compiling the entire Tesseract engine to WebAssembly, which runs natively inside your browser at near-native speed.</p>
+  <p>Many OCR services upload a document for server processing. Tesseract.js instead wraps the Tesseract engine for JavaScript and WebAssembly so recognition can run inside a browser worker. Browser-based processing avoids intentionally sending the selected image to PDFdukan's server, but it can use substantial device memory and CPU.</p>
 
-  <p>When you use the <a href="../tools/ocr.html" style="color:var(--primary)">CamMaster OCR tool</a>, the following happens entirely on your device: the Tesseract.js WASM module loads once (cached by your browser for future visits), your image is preprocessed in a canvas element, the LSTM model runs in a Web Worker to avoid blocking the UI, and the extracted text is returned directly to your browser session. Your document never touches any external server. This is meaningful privacy protection for sensitive documents like medical records, contracts, and financial statements.</p>
+  <p>When you use the <a href="../tools/ocr.html" style="color:var(--primary)">PDFdukan OCR tool</a>, the browser downloads Tesseract.js code and the selected language data from configured third-party CDNs. Recognition then runs locally in a worker. The workflow does not intentionally upload the selected image pixels, but CDN providers still receive ordinary network request data such as an IP address. Review the <a href="../privacy.html" style="color:var(--primary)">privacy policy</a> and avoid processing material you are not authorised to handle.</p>
 
   <div class="tip-box">
     <strong>💡 Language Selection:</strong> Always choose the correct language before running OCR. The LSTM model uses language-specific character frequency data and common word patterns to resolve ambiguous characters. Selecting "English" for an Arabic document will produce garbage output — the engine will attempt to interpret Arabic glyphs as Latin characters.
@@ -223,7 +209,7 @@
       <tr>
         <td><strong>Scan Resolution</strong></td>
         <td><div class="bar-wrap"><div class="bar-fill" style="width:88px"></div><span style="font-size:11px;color:var(--text-3)">Very High</span></div></td>
-        <td>300 DPI minimum; 600 DPI for small fonts</td>
+        <td>Around 300 DPI is a useful target when scan resolution is known; small text needs more pixel detail</td>
       </tr>
       <tr>
         <td><strong>Contrast</strong></td>
@@ -233,7 +219,7 @@
       <tr>
         <td><strong>Skew / Tilt</strong></td>
         <td><div class="bar-wrap"><div class="bar-fill" style="width:70px;background:linear-gradient(90deg,#f59e0b,#fde68a)"></div><span style="font-size:11px;color:var(--text-3)">High</span></div></td>
-        <td>Deskew before OCR — CamMaster auto-corrects on capture</td>
+        <td>Correct page perspective in the scanner and keep text lines as level as possible</td>
       </tr>
       <tr>
         <td><strong>Language Model</strong></td>
@@ -243,7 +229,7 @@
       <tr>
         <td><strong>Font Type</strong></td>
         <td><div class="bar-wrap"><div class="bar-fill" style="width:44px;background:linear-gradient(90deg,#6b7280,#d1d5db)"></div><span style="font-size:11px;color:var(--text-3)">Medium</span></div></td>
-        <td>Serif and sans-serif print fonts near-perfect; decorative fonts struggle</td>
+        <td>Clear, common print fonts are usually easier; decorative fonts and handwriting are harder</td>
       </tr>
       <tr>
         <td><strong>Background Noise</strong></td>
@@ -259,40 +245,44 @@
   <p>Even illumination is one of the most controllable factors in OCR quality. Shadows, glare and perspective distortion can obscure character shapes. When photographing a page, use diffuse lighting, hold the camera parallel to the paper and keep every edge visible. Flat pages generally recognize better than curved book pages.</p>
 
   <h3>Use the Scanner Before OCR</h3>
-  <p>Running OCR directly on a raw camera photo is less effective than first processing it through <a href="../scanner.html" style="color:var(--primary)">CamMaster's document scanner</a>. The scanner applies perspective correction, contrast normalization, and binarization — the exact preprocessing steps that most improve OCR accuracy. Scan first, then OCR on the processed output.</p>
+  <p>An off-angle camera photo may recognise poorly. Use <a href="../scanner.html" style="color:var(--primary)">CamMaster's document scanner</a> to correct the page boundary, choose a suitable filter and export a high-quality image. Then try that JPG or PNG in OCR. Compare the result with the raw image because aggressive contrast can remove faint characters.</p>
 
   <div class="tip-box">
-    <strong>💡 Two-Step Workflow:</strong> (1) Capture with CamMaster Scanner and export as PDF. (2) Open the PDF in the <a href="../tools/ocr.html" style="color:var(--primary)">OCR tool</a> and extract text. This two-step approach consistently outperforms running OCR directly on raw photos.
+    <strong>💡 Two-Step Workflow:</strong> (1) Correct the photographed page in CamMaster and export it as JPG or lossless PNG. (2) Upload that image to the <a href="../tools/ocr.html" style="color:var(--primary)">OCR tool</a>, choose the language/layout, and compare Original pixels with Document contrast. The better result depends on the source.
   </div>
 
   <h3>Resolution vs. File Size Trade-off</h3>
-  <p>Higher resolution improves OCR accuracy but increases processing time and file size. In practice: use 300 DPI for standard office documents (letters, invoices, contracts with 10pt+ text), 600 DPI for documents with small print (legal footnotes, nutritional labels, engineering drawings), and 150 DPI only for very large-print documents where storage size is a hard constraint. Never scan below 150 DPI for any document intended for OCR.</p>
+  <p>More useful character detail can improve OCR, but very large images increase processing time and memory use. Tesseract's quality guidance says it works best on images of at least about 300 DPI. DPI metadata is often missing from phone photos, so the practical test is whether character edges are sharp at full size. Do not silently shrink a readable source just to save bandwidth; crop irrelevant margins instead.</p>
 
   <h2>6. OCR Use Cases: Invoices, Receipts, Contracts, and Books</h2>
 
   <h3>Invoices and Receipts</h3>
-  <p>Expense management is the most common OCR use case for individuals and small businesses. A thermal receipt photo run through CamMaster OCR extracts vendor name, date, line items, and total — which can then be copied directly into expense spreadsheets or accounting software. Key tip: photograph receipts immediately after receiving them, before the thermal ink fades (thermal ink fades significantly within 6–12 months).</p>
+  <p>OCR can reduce retyping when recording receipt or invoice details, but totals, dates, tax numbers and account identifiers are exactly the fields that must be checked. Faded thermal print, narrow columns and mixed font sizes can all produce plausible-looking mistakes.</p>
 
   <h3>Contracts and Legal Documents</h3>
-  <p>Making signed contracts searchable is essential for legal teams. A PDF portfolio of signed contracts with an OCR text layer allows instant full-text search — find every contract referencing a specific client name, clause, or date in seconds. Use the <a href="../tools/merge-pdf.html" style="color:var(--primary)">Merge PDF tool</a> to combine all contracts into an indexed archive after adding the OCR layer to each.</p>
+  <p>Extracted text can help locate a clause or name in a scanned contract, but it is not a legal transcript. Compare every material clause, date, party name and number with the image. If you need a text layer inside the document rather than a separate TXT file, use the dedicated <a href="../tools/searchable-pdf.html" style="color:var(--primary)">Searchable PDF tool</a>.</p>
 
   <h3>Books and Long Documents</h3>
-  <p>Digitizing physical books for personal reference is legal under most jurisdictions' fair use provisions for personal use. For long documents, process chapter by chapter rather than the entire book at once — this keeps individual file sizes manageable and lets you correct OCR errors in focused batches rather than facing a single enormous document to review.</p>
+  <p>For material you own or are authorised to digitise, process one clear page at a time and keep the source image beside the corrected text. Copyright and permitted-use rules vary by material and location; OCR does not grant permission to reproduce a work.</p>
 
   <div class="warn-box">
     <strong>⚠️ Always Proofread Critical Documents:</strong> There is no fixed accuracy rate that applies to every page. For legal, medical, financial or identity documents, compare the complete extracted text with the source before relying on it.
   </div>
 
-  <h2>7. Multi-Language OCR</h2>
+  <h2>7. Urdu, Arabic and Mixed-Language OCR</h2>
 
-  <p>CamMaster's OCR tool supports over 100 languages through Tesseract's trained model files. For right-to-left scripts (Arabic, Urdu, Hebrew, Persian), the engine uses RTL-aware text assembly that correctly handles bidirectional text. For mixed-language documents — an English contract with Arabic annotations, for example — select both languages in the multi-language mode and Tesseract processes both scripts simultaneously on the same page.</p>
+  <p>The current PDFdukan selector exposes 15 single-language models, including Urdu and Arabic, plus English + Urdu and English + Arabic combined modes. Select a single language for a page that uses one script; use a combined option only when both languages genuinely appear. Mixed recognition can take longer and can introduce extra alternatives, so compare names, punctuation and reading order carefully.</p>
 
   <p>Language model selection has a larger impact than most users expect. Running Arabic text through an English language model does not just produce wrong characters — it produces structurally invalid output because the engine tries to segment the script as if it were Latin. Always match the language model to your document.</p>
 
   <div class="article-cta">
-    <h3>🔤 Try Free OCR — 100+ Languages</h3>
-    <p>Extract text from scanned documents, images, and PDFs. Runs entirely in your browser — your files never leave your device.</p>
+    <h3>🔤 Try Free OCR Image to Text</h3>
+    <p>Extract editable text from one JPG, PNG or WEBP image. Choose from 15 single-language models or the listed English/Urdu and English/Arabic mixed modes, then edit, copy or download the result.</p>
     <a href="https://pdfdukan.com/tools/ocr.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Try Free OCR Tool →</a>
+  </div>
+
+  <div class="tip-box">
+    <strong>Sources used for this guide:</strong> the official <a href="https://tesseract-ocr.github.io/tessdoc/ImproveQuality.html" rel="noopener noreferrer" style="color:var(--primary)">Tesseract image-quality guidance</a> and <a href="https://github.com/naptha/tesseract.js/blob/master/docs/api.md" rel="noopener noreferrer" style="color:var(--primary)">Tesseract.js worker/API documentation</a>. Product-specific claims above were checked against PDFdukan's current OCR interface on 25 August 2026.
   </div>
 
   <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:12px;flex-wrap:wrap">
@@ -340,8 +330,8 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/i18n.js?v=20260616c"></script>
-<script src="../js/app.js?v=20260824c"></script>
+<script src="../js/i18n.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825f"></script>
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
     <div class="footer-grid">

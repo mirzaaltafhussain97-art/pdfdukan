@@ -2,18 +2,11 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Image to Text OCR Online — Urdu & English | PDFdukan</title>
-<meta name="description" content="Extract editable text from JPG, PNG and WEBP images with browser-based Tesseract.js OCR. Supports English, Urdu, Arabic and more. Review results for errors.">
+<title>Free OCR Image to Text — Urdu &amp; English | PDFdukan</title>
+<meta name="description" content="Convert JPG, PNG or WEBP images to editable text with free browser OCR. Includes English, Urdu, Arabic, mixed-language modes and TXT download.">
 <meta name="robots" content="index, follow">
-<meta name="geo.region" content="PK">
-<meta name="geo.placename" content="Pakistan">
-<meta name="geo.position" content="30.3753;69.3451">
-<meta name="ICBM" content="30.3753, 69.3451">
 <link rel="canonical" href="https://pdfdukan.com/tools/ocr.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/ocr.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/ocr.html">
@@ -21,8 +14,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/ocr.html">
-<meta property="og:title" content="OCR Image to Text — Free Online | CamMaster by PDFdukan">
-<meta property="og:description" content="Extract editable text from images with browser-based Tesseract.js OCR. Select from the languages listed in the tool and review results for errors.">
+<meta property="og:title" content="Free OCR Image to Text — Urdu &amp; English | PDFdukan">
+<meta property="og:description" content="Convert JPG, PNG or WEBP images to editable text in your browser. Choose a language and page layout, then copy or download the reviewed result.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,14 +23,14 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="OCR Image to Text — Free Online | CamMaster by PDFdukan">
-<meta name="twitter:description" content="Extract editable text from images with browser-based Tesseract.js OCR and review the result for errors.">
+<meta name="twitter:title" content="Free OCR Image to Text — Urdu &amp; English | PDFdukan">
+<meta name="twitter:description" content="Convert JPG, PNG or WEBP images to editable text in your browser, then copy or download the reviewed result.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <!-- Tesseract.js lazy-loaded on first OCR use — see js/app.js loadScriptOnce -->
-<link rel="stylesheet" href="../css/style.css?v=20260814c">
+<link rel="stylesheet" href="../css/style.css?v=20260825f">
 <style>
 .ocr-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media(max-width:700px){.ocr-layout{grid-template-columns:1fr}}
@@ -46,9 +39,18 @@
   display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 #imgPreview { max-width: 100%; max-height: 400px; display: none; }
+.ocr-file-info{display:none;margin-top:14px;padding:12px 14px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text-2);overflow-wrap:anywhere}
+.ocr-file-info.show{display:block}
+.ocr-run-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.ocr-run-row .btn-primary{min-width:180px}
+.ocr-privacy-note{font-size:12px;color:var(--text-3);line-height:1.55;margin:0}
+#ocrOutput{width:100%;resize:vertical;min-height:260px;text-align:start}
+#ocrOutput[dir="rtl"]{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",Arial,sans-serif;font-size:16px;line-height:2}
+.tool-hero img.ocr-feature-image{display:block;margin:0 auto}
+@media(max-width:700px){.ocr-actions{width:100%}.ocr-actions .btn{flex:1}.ocr-run-row .btn{width:100%}}
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"OCR — Image to Text","item":"https://pdfdukan.com/tools/ocr.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"OCR Image to Text","item":"https://pdfdukan.com/tools/ocr.html"}]},{"@type":"WebApplication","@id":"https://pdfdukan.com/tools/ocr.html#app","name":"PDFdukan OCR Image to Text","url":"https://pdfdukan.com/tools/ocr.html","description":"A browser-based OCR tool that extracts editable text from JPG, PNG and WEBP images.","dateModified":"2026-08-25","applicationCategory":"UtilitiesApplication","operatingSystem":"Any operating system with a modern web browser","browserRequirements":"JavaScript and WebAssembly required","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Image to editable text","15 single-language models","English and Urdu mixed OCR","English and Arabic mixed OCR","Original, grayscale and document enhancement modes","Automatic, single-column and sparse-text layouts","Copy text","UTF-8 TXT download"]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How accurate is the OCR text extraction?","acceptedAnswer":{"@type":"Answer","text":"There is no honest fixed accuracy percentage for every image. Clear, upright printed text normally works better than blur, handwriting, tables, decorative fonts or low-contrast scans. Select the correct language and compare names, numbers and other important text with the original."}},{"@type":"Question","name":"Does it support Urdu and Arabic text?","acceptedAnswer":{"@type":"Answer","text":"Yes. Urdu and Arabic are included among the 15 single-language choices. English + Urdu and English + Arabic mixed modes are also available for bilingual pages. The selected model data may download on first use. Review right-to-left text, names, numbers and punctuation against the original."}},{"@type":"Question","name":"Can it read handwriting?","acceptedAnswer":{"@type":"Answer","text":"Tesseract is designed for printed text and performs poorly on cursive or rough handwriting. Very neat, print-style handwriting may partially work. For handwritten notes, expect to correct errors manually."}},{"@type":"Question","name":"Are my images uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"The OCR workflow processes the selected image in your browser and does not intentionally upload its pixels. The browser does contact third-party CDNs to download Tesseract.js code and selected language data, so those providers receive normal request information such as an IP address. Avoid processing material you are not authorised to handle."}},{"@type":"Question","name":"Can I extract text from a scanned PDF?","acceptedAnswer":{"@type":"Answer","text":"Convert the PDF pages to images first with the PDF to JPG tool , then run OCR on each page image. Alternatively, use the Searchable PDF tool to embed recognised text directly back into the PDF."}},{"@type":"Question","name":"Why is the first extraction slow?","acceptedAnswer":{"@type":"Answer","text":"On first use, the browser downloads the OCR engine and selected language model data. File sizes vary by model. If the browser keeps those assets in cache, later extractions may start faster."}},{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"The listed OCR workflow is currently available without a subscription or account. Practical use is limited by browser memory, language-data downloads and device performance."}}]}]}</script>
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
 <script>
@@ -58,7 +60,7 @@
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="og:updated_time" content="2026-08-25T00:00:00+05:00">
 </head>
 <body data-tool="ocr"><header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
@@ -176,15 +178,15 @@
 
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#f57f17,#ffca28)">🔤</div>
-    <h1>Image to Text (OCR)</h1>
-    <div style="text-align:center;margin:0 auto 24px;max-width:500px">
-      <img src="/images/ocr-tool.svg"
-           alt="OCR text extraction from image or scanned document — free online Tesseract OCR"
+    <h1>Free Online OCR — Image to Text</h1>
+    <div style="text-align:center;margin:14px auto 18px;max-width:260px">
+      <img class="ocr-feature-image" src="/images/ocr-tool.svg?v=20260825"
+           alt="Image to editable text workflow in PDFdukan's free online OCR tool"
            width="500" height="300"
            loading="eager"
            style="width:100%;max-width:500px;height:auto;border-radius:12px">
     </div>
-    <p>Extract text from photos, scanned documents and screenshots using the languages listed below. Always review recognised text for errors.</p>
+    <p>Convert JPG, PNG and WEBP photos, scans or screenshots into editable text. Choose the document language and layout, then review the result before using it.</p>
   </div>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
@@ -192,21 +194,25 @@
   <!-- Upload & Options -->
   <div class="tool-card">
     <h3><span class="tc-icon">📂</span> Upload Image</h3>
-    <div class="drop-zone" id="dropZone">
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-controls="fileInput" aria-label="Choose a JPG, PNG or WEBP image for OCR">
       <div class="dz-icon">🔤</div>
       <div class="dz-title">Drop an image here or click to browse</div>
-      <div class="dz-hint">JPG, PNG, WEBP — for best results use clear, high-contrast images</div>
+      <div class="dz-hint">JPG, PNG or WEBP · one image · up to 30 MB and 40 megapixels</div>
       <span class="dz-btn">Choose Image</span>
-      <input type="file" id="fileInput" accept="image/*">
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
     </div>
+
+    <div class="ocr-file-info" id="ocrFileInfo" aria-live="polite"></div>
 
     <div class="options-row" style="margin-top:14px">
       <div class="option-group">
-        <label>Language</label>
-        <select id="ocrLang">
+        <label for="ocrLang">Document language</label>
+        <select id="ocrLang" aria-describedby="ocrLanguageHelp">
           <option value="eng">English</option>
           <option value="urd">Urdu</option>
           <option value="ara">Arabic</option>
+          <option value="eng+urd">English + Urdu</option>
+          <option value="eng+ara">English + Arabic</option>
           <option value="fra">French</option>
           <option value="deu">German</option>
           <option value="spa">Spanish</option>
@@ -221,6 +227,30 @@
           <option value="pol">Polish</option>
         </select>
       </div>
+      <div class="option-group">
+        <label for="ocrEnhance">Image treatment</label>
+        <select id="ocrEnhance">
+          <option value="original">Original pixels (recommended)</option>
+          <option value="document">Document contrast</option>
+          <option value="grayscale">Grayscale</option>
+        </select>
+      </div>
+      <div class="option-group">
+        <label for="ocrLayout">Page layout</label>
+        <select id="ocrLayout">
+          <option value="3">Automatic page</option>
+          <option value="6">Single text block</option>
+          <option value="4">Single column</option>
+          <option value="11">Sparse text / screenshot</option>
+          <option value="7">One text line</option>
+        </select>
+      </div>
+    </div>
+    <p class="ocr-privacy-note" id="ocrLanguageHelp">One image is processed at a time. Original mode sends the selected image pixels straight to the local OCR worker without silent resizing. For a mixed English/Urdu or English/Arabic page, choose the matching combined option.</p>
+    <div class="ocr-run-row">
+      <button class="btn btn-primary" id="ocrRunBtn" type="button" disabled>Extract Text</button>
+      <button class="btn btn-secondary" id="ocrClearBtn" type="button" disabled>Clear</button>
+      <span class="ocr-privacy-note">No account or subscription is required.</span>
     </div>
   </div>
 
@@ -231,7 +261,10 @@
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div class="progress-label" id="progressLabel">Loading OCR engine…</div>
     </div>
-    <p style="font-size:11px;color:var(--text-muted);margin-top:6px">The first run downloads OCR code and language data. Later runs may be faster when browser caching is available.</p>
+    <div class="ocr-run-row" style="margin-top:10px">
+      <button class="btn btn-secondary btn-sm" id="ocrCancelBtn" type="button">Cancel OCR</button>
+      <p style="font-size:11px;color:var(--text-muted);margin:0">The first run downloads OCR code and the selected language data. Later runs may be faster when browser caching is available.</p>
+    </div>
   </div>
 
   <!-- Result -->
@@ -248,15 +281,15 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <span style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Extracted Text</span>
           <div class="ocr-actions">
-            <button class="btn btn-secondary btn-sm" id="copyBtn" onclick="OCRTool.copyText()">📋 Copy</button>
-            <button class="btn btn-secondary btn-sm" id="downloadTxtBtn" onclick="OCRTool.downloadTxt()">📥 .txt</button>
+            <button class="btn btn-secondary btn-sm" id="copyBtn" type="button" disabled>📋 Copy text</button>
+            <button class="btn btn-secondary btn-sm" id="downloadTxtBtn" type="button" disabled>📥 Download TXT</button>
           </div>
         </div>
-        <div class="ocr-result" id="ocrOutput" aria-label="Extracted text output">(Text will appear here after processing)</div>
+        <textarea class="ocr-result" id="ocrOutput" aria-label="Editable extracted text" dir="auto" spellcheck="true" placeholder="Recognised text will appear here. You can edit it before copying or downloading." readonly></textarea>
       </div>
     </div>
     <div class="result-stats" style="margin-top:14px">
-      <div class="result-stat"><div class="rs-label">Confidence</div><div class="rs-value positive" id="statConf">—</div></div>
+      <div class="result-stat"><div class="rs-label">OCR confidence estimate</div><div class="rs-value positive" id="statConf">—</div></div>
       <div class="result-stat"><div class="rs-label">Words</div><div class="rs-value" id="statWords">—</div></div>
       <div class="result-stat"><div class="rs-label">Characters</div><div class="rs-value" id="statChars">—</div></div>
     </div>
@@ -265,34 +298,34 @@
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
     <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:760px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)">
-    <strong style="color:var(--text)">How can I extract text from an image?</strong> Add a JPG, PNG or WEBP image, select its language, run OCR, then review and copy the editable result. PDFdukan uses Tesseract.js in your browser. Recognition quality depends on image sharpness, layout, script and the selected language, so important text should always be checked against the source.
+    <strong style="color:var(--text)">How can I extract text from an image?</strong> Add one JPG, PNG or WEBP image, select its language and layout, then choose <em>Extract Text</em>. Edit the OCR result if needed before copying or downloading it. Recognition quality depends on sharpness, page structure, script and the selected model, so important text should always be checked against the source.
   </div>
 
     <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
     📖 <strong>Related guide:</strong> <a href="../blog/how-ocr-works.html" style="color:var(--primary);font-weight:600">How OCR Works: Extract Text from Any Image →</a>
   </div>
 
-<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>Results vary by source image · Review extracted text before use</span></aside>
+<section class="seo-section"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Workflow and feature claims reviewed 25 August 2026</span><span>Results vary by source image · Review extracted text before use</span></aside>
     <h2>Free OCR — Extract Text from Images Online</h2>
-    <p class="lead">PDFdukan uses Tesseract.js, a JavaScript/WebAssembly port of the open-source Tesseract OCR engine, to recognise printed text in photos, screenshots and scans. The available language list includes English, Urdu and Arabic. Processing is started in your browser; required OCR scripts and language data may first be downloaded from configured third-party CDNs.</p>
+    <p class="lead">PDFdukan uses Tesseract.js, a JavaScript/WebAssembly port of the open-source Tesseract OCR engine, to recognise printed text in photos, screenshots and scans. The selector includes 15 individual language models plus English–Urdu and English–Arabic mixed modes. Recognition runs in a browser worker; OCR code and language data are downloaded when needed from configured third-party CDNs.</p>
     <div class="feature-grid">
-      <div class="feature-card"><div class="fc-icon">🌍</div><div class="fc-title">15 Listed Languages</div><div class="fc-desc">Choose from the language models currently exposed in the selector, including English, Urdu, Arabic, Hindi, Chinese and Japanese.</div></div>
-      <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">Editable Results</div><div class="fc-desc">Review and correct recognised text before copying it; OCR output is not guaranteed to be error-free.</div></div>
-      <div class="feature-card"><div class="fc-icon">📋</div><div class="fc-title">Copy & Export</div><div class="fc-desc">Copy text directly to clipboard or download as a .txt file with one click.</div></div>
+      <div class="feature-card"><div class="fc-icon">🌍</div><div class="fc-title">Urdu, Arabic &amp; Mixed Text</div><div class="fc-desc">Choose one of 15 single-language models or a combined English–Urdu or English–Arabic mode for bilingual pages.</div></div>
+      <div class="feature-card"><div class="fc-icon">🎯</div><div class="fc-title">Quality Controls</div><div class="fc-desc">Keep original pixels or try grayscale/document contrast, then match the page layout for a more suitable OCR pass.</div></div>
+      <div class="feature-card"><div class="fc-icon">📋</div><div class="fc-title">Edit, Copy &amp; Export</div><div class="fc-desc">Correct recognised text in the result box, copy it, or download a UTF-8 TXT file that preserves Urdu and Arabic characters.</div></div>
     </div>
 
     <h2>How to Extract Text from an Image in 3 Steps</h2>
     <ol>
-      <li><strong>Upload your image or scanned document</strong> — JPG, PNG, or WEBP photos of documents, screenshots, book pages, receipts, or handwritten-style printed text.</li>
-      <li><strong>Select the language</strong> — Choose the matching option from the selector. A mismatched model usually increases recognition errors.</li>
-      <li><strong>Run OCR and review the text</strong> — Processing time depends on the model, network cache, image size and device. Correct the editable result before copying or downloading it.</li>
+      <li><strong>Choose one image</strong> — add a JPG, PNG or WEBP photo, screenshot, receipt or scanned page. The tool does not accept PDF files on this page.</li>
+      <li><strong>Match the language and layout</strong> — choose the primary language or a listed mixed mode. Keep “Automatic page” unless the image is one column, a single block, sparse text or one line.</li>
+      <li><strong>Extract, compare and correct</strong> — processing time depends on image size, device and whether code/model files are cached. Edit the result before copying or downloading it.</li>
     </ol>
 
     <h2>Common Uses for OCR</h2>
     <ul>
       <li><strong>Digitising printed documents:</strong> Convert photographed letters, certificates, contracts, and reports into editable, searchable text instead of retyping.</li>
       <li><strong>Extracting text from screenshots:</strong> Grab text from a screenshot of a webpage, chat, error message, or app where copying is disabled.</li>
-      <li><strong>Book and notes scanning:</strong> Students can photograph textbook pages or class notes and extract the text for summaries and assignments.</li>
+      <li><strong>Book and printed notes:</strong> Students can extract text from photographed textbook pages or clearly printed notes, subject to copyright and their permitted use.</li>
       <li><strong>Receipts and invoices:</strong> Pull amounts, dates, and details from photographed receipts for record-keeping and expense reports.</li>
       <li><strong>Old archives:</strong> Convert old printed family documents, certificates, and records into digital text before they fade.</li>
       <li><strong>Translating foreign text:</strong> Extract text from an image first, then paste it into a translator — useful for documents, signs, and labels.</li>
@@ -303,17 +336,19 @@
       <li>Use a <strong>sharp, well-lit photo</strong> — blur is the biggest cause of recognition errors.</li>
       <li>Hold the camera <strong>straight above the text</strong> — tilted text reduces accuracy. For paper documents, scan with <a href="../scanner.html">CamMaster Scanner</a> first to flatten and enhance the page.</li>
       <li><strong>Select the correct language</strong> before running OCR — the engine loads language-specific recognition models.</li>
-      <li>Higher resolution images give better results — avoid heavily compressed WhatsApp forwards when possible; ask for the original photo.</li>
+      <li>Keep enough detail for readable characters. Tesseract's own guidance says images around 300 DPI often work well; avoid heavily compressed forwards when the original is available.</li>
+      <li>Try <strong>Document contrast</strong> for faded paper or uneven lighting, but compare it with Original mode because preprocessing does not improve every image.</li>
+      <li>Use <strong>Single column</strong> for a simple vertical article and <strong>Sparse text</strong> for labels or screenshots with separated text.</li>
       <li>Printed text recognises far better than handwriting — Tesseract is built for printed characters.</li>
     </ul>
 
     <h2>Frequently Asked Questions</h2>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the OCR text extraction?</button><div class="faq-a"><p>There is no honest fixed accuracy percentage for every image. Clear, upright printed text normally works better than blur, handwriting, tables, decorative fonts or low-contrast scans. Select the correct language and compare names, numbers and other important text with the original.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it support Urdu and Arabic text?</button><div class="faq-a"><p>Yes. Urdu and Arabic are included among the 15 languages currently listed in the selector. Choose the matching language before extraction; its recognition model may download on first use. Review right-to-left text, names, numbers and punctuation against the original before relying on the result.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it support Urdu and Arabic text?</button><div class="faq-a"><p>Yes. Urdu and Arabic are included among the 15 single-language choices. English + Urdu and English + Arabic mixed modes are also available for bilingual pages. The selected model data may download on first use. Review right-to-left text, names, numbers and punctuation against the original.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can it read handwriting?</button><div class="faq-a"><p>Tesseract is designed for printed text and performs poorly on cursive or rough handwriting. Very neat, print-style handwriting may partially work. For handwritten notes, expect to correct errors manually.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my images uploaded to a server?</button><div class="faq-a"><p>No. The entire OCR engine (Tesseract.js) runs inside your browser using WebAssembly. Your photos — ID cards, bank documents, private letters — never leave your device.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my images uploaded to a server?</button><div class="faq-a"><p>The OCR workflow processes the selected image in your browser and does not intentionally upload its pixels. The browser does contact third-party CDNs to download Tesseract.js code and selected language data, so those providers receive normal request information such as an IP address. Avoid processing material you are not authorised to handle.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract text from a scanned PDF?</button><div class="faq-a"><p>Convert the PDF pages to images first with the <a href="pdf-to-img.html">PDF to JPG tool</a>, then run OCR on each page image. Alternatively, use the <a href="searchable-pdf.html">Searchable PDF tool</a> to embed recognised text directly back into the PDF.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is the first extraction slow?</button><div class="faq-a"><p>On first use, the browser downloads the OCR engine and the selected language's model (a few MB). After that, they're cached and subsequent extractions run much faster.</p></div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is the first extraction slow?</button><div class="faq-a"><p>On first use, the browser downloads the OCR engine and selected language model data. File sizes vary by model. If the browser keeps those assets in cache, later extractions may start faster.</p></div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool free?</button><div class="faq-a"><p>The listed OCR workflow is currently available without a subscription or account. Practical use is limited by browser memory, language-data downloads and device performance.</p></div></div>
   </section>
 
@@ -369,15 +404,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260824c"></script>
-<script src="../js/tools.js?v=20260824d"></script>
-<script>
-const _origOCR = OCRTool.loadImage;
-OCRTool.loadImage = function(files) {
-  document.getElementById('progressCard').style.display = 'block';
-  return _origOCR(files);
-};
-</script>
+<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/tools.js?v=20260825f"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

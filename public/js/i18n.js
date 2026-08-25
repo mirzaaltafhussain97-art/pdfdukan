@@ -45,7 +45,7 @@
       'header.account':     'Account',
       'header.search':      'Search tools… (Ctrl+K)',
       /* Hero section */
-      'hero.badge':         'AI-Powered Document Scanner',
+      'hero.badge':         'AI-Assisted Document Scanner',
       'hero.title':         'Scan & Convert Documents with CamMaster',
       'hero.subtitle':      'Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser.',
       'hero.btn.scan':      'Smart Scan',
@@ -149,7 +149,7 @@
       'upload.drop':        'Drop documents here or click to upload',
       'upload.hint':        'Supports JPG, PNG, PDF — process multiple files at once',
       /* Footer */
-      'footer.brand':       'Home of CamMaster — the best free online document scanner.',
+      'footer.brand':       'Home of CamMaster — a free browser-based document scanner.',
       'footer.scanner':     'Scanner',
       'footer.pdf-tools':   'PDF Tools',
       'footer.company':     'Company',

@@ -621,6 +621,20 @@ const ScannerApp = (() => {
     const isMultiPage = state.pages.length > 1;
     if (jpgButton) jpgButton.style.display = isMultiPage ? 'none' : '';
     if (zipButton) zipButton.style.display = isMultiPage ? '' : 'none';
+    _updateImageExportLabels();
+  }
+
+  function _selectedImageFormat() {
+    return document.getElementById('imageExportFormat')?.value === 'png' ? 'png' : 'jpeg';
+  }
+
+  function _updateImageExportLabels() {
+    const format = _selectedImageFormat();
+    const label = format === 'png' ? 'PNG' : 'JPG';
+    const imageButton = document.getElementById('btnDownloadJPG');
+    const zipButton = document.getElementById('btnDownloadZIP');
+    if (imageButton) imageButton.innerHTML = `<span>🖼️</span> Download ${label}`;
+    if (zipButton) zipButton.innerHTML = `<span>📦</span> Download ${label} ZIP (all pages)`;
   }
 
   function _bindExportControls() {
@@ -628,11 +642,13 @@ const ScannerApp = (() => {
     const btnDownloadJPG = document.getElementById('btnDownloadJPG');
     const btnDownloadZIP = document.getElementById('btnDownloadZIP');
     const btnBackPages   = document.getElementById('btnBackToPages');
+    const imageFormat    = document.getElementById('imageExportFormat');
 
     if (btnDownloadPDF) btnDownloadPDF.onclick = exportAsPDF;
-    if (btnDownloadJPG) btnDownloadJPG.onclick = () => exportAsImages('jpeg');
-    if (btnDownloadZIP) btnDownloadZIP.onclick = exportAsZIP;
+    if (btnDownloadJPG) btnDownloadJPG.onclick = () => exportAsImages(_selectedImageFormat());
+    if (btnDownloadZIP) btnDownloadZIP.onclick = () => exportAsZIP(_selectedImageFormat());
     if (btnBackPages)   btnBackPages.onclick   = () => { showScreen('pages'); _renderPages(); };
+    if (imageFormat) imageFormat.onchange = _updateImageExportLabels;
   }
 
   async function exportAsPDF() {
@@ -642,7 +658,7 @@ const ScannerApp = (() => {
     const { jsPDF } = window.jspdf;
     const pageSize = document.getElementById('pdfPageSize')?.value || 'a4';
     const orientation = document.getElementById('pdfOrientation')?.value || 'portrait';
-    const quality = +(document.getElementById('pdfQuality')?.value || 0.92);
+    const quality = +(document.getElementById('pdfQuality')?.value || 0.97);
 
     try {
       const doc = new jsPDF({ orientation, unit: 'mm', format: pageSize });
@@ -694,7 +710,7 @@ const ScannerApp = (() => {
     const ctx = c.getContext('2d');
     ctx.drawImage(page.croppedImg, 0, 0);
     applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
-    return await new Promise((resolve, reject) => c.toBlob(blob => blob ? resolve(blob) : reject(new Error('The browser could not encode a scan page.')), 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
+    return await new Promise((resolve, reject) => c.toBlob(blob => blob ? resolve(blob) : reject(new Error('The browser could not encode a scan page.')), 'image/' + format, format === 'jpeg' ? 0.95 : 1.0));
   }
 
   // Strip illegal filename characters and any extension the user typed.
@@ -780,7 +796,7 @@ const ScannerApp = (() => {
         ctx.drawImage(page.croppedImg, 0, 0);
         applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
 
-        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
+        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.95 : 1.0));
         const ext = format === 'jpeg' ? 'jpg' : format;
         folder.file(`page_${String(i + 1).padStart(3, '0')}.${ext}`, blob);
       }

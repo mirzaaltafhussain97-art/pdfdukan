@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-labelledby="title desc">
+  <title id="title">PDF compatibility re-save check</title><desc id="desc">An unencrypted PDF passes through a browser check and produces a separate copy to verify.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#effaf2"/><stop offset="1" stop-color="#e7f5ee"/></linearGradient></defs><rect width="640" height="420" rx="30" fill="url(#bg)"/>
+  <rect x="72" y="78" width="176" height="246" rx="18" fill="#fff" stroke="#b8d9c2" stroke-width="4"/><path d="M190 78v58h58" fill="#e9f7ed" stroke="#b8d9c2" stroke-width="4"/><rect x="101" y="175" width="118" height="48" rx="12" fill="#e8553d"/><text x="160" y="207" font-family="Arial,sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#fff">PDF</text>
+  <path d="M278 205h76" fill="none" stroke="#2e7d32" stroke-width="9" stroke-linecap="round"/><path d="m337 184 22 21-22 21" fill="none" stroke="#2e7d32" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="391" y="78" width="176" height="246" rx="18" fill="#fff" stroke="#82bd92" stroke-width="4"/><path d="M509 78v58h58" fill="#e9f7ed" stroke="#82bd92" stroke-width="4"/><circle cx="479" cy="205" r="52" fill="#e7f5eb" stroke="#2e7d32" stroke-width="5"/><path d="m450 206 19 19 39-46" fill="none" stroke="#2e7d32" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="375" font-family="Arial,sans-serif" font-size="21" text-anchor="middle" fill="#28483a">Readable copy check — not password removal</text>
+</svg>

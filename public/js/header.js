@@ -142,7 +142,7 @@
   + '</header>'; /* /.header */
 
   /* ── MOBILE NAV DRAWER ─────────────────────────────────────────── */
-  var mobileHTML = '<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">'
+  var mobileHTML = '<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu" aria-hidden="true">'
     + '<a href="/" class="mnd-link">&#127968; Home</a>'
     + '<div class="mnd-section">&#128196; PDF Tools</div>'
     + '<a href="' + base + 'tools/img-to-pdf.html"    class="mnd-link">&#128209; Image to PDF</a>'
