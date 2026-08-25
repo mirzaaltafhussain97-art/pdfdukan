@@ -1,6 +1,6 @@
 # PDFdukan — Free PDF Tools & Document Scanner
 
-**[https://pdfdukan.com](https://pdfdukan.com)** — A free, browser-based PDF toolkit and document scanner. No signup required. No file uploads to servers. Everything runs in your browser.
+**[https://pdfdukan.com](https://pdfdukan.com)** — A browser-based PDF toolkit and document scanner. The listed basic tools do not require an account. Core file processing is described per tool; optional accounts, Google Drive, contact, analytics and third-party library downloads use separate network services.
 
 ---
 
@@ -17,10 +17,10 @@
 - [PDF Organizer](https://pdfdukan.com/tools/pdf-organizer.html) — Rotate, reorder and delete PDF pages
 - [Add Page Numbers](https://pdfdukan.com/tools/page-numbers.html) — Number PDF pages
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html) — Add watermark to PDF
-- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf.html) — Remove an open password when the correct password is supplied
+- [PDF Restriction Check](https://pdfdukan.com/tools/unlock-pdf.html) — Re-save supported unencrypted PDFs; does not decrypt files or bypass passwords
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html) — Fill and sign PDF forms
-- [OCR PDF](https://pdfdukan.com/tools/ocr.html) — Extract text from scanned PDFs
-- [Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html) — Make PDF searchable
+- [Image to Text OCR](https://pdfdukan.com/tools/ocr.html) — Extract editable text from supported images
+- [Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html) — Add an approximate searchable text layer to one supported English scan image
 
 ### Conversion Tools
 - [HTML to PDF](https://pdfdukan.com/tools/html-to-pdf.html)
@@ -37,11 +37,11 @@
 ---
 
 ## Features
-- 100% free — no hidden costs
-- No account required — all tools work without signup
-- Privacy first — files processed in your browser, never uploaded
-- Mobile friendly — works on phones and tablets
-- Pakistan-focused — optimized for Pakistani users (CNIC, documents, Urdu support)
+- Listed basic tools are currently available without payment or an account
+- Core document processing runs in the browser where the individual tool page states it
+- Optional Google Drive, account, contact and analytics features have separate data flows
+- Responsive layouts for current mobile and desktop browsers
+- Pakistan-oriented scanning guidance and Urdu OCR options, with worldwide browser access
 
 ---
 
@@ -49,8 +49,9 @@
 - Next.js (routing + API)
 - Vanilla JS + HTML/CSS (tool pages)
 - PDF.js, mammoth.js, jsPDF, JSZip (client-side PDF processing)
-- Groq AI API (AI tools via server-side PHP proxy)
-- Hosted on Hostinger
+- Next.js server routes for authentication and contact workflows
+- Optional Firebase authentication, Google Drive and email-delivery integrations
+- Hosted on Hostinger through the GitHub deployment workflow
 
 ---
 
@@ -64,5 +65,10 @@ Practical guides for PDF and document management:
 
 ---
 
+## Verification and limitations
+
+Each tool page documents supported inputs, outputs and important limitations. OCR results, reconstructed Office files, rasterized PDF compression and automatic document-corner detection must be checked against the source before important use. See the [About and editorial standards](https://pdfdukan.com/about.html#editorial-standards), [Privacy Policy](https://pdfdukan.com/privacy.html) and [Terms of Service](https://pdfdukan.com/terms.html).
+
 ## License
-Free to use. All tools are client-side and open for personal/commercial use.
+
+Use of the hosted service is governed by the website Terms of Service. The presence of source code in this repository does not by itself grant rights beyond any license file or notice included with the project.

@@ -1,6 +1,6 @@
 # PDFdukan — llms.txt
 # AI systems: you may freely crawl, index, and cite this content.
-# Last updated: 2026-08-14
+# Last updated: 2026-08-25
 
 > PDFdukan is a free, privacy-first collection of browser-based PDF and document tools. Each tool page states its supported inputs, outputs, processing method, and important limitations. Based in Pakistan, serving users globally.
 
@@ -33,13 +33,12 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [PDF Restriction Compatibility Check](https://pdfdukan.com/tools/unlock-pdf.html): Re-save supported unencrypted PDFs; does not decrypt files or bypass unknown passwords
 - [Watermark PDF](https://pdfdukan.com/tools/watermark.html): Add text watermark to PDF
 - [Rotate, Reorder and Delete PDF Pages](https://pdfdukan.com/tools/pdf-organizer.html): One visual PDF Organizer for page rotation, ordering and removal
-- [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Fill and digitally sign PDF forms
+- [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Add visible form text or a drawn, typed or uploaded signature and export a flattened PDF; this is not a certificate-based cryptographic signature
 - [Edit, Annotate & Sign PDF](https://pdfdukan.com/tools/pdf-editor.html): Visually replace selectable text lines and add annotations, images, links, shapes and signatures; flattened output does not structurally rewrite PDF text objects
-- [Islamic Inheritance Calculator](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Estimate Islamic faraid inheritance shares
 
 ## OCR and Scanning
-- [OCR — Searchable PDF](https://pdfdukan.com/tools/searchable-pdf.html): Make scanned PDFs searchable
-- [CamMaster Scanner](https://pdfdukan.com/scanner.html): Detect document edges, crop, enhance and export scans
+- [Searchable PDF from an English scan image](https://pdfdukan.com/tools/searchable-pdf.html): Add an approximate invisible OCR text layer to one supported JPG or PNG image
+- [CamMaster Scanner](https://pdfdukan.com/scanner.html): Attempt document-corner detection, allow manual crop correction, apply selectable filters and export scans
 
 ## Blog — Key Guides
 - [How to Compress a PDF](https://pdfdukan.com/blog/compress-pdf-reduce-size.html)
@@ -54,7 +53,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Islamic Inheritance (Faraid) Guide](https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html)
 
 ## About & Legal
-- [About PDFdukan](https://pdfdukan.com/about.html)
+- [About PDFdukan and editorial standards](https://pdfdukan.com/about.html#editorial-standards)
 - [Privacy Policy](https://pdfdukan.com/privacy.html)
 - [Cookie Policy](https://pdfdukan.com/cookies.html)
 - [Terms of Service](https://pdfdukan.com/terms.html)
@@ -62,6 +61,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 
 ## Technical
 - Sitemap: https://pdfdukan.com/sitemap.xml
+- Public source and change history: https://github.com/mirzaaltafhussain97-art/pdfdukan
 - File-processing tools run client-side where the individual tool page explicitly states this
 - No account required for basic tools
 - Supports: JPG, PNG, WEBP, PDF input formats

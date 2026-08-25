@@ -2,6 +2,11 @@
   "name": "pdfdukan-cammaster",
   "version": "1.0.0",
   "private": true,
+  "homepage": "https://pdfdukan.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mirzaaltafhussain97-art/pdfdukan.git"
+  },
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
