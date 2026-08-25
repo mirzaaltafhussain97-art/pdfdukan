@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>JPG & PNG to PDF — Combine Images Online | PDFdukan</title>
 <meta name="description" content="Convert JPG, PNG or WebP images into one PDF. Reorder, rotate, choose A4/Letter/A3/A5, orientation, margins and image encoding quality.">
@@ -38,7 +35,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260825f">
+<link rel="stylesheet" href="../css/style.css?v=20260825g">
 <style>
 /* Image thumbnail grid: drag to reorder, rotate, remove */
 #fileList.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
@@ -63,14 +60,6 @@
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Image to PDF Converter","item":"https://pdfdukan.com/tools/img-to-pdf.html"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many images can I convert to PDF at once?","acceptedAnswer":{"@type":"Answer","text":"There is no honest universal batch number. Available memory, image dimensions, browser limits and output settings determine how many pages a device can process reliably."}},{"@type":"Question","name":"Where does conversion run?","acceptedAnswer":{"@type":"Answer","text":"The core image-to-PDF operation runs with client-side code in your browser. The page can still request ordinary site assets, analytics and third-party libraries."}},{"@type":"Question","name":"How is image quality handled?","acceptedAnswer":{"@type":"Answer","text":"Best mode preserves an unrotated supported source where possible. A rotated image or lower quality setting is rendered on white and JPEG-encoded. No setting can create detail beyond the source pixels; inspect the PDF before printing."}},{"@type":"Question","name":"Can I convert images saved from messaging apps?","acceptedAnswer":{"@type":"Answer","text":"Yes when the saved file is JPEG, PNG or WebP. HEIC, GIF, SVG and TIFF are not accepted by this tool."}},{"@type":"Question","name":"What page size should I choose — A4 or Letter?","acceptedAnswer":{"@type":"Answer","text":"Use the page size required by the recipient or printer. A4 is 210×297mm and Letter is 8.5×11in; A3 and A5 are also available. This workflow does not provide a fit-to-image page option."}},{"@type":"Question","name":"Can I convert a screenshot to PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Screenshots are PNG files and work perfectly with this tool. This is useful for saving web pages, chat conversations, receipts from online stores, or any screen content as a PDF document."}},{"@type":"Question","name":"Does it work on Android and iPhone?","acceptedAnswer":{"@type":"Answer","text":"The interface is designed for current mobile browsers and includes ↑/↓ order controls. File selection and download behavior depend on the browser and operating system; large images may exceed phone memory."}},{"@type":"Question","name":"Is this tool free?","acceptedAnswer":{"@type":"Answer","text":"The listed conversion is currently available without a subscription or account. Practical image count and file-size limits depend on the memory available in your browser and device."}}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 <meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
@@ -400,8 +389,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260825f"></script>
-<script src="../js/tools.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825g"></script>
+<script src="../js/tools.js?v=20260825g"></script>
 <script>
 // Override generate to show progress card
 const _origGenerate = ImageToPDF.generate;

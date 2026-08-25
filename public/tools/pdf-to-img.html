@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>PDF to JPG or PNG — Convert PDF Pages | PDFdukan</title>
 <meta name="description" content="Convert selected PDF pages to JPG, PNG or WebP. Choose requested DPI and image quality, then download one image or multiple pages in a ZIP.">
@@ -40,7 +37,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260825f">
+<link rel="stylesheet" href="../css/style.css?v=20260825g">
 <style>
 .pages-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
 /* Page selection */
@@ -58,14 +55,6 @@
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF to JPG Converter","item":"https://pdfdukan.com/tools/pdf-to-img.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 <meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
@@ -380,8 +369,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260825f"></script>
-<script src="../js/tools.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825g"></script>
+<script src="../js/tools.js?v=20260825g"></script>
 <script>
 const _origLoad = PDFToImages.loadPDF;
 PDFToImages.loadPDF = function(files) {

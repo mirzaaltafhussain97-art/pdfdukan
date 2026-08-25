@@ -1841,12 +1841,41 @@ function initLangSelector() {
 }
 
 /* Global setLanguage — i18n.js will override this if loaded */
+let _i18nLoadPromise = null;
+
+function loadI18nOnDemand() {
+  if (window.I18N) return Promise.resolve(window.I18N);
+  if (_i18nLoadPromise) return _i18nLoadPromise;
+
+  const appRef = document.querySelector('script[src*="app.js"]');
+  const url = appRef ? appRef.src.replace('app.js', 'i18n.js') : 'js/i18n.js';
+  _i18nLoadPromise = (window.loadScriptOnce
+    ? window.loadScriptOnce(url)
+    : new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      })
+  ).then(() => {
+    if (!window.I18N) throw new Error('Language engine could not initialize');
+    return window.I18N;
+  }).catch(error => {
+    _i18nLoadPromise = null;
+    throw error;
+  });
+  return _i18nLoadPromise;
+}
+
 if (!window.setLanguage) {
   window.setLanguage = function(code) {
     if (window.I18N) { window.I18N.setLanguage(code); return; }
     localStorage.setItem('cm_lang', code);
     initLangSelector();
-    toast('Language set to: ' + code.toUpperCase());
+    loadI18nOnDemand()
+      .then(engine => engine.setLanguage(code))
+      .catch(() => toast('Language files could not load. Please try again.', 'error'));
   };
 }
 
@@ -1860,6 +1889,46 @@ function trackToolUse(label) {
   gtag('event', 'tool_used', { event_category: 'Tools', event_label: label || location.pathname });
 }
 window.trackToolUse = trackToolUse;
+
+/* Load analytics only after the initial page load and only after the visitor
+   has accepted the cookie notice. The old per-page <head> tags competed with
+   critical CSS/tool assets and made slow connections look like a stuck page. */
+let _analyticsLoadPromise = null;
+function loadAnalyticsOnIdle() {
+  if (localStorage.getItem('cm_cookie_consent') !== '1') return Promise.resolve(false);
+  if (_analyticsLoadPromise) return _analyticsLoadPromise;
+
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag(){ window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', 'G-0RWPHD8MHR', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure',
+  });
+
+  _analyticsLoadPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+    if (existing) { resolve(true); return; }
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR';
+    script.onload = () => resolve(true);
+    script.onerror = () => { _analyticsLoadPromise = null; reject(new Error('Analytics could not load')); };
+    document.head.appendChild(script);
+  });
+  return _analyticsLoadPromise;
+}
+
+function scheduleAnalytics() {
+  if (localStorage.getItem('cm_cookie_consent') !== '1') return;
+  const start = () => {
+    const run = () => loadAnalyticsOnIdle().catch(() => {});
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout: 3000 });
+    else setTimeout(run, 1500);
+  };
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+}
 (function _autoTrackTool() {
   let fired = false;
   document.addEventListener('click', e => {
@@ -1943,6 +2012,7 @@ function _initCookieBanner() {
 function _acceptCookies() {
   try { localStorage.setItem('cm_cookie_consent', '1'); } catch(e) {}
   const b = document.getElementById('cmCookieBanner'); if (b) b.remove();
+  scheduleAnalytics();
 }
 window._acceptCookies = _acceptCookies;
 
@@ -2144,13 +2214,14 @@ document.addEventListener('DOMContentLoaded', () => {
   initKeyboardShortcuts();
   renderNotificationBadge();
   updateStorageUI();
-  // Auto-load i18n.js for full 8-language translation on all pages
-  if (!window.I18N) {
-    const _i18s = document.createElement('script');
-    const _appRef = document.querySelector('script[src*="app.js"]');
-    _i18s.src = _appRef ? _appRef.src.replace('app.js', 'i18n.js') : 'js/i18n.js';
-    _i18s.onload = () => { if (window.I18N) window.I18N.initLangSelector(); };
-    document.head.appendChild(_i18s);
+  /* English is already present in the HTML, so do not download/parse the
+     70 KB translation dictionary on every page view. Persisted non-English
+     preferences still load immediately; a new language loads on selection. */
+  const savedLanguage = localStorage.getItem('cm_lang') || 'en';
+  if (!window.I18N && savedLanguage !== 'en') {
+    loadI18nOnDemand()
+      .then(engine => engine.initLangSelector())
+      .catch(error => console.warn('Language files could not load:', error));
   }
   initLangSelector();
 
@@ -2160,6 +2231,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   _initCookieBanner();
+  scheduleAnalytics();
   _initGlobalError();
   _initSearchTrustSignals();
   initAmbientGlobe();

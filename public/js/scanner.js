@@ -5,6 +5,32 @@
 
 const ScannerApp = (() => {
 
+  const LIB_URLS = {
+    pdfjs: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
+    jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+    jszip: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+    sortable: 'https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js',
+  };
+
+  async function _ensureLibrary(url, isReady, label) {
+    if (isReady()) return;
+    if (!window.loadScriptOnce) throw new Error(label + ' loader is unavailable');
+    await window.loadScriptOnce(url);
+    if (!isReady()) throw new Error(label + ' could not initialize');
+  }
+
+  async function _ensurePdfJs() {
+    await _ensureLibrary(LIB_URLS.pdfjs, () => !!window.pdfjsLib, 'PDF import');
+    if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  }
+
+  const _ensureJsPdf = () => _ensureLibrary(LIB_URLS.jspdf, () => !!window.jspdf?.jsPDF, 'PDF export');
+  const _ensureZip = () => _ensureLibrary(LIB_URLS.jszip, () => typeof window.JSZip !== 'undefined', 'ZIP export');
+  const _ensureSortable = () => _ensureLibrary(LIB_URLS.sortable, () => typeof window.Sortable !== 'undefined', 'Page reorder');
+
   const SCREENS = ['upload', 'crop', 'filter', 'pages', 'export'];
   let state = {
     screen: 'upload',
@@ -28,8 +54,9 @@ const ScannerApp = (() => {
        anyone about to scan gets it preloaded before the crop step. */
     if (window.MLDetector) {
       const warm = () => { window.MLDetector.load().catch(() => {}); };
+      const uploadZone = document.getElementById('uploadZone');
       ['pointerdown', 'dragover', 'keydown', 'touchstart'].forEach(ev =>
-        window.addEventListener(ev, warm, { once: true, passive: true }));
+        uploadZone?.addEventListener(ev, warm, { once: true, passive: true }));
     }
 
     _bindUploadZone();
@@ -157,20 +184,9 @@ const ScannerApp = (() => {
   async function _processPDFFile(file) {
     showProcessing('Rendering PDF pages…');
     try {
-      if (typeof pdfjsLib === 'undefined') {
-        hideProcessing();
-        toast('PDF engine still loading — please try again in a moment', 'error');
-        state.queueIndex++; _processNextInQueue();
-        return;
-      }
-      // The inline <head> worker config runs before the deferred pdf.min.js has
-      // loaded, so GlobalWorkerOptions.workerSrc is empty at that point. Set it
-      // here (pdf.js is guaranteed loaded by now) so PDFs use a real worker
-      // instead of the slow/flaky main-thread fake-worker fallback.
-      if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      }
+      showProcessing('Loading PDF engine…');
+      await _ensurePdfJs();
+      showProcessing('Rendering PDF pages…');
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       const allImgs = [];
@@ -550,9 +566,11 @@ const ScannerApp = (() => {
       grid.appendChild(thumb);
     });
 
-    // Init Sortable for drag reorder
-    if (typeof Sortable !== 'undefined') {
-      Sortable.create(grid, {
+    // Load drag-reorder only when the pages screen is actually used.
+    if (!grid._pdfDukanSortable) {
+      _ensureSortable().then(() => {
+        if (!grid.isConnected || grid._pdfDukanSortable) return;
+        grid._pdfDukanSortable = Sortable.create(grid, {
         animation: 150,
         ghostClass: 'sortable-ghost',
         onEnd: e => {
@@ -560,6 +578,7 @@ const ScannerApp = (() => {
           state.pages.splice(e.newIndex, 0, moved);
         },
       });
+      }).catch(error => console.warn('Page reorder library could not load:', error));
     }
   }
 
@@ -655,12 +674,15 @@ const ScannerApp = (() => {
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
     showProcessing('Creating PDF…');
 
-    const { jsPDF } = window.jspdf;
     const pageSize = document.getElementById('pdfPageSize')?.value || 'a4';
     const orientation = document.getElementById('pdfOrientation')?.value || 'portrait';
     const quality = +(document.getElementById('pdfQuality')?.value || 0.97);
 
     try {
+      showProcessing('Loading PDF export engine…');
+      await _ensureJsPdf();
+      showProcessing('Creating PDF…');
+      const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation, unit: 'mm', format: pageSize });
       const pW = doc.internal.pageSize.getWidth();
       const pH = doc.internal.pageSize.getHeight();
@@ -755,7 +777,8 @@ const ScannerApp = (() => {
 
       // Multiple pages → one ZIP so they all download together, every page named
       // in the same pattern. padStart width grows with page count (01.. / 001..).
-      if (typeof JSZip === 'undefined') throw new Error('ZIP support did not load. Refresh the page and try again.');
+      showProcessing('Loading ZIP engine…');
+      await _ensureZip();
       const zip = new JSZip();
       const pad = Math.max(2, String(state.pages.length).length);
       for (let i = 0; i < state.pages.length; i++) {
@@ -784,6 +807,7 @@ const ScannerApp = (() => {
     showProcessing('Creating ZIP…');
 
     try {
+      await _ensureZip();
       const zip = new JSZip();
       const folder = zip.folder('CamMaster');
 
@@ -802,7 +826,14 @@ const ScannerApp = (() => {
       }
 
       const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `PDFdukan.com_${Date.now()}.zip`);
+      const url = URL.createObjectURL(content);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `PDFdukan.com_${Date.now()}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
       hideProcessing();
       toast('ZIP downloaded! ✓', 'success');
     } catch (e) {

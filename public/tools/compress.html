@@ -2,10 +2,6 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Compress & Resize JPG, PNG or WebP Image | PDFdukan</title>
 <meta name="description" content="Resize and re-encode JPG, PNG or WebP images with dimensions, quality and target-size controls. Results vary by format and image content; compare the output preview.">
@@ -36,7 +32,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20260825f">
+<link rel="stylesheet" href="../css/style.css?v=20260825g">
 <style>
 /* ── Compress-tool specific styles ── */
 .cr-grid {
@@ -277,14 +273,6 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":"How to Compress or Resize an Image Online","description":"Resize or re-encode a JPG, PNG or WebP image and compare the result before downloading.","step":[{"@type":"HowToStep","name":"Upload Image","text":"Add a supported image from your device."},{"@type":"HowToStep","name":"Choose Output Settings","text":"Set dimensions, output format and quality, or enter an approximate target size."},{"@type":"HowToStep","name":"Review and Download","text":"Process the image, compare the displayed dimensions and bytes, then download the result if it meets your needs."}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Compress & Resize Image","item":"https://pdfdukan.com/tools/compress.html"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can the tool guarantee an exact target file size?","acceptedAnswer":{"@type":"Answer","text":"No. For JPG or WebP, the tool searches tested quality levels for the highest result under the requested limit. Some dimensions and image content cannot reach the target, and PNG target-size mode is unavailable."}},{"@type":"Question","name":"Do canvas presets stretch or crop the image?","acceptedAnswer":{"@type":"Answer","text":"No. Presets fit the full image inside the exact canvas while preserving aspect ratio. Unused space is white in JPG and transparent in PNG or WebP."}},{"@type":"Question","name":"Can output be larger than the original?","acceptedAnswer":{"@type":"Answer","text":"Yes. Increasing dimensions, choosing PNG, using very high quality or converting an already optimized image can produce a larger file. The result reports whether output is smaller, larger or about the same size."}},{"@type":"Question","name":"Does the output keep metadata?","acceptedAnswer":{"@type":"Answer","text":"The image is decoded and re-encoded through a browser canvas, so EXIF and other source metadata are generally not retained. Color appearance can also vary with browser color management."}},{"@type":"Question","name":"Where does processing run?","acceptedAnswer":{"@type":"Answer","text":"The resize and encoding operation runs with client-side browser code. The page can still request ordinary site assets, analytics and third-party libraries."}},{"@type":"Question","name":"What is the best format for web images — JPG, PNG, or WebP?","acceptedAnswer":{"@type":"Answer","text":"There is no universal winner. JPG is widely used for photographs, PNG is useful for transparency and sharp graphics, and WebP supports both lossy and lossless modes. Compare browser support, output bytes and visible detail for your image."}},{"@type":"Question","name":"How should I balance image size and quality?","acceptedAnswer":{"@type":"Answer","text":"No single quality percentage is visually lossless for every image. Start with a high setting, inspect text and edges at the intended viewing size, and lower quality gradually. Keep the original because lossy compression cannot be reversed."}},{"@type":"Question","name":"Can I resize the image dimensions as well?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter output width and height, keep the aspect ratio locked when appropriate, or use the scale control. Reducing pixel dimensions often reduces bytes, but the amount varies with the image and output format."}},{"@type":"Question","name":"Does compression preserve PNG transparent backgrounds?","acceptedAnswer":{"@type":"Answer","text":"Yes. PNG output preserves transparency. JPG does not support transparency, so this tool places transparent areas on a white background. WebP output can preserve transparency, although its final size varies by image."}}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 <meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
@@ -662,9 +650,9 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260825f"></script>
-<script src="../js/header.js?v=20260825f"></script>
-<script src="../js/tools.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825g"></script>
+<script src="../js/header.js?v=20260825g"></script>
+<script src="../js/tools.js?v=20260825g"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

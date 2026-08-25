@@ -29,7 +29,37 @@
    scanner.js all read the SAME flag. Previously this was a script-local
    `let cvReady`, so window.cvReady (checked by filters.js + scanner.js) was
    always undefined → Magic Pro and OpenCV crop never ran. */
-window.cvReady = false;
+window.cvReady = !!(window.cv && window.cv.Mat);
+
+let _openCvLoadPromise = null;
+
+/* OpenCV is almost 10 MB before browser compilation. Loading it in <head>
+   made the scanner feel stuck on slow phones even before a file was chosen.
+   Keep the full OpenCV fallback, but fetch it only if the compact ML detector
+   cannot find the document corners. */
+function ensureOpenCvReady() {
+  if (window.cvReady && window.cv && window.cv.Mat) return Promise.resolve(true);
+  if (_openCvLoadPromise) return _openCvLoadPromise;
+
+  _openCvLoadPromise = (async () => {
+    if (!window.loadScriptOnce) throw new Error('Script loader is unavailable');
+    await window.loadScriptOnce('/vendor/opencv/opencv.js?v=4.8.0');
+
+    const started = Date.now();
+    while (!(window.cv && window.cv.Mat)) {
+      if (Date.now() - started > 30000) throw new Error('OpenCV initialization timed out');
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    onOpenCvReady();
+    return true;
+  })().catch(error => {
+    _openCvLoadPromise = null;
+    console.warn('OpenCV fallback could not load; using the adjustable crop fallback:', error);
+    return false;
+  });
+
+  return _openCvLoadPromise;
+}
 
 function onOpenCvReady() {
   if (typeof cv !== 'undefined' && cv.Mat) {
@@ -41,15 +71,6 @@ function onOpenCvReady() {
     setTimeout(onOpenCvReady, 200);
   }
 }
-
-/* Robust readiness latch. OpenCV loads asynchronously and may finish before
-   this file executes, so polling avoids a load-order race and reliably enables
-   the OpenCV path whether the library came from cache or the network. */
-(function pollCvReady() {
-  if (window.cvReady) return;
-  if (typeof cv !== 'undefined' && cv.Mat) { onOpenCvReady(); }
-  else setTimeout(pollCvReady, 200);
-})();
 
 /* ═══════════════════════════════════════════════════════════════
    ML DETECTOR — DocAligner (point-regression LCNet050) via ONNX Runtime
@@ -718,6 +739,9 @@ class CropEditor {
       this.corners = mlCorners;
       _showMLBadge();
     } else {
+      /* Preserve the high-quality OpenCV fallback without making every page
+         visitor pay its download/compile cost. */
+      await ensureOpenCvReady();
       this.corners = detectDocumentCorners(img);   // shows its own badge
     }
     this.draw();
@@ -1298,6 +1322,7 @@ window.MLDetector            = MLDetector;
 window.getFallbackCorners    = getFallbackCorners;
 window.ensureCornerOrder     = ensureCornerOrder;
 window.onOpenCvReady         = onOpenCvReady;
+window.ensureOpenCvReady     = ensureOpenCvReady;
 window._perspectiveWarpCanvas = _perspectiveWarpCanvas;
 window._computeHomography    = _computeHomography;
 window._detectFromCanvas     = _detectFromCanvas;

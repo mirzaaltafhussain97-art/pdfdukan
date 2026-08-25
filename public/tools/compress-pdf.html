@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Compress PDF Online — Reduce PDF File Size | PDFdukan</title>
 <meta name="description" content="Reduce PDF file size in your browser with selectable quality levels. Learn when pages are rasterized, why results vary, and how to verify the compressed PDF.">
@@ -39,7 +36,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20260825f">
+<link rel="stylesheet" href="../css/style.css?v=20260825g">
 <style>
 .tier-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
 @media(max-width:600px){ .tier-grid { grid-template-columns:1fr; } }
@@ -78,14 +75,6 @@
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Compressor","item":"https://pdfdukan.com/tools/compress-pdf.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does compressing a PDF damage the content or make it unreadable?","acceptedAnswer":{"@type":"Answer","text":"This tool renders each page as a JPEG image before rebuilding the PDF, so selectable text becomes part of the page image. Higher compression can reduce sharpness. Use the High Quality setting for printing or small text, and inspect the downloaded result before relying on it."}},{"@type":"Question","name":"How much can this tool reduce my PDF size?","acceptedAnswer":{"@type":"Answer","text":"Results vary by page complexity, image content, and the selected quality level. Some files shrink substantially, while an already optimized PDF may not shrink at all. PDFdukan keeps the original bytes when its generated file would be larger."}},{"@type":"Question","name":"Is my PDF uploaded to a server when I compress it?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan uses client-side JavaScript (PDF.js and PDF-lib) to process the selected file inside your browser; the tool does not send the PDF to PDFdukan's server."}},{"@type":"Question","name":"What is the maximum file size I can compress?","acceptedAnswer":{"@type":"Answer","text":"There is no enforced file-size limit, but available memory, page count, page dimensions, and browser limits determine what your device can process. Large files can be slow or fail, especially on phones."}},{"@type":"Question","name":"Will the compressed PDF still be printable?","acceptedAnswer":{"@type":"Answer","text":"The result is a standard PDF and can be printed in mainstream readers. Because pages are rasterized and may be lossy, inspect fine text and graphics before printing."}},{"@type":"Question","name":"Can I compress a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"No. This tool does not ask for or bypass a PDF password. Open the file with software that is authorized to decrypt it and save an unprotected copy before compression. PDFdukan's Restriction Check only re-saves supported unencrypted PDFs; it is not a password-removal tool."}},{"@type":"Question","name":"Does the compressed PDF open correctly on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. The output is a standard PDF produced by PDF-lib and should open in current mainstream PDF readers. If a particular reader has trouble, try the original file or another current reader."}},{"@type":"Question","name":"How is PDFdukan different from iLovePDF or Smallpdf?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan performs this compression in your browser and does not require an account. Other services may use different processing methods, plans, or limits; check their current privacy and pricing pages when comparing them."}},{"@type":"Question","name":"Is this tool completely free with no hidden charges?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free with no subscription, no per-file fee, no credit card required, and no limit on how many files you compress. There is currently no paid tier for this tool."}},{"@type":"Question","name":"Does the tool work on mobile phones in Pakistan?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan works on any Android or iPhone browser — Chrome, Samsung Internet, Safari, Firefox. It is especially useful for students and job seekers in Pakistan who need to compress PDFs for PPSC, FPSC, NTS, and university portals that have strict file-size limits. No app download is needed."}},{"@type":"Question","name":"Can I compress multiple PDFs at once?","acceptedAnswer":{"@type":"Answer","text":"Currently the tool processes one PDF at a time. After compressing and downloading the first file, you can immediately upload and compress another. Batch compression for multiple files is on our roadmap. For now, the Merge PDF tool can combine multiple PDFs first, then you can compress the merged result."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
@@ -404,7 +393,7 @@
 </div>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
-<script src="../js/app.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825g"></script>
 <script>
 /* ── Compress PDF Engine ────────────────────────────────────── */
 const CP = (() => {

@@ -4,9 +4,9 @@
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const RELEASE = '20260825f';
+const RELEASE = '20260825g';
 const PUBLIC_ROOT = join(process.cwd(), 'public');
-const ASSETS = ['style.css', 'app.js', 'header.js', 'tools.js', 'scanner.js', 'i18n.js'];
+const ASSETS = ['style.css', 'app.js', 'header.js', 'tools.js', 'scanner.js', 'crop.js', 'i18n.js'];
 
 function walk(dir) {
   return readdirSync(dir).flatMap((name) => {

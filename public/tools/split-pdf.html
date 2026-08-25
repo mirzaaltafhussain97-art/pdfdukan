@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://docs.opencv.org">
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Split PDF Online — Extract Pages & Ranges | PDFdukan</title>
 <meta name="description" content="Split a PDF into page ranges, every page, fixed-size groups or visual sections. Download separate PDFs or one ZIP. Runs in your browser without an account.">
@@ -40,7 +37,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20260825f">
+<link rel="stylesheet" href="../css/style.css?v=20260825g">
 <style>
 /* ── Split mode cards ──────────────────────────────────────── */
 .split-mode-cards {
@@ -135,14 +132,6 @@
 </style>
 <meta name="theme-color" content="#ff6333">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Split PDF","item":"https://pdfdukan.com/tools/split-pdf.html"}]}</script>
-<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
-</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I extract a specific page range instead of splitting the whole PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Enter any range — for example pages 3–7 — and the tool creates a new PDF containing only those pages. You can also extract a single page or several separate ranges, one after another."}},{"@type":"Question","name":"Can I split a PDF into every individual page?","acceptedAnswer":{"@type":"Answer","text":"Yes. The \"Split every page\" option creates one separate PDF per page and packages all of them into a single ZIP archive so you download everything in one click."}},{"@type":"Question","name":"Does the tool upload my selected PDF?","acceptedAnswer":{"@type":"Answer","text":"The split operation is performed by client-side PDF code in your browser. The page can still request site assets, analytics and third-party libraries, so assess your browser and network before handling highly sensitive files."}},{"@type":"Question","name":"Will splitting reduce the quality of my PDF?","acceptedAnswer":{"@type":"Answer","text":"Selected pages are copied with PDF-lib rather than intentionally rendered as images, so the tool does not deliberately lower image resolution. Complex forms, links, annotations, signatures or unusual PDFs should still be checked after export."}},{"@type":"Question","name":"What is the maximum number of pages I can split?","acceptedAnswer":{"@type":"Answer","text":"The tool does not state a fixed split count. Practical capacity varies with file size, page complexity, browser and available memory. Visual Split supports preview breakpoints for up to 60 pages; use Custom Ranges for a larger PDF."}},{"@type":"Question","name":"Can I split a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"Locked PDFs need to be unlocked first. Use the Unlock PDF tool to remove the password, then split the unlocked file. Both tools are free and run in your browser."}},{"@type":"Question","name":"Can I merge the split files back together later?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use the Merge PDF tool to combine any split files — or any other PDFs — back into a single document, in any order you choose."}},{"@type":"Question","name":"Is an account required?","acceptedAnswer":{"@type":"Answer","text":"No account is required for the current split workflow. The tool does not intentionally add a PDFdukan watermark."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"It is designed for current mobile and desktop browsers. Actual capacity depends on the PDF, browser downloads, device memory and storage; large or complex files are safer to process on a desktop."}}]}</script><meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
 </head>
@@ -474,8 +463,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20260825f"></script>
-<script src="../js/tools.js?v=20260825f"></script>
+<script src="../js/app.js?v=20260825g"></script>
+<script src="../js/tools.js?v=20260825g"></script>
 <script>
 // Wire mode card selection visual state
 document.querySelectorAll('.mode-card').forEach(card => {
