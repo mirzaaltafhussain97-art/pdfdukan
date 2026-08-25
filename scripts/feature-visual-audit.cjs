@@ -14,10 +14,13 @@ const informationPages = [
   '/about.html', '/contact.html', '/privacy.html', '/terms.html',
   '/cookies.html', '/disclaimer.html', '/help.html', '/press.html',
 ];
+const requestedViewport = process.argv[3];
 const viewports = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
-];
+].filter(viewport => !requestedViewport || viewport.name === requestedViewport);
+
+if (!viewports.length) throw new Error(`Unknown viewport: ${requestedViewport}`);
 
 (async () => {
   const browser = await chromium.launch({
@@ -34,13 +37,12 @@ const viewports = [
       const pageErrors = [];
       page.on('pageerror', error => pageErrors.push(error.message));
       await page.goto(baseUrl + pathname, { waitUntil: 'load', timeout: 60000 });
-      await page.evaluate(async () => {
-        for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight) {
-          scrollTo(0, y);
-          await new Promise(resolve => setTimeout(resolve, 20));
-        }
-        scrollTo(0, 0);
-      });
+      const firstContentImage = page.locator('img[src*="images/"]').first();
+      await firstContentImage.scrollIntoViewIfNeeded();
+      await firstContentImage.evaluate(img => Promise.race([
+        img.decode ? img.decode().catch(() => {}) : Promise.resolve(),
+        new Promise(resolve => setTimeout(resolve, 5000)),
+      ]));
       const result = await page.evaluate(() => {
         const contentImages = [...document.querySelectorAll('img[src]')]
           .filter(img => /(?:^|\/)images\//.test(img.getAttribute('src') || ''));
