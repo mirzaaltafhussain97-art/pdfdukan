@@ -4,7 +4,7 @@
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const RELEASE = '20260825h';
+const RELEASE = '20260825i';
 const PUBLIC_ROOT = join(process.cwd(), 'public');
 const ASSETS = ['style.css', 'app.js', 'header.js', 'tools.js', 'scanner.js', 'crop.js', 'i18n.js'];
 

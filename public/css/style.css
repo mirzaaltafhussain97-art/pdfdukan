@@ -2518,3 +2518,39 @@ html[data-theme="light"] .blog-hero-strip {
   .export-layout{gap:12px}
   .export-card{padding:16px}
 }
+/* ── PAGE FEATURE VISUALS ─────────────────────────────────────
+   Lightweight SVG diagrams for tool and legal/static pages. */
+.page-feature-figure {
+  width: min(100%, 720px);
+  margin: 18px auto 26px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--card), var(--card-2));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.page-feature-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 12 / 7;
+  object-fit: contain;
+  border-radius: 14px;
+}
+.page-feature-figure figcaption {
+  margin: 10px 6px 2px;
+  color: var(--text-3);
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: center;
+}
+#pe-drop-zone .page-feature-figure {
+  width: min(100%, 560px);
+  margin: 16px auto;
+  box-shadow: none;
+}
+@media (max-width: 600px) {
+  .page-feature-figure { margin: 14px auto 20px; padding: 7px; border-radius: 16px; }
+  .page-feature-figure img { border-radius: 11px; }
+}
