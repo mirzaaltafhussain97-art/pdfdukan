@@ -27,7 +27,7 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
     if (response.status() >= 400) httpErrors.push(`${response.status()} ${response.url()}`);
   });
 
-  await page.goto(baseUrl + '/scanner.html?performance-smoke=20260825g', { waitUntil: 'load' });
+  await page.goto(baseUrl + '/scanner.html?performance-smoke=20260825h', { waitUntil: 'load' });
   await page.waitForTimeout(750);
 
   const initialRequestCount = requests.length;
@@ -107,6 +107,20 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
     throw new Error('Browser errors: ' + meaningfulErrors.concat(meaningfulHttpErrors).join(' | '));
   }
 
+  // A second scanner visit in the same browser context must reuse the model
+  // stored by crop.js instead of requesting the 4.7 MB .onnx file again.
+  const repeatPage = await context.newPage();
+  const repeatRequests = [];
+  repeatPage.on('request', request => repeatRequests.push(request.url()));
+  await repeatPage.goto(baseUrl + '/scanner.html?performance-repeat=20260825h', { waitUntil: 'load' });
+  await repeatPage.setInputFiles('#fileInputScanner', fixture);
+  await repeatPage.waitForSelector('#screen-crop.active', { timeout: 60000 });
+  const repeatedModelRequests = repeatRequests.filter(url => url.includes('docaligner.onnx'));
+  if (repeatedModelRequests.length) {
+    throw new Error('The document model was downloaded again on the repeat scan');
+  }
+  await repeatPage.close();
+
   console.log(JSON.stringify({
     navigation,
     initialRequests: initialRequestCount,
@@ -117,6 +131,7 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
     analyticsObserved,
     browserErrors: meaningfulErrors,
     httpErrors: meaningfulHttpErrors,
+    repeatedModelRequests,
   }, null, 2));
 
   await browser.close();

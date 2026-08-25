@@ -82,10 +82,37 @@ function onOpenCvReady() {
 ═══════════════════════════════════════════════════════════════ */
 const MLDetector = (() => {
   const MODEL_URL  = 'models/docaligner.onnx';
+  const MODEL_CACHE = 'pdfdukan-docaligner-20260825';
   const WASM_PATHS = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/';
   const S = 256;                 // model input side
 
   let _session = null, _loading = null, _failed = false;
+
+  async function _loadModelBytes() {
+    let response = null;
+
+    /* Hostinger serves .onnx without a reusable Cache-Control header. Store
+       the model explicitly so repeat scans and later visits do not re-download
+       4.7 MB. If Cache Storage is unavailable/private, normal fetch still works. */
+    if ('caches' in window) {
+      try {
+        const cache = await caches.open(MODEL_CACHE);
+        response = await cache.match(MODEL_URL);
+        if (!response) {
+          response = await fetch(MODEL_URL, { cache: 'force-cache' });
+          if (!response.ok) throw new Error(`Model request failed (${response.status})`);
+          try { await cache.put(MODEL_URL, response.clone()); }
+          catch (_) { /* Quota/private-mode failure: use the downloaded bytes. */ }
+        }
+      } catch (_) {
+        response = null;
+      }
+    }
+
+    if (!response) response = await fetch(MODEL_URL, { cache: 'force-cache' });
+    if (!response.ok) throw new Error(`Model request failed (${response.status})`);
+    return new Uint8Array(await response.arrayBuffer());
+  }
 
   async function load() {
     if (_session) return _session;
@@ -101,7 +128,8 @@ const MLDetector = (() => {
         if (typeof ort === 'undefined') { _failed = true; return null; }
         ort.env.wasm.wasmPaths  = WASM_PATHS;
         ort.env.wasm.numThreads = 1;       // single-thread → no worker dependency
-        _session = await ort.InferenceSession.create(MODEL_URL, { executionProviders: ['wasm'] });
+        const modelBytes = await _loadModelBytes();
+        _session = await ort.InferenceSession.create(modelBytes, { executionProviders: ['wasm'] });
         console.log('✓ DocAligner ML model loaded');
         return _session;
       } catch (e) {
