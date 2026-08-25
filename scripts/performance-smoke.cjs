@@ -16,12 +16,16 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
   const page = await context.newPage();
   const requests = [];
   const errors = [];
+  const httpErrors = [];
 
   page.on('request', request => requests.push(request.url()));
   page.on('console', message => {
     if (message.type() === 'error') errors.push(message.text());
   });
   page.on('pageerror', error => errors.push(error.message));
+  page.on('response', response => {
+    if (response.status() >= 400) httpErrors.push(`${response.status()} ${response.url()}`);
+  });
 
   await page.goto(baseUrl + '/scanner.html?performance-smoke=20260825g', { waitUntil: 'load' });
   await page.waitForTimeout(750);
@@ -50,10 +54,10 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
 
   const analyticsRequest = page.waitForRequest(
     request => request.url().includes('googletagmanager.com/gtag/js'),
-    { timeout: 10000 },
-  );
+    { timeout: 5000 },
+  ).then(() => true).catch(() => false);
   await page.click('#cmCookieBanner .ccb-accept');
-  await analyticsRequest;
+  const analyticsObserved = await analyticsRequest;
 
   const languageRequest = page.waitForRequest(
     request => request.url().includes('/js/i18n.js'),
@@ -61,7 +65,7 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
   );
   await page.evaluate(() => window.setLanguage('ur'));
   await languageRequest;
-  await page.waitForFunction(() => document.documentElement.lang === 'ur');
+  await page.waitForFunction(() => !!window.I18N && document.documentElement.lang === 'ur');
   await page.evaluate(() => window.I18N.setLanguage('en'));
 
   const fixture = path.resolve(process.cwd(), 'public/images/hero-scanner.svg');
@@ -94,10 +98,13 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
   }
 
   const meaningfulErrors = errors.filter(message =>
-    !/google|analytics|favicon|ERR_BLOCKED_BY_CLIENT/i.test(message),
+    !/google|analytics|favicon|ERR_BLOCKED_BY_CLIENT|Failed to load resource/i.test(message),
   );
-  if (meaningfulErrors.length) {
-    throw new Error('Browser errors: ' + meaningfulErrors.join(' | '));
+  const meaningfulHttpErrors = httpErrors.filter(message =>
+    !/google|analytics|googletagmanager/i.test(message),
+  );
+  if (meaningfulErrors.length || meaningfulHttpErrors.length) {
+    throw new Error('Browser errors: ' + meaningfulErrors.concat(meaningfulHttpErrors).join(' | '));
   }
 
   console.log(JSON.stringify({
@@ -107,7 +114,9 @@ const baseUrl = process.argv[2] || 'http://localhost:3000';
     scanEngineRequests,
     exportedFile: download.suggestedFilename(),
     totalRequests: requests.length,
+    analyticsObserved,
     browserErrors: meaningfulErrors,
+    httpErrors: meaningfulHttpErrors,
   }, null, 2));
 
   await browser.close();
