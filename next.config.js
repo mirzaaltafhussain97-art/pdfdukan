@@ -161,7 +161,7 @@ const nextConfig = {
       "img-src 'self' data: blob: https:",
       "media-src 'self' blob: data:",
       "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googleapis.com https://*.google.com https://pagead2.googlesyndication.com blob: data:",
-      "frame-src 'self' https://accounts.google.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com",
+      "frame-src 'self' https://accounts.google.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com https://www.youtube-nocookie.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
