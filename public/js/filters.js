@@ -20,26 +20,13 @@ const FILTERS = [
 function applyFilterToContext(ctx, w, h, filterId, adjustments = {}) {
   const { brightness = 0, contrast = 0, sharpness = 0, saturation = 0 } = adjustments;
 
-  // ── OpenCV Magic Pro: takes a separate path (writes directly to canvas) ──
-  if (filterId === 'magicpro' && window.cvReady) {
-    _applyMagicProCV(ctx, w, h);
-    // Apply fine-tune adjustments on top of the OpenCV result
-    if (brightness !== 0 || contrast !== 0 || saturation !== 0) {
-      const id2 = ctx.getImageData(0, 0, w, h);
-      _applyAdjustments(id2.data, brightness, contrast, saturation);
-      ctx.putImageData(id2, 0, 0);
-    }
-    if (sharpness > 0) _applySharpen(ctx, w, h, sharpness);
-    return;  // done — don't fall through to imageData path
-  }
-
   const imageData = ctx.getImageData(0, 0, w, h);
   const data = imageData.data;
 
   switch (filterId) {
     case 'original':  break;
     case 'enhance':   _applyEnhance(data, w, h); break;
-    case 'magicpro':  _applyMagicPro(data, w, h); break;  // JS fallback
+    case 'magicpro':  _applyMagicPro(data, w, h); break;
     case 'lighten':   _applyLighten(data, w, h); break;
     case 'noshadow':  _applyNoShadow(data, w, h); break;
     case 'bw':        _applyBW(data, w, h); break;
@@ -54,209 +41,83 @@ function applyFilterToContext(ctx, w, h, filterId, adjustments = {}) {
 
   ctx.putImageData(imageData, 0, 0);
 
+  if (filterId === 'magicpro') _applySharpen(ctx, w, h, 8);
   if (sharpness > 0) _applySharpen(ctx, w, h, sharpness);
 }
 
-/* ── 1. ENHANCE ──────────────────────────────────────────────── */
-/* Three-stage pipeline — matches CamScanner "Enhance" quality:
-   Stage 1: Shadow removal — large-radius normalization (rBg = H/5)
-            Larger radius captures the full shadow gradient with less
-            contamination from sparse ink pixels.
-            Max scale capped at 2.5× to avoid over-brightening.
-   Stage 2: Per-channel auto-levels — removes yellow paper cast
-   Stage 3: Contrast boost → paper→white, ink→dark */
-function _applyEnhance(data, w, h) {
-  /* ── Stage 1: Shadow removal ──
-     rBg = H/5 (was /7) → larger window better captures page-level shadow.
-     Target 230 with max scale 2.5 → shadow paper lifts from ~107 to ~190+. */
-  const rBg  = Math.max(55, Math.round(Math.min(w, h) / 5));
-  const bgMap = _buildLocalMean(data, w, h, rBg);
-  for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const f = Math.min(2.5, 230 / Math.max(bgMap[px], 35));
-    data[i]   = _clamp(data[i]   * f);
-    data[i+1] = _clamp(data[i+1] * f);
-    data[i+2] = _clamp(data[i+2] * f);
-  }
-
-  /* ── Stage 2: Per-channel auto-levels ──
-     Symmetric 1% / 1% clip per R/G/B channel.
-     Stretches histogram → removes colour cast from yellowish/aged paper. */
-  const total  = data.length / 4;
-  const cutoff = Math.ceil(total * 0.01);
-  for (let ch = 0; ch < 3; ch++) {
-    const hist = new Int32Array(256);
-    for (let i = ch; i < data.length; i += 4) hist[data[i]]++;
-    let black = 0, cum = 0;
-    for (let v = 0; v < 256; v++) { cum += hist[v]; if (cum >= cutoff) { black = v; break; } }
-    let white = 255; cum = 0;
-    for (let v = 255; v >= 0; v--) { cum += hist[v]; if (cum >= cutoff) { white = v; break; } }
-    const scale = 255 / Math.max(1, white - black);
-    for (let i = ch; i < data.length; i += 4) {
-      data[i] = _clamp((data[i] - black) * scale);
-    }
-  }
-
-  /* ── Stage 3: Contrast boost ──
-     ×1.2 around 128 + lift +8 → clean bright document look.
-     Lighter boost than Magic Pro — preserves natural colors. */
-  for (let i = 0; i < data.length; i += 4) {
-    data[i]   = _clamp((data[i]   - 128) * 1.2 + 136);
-    data[i+1] = _clamp((data[i+1] - 128) * 1.2 + 136);
-    data[i+2] = _clamp((data[i+2] - 128) * 1.2 + 136);
-  }
-}
-
-/* ── 2a. MAGIC PRO — OpenCV.js path (preferred when cv is loaded) ─────
- *
- *   Pipeline (tuned + verified against real shadowed phone photos):
- *   1. Background estimate: downsample 4× → GaussianBlur 21×21 → upsample 4×
- *      (smooth illumination map that captures shadows/gradients).
- *   2. Normalise: norm = gray / bg × 220 — paper → ~210-220 everywhere,
- *      ink → ~0-40, regardless of shadow.
- *   3. HoughLinesP on the normalised image → text-line skew angle.
- *   4. Deskew the GRAYSCALE normalised image (white border).
- *   5. Sigmoid tone-curve (NOT a hard threshold): paper → white, ink → black,
- *      strokes stay CONTINUOUS. Hard thresholds (Otsu/adaptive) shatter faint
- *      gray body text into dashes — the sigmoid keeps it solid & readable.
- * ────────────────────────────────────────────────────────────────── */
-function _applyMagicProCV(ctx, w, h) {
-  let src, gray, ds, bgSmall, bgUp, blurred, edges, lines, recolored, rotated, M;
-  try {
-    src  = cv.imread(ctx.canvas);
-    gray = new cv.Mat();
-    cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
-
-    /* ── Step 1: Background (illumination) estimation ──
-       downsample → blur → upsample gives a smooth per-pixel "paper brightness"
-       map. We use the luminance for this; the correction below is applied to
-       the COLOUR channels so the document keeps its real colours. */
-    const bgScale = 4;
-    const bW = Math.max(8, Math.round(w / bgScale));
-    const bH = Math.max(8, Math.round(h / bgScale));
-    ds      = new cv.Mat();
-    bgSmall = new cv.Mat();
-    bgUp    = new cv.Mat();
-    cv.resize(gray, ds, new cv.Size(bW, bH), 0, 0, cv.INTER_AREA);
-    /* Wide blur (≈82px window) so large solid colour blocks don't pull the
-       background estimate down and get over-brightened (hue shift). */
-    cv.GaussianBlur(ds, bgSmall, new cv.Size(41, 41), 0);
-    cv.resize(bgSmall, bgUp, new cv.Size(w, h), 0, 0, cv.INTER_LINEAR);
-
-    /* ── Step 2: COLOUR-preserving enhancement (the fix) ──
-       For each pixel: gain = TARGET / localBackground.
-       • Shadowed paper (bg low)  → gain high → lifts to white
-       • Lit paper      (bg high) → gain ~1   → stays white
-       • Coloured ink/logo        → multiplied by same gain → brightened
-         but its HUE is preserved (we never collapse to grey).
-       Then a saturation + gentle contrast boost gives the punchy,
-       CamScanner "Magic Colour" look — colour documents stay colour. */
-    const bg = bgUp.data;                 // CV_8U single channel, length w*h
-    const img = ctx.getImageData(0, 0, w, h);
-    const d   = img.data;
-    const TARGET = 235, SAT = 1.15, CONTR = 1.06, GAIN_CAP = 2.6;
-
-    for (let px = 0, i = 0; px < w * h; px++, i += 4) {
-      const gain = Math.min(GAIN_CAP, TARGET / Math.max(bg[px], 35));
-      let r = d[i] * gain, g = d[i + 1] * gain, b = d[i + 2] * gain;
-
-      /* saturation boost (neutral paper unaffected: r≈g≈b → luma≈channel) */
-      const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-      r = luma + (r - luma) * SAT;
-      g = luma + (g - luma) * SAT;
-      b = luma + (b - luma) * SAT;
-
-      /* gentle contrast around mid-grey */
-      r = (r - 128) * CONTR + 128;
-      g = (g - 128) * CONTR + 128;
-      b = (b - 128) * CONTR + 128;
-
-      r = r < 0 ? 0 : r > 255 ? 255 : r;
-      g = g < 0 ? 0 : g > 255 ? 255 : g;
-      b = b < 0 ? 0 : b > 255 ? 255 : b;
-
-      /* snap near-white paper to pure white for a clean scan background */
-      if (r > 236 && g > 236 && b > 236) { r = g = b = 255; }
-
-      d[i] = r; d[i + 1] = g; d[i + 2] = b;
-    }
-    ctx.putImageData(img, 0, 0);
-
-    /* ── Step 3: Deskew (detect on luminance, rotate the COLOUR result) ── */
-    blurred = new cv.Mat();
-    cv.GaussianBlur(gray, blurred, new cv.Size(3, 3), 0);
-    edges = new cv.Mat();
-    lines = new cv.Mat();
-    cv.Canny(blurred, edges, 50, 150, 3, false);
-    const houghThresh = Math.max(30, Math.round(w / 18));
-    const minLen      = Math.max(40, Math.round(w / 14));
-    cv.HoughLinesP(edges, lines, 1, Math.PI / 180, houghThresh, minLen, 18);
-
-    let angleSum = 0, angleCount = 0;
-    for (let i = 0; i < lines.rows; i++) {
-      const x1 = lines.data32S[i * 4],     y1 = lines.data32S[i * 4 + 1];
-      const x2 = lines.data32S[i * 4 + 2], y2 = lines.data32S[i * 4 + 3];
-      const ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-      if (Math.abs(ang) < 20) { angleSum += ang; angleCount++; }
-    }
-    if (angleCount > 0) {
-      const skew = angleSum / angleCount;
-      if (Math.abs(skew) > 0.4 && Math.abs(skew) < 20) {
-        recolored = cv.imread(ctx.canvas);
-        rotated   = new cv.Mat();
-        M = cv.getRotationMatrix2D(new cv.Point(w / 2, h / 2), skew, 1.0);
-        cv.warpAffine(recolored, rotated, M, new cv.Size(w, h),
-          cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar(255, 255, 255, 255));
-        cv.imshow(ctx.canvas, rotated);
+/* Estimate paper from the brighter pixels in local tiles. Unlike a mean,
+   printed ink does not pull the paper estimate down as strongly. Interpolate
+   the estimate smoothly; never threshold faint writing in colour modes. */
+function _normalizePaper(data, w, h, target, gamma) {
+  const tile = Math.max(16, Math.round(Math.min(w, h) / 24));
+  const cols = Math.ceil(w / tile), rows = Math.ceil(h / tile);
+  const paper = new Float32Array(cols * rows);
+  for (let gy = 0; gy < rows; gy++) for (let gx = 0; gx < cols; gx++) {
+    const hist = new Uint32Array(256);
+    let count = 0;
+    for (let y = gy * tile; y < Math.min(h, (gy + 1) * tile); y++) {
+      for (let x = gx * tile; x < Math.min(w, (gx + 1) * tile); x++) {
+        const i = (y * w + x) * 4;
+        hist[Math.round(.299 * data[i] + .587 * data[i+1] + .114 * data[i+2])]++;
+        count++;
       }
     }
-
-  } catch (err) {
-    console.error('Magic Pro (OpenCV) error — falling back to JS:', err);
-    const imgData = ctx.getImageData(0, 0, w, h);
-    _applyMagicPro(imgData.data, w, h);
-    ctx.putImageData(imgData, 0, 0);
-  } finally {
-    [src, gray, ds, bgSmall, bgUp, blurred, edges, lines, recolored, rotated, M]
-      .forEach(m => { if (m && m.delete) try { m.delete(); } catch(e) {} });
+    let total = 0, level = 255;
+    for (let v = 0; v < 256; v++) {
+      total += hist[v];
+      if (total >= count * .85) { level = v; break; }
+    }
+    paper[gy * cols + gx] = Math.max(40, level);
+  }
+  for (let y = 0; y < h; y++) {
+    const fy = Math.max(0, Math.min(rows - 1, (y + .5) / tile - .5));
+    const y0 = Math.floor(fy), y1 = Math.min(rows - 1, y0 + 1), ty = fy - y0;
+    for (let x = 0; x < w; x++) {
+      const fx = Math.max(0, Math.min(cols - 1, (x + .5) / tile - .5));
+      const x0 = Math.floor(fx), x1 = Math.min(cols - 1, x0 + 1), tx = fx - x0;
+      const top = paper[y0 * cols + x0] * (1-tx) + paper[y0 * cols + x1] * tx;
+      const bottom = paper[y1 * cols + x0] * (1-tx) + paper[y1 * cols + x1] * tx;
+      const gain = Math.min(2.8, target / (top * (1-ty) + bottom * ty));
+      const i = (y * w + x) * 4;
+      // A common gain and common tone multiplier preserve channel ratios.
+      const peak = Math.max(data[i], data[i+1], data[i+2]);
+      const safeGain = Math.min(gain, 255 / Math.max(1, peak));
+      const luma = (.299 * data[i] + .587 * data[i+1] + .114 * data[i+2]) * safeGain / 255;
+      const tone = Math.pow(Math.max(.001, luma), gamma - 1);
+      for (let ch = 0; ch < 3; ch++) data[i+ch] = _clamp(data[i+ch] * safeGain * tone);
+    }
   }
 }
 
-/* ── 2b. MAGIC PRO — Pure-JS fallback (no OpenCV) ──────────────────
- * Dual-radius adaptive thresholding:
- *   • Large-radius mean (big window) → remove page-level shadow/gradient
- *   • Small-radius mean (tight window) → detect individual ink strokes
- *
- * COLOUR-PRESERVING (matches the OpenCV path): removes shadows and whitens
- * the paper while keeping the document's real colours. Coloured text, logos
- * and highlights stay coloured — it is NOT a black-and-white filter.
- * ────────────────────────────────────────────────────────────────── */
+function _applyEnhance(data, w, h) { _normalizePaper(data, w, h, 245, 1.08); }
 function _applyMagicPro(data, w, h) {
-  /* Large radius captures the full page illumination gradient (shadows). */
-  const rLarge = Math.max(60, Math.round(Math.min(w, h) / 4));
-  const bg = _buildLocalMean(data, w, h, rLarge);   // luminance-based background
-
-  const TARGET = 235, SAT = 1.15, CONTR = 1.06, GAIN_CAP = 2.6;
-  for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const gain = Math.min(GAIN_CAP, TARGET / Math.max(bg[px], 35));
-    let r = data[i] * gain, g = data[i+1] * gain, b = data[i+2] * gain;
-
-    /* saturation boost (neutral paper unaffected) */
-    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-    r = luma + (r - luma) * SAT;
-    g = luma + (g - luma) * SAT;
-    b = luma + (b - luma) * SAT;
-
-    /* gentle contrast around mid-grey */
-    r = (r - 128) * CONTR + 128;
-    g = (g - 128) * CONTR + 128;
-    b = (b - 128) * CONTR + 128;
-
-    r = _clamp(r); g = _clamp(g); b = _clamp(b);
-
-    /* snap near-white paper to pure white for a clean background */
-    if (r > 236 && g > 236 && b > 236) { r = g = b = 255; }
-
-    data[i] = r; data[i+1] = g; data[i+2] = b;
+  _normalizePaper(data, w, h, 250, 1.2);
+  // Estimate the paper tint only from bright, nearly neutral pixels. Strong
+  // colours (stamps, highlights, security backgrounds) do not set white balance.
+  const hist=[new Uint32Array(256),new Uint32Array(256),new Uint32Array(256)];
+  let count=0;
+  for(let i=0;i<data.length;i+=4) {
+    const hi=Math.max(data[i],data[i+1],data[i+2]),lo=Math.min(data[i],data[i+1],data[i+2]);
+    if(lo<190 || hi-lo>hi*.13)continue;
+    count++;for(let c=0;c<3;c++)hist[c][data[i+c]]++;
+  }
+  if(count<w*h*.03)return;
+  const whites=hist.map(channel=>{
+    let total=0;
+    for(let v=0;v<256;v++){total+=channel[v];if(total>=count*.9)return v;}
+    return 255;
+  });
+  const gains=whites.map(white=>Math.min(1.12,255/Math.max(1,white)));
+  for(let i=0;i<data.length;i+=4) {
+    for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]*gains[c]);
+    // Roll off nearly neutral paper highlights smoothly. Coloured security
+    // patterns and mid-tone/faint writing remain below this white shoulder.
+    const hi=Math.max(data[i],data[i+1],data[i+2]),lo=Math.min(data[i],data[i+1],data[i+2]);
+    const luma=.299*data[i]+.587*data[i+1]+.114*data[i+2];
+    const neutral=Math.max(0,1-(hi-lo)/Math.max(1,hi*.12));
+    const shoulder=Math.max(0,Math.min(1,(luma-210)/40));
+    const blend=neutral*shoulder*shoulder;
+    for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]+(255-data[i+c])*blend);
   }
 }
 
@@ -286,16 +147,7 @@ function _applyLighten(data, w, h) {
    CamScanner No Shadow: excellent shadow removal, very clean paper.
    Key fixes vs old: radius /8 (was /15) — 2× larger window captures
    the full illumination gradient. Target 230 (was 215). Cap 2.5×.  */
-function _applyNoShadow(data, w, h) {
-  const r  = Math.max(55, Math.round(Math.min(w, h) / 6));
-  const bg = _buildLocalMean(data, w, h, r);
-  for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const f = Math.min(2.5, 230 / Math.max(bg[px], 38));
-    data[i]   = _clamp(data[i]   * f);
-    data[i+1] = _clamp(data[i+1] * f);
-    data[i+2] = _clamp(data[i+2] * f);
-  }
-}
+function _applyNoShadow(data, w, h) { _normalizePaper(data, w, h, 245, 1); }
 
 /* ── 5. B&W ───────────────────────────────────────────────────────
    CamScanner B&W: shadow removal first so paper in shadow doesn't
@@ -442,7 +294,7 @@ function _applySharpen(ctx, w, h, amount) {
       const i = (y * w + x) * 4;
       for (let c = 0; c < 3; c++) {
         const center = copy[i + c];
-        const lap = 5 * center
+        const lap = 4 * center
           - copy[i - 4 + c]
           - copy[i + 4 + c]
           - copy[(y - 1) * w * 4 + x * 4 + c]

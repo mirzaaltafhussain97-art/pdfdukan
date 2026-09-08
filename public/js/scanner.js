@@ -41,6 +41,7 @@ const ScannerApp = (() => {
     currentFilter: 'enhance',
     adjustments: { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 },
     applyToAll: false,
+    quickScan: false,
   };
 
   let cropEditor = null;
@@ -115,18 +116,21 @@ const ScannerApp = (() => {
 
     const fileInput = document.getElementById('fileInputScanner');
     if (fileInput) fileInput.addEventListener('change', e => handleFiles([...e.target.files]));
+    const quickInput = document.getElementById('fileInputQuickScan');
+    if (quickInput) quickInput.addEventListener('change', e => { handleFiles([...e.target.files], true); e.target.value = ''; });
 
     // PDF import input (separate input for accept=".pdf")
     const pdfInput = document.getElementById('fileInputPdfScan');
     if (pdfInput) pdfInput.addEventListener('change', e => handleFiles([...e.target.files]));
   }
 
-  function handleFiles(files) {
+  function handleFiles(files, quickScan = false) {
     if (!files.length) return;
     // Signup optional — no login gate; process files for everyone.
     state.queue = files.map(f => ({ file: f, type: f.type }));
     state.queueIndex = 0;
     state.editingIndex = -1;
+    state.quickScan = quickScan;
     _processNextInQueue();
   }
 
@@ -227,8 +231,12 @@ const ScannerApp = (() => {
     showProcessing('Detecting document edges…');
     setTimeout(async () => {
       try { await cropEditor.setImageAsync(img); }
-      catch (e) { cropEditor.setImage(img); }   // hard fallback
+      catch (e) { console.warn('Document detection failed:', e); cropEditor.setImage(img); }   // hard fallback
       hideProcessing();
+      if (state.quickScan && cropEditor.autoDetected) {
+        await _applyCrop();
+        return;
+      }
       showScreen('crop');
     }, 100);
   }
@@ -250,7 +258,8 @@ const ScannerApp = (() => {
     if (btnBackUpload) btnBackUpload.onclick = () => showScreen('upload');
     if (btnSkip)    btnSkip.onclick    = async () => {
       showProcessing('Processing…');
-      const img = await cropEditor.perspectiveCrop().catch(() => cropEditor.img);
+      // Skip really keeps the complete image, including the chosen rotation.
+      const img = cropEditor._getRotatedImg();
       hideProcessing();
       _startFilterScreen(img);
     };
@@ -290,7 +299,7 @@ const ScannerApp = (() => {
     state._currentCropped = croppedImg;
     // Only reset filter/adjustments when processing a fresh image (not re-editing an existing page)
     if (state.editingIndex < 0) {
-      state.currentFilter = 'enhance';
+      state.currentFilter = state.quickScan ? 'magicpro' : 'enhance';
       state.adjustments = { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 };
     }
 
@@ -314,7 +323,7 @@ const ScannerApp = (() => {
     }
 
     // Build filter strip
-    buildFilterStrip('filterStrip', croppedImg, 'enhance', fid => {
+    buildFilterStrip('filterStrip', croppedImg, state.currentFilter, fid => {
       state.currentFilter = fid;
       _reprocess();
     });
@@ -332,31 +341,47 @@ const ScannerApp = (() => {
     _reprocess();
   }
 
+  let previewVersion = 0, previewTimer;
   function _reprocess() {
-    const img = state._currentCropped;
-    if (!img) return;
-
+    const version = ++previewVersion;
+    clearTimeout(previewTimer);
+    const status = document.getElementById('scanPreviewStatus');
+    if (status) status.textContent = 'Preparing full-quality preview…';
     const canvas = document.getElementById('previewCanvas');
-    if (!canvas) return;
+    if (canvas) canvas.style.opacity = '.45';
+    const doneButtons = ['btnAddPage', 'btnAddPageMain', 'btnBatchAll'];
+    doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = true; });
+    previewTimer = setTimeout(async () => {
+      try {
+        const result = await ScanRenderer.render(state._currentCropped, state.currentFilter, state.adjustments);
+        if (version !== previewVersion) return;
+        ScanRenderer.fit(result, canvas, 1320, 1000);
+        canvas.style.opacity = '1';
+        const mini = document.getElementById('procMini');
+        if (mini) ScanRenderer.fit(result, mini, 280, 200);
+        doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = false; });
+        if (status) status.textContent = 'Preview ready · ' + result.width + ' × ' + result.height + ' pixels. PNG keeps these pixels; JPG/PDF compression can soften details.';
+      } catch (error) {
+        if (version !== previewVersion) return;
+        if (status) status.textContent = 'Preview failed. Please retry or choose Original.';
+        toast(error.message, 'error');
+      }
+    }, 140);
+  }
 
-    const MAX_W = 660, MAX_H = 500;
-    const s = Math.min(MAX_W / img.width, MAX_H / img.height, 1);
-    canvas.width = Math.round(img.width * s);
-    canvas.height = Math.round(img.height * s);
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    applyFilterToContext(ctx, canvas.width, canvas.height, state.currentFilter, state.adjustments);
-
-    // Update processed mini
-    const procCanvas = document.getElementById('procMini');
-    if (procCanvas) {
-      const ms = Math.min(280 / img.width, 200 / img.height, 1);
-      procCanvas.width = Math.round(img.width * ms);
-      procCanvas.height = Math.round(img.height * ms);
-      const mctx = procCanvas.getContext('2d');
-      mctx.drawImage(img, 0, 0, procCanvas.width, procCanvas.height);
-      applyFilterToContext(mctx, procCanvas.width, procCanvas.height, state.currentFilter, state.adjustments);
+  function _backToCrop(restore = false) {
+    // Restore this page's source and corners, never another page's crop state.
+    const saved = state.editingIndex >= 0 ? state.pages[state.editingIndex].cropState : null;
+    if (restore === true && saved) {
+      cropEditor.img = saved.img;
+      cropEditor.rotation = saved.rotation;
+      cropEditor.corners = JSON.parse(JSON.stringify(saved.corners));
+      cropEditor.draw();
+    } else if (restore === true && state.editingIndex >= 0) {
+      cropEditor.setImage(state._currentCropped);
+      cropEditor.fitFull();
     }
+    showScreen('crop');
   }
 
   function _bindFilterControls() {
@@ -381,8 +406,8 @@ const ScannerApp = (() => {
 
     if (btnAddPage)      btnAddPage.onclick      = _addPage;
     if (btnAddPageMain)  btnAddPageMain.onclick  = _addPage;
-    if (btnBackCrop)     btnBackCrop.onclick     = () => showScreen('crop');
-    if (btnBackCropMain) btnBackCropMain.onclick = () => showScreen('crop');
+    if (btnBackCrop)     btnBackCrop.onclick     = _backToCrop;
+    if (btnBackCropMain) btnBackCropMain.onclick = _backToCrop;
     if (applyAll) applyAll.addEventListener('change', e => { state.applyToAll = e.target.checked; });
     if (btnBatchAll)     btnBatchAll.onclick     = _batchProcessRemaining;
   }
@@ -489,7 +514,10 @@ const ScannerApp = (() => {
       });
     }
 
-    if (state.editingIndex >= 0) {
+    const wasEditing = state.editingIndex >= 0;
+    const cropState = { img: cropEditor.img, rotation: cropEditor.rotation, corners: JSON.parse(JSON.stringify(cropEditor.corners)) };
+    if (wasEditing) {
+      state.pages[state.editingIndex].cropState = cropState;
       // Update existing page
       state.pages[state.editingIndex].croppedImg  = img;
       state.pages[state.editingIndex].filter      = state.currentFilter;
@@ -499,13 +527,14 @@ const ScannerApp = (() => {
       state.pages.push({
         id: Date.now() + Math.random(),
         croppedImg: img,
+        cropState,
         filter: state.currentFilter,
         adjustments: { ...state.adjustments },
       });
     }
 
-    state.queueIndex++;
-    if (state.queueIndex < state.queue.length) {
+    if (!wasEditing) state.queueIndex++;
+    if (!wasEditing && state.queueIndex < state.queue.length) {
       _processNextInQueue();
     } else {
       showScreen('pages');
@@ -533,12 +562,9 @@ const ScannerApp = (() => {
       imgWrap.className = 'pt-img';
 
       const c = document.createElement('canvas');
-      const s = Math.min(160 / page.croppedImg.width, 180 / page.croppedImg.height, 1);
-      c.width = Math.round(page.croppedImg.width * s);
-      c.height = Math.round(page.croppedImg.height * s);
-      const ctx = c.getContext('2d');
-      ctx.drawImage(page.croppedImg, 0, 0, c.width, c.height);
-      applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+      ScanRenderer.render(page.croppedImg, page.filter, page.adjustments).then(result => {
+        if (c.isConnected) ScanRenderer.fit(result, c, 160, 180);
+      }).catch(error => { if (c.isConnected) c.replaceWith(document.createTextNode('Preview unavailable')); console.warn(error); });
       imgWrap.appendChild(c);
 
       const info = document.createElement('div');
@@ -584,23 +610,18 @@ const ScannerApp = (() => {
 
   // Export one page (with its filter/adjustments applied) as a standalone JPG,
   // so multi-page scans don't force a ZIP download for a single page.
-  function _downloadPage(idx) {
+  async function _downloadPage(idx) {
     const page = state.pages[idx];
     if (!page) return;
-    const c = document.createElement('canvas');
-    c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-    c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-    const ctx = c.getContext('2d');
-    ctx.drawImage(page.croppedImg, 0, 0);
-    applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
-    c.toBlob(blob => {
+    try {
+      const blob = await _pageToBlob(page, 'jpeg');
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url; a.download = `PDFdukan.com_page_${idx + 1}.jpg`;
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      toast(`Page ${idx + 1} downloaded ✓`, 'success');
-    }, 'image/jpeg', 0.92);
+      a.href = url; a.download = 'PDFdukan.com_page_' + (idx + 1) + '.jpg';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      toast('Page downloaded', 'success');
+    } catch (error) { toast('Download failed: ' + error.message, 'error'); }
   }
 
   function _deletePage(idx) {
@@ -615,6 +636,7 @@ const ScannerApp = (() => {
     state._currentCropped = page.croppedImg;
     state.currentFilter = page.filter;
     state.adjustments = { ...page.adjustments };
+    _backToCrop(true);
     _startFilterScreen(page.croppedImg);
   }
 
@@ -691,13 +713,7 @@ const ScannerApp = (() => {
         const page = state.pages[i];
         if (i > 0) doc.addPage();
 
-        // Render page to canvas at full resolution
-        const c = document.createElement('canvas');
-        c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-        c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(page.croppedImg, 0, 0);
-        applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+        const c = await ScanRenderer.render(page.croppedImg, page.filter, page.adjustments);
 
         const dataUrl = c.toDataURL('image/jpeg', quality);
 
@@ -725,13 +741,7 @@ const ScannerApp = (() => {
 
   // Render one page (cropped + filtered) to an image blob.
   async function _pageToBlob(page, format) {
-    const c = document.createElement('canvas');
-    c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-    c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-    if (!c.width || !c.height) throw new Error('A scan page has not finished loading. Please wait and try again.');
-    const ctx = c.getContext('2d');
-    ctx.drawImage(page.croppedImg, 0, 0);
-    applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
+    const c = await ScanRenderer.render(page.croppedImg, page.filter, page.adjustments);
     return await new Promise((resolve, reject) => c.toBlob(blob => blob ? resolve(blob) : reject(new Error('The browser could not encode a scan page.')), 'image/' + format, format === 'jpeg' ? 0.95 : 1.0));
   }
 
@@ -813,14 +823,7 @@ const ScannerApp = (() => {
 
       for (let i = 0; i < state.pages.length; i++) {
         const page = state.pages[i];
-        const c = document.createElement('canvas');
-        c.width = page.croppedImg.width || page.croppedImg.naturalWidth;
-        c.height = page.croppedImg.height || page.croppedImg.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(page.croppedImg, 0, 0);
-        applyFilterToContext(ctx, c.width, c.height, page.filter, page.adjustments);
-
-        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.95 : 1.0));
+        const blob = await _pageToBlob(page, format);
         const ext = format === 'jpeg' ? 'jpg' : format;
         folder.file(`page_${String(i + 1).padStart(3, '0')}.${ext}`, blob);
       }

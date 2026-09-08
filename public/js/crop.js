@@ -178,6 +178,7 @@ const MLDetector = (() => {
     /* Map normalised coords → original pixels */
     const raw = [];
     for (let k = 0; k < 4; k++) raw.push({ x: pts[k*2] * W, y: pts[k*2+1] * H });
+    if (raw.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y) || p.x < 0 || p.y < 0 || p.x > W || p.y > H)) return null;
 
     /* Reject degenerate quads (area < 5% of image) */
     const area = Math.abs(
@@ -187,6 +188,11 @@ const MLDetector = (() => {
     if (area < 0.05 * W * H) return null;
 
     const o = ensureCornerOrder({ tl: raw[0], tr: raw[1], br: raw[2], bl: raw[3] });
+    const ordered = [o.tl, o.tr, o.br, o.bl];
+    for (let k = 0; k < 4; k++) {
+      const a = ordered[k], b = ordered[(k+1)%4], c = ordered[(k+2)%4];
+      if (Math.hypot(b.x-a.x,b.y-a.y) < Math.min(W,H)*.08 || (b.x-a.x)*(c.y-b.y)-(b.y-a.y)*(c.x-b.x) <= 0) return null;
+    }
     return {
       tl: { x: o.tl.x, y: o.tl.y }, tr: { x: o.tr.x, y: o.tr.y },
       br: { x: o.br.x, y: o.br.y }, bl: { x: o.bl.x, y: o.bl.y },
@@ -270,10 +276,10 @@ function detectDocumentCorners(img) {
   return getFallbackCorners(img);
 }
 
-function _showMLBadge() {
+function _showMLBadge(paperDetected = false) {
   const badge = document.getElementById('detectionBadge');
   if (!badge) return;
-  badge.textContent = '🤖 AI Detected';
+  badge.textContent = paperDetected ? '✓ Paper Edges Detected' : '🤖 AI Detected';
   badge.className = 'detect-badge good';
   badge.style.display = 'inline-block';
 }
@@ -745,6 +751,7 @@ class CropEditor {
   }
 
   setImage(img) {
+    this.autoDetected = false;
     this.img     = img;
     this.rotation = 0;
     this.corners = detectDocumentCorners(img);
@@ -757,15 +764,19 @@ class CropEditor {
   async setImageAsync(img) {
     this.img      = img;
     this.rotation = 0;
+    this.autoDetected = false;
 
     let mlCorners = null;
     try {
       mlCorners = window.MLDetector ? await window.MLDetector.detect(img) : null;
     } catch (e) { mlCorners = null; }
 
-    if (mlCorners) {
-      this.corners = mlCorners;
-      _showMLBadge();
+    const paperCorners = window.detectPaperBoundary ? window.detectPaperBoundary(img, mlCorners) : null;
+    if (paperCorners || mlCorners) {
+      const candidate = paperCorners || mlCorners;
+      this.corners = window.refineDocumentEdges ? window.refineDocumentEdges(img, candidate) : candidate;
+      this.autoDetected = true;
+      _showMLBadge(!!paperCorners);
     } else {
       /* Preserve the high-quality OpenCV fallback without making every page
          visitor pay its download/compile cost. */
