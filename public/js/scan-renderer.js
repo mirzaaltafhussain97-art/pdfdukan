@@ -1,7 +1,7 @@
 /* One full-resolution treatment for preview, thumbnails and every export.
    Keep only the most recent result, rather than retaining a canvas per page. */
 window.ScanRenderer = (() => {
-  const workerUrl = new URL('scan-filter-worker.js?v=20260908b', document.currentScript.src);
+  const workerUrl = new URL('scan-filter-worker.js?v=20260908g', document.currentScript.src);
   let worker, workerFailed = false, cached, queue = Promise.resolve();
 
   async function process(canvas, filter, adjustments) {
@@ -31,11 +31,14 @@ window.ScanRenderer = (() => {
     }
   }
 
-  function render(image, filter, adjustments = {}) {
+  function render(image, filter, adjustments = {}, isCurrent = () => true) {
     const settings = { ...adjustments };
     const key = JSON.stringify([filter, settings.brightness || 0, settings.contrast || 0,
       settings.sharpness || 0, settings.saturation || 0]);
     const task = queue.then(async () => {
+      // Rapid filter/slider changes can queue work behind the worker. Discard
+      // superseded previews before allocating or processing full-size pixels.
+      if (!isCurrent()) return null;
       if (cached?.image === image && cached.key === key) return cached.canvas;
       const canvas = document.createElement('canvas');
       canvas.width = image.naturalWidth || image.width;

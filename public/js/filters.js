@@ -69,12 +69,18 @@ function _normalizePaper(data, w, h, target, gamma) {
     }
     paper[gy * cols + gx] = Math.max(40, level);
   }
+  // Horizontal interpolation is identical on every row. Calculate it once;
+  // Float64 storage preserves the existing arithmetic and output precision.
+  const left=new Int32Array(w),right=new Int32Array(w),mix=new Float64Array(w);
+  for(let x=0;x<w;x++){
+    const fx=Math.max(0,Math.min(cols-1,(x+.5)/tile-.5));
+    left[x]=Math.floor(fx);right[x]=Math.min(cols-1,left[x]+1);mix[x]=fx-left[x];
+  }
   for (let y = 0; y < h; y++) {
     const fy = Math.max(0, Math.min(rows - 1, (y + .5) / tile - .5));
     const y0 = Math.floor(fy), y1 = Math.min(rows - 1, y0 + 1), ty = fy - y0;
     for (let x = 0; x < w; x++) {
-      const fx = Math.max(0, Math.min(cols - 1, (x + .5) / tile - .5));
-      const x0 = Math.floor(fx), x1 = Math.min(cols - 1, x0 + 1), tx = fx - x0;
+      const x0=left[x],x1=right[x],tx=mix[x];
       const top = paper[y0 * cols + x0] * (1-tx) + paper[y0 * cols + x1] * tx;
       const bottom = paper[y1 * cols + x0] * (1-tx) + paper[y1 * cols + x1] * tx;
       const gain = Math.min(2.8, target / (top * (1-ty) + bottom * ty));
@@ -92,6 +98,14 @@ function _normalizePaper(data, w, h, target, gamma) {
 function _applyEnhance(data, w, h) { _normalizePaper(data, w, h, 245, 1.08); }
 function _applyMagicPro(data, w, h) {
   _normalizePaper(data, w, h, 250, 1.2);
+  // Increase ink contrast smoothly, without a binary threshold that drops
+  // thin writing or pale stamps. Keep the hue of coloured areas.
+  for(let i=0;i<data.length;i+=4) {
+    const y=(.299*data[i]+.587*data[i+1]+.114*data[i+2])/255;
+    const mapped=y < .86 ? .86*Math.pow(y/.86,1.65) : y;
+    const gain=y>0 ? mapped/y : 1;
+    for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]*gain);
+  }
   // Estimate the paper tint only from bright, nearly neutral pixels. Strong
   // colours (stamps, highlights, security backgrounds) do not set white balance.
   const hist=[new Uint32Array(256),new Uint32Array(256),new Uint32Array(256)];
@@ -153,18 +167,11 @@ function _applyNoShadow(data, w, h) { _normalizePaper(data, w, h, 245, 1); }
    CamScanner B&W: shadow removal first so paper in shadow doesn't
    turn solid black, then hard threshold for crisp binary output.    */
 function _applyBW(data, w, h) {
-  /* Shadow removal so shadowed paper → white instead of black */
-  const r  = Math.max(50, Math.round(Math.min(w, h) / 6));
-  const bg = _buildLocalMean(data, w, h, r);
-  for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const f = Math.min(2.5, 225 / Math.max(bg[px], 38));
-    data[i]   = _clamp(data[i]   * f);
-    data[i+1] = _clamp(data[i+1] * f);
-    data[i+2] = _clamp(data[i+2] * f);
-  }
-  /* Hard threshold at 160 (higher after normalisation) */
+  // Estimate illumination from paper highlights, not an average containing
+  // dark text. Threshold relative to that normalized paper to retain thin ink.
+  _normalizePaper(data, w, h, 250, 1);
   for (let i = 0; i < data.length; i += 4) {
-    const v = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]) > 160 ? 255 : 0;
+    const v = (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]) > 215 ? 255 : 0;
     data[i] = data[i+1] = data[i+2] = v;
   }
 }
@@ -319,18 +326,31 @@ function buildFilterStrip(containerId, image, activeFilter, onSelect) {
 
   container.innerHTML = '';
   FILTERS.forEach(f => {
-    const card = document.createElement('div');
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.setAttribute('aria-pressed', String(f.id === activeFilter));
     card.className = 'filter-card' + (f.id === activeFilter ? ' active' : '');
     card.onclick = () => {
-      container.querySelectorAll('.filter-card').forEach(c => c.classList.remove('active'));
+      container.querySelectorAll('.filter-card').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
       card.classList.add('active');
+      card.setAttribute('aria-pressed','true');
       if (onSelect) onSelect(f.id);
     };
 
-    const canvas = document.createElement('canvas');
-    canvas.width = 100;
-    canvas.height = 70;
-    card.appendChild(canvas);
+    const glyphs = {
+      original:'<rect x="9" y="5" width="22" height="30" rx="3"/><path d="M14 13h12M14 20h12M14 27h8"/>',
+      enhance:'<path d="M5 32l10-23 8 17 5-10 8 16z"/>',
+      magicpro:'<path d="M20 4l4 11 12 5-12 4-4 12-5-12-11-4 11-5z"/><path d="M32 3v7M29 6h7"/>',
+      lighten:'<circle cx="20" cy="20" r="8"/><path d="M20 2v5M20 33v5M2 20h5M33 20h5M7 7l4 4M29 29l4 4M7 33l4-4M29 11l4-4"/>',
+      noshadow:'<rect x="7" y="5" width="26" height="30" rx="3"/><path d="M11 9l18 22M11 18l11 13M20 9l9 11"/>',
+      bw:'<circle cx="15" cy="20" r="11" fill="currentColor"/><circle cx="25" cy="20" r="11" fill="white"/>',
+      bwsoft:'<circle cx="15" cy="20" r="11" fill="#8b949e"/><circle cx="25" cy="20" r="11" fill="white"/>',
+      grayscale:'<rect x="5" y="8" width="30" height="24" rx="3"/><path d="M15 8v24M25 8v24"/>',
+      eco:'<path d="M31 7C9 5 5 20 14 29c9 8 22-2 17-22zM10 34l17-20"/>'
+    };
+    const icon=document.createElement('span');icon.className='fc-icon';
+    icon.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">'+glyphs[f.id]+'</svg>';
+    card.appendChild(icon);
 
     const label = document.createElement('div');
     label.className = 'fc-label';
@@ -339,8 +359,6 @@ function buildFilterStrip(containerId, image, activeFilter, onSelect) {
 
     container.appendChild(card);
 
-    // Render thumbnail asynchronously
-    requestAnimationFrame(() => renderFilterThumbnail(canvas, f.id, image));
   });
 }
 

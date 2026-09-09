@@ -323,6 +323,20 @@ const ScannerApp = (() => {
     }
 
     // Build filter strip
+    const rail=document.getElementById('scanPageRail');
+    if(rail){
+      rail.replaceChildren();
+      const currentNumber=state.editingIndex>=0?state.editingIndex+1:state.pages.length+1;
+      const pages=state.pages.map((page,i)=>({image:page.croppedImg,number:i+1}));
+      if(state.editingIndex<0)pages.push({image:croppedImg,number:currentNumber});
+      pages.forEach(page=>{
+        const item=document.createElement('div');item.className='scan-rail-page'+(page.number===currentNumber?' current':'');
+        const thumb=document.createElement('canvas');ScanRenderer.fit(page.number===currentNumber?croppedImg:page.image,thumb,70,100);
+        item.append(thumb,document.createTextNode('Page '+page.number));
+        if(page.number===currentNumber)item.setAttribute('aria-current','page');
+        rail.append(item);
+      });
+    }
     buildFilterStrip('filterStrip', croppedImg, state.currentFilter, fid => {
       state.currentFilter = fid;
       _reprocess();
@@ -353,14 +367,14 @@ const ScannerApp = (() => {
     doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = true; });
     previewTimer = setTimeout(async () => {
       try {
-        const result = await ScanRenderer.render(state._currentCropped, state.currentFilter, state.adjustments);
-        if (version !== previewVersion) return;
+        const result = await ScanRenderer.render(state._currentCropped, state.currentFilter, state.adjustments, () => version === previewVersion);
+        if (!result || version !== previewVersion) return;
         ScanRenderer.fit(result, canvas, 1320, 1000);
         canvas.style.opacity = '1';
         const mini = document.getElementById('procMini');
         if (mini) ScanRenderer.fit(result, mini, 280, 200);
         doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = false; });
-        if (status) status.textContent = 'Preview ready · ' + result.width + ' × ' + result.height + ' pixels. PNG keeps these pixels; JPG/PDF compression can soften details.';
+        if (status) status.textContent = 'Ready to save · Check the text and edges before continuing.';
       } catch (error) {
         if (version !== previewVersion) return;
         if (status) status.textContent = 'Preview failed. Please retry or choose Original.';
