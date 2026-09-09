@@ -1,7 +1,7 @@
 /* One full-resolution treatment for preview, thumbnails and every export.
    Keep only the most recent result, rather than retaining a canvas per page. */
 window.ScanRenderer = (() => {
-  const workerUrl = new URL('scan-filter-worker.js?v=20260908g', document.currentScript.src);
+  const workerUrl = new URL('scan-filter-worker.js?v=20260909b', document.currentScript.src);
   let worker, workerFailed = false, cached, queue = Promise.resolve();
 
   async function process(canvas, filter, adjustments) {

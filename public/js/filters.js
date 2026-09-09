@@ -97,12 +97,23 @@ function _normalizePaper(data, w, h, target, gamma) {
 
 function _applyEnhance(data, w, h) { _normalizePaper(data, w, h, 245, 1.08); }
 function _applyMagicPro(data, w, h) {
-  _normalizePaper(data, w, h, 250, 1.2);
+  // Security cards and certificates carry meaningful pale colour and facial
+  // detail. Detect that before normalization and use a gentler treatment;
+  // plain paper keeps the stronger cleanup intended for photographed pages.
+  let chromatic=0,samples=0;
+  const step=Math.max(4,Math.floor((w*h)/50000))*4;
+  for(let i=0;i<data.length;i+=step){
+    const hi=Math.max(data[i],data[i+1],data[i+2]),lo=Math.min(data[i],data[i+1],data[i+2]);
+    if(hi>55&&hi-lo>16)chromatic++; samples++;
+  }
+  const colourDocument=samples>0&&chromatic/samples>.34;
+  _normalizePaper(data,w,h,colourDocument?202:250,colourDocument?1.0:1.2);
   // Increase ink contrast smoothly, without a binary threshold that drops
   // thin writing or pale stamps. Keep the hue of coloured areas.
   for(let i=0;i<data.length;i+=4) {
     const y=(.299*data[i]+.587*data[i+1]+.114*data[i+2])/255;
-    const mapped=y < .86 ? .86*Math.pow(y/.86,1.65) : y;
+    const exponent=colourDocument?1.12:1.65;
+    const mapped=y < .86 ? .86*Math.pow(y/.86,exponent) : y;
     const gain=y>0 ? mapped/y : 1;
     for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]*gain);
   }
@@ -121,7 +132,7 @@ function _applyMagicPro(data, w, h) {
     for(let v=0;v<256;v++){total+=channel[v];if(total>=count*.9)return v;}
     return 255;
   });
-  const gains=whites.map(white=>Math.min(1.12,255/Math.max(1,white)));
+  const gains=whites.map(white=>Math.min(colourDocument?1:1.12,255/Math.max(1,white)));
   for(let i=0;i<data.length;i+=4) {
     for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]*gains[c]);
     // Roll off nearly neutral paper highlights smoothly. Coloured security
@@ -130,7 +141,7 @@ function _applyMagicPro(data, w, h) {
     const luma=.299*data[i]+.587*data[i+1]+.114*data[i+2];
     const neutral=Math.max(0,1-(hi-lo)/Math.max(1,hi*.12));
     const shoulder=Math.max(0,Math.min(1,(luma-210)/40));
-    const blend=neutral*shoulder*shoulder;
+    const blend=neutral*shoulder*shoulder*(colourDocument?.08:1);
     for(let c=0;c<3;c++)data[i+c]=_clamp(data[i+c]+(255-data[i+c])*blend);
   }
 }

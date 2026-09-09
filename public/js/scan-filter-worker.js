@@ -1,6 +1,6 @@
 // filters.js has no DOM dependency in its pixel-processing functions.
 self.window = self;
-importScripts('filters.js?v=20260908g');
+importScripts('filters.js?v=20260909b');
 self.onmessage = ({ data: { pixels, filter, adjustments } }) => {
   try {
     const canvas = new OffscreenCanvas(pixels.width, pixels.height);
