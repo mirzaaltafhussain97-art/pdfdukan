@@ -862,12 +862,17 @@ const ScannerApp = (() => {
 
   /* ── PROCESSING OVERLAY ───────────────────────────────────── */
   function showProcessing(msg) {
+    if (typeof showBrandLoader === 'function') {
+      showBrandLoader(msg || 'Processing…', 'PDFdukan · CamMaster');
+      return;
+    }
     const overlay = document.getElementById('processingOverlay');
     const msgEl   = document.getElementById('processingMsg');
     if (overlay) overlay.classList.add('show');
     if (msgEl)   msgEl.textContent = msg || 'Processing…';
   }
   function hideProcessing() {
+    if (typeof hideBrandLoader === 'function') hideBrandLoader();
     const overlay = document.getElementById('processingOverlay');
     if (overlay) overlay.classList.remove('show');
   }

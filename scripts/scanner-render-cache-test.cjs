@@ -12,5 +12,7 @@ vm.runInNewContext(fs.readFileSync('public/js/scan-renderer.js','utf8'),scope);
  assert.equal(first,reused);assert.equal(processed,1);
  assert.equal(first.width,1200);assert.equal(first.height,1600);
  await r.render(image,'enhance');assert.equal(processed,2);
+ await r.render(image,'original');assert.equal(processed,2);
+ await r.render(image,'original',{contrast:10});assert.equal(processed,3);
  console.log('PASS: stale work skipped, identical preview/export reused, full dimensions retained, changed filter rendered.');
 })();

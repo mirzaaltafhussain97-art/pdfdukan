@@ -717,7 +717,9 @@ function _sortCorners(pts) {
 function getFallbackCorners(img) {
   const w  = img.naturalWidth  || img.width;
   const h  = img.naturalHeight || img.height;
-  const px = Math.round(Math.min(w, h) * 0.05);
+  // With no reliable boundary, preserve all pixels. An arbitrary inset can
+  // remove writing on already-cropped pages or documents touching the frame.
+  const px = 0;
   return {
     tl: { x: px,     y: px     },
     tr: { x: w - px, y: px     },

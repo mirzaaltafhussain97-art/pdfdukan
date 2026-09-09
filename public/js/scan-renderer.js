@@ -47,7 +47,12 @@ window.ScanRenderer = (() => {
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, 0, 0);
-      await process(canvas, filter, settings);
+      // Original with neutral controls already has exactly the requested pixels.
+      // Avoid a full-image readback, worker transfer and writeback in this case.
+      if (filter !== 'original' || settings.brightness || settings.contrast ||
+          settings.sharpness || settings.saturation) {
+        await process(canvas, filter, settings);
+      }
       cached = { image, key, canvas };
       return canvas;
     });
