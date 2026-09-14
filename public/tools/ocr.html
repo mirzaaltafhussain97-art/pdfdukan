@@ -274,6 +274,7 @@
           <div class="ocr-actions">
             <button class="btn btn-secondary btn-sm" id="copyBtn" type="button" disabled>📋 Copy text</button>
             <button class="btn btn-secondary btn-sm" id="downloadTxtBtn" type="button" disabled>📥 Download TXT</button>
+            <button class="btn btn-secondary btn-sm" id="downloadWordBtn" type="button" disabled>📝 Download Word</button>
           </div>
         </div>
         <textarea class="ocr-result" id="ocrOutput" aria-label="Editable extracted text" dir="auto" spellcheck="true" placeholder="Recognised text will appear here. You can edit it before copying or downloading." readonly></textarea>
@@ -396,7 +397,8 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="../js/app.js?v=20260825i"></script>
-<script src="../js/tools.js?v=20260825i"></script>
+<script src="../js/tools.js?v=20260912c"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js" defer></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

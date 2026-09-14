@@ -153,14 +153,14 @@ const nextConfig = {
     // key to 'Content-Security-Policy' to enforce.
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.googleadservices.com https://adservice.google.com https://*.google.com https://cdnjs.cloudflare.com https://apis.google.com https://accounts.google.com blob:",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.googleadservices.com https://adservice.google.com https://*.google.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://cdn.zetaoffice.net https://apis.google.com https://accounts.google.com blob:",
       "worker-src 'self' blob:",
       "child-src 'self' blob:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com",
       "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:",
       "img-src 'self' data: blob: https:",
       "media-src 'self' blob: data:",
-      "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googleapis.com https://*.google.com https://pagead2.googlesyndication.com blob: data:",
+      "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.googleapis.com https://*.google.com https://pagead2.googlesyndication.com https://cdn.jsdelivr.net https://cdn.zetaoffice.net blob: data:",
       "frame-src 'self' https://accounts.google.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com https://www.youtube-nocookie.com",
       "object-src 'none'",
       "base-uri 'self'",
@@ -189,6 +189,15 @@ const nextConfig = {
         headers: [
           { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
           { key: 'Pragma', value: 'no-cache' },
+        ],
+      },
+      {
+        // ZetaOffice uses SharedArrayBuffer/WebAssembly threads. Isolate only
+        // this converter so the rest of the site keeps normal embed behavior.
+        source: '/tools/word-to-pdf.html',
+        headers: [
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
         ],
       },
       // Versioned static assets — immutable 1-year cache.

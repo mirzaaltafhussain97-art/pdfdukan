@@ -45,6 +45,10 @@ const ScannerApp = (() => {
   };
 
   let cropEditor = null;
+  function _snapshotCrop() {
+    return { img: cropEditor.img, rotation: cropEditor.rotation,
+      corners: JSON.parse(JSON.stringify(cropEditor.corners)) };
+  }
 
   /* ── INIT ─────────────────────────────────────────────────── */
   function init() {
@@ -86,6 +90,10 @@ const ScannerApp = (() => {
       if (el) el.classList.toggle('active', s === name);
     });
     state.screen = name;
+    if (name !== 'filter') {
+      ++previewVersion;
+      clearTimeout(previewTimer);
+    }
 
     // Update step indicator
     document.querySelectorAll('.scanner-step').forEach((el, i) => {
@@ -312,7 +320,7 @@ const ScannerApp = (() => {
     });
 
     // Show batch banner when multiple images are queued
-    const remaining = state.queue.length - state.queueIndex - 1;
+    const remaining = state.editingIndex >= 0 ? 0 : state.queue.length - state.queueIndex - 1;
     const banner = document.getElementById('batchBanner');
     const bannerMsg = document.getElementById('batchBannerMsg');
     if (banner) {
@@ -360,23 +368,27 @@ const ScannerApp = (() => {
     const version = ++previewVersion;
     clearTimeout(previewTimer);
     const status = document.getElementById('scanPreviewStatus');
-    if (status) status.textContent = 'Preparing full-quality preview…';
+    if (status) status.textContent = 'Preparing preview…';
     const canvas = document.getElementById('previewCanvas');
     if (canvas) canvas.style.opacity = '.45';
+    const busy = document.getElementById('filterBusy');
+    if (busy) busy.hidden = false;
     const doneButtons = ['btnAddPage', 'btnAddPageMain', 'btnBatchAll'];
     doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = true; });
     previewTimer = setTimeout(async () => {
       try {
-        const result = await ScanRenderer.render(state._currentCropped, state.currentFilter, state.adjustments, () => version === previewVersion);
+        const result = await ScanRenderer.preview(state._currentCropped, state.currentFilter, state.adjustments, () => version === previewVersion);
         if (!result || version !== previewVersion) return;
         ScanRenderer.fit(result, canvas, 1320, 1000);
         canvas.style.opacity = '1';
+        if (busy) busy.hidden = true;
         const mini = document.getElementById('procMini');
         if (mini) ScanRenderer.fit(result, mini, 280, 200);
         doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = false; });
-        if (status) status.textContent = 'Ready to save · Check the text and edges before continuing.';
+        if (status) status.textContent = 'Preview ready · Full resolution is preserved when you export.';
       } catch (error) {
         if (version !== previewVersion) return;
+        if (busy) busy.hidden = true;
         if (status) status.textContent = 'Preview failed. Please retry or choose Original.';
         toast(error.message, 'error');
       }
@@ -431,12 +443,14 @@ const ScannerApp = (() => {
      items without stopping for user input on each one.         */
   async function _batchProcessRemaining() {
     const img = state._currentCropped;
-    if (!img) return;
+    if (!img || state.editingIndex >= 0 || state.batchRunning) return;
+    state.batchRunning = true;
 
     // First: save the current image as a page
     state.pages.push({
       id: Date.now() + Math.random(),
       croppedImg: img,
+      cropState: _snapshotCrop(),
       filter: state.currentFilter,
       adjustments: { ...state.adjustments },
     });
@@ -446,10 +460,11 @@ const ScannerApp = (() => {
     const savedAdjustments = { ...state.adjustments };
     const remaining        = state.queue.length - state.queueIndex;
 
-    if (remaining === 0) { showScreen('pages'); _renderPages(); return; }
+    if (remaining === 0) { state.batchRunning = false; showScreen('pages'); _renderPages(); return; }
 
     showProcessing(`Auto-processing ${remaining} remaining image${remaining > 1 ? 's' : ''}…`);
 
+    let failed = 0;
     for (let i = state.queueIndex; i < state.queue.length; i++) {
       const item = state.queue[i];
       const processedImg = item.img
@@ -459,18 +474,20 @@ const ScannerApp = (() => {
         state.pages.push({
           id: Date.now() + Math.random(),
           croppedImg: processedImg,
+          cropState: _snapshotCrop(),
           filter: savedFilter,
           adjustments: { ...savedAdjustments },
         });
-      }
+      } else { failed++; }
       // Update progress message
       const done = i - state.queueIndex + 1;
       showProcessing(`Processed ${done} of ${remaining} images…`);
     }
 
     state.queueIndex = state.queue.length;
+    state.batchRunning = false;
     hideProcessing();
-    toast(`✓ All ${state.pages.length} pages ready!`, 'success');
+    toast(failed ? `${state.pages.length} pages ready; ${failed} images could not be read. Please import those again.` : `✓ All ${state.pages.length} pages ready!`, failed ? 'warning' : 'success');
     showScreen('pages');
     _renderPages();
   }
@@ -481,7 +498,7 @@ const ScannerApp = (() => {
       const reader = new FileReader();
       reader.onload = e => {
         const img = new Image();
-        img.onload  = () => _autoProcessLoadedImage(img).then(resolve);
+        img.onload  = () => _autoProcessLoadedImage(img).then(resolve, () => resolve(null));
         img.onerror = () => resolve(null);
         img.src = e.target.result;
       };
@@ -512,6 +529,9 @@ const ScannerApp = (() => {
       return cropped;
     } catch (err) {
       console.warn('Auto-process failed for image, using original:', err);
+      cropEditor.img = img;
+      cropEditor.rotation = 0;
+      cropEditor.corners = getFallbackCorners(img);
       return img;
     }
   }
@@ -529,7 +549,7 @@ const ScannerApp = (() => {
     }
 
     const wasEditing = state.editingIndex >= 0;
-    const cropState = { img: cropEditor.img, rotation: cropEditor.rotation, corners: JSON.parse(JSON.stringify(cropEditor.corners)) };
+    const cropState = _snapshotCrop();
     if (wasEditing) {
       state.pages[state.editingIndex].cropState = cropState;
       // Update existing page
@@ -576,8 +596,8 @@ const ScannerApp = (() => {
       imgWrap.className = 'pt-img';
 
       const c = document.createElement('canvas');
-      ScanRenderer.render(page.croppedImg, page.filter, page.adjustments).then(result => {
-        if (c.isConnected) ScanRenderer.fit(result, c, 160, 180);
+      ScanRenderer.preview(page.croppedImg, page.filter, page.adjustments, () => c.isConnected).then(result => {
+        if (result && c.isConnected) ScanRenderer.fit(result, c, 160, 180);
       }).catch(error => { if (c.isConnected) c.replaceWith(document.createTextNode('Preview unavailable')); console.warn(error); });
       imgWrap.appendChild(c);
 
@@ -776,13 +796,7 @@ const ScannerApp = (() => {
     const fallback = 'PDFdukan.com_' + new Date().toISOString().slice(0, 10);
 
     // Ask for a file name; the rest are auto-numbered in the same pattern.
-    const promptMsg = multi
-      ? `Enter a file name for your ${state.pages.length} images.\n\n` +
-        `They will be saved together in one ZIP as:\n` +
-        `"<name>_01.${ext}", "<name>_02.${ext}", …`
-      : `Enter a file name for your image:`;
-    const input = prompt(promptMsg, fallback);
-    if (input === null) return; // user cancelled
+    const input = document.getElementById('scanExportName')?.value || fallback;
     const base = _sanitizeBaseName(input, fallback);
 
     showProcessing(multi ? `Packaging ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');

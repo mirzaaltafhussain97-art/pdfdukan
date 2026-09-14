@@ -1,7 +1,7 @@
 /* One full-resolution treatment for preview, thumbnails and every export.
    Keep only the most recent result, rather than retaining a canvas per page. */
 window.ScanRenderer = (() => {
-  const workerUrl = new URL('scan-filter-worker.js?v=20260909b', document.currentScript.src);
+  const workerUrl = new URL('scan-filter-worker.js?v=20260909c', document.currentScript.src);
   let worker, workerFailed = false, cached, queue = Promise.resolve();
 
   async function process(canvas, filter, adjustments) {
@@ -46,7 +46,7 @@ window.ScanRenderer = (() => {
       if (!canvas.width || !canvas.height) throw new Error('The scan image is not ready.');
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
       // Original with neutral controls already has exactly the requested pixels.
       // Avoid a full-image readback, worker transfer and writeback in this case.
       if (filter !== 'original' || settings.brightness || settings.contrast ||
@@ -66,5 +66,10 @@ window.ScanRenderer = (() => {
     target.height = Math.max(1, Math.round(source.height * scale));
     target.getContext('2d').drawImage(source, 0, 0, target.width, target.height);
   }
-  return { render, fit };
+  // Preview and export share one full-resolution render. The visible preview is
+  // fitted to the UI canvas afterward, so approved pixels and exported pixels match.
+  function preview(image, filter, adjustments = {}, isCurrent = () => true) {
+    return render(image, filter, adjustments, isCurrent);
+  }
+  return { render, preview, fit };
 })();

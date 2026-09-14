@@ -650,6 +650,22 @@ function _findBestQuad(contours, imgArea) {
    Returns 0 for invalid/degenerate quads (concave, too small/large,
    any edge shorter than 4% of image diagonal).
 ═══════════════════════════════════════════════════════════════ */
+function _validDetectedQuad(corners, img) {
+  const w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+  const pts = ['tl', 'tr', 'br', 'bl'].map(key => corners?.[key]);
+  if (!pts.every(p => p && Number.isFinite(p.x) && Number.isFinite(p.y) &&
+    p.x >= 0 && p.x <= w && p.y >= 0 && p.y <= h)) return false;
+  let sign = 0, area = 0;
+  for (let i = 0; i < 4; i++) {
+    const a = pts[i], b = pts[(i+1)%4], c = pts[(i+2)%4];
+    const cross = (b.x-a.x)*(c.y-b.y)-(b.y-a.y)*(c.x-b.x);
+    if (Math.abs(cross) < 1 || (sign && Math.sign(cross) !== sign)) return false;
+    sign = Math.sign(cross);
+    area += a.x*b.y-b.x*a.y;
+  }
+  return Math.abs(area)/2 >= w*h*.01;
+}
+
 function _scoreQuad(corners, imgArea) {
   const pts = [corners.tl, corners.tr, corners.br, corners.bl];
 
@@ -770,13 +786,25 @@ class CropEditor {
 
     let mlCorners = null;
     try {
-      mlCorners = window.MLDetector ? await window.MLDetector.detect(img) : null;
+      if (window.MLDetector) {
+        const detection = window.MLDetector.detect(img);
+        mlCorners = await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => {
+            console.warn('ML detection timed out; continuing with local fallbacks.');
+            resolve(null);
+          }, 12000);
+          detection.then(value => { clearTimeout(timer); resolve(value); }, error => { clearTimeout(timer); reject(error); });
+        });
+      }
     } catch (e) { mlCorners = null; }
 
-    const paperCorners = window.detectPaperBoundary ? window.detectPaperBoundary(img, mlCorners) : null;
+    if (!_validDetectedQuad(mlCorners, img)) mlCorners = null;
+    let paperCorners = window.detectPaperBoundary ? window.detectPaperBoundary(img, mlCorners) : null;
+    if (!_validDetectedQuad(paperCorners, img)) paperCorners = null;
     if (paperCorners || mlCorners) {
       const candidate = paperCorners || mlCorners;
-      this.corners = window.refineDocumentEdges ? window.refineDocumentEdges(img, candidate) : candidate;
+      const refined = window.refineDocumentEdges ? window.refineDocumentEdges(img, candidate) : candidate;
+      this.corners = _validDetectedQuad(refined, img) ? refined : candidate;
       this.autoDetected = true;
       _showMLBadge(!!paperCorners);
     } else {

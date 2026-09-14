@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Word to PDF Converter — Free Online Tool | PDFdukan</title>
-<meta name="description" content="Convert Word documents (DOCX) to PDF free online. Uses mammoth.js to parse DOCX files and jsPDF to render a PDF. Runs in your browser — no file upload required.">
+<meta name="description" content="Convert DOCX to PDF privately in your browser with a full office rendering engine for high-fidelity fonts, images, shapes, text boxes and page layout.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/word-to-pdf.html">
 <meta property="og:title" content="Word to PDF Converter — Free Online Tool | PDFdukan">
-<meta property="og:description" content="Convert Word documents (DOCX) to PDF free online. Uses mammoth.js to parse DOCX files and jsPDF to render a PDF. Runs in your browser — no file upload required.">
+<meta property="og:description" content="Convert DOCX to PDF privately in your browser with high-fidelity page layout, images, shapes, text boxes and fonts.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -29,7 +29,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
 <meta name="twitter:title" content="Word to PDF Converter — Free Online Tool | PDFdukan">
-<meta name="twitter:description" content="Convert Word documents (DOCX) to PDF free online. Uses mammoth.js to parse DOCX files and jsPDF to render a PDF. Runs in your browser — no file upload required.">
+<meta name="twitter:description" content="Private, high-fidelity DOCX to PDF conversion in your browser with a full office rendering engine.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -37,10 +37,9 @@
 <link rel="stylesheet" href="../css/style.css?v=20260825i">
 <!-- mammoth.js for DOCX preview -->
 <script defer src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
-<!-- jsPDF for PDF generation -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<!-- JSZip for reading DOCX XML directly (accurate alignment/formatting) -->
+<!-- JSZip reads DOCX metadata locally; pdf-lib normalises fitted pages back to the source paper size. -->
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <style>
 /* ── Word to PDF specific ── */
 .wtp-preview-wrap {
@@ -72,6 +71,37 @@
 .wtp-preview-wrap td, .wtp-preview-wrap th { border: 1px solid #ccc; padding: 6px 10px; }
 .wtp-preview-wrap strong { font-weight: 700; }
 .wtp-preview-wrap em { font-style: italic; }
+.wtp-engine-note {
+  margin: 12px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(21,101,192,.22);
+  border-radius: 10px;
+  background: rgba(21,101,192,.07);
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.wtp-engine-note strong { color: var(--text); }
+.wtp-pdf-preview {
+  width: 100%;
+  height: min(74vh, 780px);
+  min-height: 480px;
+  margin: 16px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #e9edf2;
+}
+.wtp-result-meta {
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: var(--card-2);
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+@media (max-width: 620px) {
+  .wtp-pdf-preview { min-height: 400px; height: 62vh; }
+}
 
 .wtp-file-info {
   background: var(--card-2);
@@ -272,11 +302,11 @@
   <div class="tool-hero">
     <div class="tool-hero-icon" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📄</div>
     <h1>Word to PDF Converter</h1>
-    <p>Convert DOCX Word documents to PDF instantly in your browser. No upload, no account — completely private.</p>
+    <p>Convert DOCX to PDF with Microsoft Word locally or the full browser office engine on the hosted site.</p>
   </div>
   <figure class="page-feature-figure" data-page-feature>
     <img src="../images/word-to-pdf.svg" width="720" height="420" loading="lazy" decoding="async" alt="Word document content moving into a fixed-layout PDF">
-    <figcaption>Render DOCX content in the browser, compare the preview and then export the PDF.</figcaption>
+    <figcaption>Preserve Word page geometry, text boxes, floating images and shapes, then inspect the real PDF before downloading.</figcaption>
   </figure>
 
 
@@ -289,7 +319,7 @@
       <div class="dz-inner">
         <div class="dz-icon">📝</div>
         <div class="dz-text">Drop your .docx file here or <span class="dz-link">browse</span></div>
-        <div class="dz-sub">Supports .docx — processed locally in your browser</div>
+        <div class="dz-sub">Supports .docx — converted by the local preview server on this computer</div>
       </div>
       <input type="file" id="fileInput" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none">
     </div>
@@ -310,7 +340,7 @@
 
   <!-- Settings + Preview -->
   <div class="tool-card" id="settingsCard" style="display:none">
-    <h3><span class="tc-icon">⚙️</span> Document Settings</h3>
+    <h3><span class="tc-icon">⚙️</span> Document &amp; Quality Check</h3>
 
     <div id="wtpFileInfo" class="wtp-file-info">
       <div class="wtp-file-icon">📝</div>
@@ -320,39 +350,28 @@
       </div>
     </div>
 
-    <div class="wtp-opt-row">
-      <div class="wtp-opt-group">
-        <label>Page Size</label>
-        <select class="wtp-select" id="pageSize">
-          <option value="a4">A4 (210 × 297mm)</option>
-          <option value="letter">Letter (8.5 × 11in)</option>
-          <option value="legal">Legal (8.5 × 14in)</option>
-        </select>
-      </div>
-      <div class="wtp-opt-group">
-        <label>Margin</label>
-        <select class="wtp-select" id="pageMargin">
-          <option value="10">Normal (10mm)</option>
-          <option value="15">Wide (15mm)</option>
-          <option value="5">Narrow (5mm)</option>
-        </select>
-      </div>
-      <button class="wtp-convert-btn" id="convertBtn" onclick="WordToPDF.convert()" disabled>
-        📄 Convert to PDF
+    <div class="wtp-engine-note" id="engineNote">
+      <strong>Adaptive conversion:</strong> the local preview prefers Microsoft Word, with LibreOffice as a fallback. If no local converter is available, the hosted page uses a browser office engine without sending the DOCX to an external conversion API.
+    </div>
+
+    <div class="wtp-opt-row" style="position:sticky;top:8px;z-index:3;background:var(--card);padding:10px 0;border-bottom:1px solid var(--border)">
+      <button class="wtp-convert-btn" id="convertBtn" onclick="WordToPDF.convert()" disabled style="width:100%;min-height:50px;font-size:16px">
+        📄 High-Fidelity Convert
       </button>
     </div>
 
-    <!-- Live preview -->
-    <div style="font-size:13px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Document Preview</div>
-    <div class="wtp-preview-wrap">
-      <div id="docPreview"></div>
+    <div class="wtp-preview-note" style="margin-top:14px;padding:12px 14px;border:1px solid var(--border);border-radius:10px;color:var(--text-2);font-size:13px">
+      <strong>Ready to convert.</strong> Click <strong>High-Fidelity Convert</strong> to generate the PDF. Inspect fonts, images, tables and pagination in the result.
     </div>
+    <div id="docPreview" hidden></div>
   </div>
 
   <!-- Result -->
   <div class="tool-card" id="resultSection" style="display:none">
     <h3><span class="tc-icon">✅</span> PDF Ready</h3>
-    <p style="color:var(--text-2);margin-bottom:14px">Your PDF has been generated. Click below to download it.</p>
+    <p style="color:var(--text-2);margin-bottom:14px">Inspect the actual generated PDF below, then download it.</p>
+    <div class="wtp-result-meta" id="resultMeta"></div>
+    <iframe class="wtp-pdf-preview" id="pdfPreview" title="Generated PDF preview"></iframe>
     <div style="display:flex;gap:10px;flex-wrap:wrap">
       <button style="flex:1;min-width:180px;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer" onclick="WordToPDF.download()">
         ⬇️ Download PDF
@@ -362,14 +381,15 @@
       </button>
     </div>
   </div>
+  <canvas id="qtcanvas" aria-hidden="true" style="display:none"></canvas>
 
   <div class="ad-slot" style="margin-top:24px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Convert Word documents (DOCX) to PDF free online. Uses mammoth.js to parse DOCX files and jsPDF to render a PDF. Runs in your browser — no file upload required.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature claims reviewed 24 August 2026</span><span>DOCX is reconstructed, not rendered by Microsoft Word · Preview required</span></aside>
-<h2>Convert Word to PDF Online — Free, Fast &amp; Private</h2>
-<p>PDFdukan's Word to PDF converter transforms Microsoft Word documents (.docx) into PDF files in your browser. It preserves common headings, paragraphs, tables, images, and text formatting, although complex Word layouts can differ from Microsoft Word's own PDF export. Your document is never uploaded to our server or stored in the cloud.</p>
-<p>PDF is the universal format for sharing documents professionally. When you send a Word file, it can look different on the recipient's computer depending on which version of Word they have, which fonts are installed, and their page settings. Once generated, the PDF keeps its own page layout across viewers. Because browser conversion can differ from Microsoft Word, check the preview and downloaded PDF before submitting an important document.</p>
+  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> The local preview uses Microsoft Word when available. The hosted site falls back to a full browser office engine and always shows the actual generated PDF before download.</div>
+<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Conversion engine and claims reviewed 27 August 2026</span><span>Full office rendering, not paragraph reconstruction · Final preview still required</span></aside>
+<h2>Convert Word to PDF Online — High Fidelity &amp; Private</h2>
+<p>The local preview sends the DOCX only to the preview server on this computer. Installed Microsoft Word renders it when available; LibreOffice is used as a native fallback. Temporary conversion files are removed after the request.</p>
+<p>On the hosted site, the DOCX stays in browser memory and is rendered by a downloaded browser office engine. Microsoft Word remains the reference renderer for DOCX. The result reports the authoritative generated-PDF page count without resizing the document.</p>
 
 <h2>Who Needs a Word to PDF Converter?</h2>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
@@ -393,15 +413,15 @@
 
 <h2>How to Convert Word to PDF in 3 Steps</h2>
 <ol>
-  <li><strong>Upload your Word file</strong> — Click the upload area or drag and drop your .docx file. The file is loaded directly into your browser — nothing is sent to a server.</li>
-  <li><strong>Preview your document</strong> — The tool renders a preview of your Word document so you can confirm the content looks correct before converting.</li>
-  <li><strong>Download your PDF</strong> — Click the Convert to PDF button. Preview the result first, because complex templates, charts, fonts, and page layouts can differ from Word's native export.</li>
+  <li><strong>Choose your Word file</strong> — Select a DOCX file up to 50 MB.</li>
+  <li><strong>Convert</strong> — Click High-Fidelity Convert to send it to the local preview server running the best installed office engine.</li>
+  <li><strong>Inspect and download</strong> — Review the actual PDF preview, especially fonts and pagination, then download the file.</li>
 </ol>
 
 <h2>What Formatting Is Preserved?</h2>
 <ul>
   <li><strong>Text formatting:</strong> Bold, italic, underline, font sizes, and paragraph styles are carried over to the PDF.</li>
-  <li><strong>Tables:</strong> Tables with borders, merged cells, and text alignment are fully supported.</li>
+  <li><strong>Tables:</strong> Borders, merged cells, cell shading and alignment are rendered by the office engine.</li>
   <li><strong>Images:</strong> Embedded images in your Word document appear in the PDF at their original positions.</li>
   <li><strong>Headings and structure:</strong> Heading 1, Heading 2, and paragraph styles are preserved in the PDF output.</li>
   <li><strong>Lists:</strong> Bulleted and numbered lists convert correctly with proper indentation.</li>
@@ -413,17 +433,17 @@
 <p>Additionally, many portals and email systems only accept PDF. Government job applications, university submissions, visa applications, and most professional document workflows require PDF format. Converting from Word to PDF ensures your documents pass validation checks on these platforms.</p>
 
 <h2>Frequently Asked Questions</h2>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does converting Word to PDF preserve all formatting?</button><div class="faq-a"><p>Common headings, paragraphs, basic text styling, tables, and many images are supported. Complex layouts, custom fonts, macros, charts, headers, footers, and pagination can differ from Microsoft Word. Always preview critical documents.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does converting Word to PDF preserve all formatting?</button><div class="faq-a"><p>The full office engine supports text boxes, floating images, shapes, headers, footers, tables, columns and page settings. Microsoft Word is still the reference renderer, so unavailable fonts, fields, SmartArt, macros or some advanced objects can differ. Inspect the generated PDF before critical use.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it support .doc (older Word format) files?</button><div class="faq-a"><p>The tool is optimised for .docx (Word 2007 and later), which is the standard format today. If you have an older .doc file, open it in Microsoft Word, Google Docs, or LibreOffice and save it as .docx first. This takes 30 seconds and is free.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my Word document uploaded to a server?</button><div class="faq-a"><p>Core DOCX reading and PDF generation use client-side Mammoth and jsPDF. The selected document is not sent to PDFdukan for conversion, although the page can still request normal site assets, analytics and third-party libraries.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a page limit for the Word document?</button><div class="faq-a"><p>There is no fixed page limit, but browser memory and document complexity set the practical limit. Long or image-heavy documents can be slow or fail on low-memory devices; split them or use Microsoft Word for critical output.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my Word document uploaded to a server?</button><div class="faq-a"><p>On the hosted site, conversion runs in browser memory and the DOCX is not sent to an external conversion API. In the local preview, it is sent only to the preview server on the same computer so Microsoft Word or LibreOffice can render it; temporary files are removed afterward.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is there a page limit for the Word document?</button><div class="faq-a"><p>There is no fixed page limit. Files over 50 MB are rejected and each conversion has a two-minute safety limit.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a Word CV to PDF for job applications?</button><div class="faq-a"><p>Yes — this is one of the most common uses. Upload your CV in .docx format, preview it to confirm it looks correct, then download the PDF. Most HR systems and job portals (Rozee.pk, LinkedIn, Indeed) accept and prefer PDF CVs because they display consistently across all devices and cannot be accidentally modified.</p></div></div>
 <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the PDF have a watermark?</button><div class="faq-a"><p>No. PDFdukan never adds watermarks, logos, or any branding to your converted PDF. The output is a clean, professional document ready to submit or share.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>PDFdukan currently offers this conversion without a subscription, per-file fee or account. Browser memory, document complexity and device limits determine the practical file size.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>Yes. The converter works on any Android or iPhone browser. Open PDFdukan in Chrome, Safari, or Samsung Internet on your phone, tap to upload your Word file, and download the PDF — all without installing any app.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How is this different from Microsoft Word's built-in Save as PDF?</button><div class="faq-a"><p>Microsoft Word's own PDF export usually preserves complex Word layouts most faithfully because Word renders its native format. PDFdukan is a browser-based option when Word is unavailable; always preview fonts, pagination, tables and images before relying on the result.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a"><p>PDFdukan currently offers this local conversion without a subscription, per-file fee or account.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile phones?</button><div class="faq-a"><p>The hosted browser engine is large and works best in a current desktop Chrome or Edge browser. High-memory phones may work, but complex documents can exceed mobile memory.</p></div></div>
+<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How is this different from Microsoft Word's built-in Save as PDF?</button><div class="faq-a"><p>The local preview calls Word's own fixed-format PDF export when Word is installed. The hosted site uses a browser office engine instead, so the generated preview must be checked for advanced Word-only features.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does converting Word to PDF preserve all formatting?","acceptedAnswer":{"@type":"Answer","text":"Common headings, paragraphs, basic text styling, tables, and many images are supported. Complex layouts, custom fonts, macros, charts, headers, footers, and pagination can differ from Microsoft Word. Always preview critical documents."}},{"@type":"Question","name":"Does it support .doc (older Word format) files?","acceptedAnswer":{"@type":"Answer","text":"The tool is optimised for .docx (Word 2007 and later), which is the standard format today. If you have an older .doc file, open it in Microsoft Word, Google Docs, or LibreOffice and save it as .docx first. This takes 30 seconds and is free."}},{"@type":"Question","name":"Is my Word document uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"Core DOCX reading and PDF generation use client-side Mammoth and jsPDF. The selected document is not sent to PDFdukan for conversion, although the page can still request normal site assets, analytics and third-party libraries."}},{"@type":"Question","name":"Is there a page limit for the Word document?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed page limit, but browser memory and document complexity set the practical limit. Long or image-heavy documents can be slow or fail on low-memory devices; split them or use Microsoft Word for critical output."}},{"@type":"Question","name":"Can I convert a Word CV to PDF for job applications?","acceptedAnswer":{"@type":"Answer","text":"Yes — this is one of the most common uses. Upload your CV in .docx format, preview it to confirm it looks correct, then download the PDF. Most HR systems and job portals (Rozee.pk, LinkedIn, Indeed) accept and prefer PDF CVs because they display consistently across all devices and cannot be accidentally modified."}},{"@type":"Question","name":"Will the PDF have a watermark?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan never adds watermarks, logos, or any branding to your converted PDF. The output is a clean, professional document ready to submit or share."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan currently offers this conversion without a subscription, per-file fee or account. Browser memory, document complexity and device limits determine the practical file size."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. The converter works on any Android or iPhone browser. Open PDFdukan in Chrome, Safari, or Samsung Internet on your phone, tap to upload your Word file, and download the PDF — all without installing any app."}},{"@type":"Question","name":"How is this different from Microsoft Word's built-in Save as PDF?","acceptedAnswer":{"@type":"Answer","text":"Microsoft Word's own PDF export usually preserves complex Word layouts most faithfully because Word renders its native format. PDFdukan is a browser-based option when Word is unavailable; always preview fonts, pagination, tables and images before relying on the result."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does converting Word to PDF preserve all formatting?","acceptedAnswer":{"@type":"Answer","text":"The local converter prefers Microsoft Word, the native DOCX renderer, and supports text boxes, floating images, shapes, headers, footers, tables, columns and page settings. Inspect the generated PDF before critical use."}},{"@type":"Question","name":"Does it support .doc (older Word format) files?","acceptedAnswer":{"@type":"Answer","text":"The tool supports .docx files from Word 2007 and later. Open an older .doc file in Microsoft Word, Google Docs or LibreOffice and save it as .docx first."}},{"@type":"Question","name":"Is my Word document uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"The DOCX is sent to the local preview server on the same computer. A temporary per-request folder is used and removed after conversion; this implementation does not send the document to an external conversion API."}},{"@type":"Question","name":"Is there a page limit for the Word document?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed page limit. The tool rejects files over 50 MB and allows up to two minutes for conversion."}},{"@type":"Question","name":"Can I convert a Word CV to PDF for job applications?","acceptedAnswer":{"@type":"Answer","text":"Yes. The native Word engine retains CV text boxes, floating images, shapes and page geometry. Inspect the actual PDF preview before submitting it."}},{"@type":"Question","name":"Will the PDF have a watermark?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan does not add a watermark or branding to the converted PDF."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan currently offers this local conversion without a subscription, per-file fee or account."}},{"@type":"Question","name":"Does it work on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"This local native-office implementation requires the preview server and an installed office application, so it is intended for the configured desktop environment."}},{"@type":"Question","name":"How is this different from Microsoft Word's built-in Save as PDF?","acceptedAnswer":{"@type":"Answer","text":"When Microsoft Word is installed, PDFdukan calls Word's own fixed-format PDF export and adds an in-browser preview and page-count check."}}]}</script>
 <nav class="mobile-nav">
   <div class="mob-nav-items">
     <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
@@ -477,442 +497,7 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 <script src="../js/app.js?v=20260825i"></script>
-<script>
-/* ── Word to PDF Engine ─────────────────────────────────────── */
-const WordToPDF = (() => {
-  let _pdfBlob   = null;
-  let _docxBytes = null;   // raw ArrayBuffer — used by convert() for XML parsing
-  let _fileName  = 'document';
-
-  const W_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
-  const R_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
-
-  /* ── namespace-safe attribute reader ── */
-  function wAttr(el, name) {
-    if (!el) return null;
-    return el.getAttributeNS(W_NS, name) || el.getAttribute('w:' + name) || el.getAttribute(name);
-  }
-  function rAttr(el, name) {
-    if (!el) return null;
-    return el.getAttributeNS(R_NS, name) || el.getAttribute('r:' + name) || el.getAttribute(name);
-  }
-
-  function _showProgress(pct, msg) {
-    const fill = document.getElementById('progressFill');
-    const lbl  = document.getElementById('progressLabel');
-    if (fill) fill.style.width = pct + '%';
-    if (lbl)  lbl.textContent  = msg || pct + '%';
-  }
-
-  function _fmtBytes(bytes) {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(2) + ' MB';
-  }
-
-  /* ── Init drop-zone ── */
-  function init() {
-    const zone  = document.getElementById('dropZone');
-    const input = document.getElementById('fileInput');
-    if (!zone) return;
-    zone.addEventListener('click', () => input && input.click());
-    zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') input.click(); });
-    ['dragenter','dragover'].forEach(ev =>
-      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); }));
-    ['dragleave','drop'].forEach(ev =>
-      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag'); }));
-    zone.addEventListener('drop', e => {
-      const f = [...e.dataTransfer.files]; if (f.length) loadFile(f);
-    });
-    if (input) input.addEventListener('change', e => loadFile([...e.target.files]));
-  }
-
-  /* ── Load & preview ── */
-  async function loadFile(files) {
-    const file = files.find(f =>
-      f.name.endsWith('.docx') ||
-      f.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    );
-    if (!file) {
-      toast('Please upload a .docx Word document', 'error');
-      document.getElementById('wtpWarning').style.display = '';
-      return;
-    }
-
-    _fileName  = file.name.replace(/\.docx$/i, '');
-    _pdfBlob   = null;
-    _docxBytes = null;
-
-    document.getElementById('progressCard').style.display   = '';
-    document.getElementById('settingsCard').style.display   = 'none';
-    document.getElementById('resultSection').style.display  = 'none';
-    _showProgress(10, 'Parsing document…');
-
-    try {
-      const ab   = await file.arrayBuffer();
-      _docxBytes = ab.slice(0);   // store copy for convert()
-
-      _showProgress(40, 'Extracting content…');
-
-      /* mammoth: used only for the visual preview */
-      const result = await mammoth.convertToHtml({ arrayBuffer: ab }, {
-        styleMap: [
-          "p[style-name='Heading 1'] => h1:fresh",
-          "p[style-name='Heading 2'] => h2:fresh",
-          "p[style-name='Heading 3'] => h3:fresh",
-          "b => strong", "i => em"
-        ],
-        convertImage: mammoth.images.imgElement(function(image) {
-          return image.read('base64').then(function(b64) {
-            return { src: 'data:' + image.contentType + ';base64,' + b64 };
-          });
-        })
-      });
-
-      _showProgress(80, 'Rendering preview…');
-      const preview = document.getElementById('docPreview');
-      if (preview) preview.innerHTML = result.value || '<p style="color:#999">(Empty document)</p>';
-
-      document.getElementById('wtpFileName').textContent = file.name;
-      document.getElementById('wtpFileSize').textContent = _fmtBytes(file.size) + ' · DOCX';
-
-      _showProgress(100, 'Ready to convert');
-      document.getElementById('progressCard').style.display  = 'none';
-      document.getElementById('settingsCard').style.display  = '';
-      document.getElementById('convertBtn').disabled = false;
-      toast('Document loaded! Click "Convert to PDF" to generate your PDF.', 'success');
-    } catch (err) {
-      console.error(err);
-      toast('Failed to parse document: ' + err.message, 'error');
-      document.getElementById('progressCard').style.display = 'none';
-    }
-  }
-
-  /* ════════════════════════════════════════════════════════════
-     convert() — reads DOCX XML directly via JSZip so we can
-     honour paragraph alignment, bold, italic, font-size, line-
-     spacing, indentation, and embedded images exactly as they
-     appear in the original Word document.
-  ════════════════════════════════════════════════════════════ */
-  async function convert() {
-    const btn = document.getElementById('convertBtn');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Converting…'; }
-    document.getElementById('progressCard').style.display = '';
-    _showProgress(5, 'Opening document…');
-
-    try {
-      if (!_docxBytes) throw new Error('No document loaded — please upload a .docx file first.');
-
-      const pageSize = document.getElementById('pageSize')?.value  || 'a4';
-      const marginMm = +(document.getElementById('pageMargin')?.value || 10);
-      const { jsPDF }  = window.jspdf;
-      const JSZip      = window.JSZip;
-
-      /* ── 1. Unzip DOCX ── */
-      _showProgress(10, 'Reading document structure…');
-      const zip        = await JSZip.loadAsync(_docxBytes);
-      const docXmlText = await zip.file('word/document.xml').async('text');
-
-      /* ── 2. Load embedded images ── */
-      const imgStore  = {};   // filename → { dataUrl, ext }
-      const rIdToImg  = {};   // relationship-id → { dataUrl, ext }
-      const mimeMap   = { png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', gif:'image/gif', bmp:'image/bmp', webp:'image/webp' };
-
-      for (const path of Object.keys(zip.files)) {
-        if (!path.startsWith('word/media/')) continue;
-        const ext  = path.split('.').pop().toLowerCase();
-        const mime = mimeMap[ext] || 'image/jpeg';
-        const b64  = await zip.file(path).async('base64');
-        imgStore[path.split('/').pop()] = { dataUrl: 'data:' + mime + ';base64,' + b64, ext };
-      }
-
-      const relsFile = zip.file('word/_rels/document.xml.rels');
-      if (relsFile) {
-        const relsXml  = await relsFile.async('text');
-        const relsDom  = new DOMParser().parseFromString(relsXml, 'application/xml');
-        for (const rel of relsDom.getElementsByTagName('Relationship')) {
-          const type = rel.getAttribute('Type') || '';
-          if (!type.includes('image')) continue;
-          const id  = rel.getAttribute('Id') || '';
-          const tgt = (rel.getAttribute('Target') || '').split('/').pop();
-          if (imgStore[tgt]) rIdToImg[id] = imgStore[tgt];
-        }
-      }
-
-      /* ── 3. Parse document.xml ── */
-      _showProgress(25, 'Parsing XML…');
-      const xmlDoc = new DOMParser().parseFromString(docXmlText, 'application/xml');
-      const body   = xmlDoc.getElementsByTagNameNS(W_NS, 'body')[0];
-      if (!body) throw new Error('Could not find document body in XML');
-
-      /* ── 4. Set up jsPDF ── */
-      const doc    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: pageSize });
-      const pageW  = doc.internal.pageSize.getWidth();
-      const pageH  = doc.internal.pageSize.getHeight();
-      const usableW = pageW - marginMm * 2;
-      let   y       = marginMm;
-
-      function newPage() { doc.addPage(); y = marginMm; }
-      function ensureSpace(mm) { if (y + mm > pageH - marginMm) newPage(); }
-
-      /* ── 5. Paragraph renderer ── */
-      function renderPara(paraData) {
-        const { text, runs, align, indent, bold, italic, fontSize, lineSpaceFactor, isHeading, imgRef } = paraData;
-
-        /* handle embedded images */
-        if (imgRef && rIdToImg[imgRef]) {
-          const img = rIdToImg[imgRef];
-          const fmt = img.ext === 'jpg' || img.ext === 'jpeg' ? 'JPEG' : img.ext.toUpperCase();
-          const iW  = Math.min(usableW, 120);
-          const iH  = 80;   // fallback height — real dimensions not available without canvas
-          ensureSpace(iH + 4);
-          try { doc.addImage(img.dataUrl, fmt, marginMm, y, iW, iH); y += iH + 4; } catch(e) { /* skip */ }
-          return;
-        }
-
-        if (!text.trim()) {
-          /* empty paragraph → line gap */
-          const emptyH = fontSize * 0.3528 * lineSpaceFactor * 0.6;
-          ensureSpace(emptyH);
-          y += emptyH;
-          return;
-        }
-
-        /* font style — bold / italic / bolditalic */
-        let fontStyle = 'normal';
-        if (bold && italic) fontStyle = 'bolditalic';
-        else if (bold)      fontStyle = 'bold';
-        else if (italic)    fontStyle = 'italic';
-
-        /* heading spacing before */
-        if (isHeading) { ensureSpace(4); y += 3; }
-
-        doc.setFontSize(fontSize);
-        doc.setFont('helvetica', fontStyle);
-
-        const lhMm = fontSize * 0.3528 * lineSpaceFactor;
-
-        /* x position and pdf alignment based on Word alignment */
-        let xPos    = marginMm + indent;
-        let pdfAlign = 'left';
-        let wrapW   = usableW - indent;
-
-        if (align === 'center') { xPos = pageW / 2; pdfAlign = 'center'; wrapW = usableW; }
-        else if (align === 'right')  { xPos = pageW - marginMm; pdfAlign = 'right';  wrapW = usableW; }
-        /* 'both' (justified) — jsPDF has no native justify; render left-aligned */
-
-        const lines = doc.splitTextToSize(text, wrapW);
-        for (const line of lines) {
-          ensureSpace(lhMm);
-          doc.text(line, xPos, y, { align: pdfAlign });
-          y += lhMm;
-        }
-
-        if (isHeading) y += 2;
-      }
-
-      /* ── 6. Walk body children ── */
-      _showProgress(35, 'Rendering paragraphs…');
-      const bodyChildren = Array.from(body.childNodes);
-      const paraNodes    = bodyChildren.filter(n => n.localName === 'p' || n.localName === 'tbl');
-      const total        = paraNodes.length;
-
-      for (let pi = 0; pi < paraNodes.length; pi++) {
-        if (pi % 30 === 0) _showProgress(35 + Math.round(55 * pi / total), 'Rendering…');
-
-        const child = paraNodes[pi];
-
-        /* ─── TABLE ─── */
-        if (child.localName === 'tbl') {
-          const rows = Array.from(child.getElementsByTagNameNS(W_NS, 'tr'));
-          if (!rows.length) continue;
-          const maxCols = Math.max(...rows.map(r => r.getElementsByTagNameNS(W_NS, 'tc').length));
-          if (!maxCols) continue;
-          const colW  = usableW / maxCols;
-          const rowH  = 8;
-          for (const row of rows) {
-            const cells = Array.from(row.getElementsByTagNameNS(W_NS, 'tc'));
-            ensureSpace(rowH + 2);
-            cells.forEach((cell, ci) => {
-              const cx     = marginMm + ci * colW;
-              const isHead = row === rows[0];
-              if (isHead) { doc.setFillColor(235,235,235); doc.rect(cx, y-5.5, colW, rowH, 'FD'); }
-              else { doc.rect(cx, y-5.5, colW, rowH, 'D'); }
-              const cellText = Array.from(cell.getElementsByTagNameNS(W_NS,'t'))
-                                    .map(t => t.textContent).join('').replace(/\s+/g,' ').trim();
-              doc.setFontSize(9); doc.setFont('helvetica', isHead ? 'bold' : 'normal');
-              const ct = doc.splitTextToSize(cellText, colW - 2)[0] || '';
-              doc.text(ct, cx + 1.5, y);
-            });
-            y += rowH;
-          }
-          y += 3;
-          continue;
-        }
-
-        /* ─── PARAGRAPH ─── */
-        const pPr = child.getElementsByTagNameNS(W_NS, 'pPr')[0];
-
-        /* style name */
-        const pStyleEl  = pPr ? pPr.getElementsByTagNameNS(W_NS, 'pStyle')[0] : null;
-        const styleName = pStyleEl ? (wAttr(pStyleEl, 'val') || 'Normal') : 'Normal';
-        const isH1      = styleName === 'Heading1' || styleName === 'Heading 1';
-        const isH2      = styleName === 'Heading2' || styleName === 'Heading 2';
-        const isH3      = styleName === 'Heading3' || styleName === 'Heading 3';
-        const isList    = styleName === 'ListParagraph';
-
-        /* alignment */
-        const jcEl = pPr ? pPr.getElementsByTagNameNS(W_NS, 'jc')[0] : null;
-        const align = jcEl ? (wAttr(jcEl, 'val') || 'left') : 'left';
-
-        /* indentation (DXA → mm: 1 inch = 1440 DXA = 25.4mm) */
-        const indEl  = pPr ? pPr.getElementsByTagNameNS(W_NS, 'ind')[0] : null;
-        const indDxa = indEl ? parseInt(wAttr(indEl, 'left') || '0') : (isList ? 720 : 0);
-        const indent = (indDxa / 1440) * 25.4;
-
-        /* line spacing */
-        const spacingEl    = pPr ? pPr.getElementsByTagNameNS(W_NS, 'spacing')[0] : null;
-        const lineDxa      = spacingEl ? parseInt(wAttr(spacingEl, 'line') || '240') : 240;
-        const lineSpaceFactor = Math.max(0.9, lineDxa / 240);  // 240=single, 360=1.5x, 480=double
-
-        /* collect all w:r runs */
-        const runs = [];
-        let   imgRef = null;
-
-        /* paragraph-level run defaults (pPr > rPr) */
-        const pPrRpr   = pPr ? pPr.getElementsByTagNameNS(W_NS, 'rPr')[0] : null;
-        const pPrBold  = pPrRpr ? pPrRpr.getElementsByTagNameNS(W_NS, 'b').length > 0  : false;
-        const pPrItalic= pPrRpr ? pPrRpr.getElementsByTagNameNS(W_NS, 'i').length > 0  : false;
-
-        for (const r of child.getElementsByTagNameNS(W_NS, 'r')) {
-          /* check for drawing/image inside this run */
-          const drawings = r.getElementsByTagNameNS(W_NS, 'drawing');
-          if (drawings.length) {
-            /* find r:embed attribute anywhere inside drawing */
-            const allEls = drawings[0].getElementsByTagName('*');
-            for (const el of allEls) {
-              const embed = rAttr(el, 'embed') || el.getAttribute('r:embed');
-              if (embed) { imgRef = embed; break; }
-            }
-          }
-
-          const rPr = r.getElementsByTagNameNS(W_NS, 'rPr')[0];
-          const tEls = r.getElementsByTagNameNS(W_NS, 't');
-          let text = '';
-          for (const t of tEls) text += t.textContent || '';
-          if (!text) continue;
-
-          const bold   = pPrBold   || (rPr ? rPr.getElementsByTagNameNS(W_NS, 'b').length > 0 : false);
-          const italic = pPrItalic || (rPr ? rPr.getElementsByTagNameNS(W_NS, 'i').length > 0 : false);
-          const szEl   = rPr ? rPr.getElementsByTagNameNS(W_NS, 'sz')[0]           : null;
-          const szCsEl = rPr ? rPr.getElementsByTagNameNS(W_NS, 'szCs')[0]         : null;
-          /* sz is in half-points */
-          const rawSz  = szEl ? parseInt(wAttr(szEl, 'val') || '0') :
-                        (szCsEl ? parseInt(wAttr(szCsEl, 'val') || '0') : 0);
-          const fontPt = rawSz > 0 ? rawSz / 2 : null;
-
-          runs.push({ text, bold, italic, fontPt });
-        }
-
-        /* also check for drawings directly on the paragraph (not inside run) */
-        if (!imgRef) {
-          const paraDrawings = child.getElementsByTagNameNS(W_NS, 'drawing');
-          for (const drw of paraDrawings) {
-            const allEls = drw.getElementsByTagName('*');
-            for (const el of allEls) {
-              const embed = rAttr(el, 'embed') || el.getAttribute('r:embed');
-              if (embed) { imgRef = embed; break; }
-            }
-            if (imgRef) break;
-          }
-        }
-
-        /* derive paragraph-level bold/italic/fontSize from runs */
-        const fullText = runs.map(r => r.text).join('');
-        const paraBold   = runs.length > 0 && runs.every(r => r.bold);
-        const paraItalic = runs.length > 0 && runs.every(r => r.italic);
-        const firstRunSz = runs.find(r => r.fontPt)?.fontPt || null;
-
-        /* resolve font size */
-        let fontSize = 11;  // default body
-        if (isH1)          fontSize = firstRunSz || 16;
-        else if (isH2)     fontSize = firstRunSz || 14;
-        else if (isH3)     fontSize = firstRunSz || 12;
-        else if (firstRunSz) fontSize = Math.min(firstRunSz, 28);
-
-        renderPara({
-          text: fullText,
-          runs,
-          align,
-          indent,
-          bold:   paraBold || isH1 || isH2 || isH3,
-          italic: paraItalic,
-          fontSize,
-          lineSpaceFactor,
-          isHeading: isH1 || isH2 || isH3,
-          imgRef,
-        });
-      }
-
-      _showProgress(95, 'Finalising…');
-      _pdfBlob = doc.output('blob');
-      _showProgress(100, 'Done!');
-
-      document.getElementById('progressCard').style.display  = 'none';
-      document.getElementById('resultSection').style.display = '';
-      document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
-      toast('PDF created! ✓', 'success');
-    } catch (err) {
-      console.error(err);
-      toast('Conversion failed: ' + err.message, 'error');
-      document.getElementById('progressCard').style.display = 'none';
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '📄 Convert to PDF'; }
-    }
-  }
-
-  /* ── Download ── */
-  function download() {
-    if (!_pdfBlob) { toast('No PDF to download', 'error'); return; }
-    const defaultName = _fileName + '_converted.pdf';
-    if (window.CMFilename) {
-      window.CMFilename.prompt(defaultName).then(function(chosenName) {
-        if (!chosenName) return;
-        _triggerDownload(_pdfBlob, chosenName);
-        if (window.CMLogs) window.CMLogs.log({ tool: 'Word to PDF', action: 'convert', input: _fileName + '.docx', output: chosenName, size: _pdfBlob.size });
-        toast('PDF downloaded! ✓', 'success');
-      });
-    } else {
-      _triggerDownload(_pdfBlob, defaultName);
-      toast('PDF downloaded! ✓', 'success');
-    }
-  }
-
-  function _triggerDownload(blob, name) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
-  }
-
-  /* ── Reset ── */
-  function reset() {
-    _pdfBlob = null; _docxBytes = null;
-    document.getElementById('resultSection').style.display = 'none';
-    document.getElementById('settingsCard').style.display  = 'none';
-    document.getElementById('docPreview').innerHTML = '';
-    document.getElementById('fileInput').value = '';
-    document.getElementById('convertBtn').disabled = true;
-    toast('Ready for a new document', 'success');
-  }
-
-  return { init, loadFile, convert, download, reset };
-})();
-
-document.addEventListener('DOMContentLoaded', () => WordToPDF.init());
-window.WordToPDF = WordToPDF;
-</script>
+<script src="../js/word-to-pdf.js?v=20260914-adaptive3"></script>
 <script src="../js/tools.js?v=20260825i"></script>
 
 <!-- Brand Processing Loader -->

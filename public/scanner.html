@@ -100,6 +100,10 @@
 .scan-compare summary,.scan-adjust summary{cursor:pointer;font-size:12px;padding:12px 0;color:var(--text-2)}
 #screen-filter .filter-preview-outer{background:var(--bg-2);border:1px solid var(--border);min-height:540px}
 #screen-filter .filter-panel-inner{padding:12px;position:static}
+.filter-preview-outer{position:relative}
+.filter-busy{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:rgba(255,255,255,.65);z-index:2;color:#087d70;font-size:13px}
+.filter-busy[hidden]{display:none}
+.filter-busy strong{display:block;border-radius:14px;background:#087d70;color:white;padding:16px;margin:0 auto 8px;box-shadow:0 4px 18px #0002}
 #screen-filter .scanner-primary-row{justify-content:flex-end}
 #screen-filter #btnAddPageMain{flex:0 1 240px!important}
 @media(max-width:900px){#screen-filter .filter-layout{grid-template-columns:72px minmax(0,1fr)}#screen-filter .filter-panel-inner{grid-column:1 / -1}#screen-filter .filter-strip{grid-template-columns:repeat(5,minmax(0,1fr))}.scan-page-rail{max-height:480px}#screen-filter .filter-preview-outer{min-height:320px}}
@@ -372,6 +376,7 @@
       <div>
         <div class="filter-preview-outer">
           <canvas id="previewCanvas"></canvas>
+          <div id="filterBusy" class="filter-busy" role="status" hidden><strong>PDFdukan</strong><span>Enhancing your scan…</span></div>
         </div>
         <p id="scanPreviewStatus" role="status" aria-live="polite" style="font-size:12px;color:var(--text-2);margin-top:8px">Choose a filter to preview.</p>
         <details class="scan-compare"><summary>Compare with original</summary><div class="compare-row" style="margin-top:12px">
@@ -384,6 +389,7 @@
       <div class="filter-panel-inner">
         <div class="fp-title">Filters</div>
         <div class="filter-strip" id="filterStrip"></div>
+        <p id="filterDescription" aria-live="polite" style="font-size:12px;color:var(--text-2);margin:10px 0;min-height:36px"></p>
 
         <details class="scan-adjust"><summary>Adjust brightness &amp; colour</summary>
         <div class="sliders-grid">
@@ -445,6 +451,9 @@
 
   <!-- ======== SCREEN: EXPORT ======== -->
   <div class="scanner-screen" id="screen-export">
+    <label style="display:block;margin:12px 0">Image / ZIP file name
+      <input id="scanExportName" type="text" maxlength="120" placeholder="PDFdukan scan" style="display:block;max-width:100%;width:320px;padding:10px;margin-top:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)">
+    </label>
     <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 5 of 5</span><h2>Choose your output</h2><p>PDF is best for sharing; JPG or ZIP is best for image workflows.</p></div></div>
     <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
       <button class="btn btn-secondary" id="btnBackToPages">← Back to Pages</button>
@@ -611,10 +620,10 @@
 <script src="js/app.js?v=20260825i"></script>
 <script src="js/paper-detector.js?v=20260908e"></script>
 <script src="js/scan-edge-refiner.js?v=20260908b"></script>
-<script src="js/crop.js?v=20260909a"></script>
-<script src="js/filters.js?v=20260909b"></script>
-<script src="js/scan-renderer.js?v=20260909b"></script>
-<script src="js/scanner.js?v=20260909a"></script>
+<script src="js/crop.js?v=20260914-timeout"></script>
+<script src="js/filters.js?v=20260909c"></script>
+<script src="js/scan-renderer.js?v=20260914-preview-export-match"></script>
+<script src="js/scanner.js?v=20260909c"></script>
 
 <!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
   <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">

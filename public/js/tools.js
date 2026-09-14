@@ -2194,6 +2194,7 @@ const OCRTool = (() => {
 
     const copyBtn = document.getElementById('copyBtn');
     const downBtn = document.getElementById('downloadTxtBtn');
+    const wordBtn = document.getElementById('downloadWordBtn');
     const runBtn = document.getElementById('ocrRunBtn');
     const clearBtn = document.getElementById('ocrClearBtn');
     const cancelBtn = document.getElementById('ocrCancelBtn');
@@ -2201,6 +2202,7 @@ const OCRTool = (() => {
     const dropZone = document.getElementById('dropZone');
     if (copyBtn) copyBtn.onclick = copyText;
     if (downBtn) downBtn.onclick = downloadTxt;
+    if (wordBtn) wordBtn.onclick = downloadWord;
     if (runBtn) runBtn.onclick = recognizeSelected;
     if (clearBtn) clearBtn.onclick = clear;
     if (cancelBtn) cancelBtn.onclick = cancel;
@@ -2313,7 +2315,7 @@ const OCRTool = (() => {
 
       _showProgress(100, 'Complete!');
       const output = document.getElementById('ocrOutput');
-      const cleanText = (data.text || '').trim();
+      const cleanText = normalizeOcrText(data.text || '');
       if (output) {
         output.value = cleanText;
         output.readOnly = false;
@@ -2323,7 +2325,13 @@ const OCRTool = (() => {
       const confEl = document.getElementById('statConf');
       const wordEl = document.getElementById('statWords');
       const charEl = document.getElementById('statChars');
-      if (confEl) confEl.textContent = Number.isFinite(data.confidence) ? Math.round(data.confidence) + '%' : '—';
+      const wordConfidence = Array.isArray(data.words) && data.words.length
+        ? data.words.filter(w => String(w.text || '').trim()).map(w => Number(w.confidence)).filter(Number.isFinite)
+        : [];
+      const measuredConfidence = wordConfidence.length
+        ? wordConfidence.reduce((sum, value) => sum + value, 0) / wordConfidence.length
+        : Number(data.confidence);
+      if (confEl) confEl.textContent = Number.isFinite(measuredConfidence) ? Math.round(measuredConfidence) + '%' : '—';
       if (wordEl) wordEl.textContent = cleanText ? cleanText.split(/\s+/u).length : 0;
       if (charEl) charEl.textContent = cleanText.length;
       _showResult();
@@ -2369,6 +2377,22 @@ const OCRTool = (() => {
     toast('Text file downloaded! ✓', 'success');
   }
 
+  async function downloadWord() {
+    const text = document.getElementById('ocrOutput')?.value.trim() || '';
+    if (!text) return;
+    if (!window.JSZip) { toast('Word export is still loading. Please try again in a moment.', 'info'); return; }
+    const esc = value => String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const body = text.split(/\n{2,}/u).map(p => `<w:p><w:r><w:t xml:space="preserve">${esc(p).replace(/\n/g,'</w:t></w:r><w:r><w:br/><w:t xml:space="preserve">')}</w:t></w:r></w:p>`).join('');
+    const zip = new JSZip();
+    zip.file('[Content_Types].xml','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>');
+    zip.file('_rels/.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+    zip.file('word/_rels/document.xml.rels','<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>');
+    zip.file('word/document.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="12240" w:h="15840"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>`);
+    const bytes = await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    _downloadBlob(bytes, `PDFdukan.com_ocr_${Date.now()}.docx`, 'Word document', 'extract');
+    toast('Editable Word DOCX downloaded! ✓', 'success');
+  }
+
   async function cancel() {
     if (!isBusy) return;
     wasCancelled = true;
@@ -2411,8 +2435,10 @@ const OCRTool = (() => {
   function setResultActions(enabled) {
     const copyBtn = document.getElementById('copyBtn');
     const downBtn = document.getElementById('downloadTxtBtn');
+    const wordBtn = document.getElementById('downloadWordBtn');
     if (copyBtn) copyBtn.disabled = !enabled;
     if (downBtn) downBtn.disabled = !enabled;
+    if (wordBtn) wordBtn.disabled = !enabled;
   }
 
   function resetResult() {
@@ -2472,22 +2498,28 @@ const OCRTool = (() => {
   }
 
   async function prepareInput(file, mode) {
-    if (mode === 'original') return file;
     if (typeof createImageBitmap !== 'function') return file;
     const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
     try {
       const canvas = document.createElement('canvas');
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
+      // Tesseract is most reliable when small phone photos are brought near
+      // 300 DPI, while very large camera files waste memory without adding
+      // readable detail. Preserve the full source for preview/export.
+      const maxDimension = mode === 'original' ? 4200 : 5000;
+      const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+      canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+      canvas.height = Math.max(1, Math.round(bitmap.height * scale));
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(bitmap, 0, 0);
+      if (mode === 'original') return canvas;
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const px = imageData.data;
+      const contrast = mode === 'document' ? 1.32 : 1.08;
       for (let i = 0; i < px.length; i += 4) {
         const gray = Math.round(0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]);
-        const value = mode === 'document'
-          ? Math.max(0, Math.min(255, Math.round((gray - 128) * 1.45 + 142)))
-          : gray;
+        const value = Math.max(0, Math.min(255, Math.round((gray - 128) * contrast + 128)));
         px[i] = value;
         px[i + 1] = value;
         px[i + 2] = value;
@@ -2497,6 +2529,15 @@ const OCRTool = (() => {
     } finally {
       bitmap.close();
     }
+  }
+
+  function normalizeOcrText(value) {
+    return String(value || '')
+      .normalize('NFC')
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
   }
 
   return { init, loadImage, copyText, downloadTxt, recognizeSelected, cancel, clear };

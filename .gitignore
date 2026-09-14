@@ -21,9 +21,12 @@ _*.jpg
 _*.png
 _*.html
 tmp/
+output/
 .qa-teacher-video/
 
 # ── editor / OS ──
 .DS_Store
 *.log
 npm-debug.log*
+pnpm-lock.yaml
+pnpm-workspace.yaml

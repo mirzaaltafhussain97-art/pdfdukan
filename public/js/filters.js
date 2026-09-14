@@ -215,28 +215,17 @@ function _applyGrayscale(data, w, h) {
   }
 }
 
-/* ── 8. ECO ───────────────────────────────────────────────────────
-   CamScanner Eco: shadow removed, paper bright, colour kept but
-   desaturated ~60% — a "printer-friendly" warm-neutral look.        */
+/* Eco: monochrome with a continuous tone curve so fine grey detail
+   survives. Unlike B&W, this deliberately avoids binary thresholding. */
 function _applyEco(data, w, h) {
-  /* Shadow removal */
-  const r  = Math.max(45, Math.round(Math.min(w, h) / 6));
-  const bg = _buildLocalMean(data, w, h, r);
-  for (let i = 0, px = 0; i < data.length; i += 4, px++) {
-    const f = Math.min(2.0, 215 / Math.max(bg[px], 38));
-    data[i]   = _clamp(data[i]   * f);
-    data[i+1] = _clamp(data[i+1] * f);
-    data[i+2] = _clamp(data[i+2] * f);
-  }
-  /* Desaturate 60% and mild brightness lift */
+  _normalizePaper(data, w, h, 248, 1);
   for (let i = 0; i < data.length; i += 4) {
-    const g = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
-    data[i]   = _clamp((data[i]   * 0.4 + g * 0.6) * 1.05 + 5);
-    data[i+1] = _clamp((data[i+1] * 0.4 + g * 0.6) * 1.05 + 5);
-    data[i+2] = _clamp((data[i+2] * 0.4 + g * 0.6) * 1.05 + 5);
+    const gray = .299 * data[i] + .587 * data[i+1] + .114 * data[i+2];
+    const normalized = Math.max(0, Math.min(1, (gray - 30) / 215));
+    const value = _clamp(255 * Math.pow(normalized, 1.2));
+    data[i] = data[i+1] = data[i+2] = value;
   }
 }
-
 /* ── LOCAL MEAN (Fast 2-pass box blur for shadows) ───────────── */
 function _buildLocalMean(data, w, h, radius) {
   const r = Math.round(radius);
@@ -336,15 +325,33 @@ function buildFilterStrip(containerId, image, activeFilter, onSelect) {
   if (!container || !image) return;
 
   container.innerHTML = '';
+  const descriptions = {
+    original: 'Keep the original colours and detail.',
+    enhance: 'Brighten paper and strengthen printed text.',
+    magicpro: 'Balance paper cleanup with colour and fine detail.',
+    lighten: 'Brighten a dark photo while keeping colour.',
+    noshadow: 'Even out lighting across the document.',
+    bw: 'Crisp black text on white paper. Colours are removed.',
+    bwsoft: 'Softer black and white with grey detail.',
+    grayscale: 'Remove colour while keeping shades of grey.',
+    eco: 'Clean monochrome for printing with fine grey detail.'
+  };
+  function describe(id) {
+    const hint = document.getElementById('filterDescription');
+    if (hint) hint.textContent = descriptions[id] || '';
+  }
+  describe(activeFilter);
   FILTERS.forEach(f => {
     const card = document.createElement('button');
     card.type = 'button';
+    card.title = descriptions[f.id];
     card.setAttribute('aria-pressed', String(f.id === activeFilter));
     card.className = 'filter-card' + (f.id === activeFilter ? ' active' : '');
     card.onclick = () => {
       container.querySelectorAll('.filter-card').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
       card.classList.add('active');
       card.setAttribute('aria-pressed','true');
+      describe(f.id);
       if (onSelect) onSelect(f.id);
     };
 
