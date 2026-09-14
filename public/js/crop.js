@@ -849,13 +849,26 @@ class CropEditor {
     ctx.fillStyle = 'rgba(0,0,0,0.50)';
     ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    /* Clear inside selection to show image */
+    /* Clear inside selection from the outside vignette. */
     ctx.globalCompositeOperation = 'destination-out';
     const cp = this._scaledCorners(s);
     ctx.beginPath();
     ctx.moveTo(cp.tl.x, cp.tl.y); ctx.lineTo(cp.tr.x, cp.tr.y);
     ctx.lineTo(cp.br.x, cp.br.y); ctx.lineTo(cp.bl.x, cp.bl.y);
     ctx.closePath(); ctx.fill();
+    ctx.restore();
+
+    /* Repaint the selected document at 80% visibility. The crop canvas sits
+       on a black background, so leaving this area transparent made daytime
+       photos look much darker than the source image. */
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cp.tl.x, cp.tl.y); ctx.lineTo(cp.tr.x, cp.tr.y);
+    ctx.lineTo(cp.br.x, cp.br.y); ctx.lineTo(cp.bl.x, cp.bl.y);
+    ctx.closePath();
+    ctx.clip();
+    ctx.globalAlpha = 0.80;
+    ctx.drawImage(src, 0, 0, this.canvas.width, this.canvas.height);
     ctx.restore();
 
     /* Subtle orange tint inside selection */
