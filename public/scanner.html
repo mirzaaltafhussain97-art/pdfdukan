@@ -2,17 +2,20 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Free Online Document Scanner — Scan to PDF | PDFdukan</title>
-<meta name="description" content="Scan document photos online for free. Detect edges, adjust the crop, enhance and reorder pages, then export a high-quality PDF, JPG or PNG in your browser.">
+<title>CamMaster Scanner — PDFdukan | Free Document Scanner</title>
+<meta name="description" content="Scan documents online free with CamMaster. AI edge detection, auto-crop, Magic Pro filters, export to PDF or JPG. Works on any device. No installation needed.">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://pdfdukan.com/scanner.html">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/scanner.html">
-<meta property="og:title" content="Free Online Document Scanner — Scan to PDF | PDFdukan">
-<meta property="og:description" content="Scan photos into clean, high-quality PDF, JPG or PNG files with edge detection, adjustable crop, enhancement and page reordering.">
+<meta property="og:title" content="CamMaster Scanner — PDFdukan | Free Document Scanner">
+<meta property="og:description" content="Scan documents online free with CamMaster. AI edge detection, auto-crop, Magic Pro filters, export to PDF or JPG. Works on any device. No installation needed.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -20,8 +23,8 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Free Online Document Scanner — Scan to PDF | PDFdukan">
-<meta name="twitter:description" content="Scan photos into clean, high-quality PDF, JPG or PNG files with edge detection, adjustable crop, enhancement and page reordering.">
+<meta name="twitter:title" content="CamMaster Scanner — PDFdukan | Free Document Scanner">
+<meta name="twitter:description" content="Scan documents online free with CamMaster. AI edge detection, auto-crop, Magic Pro filters, export to PDF or JPG. Works on any device. No installation needed.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/scanner.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/scanner.html">
@@ -29,25 +32,32 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-<!-- Heavy scan/PDF engines are loaded on first use by crop.js/scanner.js.
-     This keeps the initial page interactive without downloading and compiling
-     OpenCV (about 10 MB) for visitors who have not selected a document. -->
+<!-- OpenCV.js (self-hosted 4.8.0 — avoids docs.opencv.org 403 to crawlers + external dependency) -->
+<!-- OpenCV is initialized inside document/filter workers. -->
 
-<link rel="stylesheet" href="css/style.css?v=20260825i">
+<!-- CDN Libraries -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+<!-- ONNX Runtime Web (DocAligner) — lazy-loaded on first scan; see js/app.js loadScriptOnce -->
+<script>
+  /* pdf.min.js is deferred, so pdfjsLib is not defined yet when this inline
+     script first runs. Poll until it loads, then configure the worker so PDF
+     import uses a real worker (not the slow main-thread fake-worker fallback). */
+  (function setPdfWorker() {
+    if (typeof pdfjsLib !== 'undefined' && pdfjsLib.GlobalWorkerOptions) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    } else {
+      setTimeout(setPdfWorker, 100);
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="css/style.css?v=20260616c">
 <style>
 .scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
-.scanner-shell{background:linear-gradient(180deg,var(--card),var(--bg-2));border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}
-.scanner-stage-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin:0 0 16px}
-.scanner-stage-copy h2{font-size:18px;margin:0 0 4px}.scanner-stage-copy p{font-size:12px;color:var(--text-3);margin:0}
-.scanner-kicker{display:inline-flex;color:var(--primary);background:var(--primary-soft);border-radius:999px;padding:5px 10px;font-size:11px;font-weight:800;margin-bottom:8px}
-.scanner-primary-row{display:flex;gap:8px;margin-top:14px}.scanner-primary-row .btn-primary{flex:1}
-.scanner-secondary-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.scanner-trust-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
-.scanner-trust-item{display:flex;align-items:center;gap:10px;background:var(--card-2);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:left;font-size:11px;color:var(--text-2)}
-.scanner-trust-item strong{display:block;color:var(--text);font-size:12px;margin-bottom:2px}
-.scanner-action-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;padding:12px 14px;background:var(--card-2);border:1px solid var(--border);border-radius:14px}
-.scanner-action-bar p{margin:0;font-size:12px;color:var(--text-3)}
-.scanner-action-buttons{display:flex;gap:8px;flex-wrap:wrap}
 .cv-badge { display: none !important; }
 .cv-badge.ready { display: none !important; }
 
@@ -86,28 +96,6 @@
   border-radius: var(--radius); padding: 16px; position: sticky; top: 80px;
 }
 .fp-title { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px; }
-#screen-filter .filter-layout{grid-template-columns:96px minmax(0,1fr) 224px;gap:16px}
-#screen-filter .filter-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-#screen-filter .filter-card{font:inherit;padding:0;background:transparent;min-width:0;border-radius:10px}
-.fc-icon{display:grid;place-items:center;height:68px;background:var(--card-2);border-radius:8px;color:#1685ee}
-.fc-icon svg{width:38px;height:38px}
-#screen-filter .filter-card.active .fc-icon{background:var(--primary-soft);color:var(--primary)}
-#screen-filter .fc-label{font-size:12px;padding:7px 2px;color:var(--text)}
-.scan-page-rail{display:flex;flex-direction:column;gap:10px;padding:8px;background:var(--card-2);border-radius:12px;max-height:600px;overflow:auto}
-.scan-rail-page{padding:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:11px;text-align:center}
-.scan-rail-page.current{border:2px solid var(--primary)}
-.scan-rail-page canvas{display:block;max-width:100%;height:90px;object-fit:contain;margin:0 auto 5px}
-.scan-compare summary,.scan-adjust summary{cursor:pointer;font-size:12px;padding:12px 0;color:var(--text-2)}
-#screen-filter .filter-preview-outer{background:var(--bg-2);border:1px solid var(--border);min-height:540px}
-#screen-filter .filter-panel-inner{padding:12px;position:static}
-.filter-preview-outer{position:relative}
-.filter-busy{position:absolute;inset:0;display:grid;place-content:center;text-align:center;background:rgba(255,255,255,.65);z-index:2;color:#087d70;font-size:13px}
-.filter-busy[hidden]{display:none}
-.filter-busy strong{display:block;border-radius:14px;background:#087d70;color:white;padding:16px;margin:0 auto 8px;box-shadow:0 4px 18px #0002}
-#screen-filter .scanner-primary-row{justify-content:flex-end}
-#screen-filter #btnAddPageMain{flex:0 1 240px!important}
-@media(max-width:900px){#screen-filter .filter-layout{grid-template-columns:72px minmax(0,1fr)}#screen-filter .filter-panel-inner{grid-column:1 / -1}#screen-filter .filter-strip{grid-template-columns:repeat(5,minmax(0,1fr))}.scan-page-rail{max-height:480px}#screen-filter .filter-preview-outer{min-height:320px}}
-@media(max-width:640px){#screen-filter .filter-layout{grid-template-columns:minmax(0,1fr)}.scan-page-rail{flex-direction:row;max-height:110px}.scan-rail-page{min-width:60px}.scan-rail-page canvas{height:56px}#screen-filter .filter-strip{grid-template-columns:repeat(3,minmax(0,1fr))}#screen-filter #btnAddPageMain{flex:1!important}}
 
 /* Pages layout */
 .pages-screen { padding-top: 4px; }
@@ -127,24 +115,25 @@
 }
 @media (max-width: 640px) {
   .scanner-wrap { padding: 16px 12px 90px; }
-  .scanner-shell{padding:10px;border-radius:16px}
-  .scanner-stage-head{display:block}.scanner-kicker{margin-bottom:6px}
-  .scanner-steps{justify-content:stretch;overflow:hidden}.scanner-step{flex:1 1 20%;min-width:0;padding:7px 2px;font-size:10px;white-space:nowrap}
-  .uz-actions{display:grid!important;grid-template-columns:1fr!important}.uz-actions .action-btn{width:100%;justify-content:center}
-  .scanner-trust-row{grid-template-columns:1fr}
-  .scanner-action-bar{align-items:stretch;flex-direction:column}.scanner-action-buttons{display:grid;grid-template-columns:1fr 1fr}.scanner-action-buttons .btn{width:100%}
-  .scanner-primary-row{position:sticky;bottom:76px;z-index:30;background:var(--card);padding:8px;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg)}
 }
 </style>
+<link rel="stylesheet" href="css/scanner-workspace.css?v=20261104_btnfix">
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://pdfdukan.com/scanner.html#app","name":"CamMaster Online Document Scanner","url":"https://pdfdukan.com/scanner.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any operating system with a current web browser","isAccessibleForFree":true,"browserRequirements":"JavaScript and a current web browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Document edge detection","Adjustable four-corner crop","Perspective correction","Readability enhancement filters","Multi-page PDF export","High-quality JPG export","Lossless PNG export"]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI document scanner work?","acceptedAnswer":{"@type":"Answer","text":"CamMaster attempts an ONNX document-corner model in the browser, with an OpenCV.js multi-method fallback when the model cannot load or detect a reliable quadrilateral. Perspective correction uses the selected four corners. Always inspect the crop handles because automatic detection can be wrong."}},{"@type":"Question","name":"Can I scan multiple pages into one PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Batch Mode processes pages individually and combines them into one multi-page PDF. The practical page count depends on image dimensions, browser limits and available device memory, so large batches may work better when split into smaller groups."}},{"@type":"Question","name":"Does CamMaster upload my photos to a server?","acceptedAnswer":{"@type":"Answer","text":"Core edge detection, enhancement and export run locally in your browser. Optional connected actions, such as saving an output to Google Drive, communicate with that provider only when selected. For sensitive documents, inspect the destination and output before sharing."}},{"@type":"Question","name":"Do I need to install an app?","acceptedAnswer":{"@type":"Answer","text":"No app download is required. CamMaster is designed for current Chrome, Safari and Samsung Internet releases. Available memory, browser features and file size can affect performance."}},{"@type":"Question","name":"What is the best way to scan a CNIC with CamMaster?","acceptedAnswer":{"@type":"Answer","text":"Place the card flat on a contrasting surface with even light. CamMaster will attempt to find the edges, but automatic detection can be wrong, so inspect and adjust all four crop handles. Compare the available filters, repeat for the back, and export both sides with Batch Mode or combine them with the Merge PDF tool ."}},{"@type":"Question","name":"What export formats does CamMaster support?","acceptedAnswer":{"@type":"Answer","text":"CamMaster exports a multi-page PDF, a high-quality JPG for a single page, a lossless PNG for a single page, or a ZIP of JPG or PNG images for multiple pages. PDF quality can be set to Best, Balanced or Compact before download."}},{"@type":"Question","name":"What is the best lighting for scanning documents?","acceptedAnswer":{"@type":"Answer","text":"Use even light and avoid glare, hard shadows and backlighting. Compare the Original and readability filters after cropping; a filter can help one source and harm another, so inspect names, numbers, stamps and small text before export."}},{"@type":"Question","name":"Is CamMaster completely free?","acceptedAnswer":{"@type":"Answer","text":"The basic scanner is currently available without a subscription, credit card or account. Practical batch size depends on your device memory and the dimensions of the source images."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
-</head>
+<!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the smart document scanner work?","acceptedAnswer":{"@type":"Answer","text":"CamMaster uses AI-powered edge detection (ONNX neural network) running inside your browser to detect document corners and automatically apply perspective correction."}},{"@type":"Question","name":"Can I scan multiple pages into one PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use Batch Mode to scan as many pages as you need. The scanner auto-processes each one and combines them into a single multi-page PDF."}},{"@type":"Question","name":"Does the scanner upload my photos to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All AI processing, edge detection, and PDF export happen locally in your browser. Your photos and documents never leave your device."}},{"@type":"Question","name":"What is the best lighting for scanning documents?","acceptedAnswer":{"@type":"Answer","text":"Good ambient lighting with no harsh shadows gives the best results. Avoid backlit backgrounds. The auto-enhance filter can correct mild brightness issues."}},{"@type":"Question","name":"What export formats does CamMaster support?","acceptedAnswer":{"@type":"Answer","text":"CamMaster exports scanned documents as multi-page PDF or individual JPG images. PDF export is ideal for sharing; JPG is best for further image editing."}}]}]}</script></head>
 <body>
+<canvas id="particleCanvas"></canvas>
 
 <!-- HEADER -->
 <header class="header" role="banner">
-  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <a href="index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
       <rect width="40" height="40" rx="10" fill="url(#lg)"/>
@@ -168,7 +157,7 @@
     <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
   </a>
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="/" class="nav-item">Home</a>
+    <a href="index.html" class="nav-item">Home</a>
     <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
       Tools <span class="nav-chevron">▾</span>
       <div class="nav-dropdown mega" role="menu">
@@ -187,11 +176,11 @@
         </div>
         <div class="nd-col">
           <span class="nd-section-head">✏️ Edit &amp; Sign</span>
-          <a href="tools/pdf-editor.html"    class="nd-link"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="tools/pdf-editor.html"    class="nd-link"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
           <a href="tools/fill-sign.html"     class="nd-link"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
           <a href="tools/watermark.html"     class="nd-link"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="tools/page-numbers.html"  class="nd-link"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
-          <a href="tools/pdf-organizer.html"  class="nd-link"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="tools/delete-pages.html"  class="nd-link"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">🖼️ Image &amp; Scan</span>
           <a href="scanner.html"           class="nd-link"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
@@ -199,6 +188,9 @@
           <a href="tools/ocr.html"         class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">🔧 Calculators</span>
+          <a href="tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">📅</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
+          <a href="tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">⚖️</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
+          <a href="tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a><a href="tools/inheritance-calc.html" class="nd-link"><span class="nd-link-icon">&#9770;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
         </div>
       </div>
     </div>
@@ -227,7 +219,7 @@
 
 <!-- Mobile nav drawer -->
 <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
-  <a href="/"              class="mnd-link">🏠 Home</a>
+  <a href="index.html"              class="mnd-link">🏠 Home</a>
   <div class="mnd-section">📄 PDF Tools</div>
   <a href="tools/img-to-pdf.html"   class="mnd-link">📑 Image to PDF</a>
   <a href="tools/pdf-to-img.html"   class="mnd-link">🖼️ PDF to JPG</a>
@@ -240,22 +232,24 @@
   <a href="tools/fill-sign.html"    class="mnd-link">✍️ Fill &amp; Sign</a>
   <a href="tools/watermark.html"    class="mnd-link">💧 Watermark</a>
   <a href="tools/page-numbers.html" class="mnd-link">🔢 Page Numbers</a>
-  <a href="tools/pdf-organizer.html" class="mnd-link">🗑️ Delete Pages</a>
+  <a href="tools/delete-pages.html" class="mnd-link">🗑️ Delete Pages</a>
   <div class="mnd-section">🖼️ Image &amp; Scan</div>
   <a href="scanner.html"            class="mnd-link active">📷 Smart Scan</a>
   <a href="tools/compress.html"     class="mnd-link">🗜️ Compress Image</a>
   <a href="tools/ocr.html"          class="mnd-link">🔤 OCR Text</a>
   <div class="mnd-section">🔧 Calculators</div>
-  <a href="tools/inheritance-calc-advanced.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <a href="tools/age-calc.html"      class="mnd-link">📅 Age Calculator</a>
+  <a href="tools/bmi-calc.html"      class="mnd-link">⚖️ BMI Calculator</a>
+  <a href="tools/discount-calc.html" class="mnd-link">🏷️ Discount Calc</a>
+  <a href="tools/inheritance-calc.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
   <div class="mnd-section">More</div>
   <a href="blog/index.html" class="mnd-link">📝 Blog</a>
   <a href="about.html"      class="mnd-link">🏢 About</a>
 </div>
 
 <div style="text-align:center;max-width:760px;margin:0 auto;padding:18px 20px 4px">
-  <p style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);margin:0 0 5px">CamMaster by PDFdukan</p>
-  <h1 style="font-size:clamp(20px,3.5vw,28px);font-weight:800;margin:0 0 6px;color:var(--text)">Free Online Document Scanner — Scan Photos to PDF</h1>
-  <p style="font-size:14px;color:var(--text-2);margin:0">Add a document photo, confirm its edges, improve readability and download a high-quality PDF or image.</p>
+  <h1 style="font-size:clamp(20px,3.5vw,28px);font-weight:800;margin:0 0 6px;color:var(--text);display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">CamMaster — Free AI Document Scanner <span style="background:var(--primary);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;display:inline-block">Document Workspace</span></h1>
+  <p style="font-size:14px;color:var(--text-2);margin:0">Scan, crop, enhance and export documents to PDF — free, private, all in your browser.</p>
 </div>
 
 <!-- how-it-works guide styles (the guide itself lives in the "How to scan" section below) -->
@@ -299,162 +293,30 @@
 .scan-hero .sg-step{box-shadow:0 2px 8px rgba(0,0,0,.05)}
 </style>
 <div class="scanner-wrap">
-  <div class="scanner-shell">
 
-  <!-- Step Indicator -->
-  <div class="scanner-steps" role="navigation" aria-label="Scanner steps">
-    <div class="scanner-step active" data-step="upload">1. Add</div>
-    <div class="scanner-step" data-step="crop">2. Crop</div>
-    <div class="scanner-step" data-step="filter">3. Enhance</div>
-    <div class="scanner-step" data-step="pages">4. Pages</div>
-    <div class="scanner-step" data-step="export">5. Save</div>
-  </div>
-
-  <!-- ======== SCREEN: UPLOAD ======== -->
   <div class="scanner-screen active" id="screen-upload">
     <div class="scanner-upload">
-      <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 1 of 5</span><h2>Scan your document</h2><p>Choose Quick Scan for automatic crop and cleanup. You can review everything before downloading.</p></div></div>
       <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="Upload document">
-        <div class="uz-icon">📁</div>
-        <h3 class="uz-title">Drop photos here or choose how to scan</h3>
-        <p class="uz-hint">Supports JPG, PNG, WEBP, PDF — multiple files at once</p>
+        <div class="uz-icon">▤</div><h2 class="uz-title">Import your documents</h2>
+        <p class="uz-hint">Drop images or PDFs here. Crop, enhance and export in one workspace.</p>
         <div class="uz-actions">
-          <button class="action-btn primary" onclick="event.stopPropagation();document.getElementById('fileInputQuickScan').click()">
-            <span>✨</span> Auto Scan (Recommended)
-          </button>
-          <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputScanner').click()">
-            <span>✂️</span> Scan with Manual Review
-          </button>
-          <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputPdfScan').click()">
-            <span>📂</span> Import PDF
-          </button>
-        </div>
-        <p style="margin-top:10px;font-size:13px;color:var(--text-2)"><strong>Auto Scan</strong> finds the page, straightens it and applies Magic Pro. Choose manual review when you want to adjust the four corners yourself.</p>
-        <p style="margin-top:14px;font-size:12px;color:var(--text-muted)">🔒 Core scan processing runs locally in this browser</p>
-      </div>
-
-      <div class="scanner-trust-row"><div class="scanner-trust-item">🔒 <strong>Core processing on-device</strong></div><div class="scanner-trust-item">✂️ <strong>Adjustable edge crop</strong></div><div class="scanner-trust-item">📄 <strong>High-quality multi-page PDF</strong></div></div>
-
-      <div class="ad-slot" style="margin-top:16px"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+          <button class="action-btn primary" onclick="event.stopPropagation();document.getElementById('fileInputScanner').click()">Upload Images</button>
+          <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputPdfScan').click()">Import PDF</button>
+        </div><p style="margin-top:16px;font-size:12px;color:var(--text-3)">Private by design. Your documents are processed in this browser.</p>
+      </div><button class="btn btn-secondary" id="resumeEditor" hidden style="margin:16px auto">Resume editing</button>
     </div>
   </div>
-
-  <!-- ======== SCREEN: CROP ======== -->
-  <div class="scanner-screen" id="screen-crop">
-    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 2 of 5</span><h2>Confirm document edges</h2><p>Move the handles only when automatic detection needs correction.</p></div></div>
-    <div class="crop-layout">
-      <div class="crop-canvas-outer">
-        <canvas id="cropCanvas"></canvas>
-      </div>
-      <div class="crop-controls">
-        <div class="crop-info">Drag the 4 <strong>corner handles</strong> to adjust, or <strong>edge handles</strong> to move a full edge</div>
-        <div id="detectionBadge" class="detect-badge" style="display:none"></div>
-        <!-- Row 1: secondary actions -->
-        <div class="scanner-secondary-row">
-          <button class="btn btn-secondary btn-sm" id="btnBackToUpload" title="Back to upload">← Back</button>
-          <button class="btn btn-secondary btn-sm" id="btnResetCrop" title="Re-detect edges">↺ Reset</button>
-          <button class="btn btn-secondary btn-sm" id="btnFitCrop" title="Full page">⛶ Fit</button>
-          <button class="btn btn-secondary btn-sm" id="btnRotateL" title="Rotate left">↺ L</button>
-          <button class="btn btn-secondary btn-sm" id="btnRotateR" title="Rotate right">↻ R</button>
-          <button class="btn btn-secondary btn-sm" id="btnSkipCrop" title="Skip crop">Skip →</button>
-        </div>
-        <!-- Row 2: primary action — full width on mobile -->
-        <div class="scanner-primary-row">
-          <button class="btn btn-primary" id="btnApplyCrop" style="width:100%;font-size:15px;padding:12px">✓ Use These Edges →</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ======== SCREEN: FILTER ======== -->
-  <div class="scanner-screen" id="screen-filter">
-    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 3 of 5</span><h2>Enhance readability</h2><p>Pick a preset first. Fine-tune only if the document needs it.</p></div></div>
-    <div class="filter-layout">
-      <aside class="scan-page-rail" id="scanPageRail" aria-label="Document pages"></aside>
-
-      <!-- Left: Preview -->
-      <div>
-        <div class="filter-preview-outer">
-          <canvas id="previewCanvas"></canvas>
-          <div id="filterBusy" class="filter-busy" role="status" hidden><strong>PDFdukan</strong><span>Enhancing your scan…</span></div>
-        </div>
-        <p id="scanPreviewStatus" role="status" aria-live="polite" style="font-size:12px;color:var(--text-2);margin-top:8px">Choose a filter to preview.</p>
-        <details class="scan-compare"><summary>Compare with original</summary><div class="compare-row" style="margin-top:12px">
-          <div class="compare-box"><div class="cb-label">Original</div><canvas id="origMini"></canvas></div>
-          <div class="compare-box"><div class="cb-label">Processed</div><canvas id="procMini"></canvas></div>
-        </div></details>
-      </div>
-
-      <!-- Right: Controls -->
-      <div class="filter-panel-inner">
-        <div class="fp-title">Filters</div>
-        <div class="filter-strip" id="filterStrip"></div>
-        <p id="filterDescription" aria-live="polite" style="font-size:12px;color:var(--text-2);margin:10px 0;min-height:36px"></p>
-
-        <details class="scan-adjust"><summary>Adjust brightness &amp; colour</summary>
-        <div class="sliders-grid">
-          <div class="slider-group">
-            <label>Brightness <span class="sv" id="sv_brightness">0</span></label>
-            <input type="range" id="sl_brightness" min="-100" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <label>Contrast <span class="sv" id="sv_contrast">0</span></label>
-            <input type="range" id="sl_contrast" min="-100" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <label>Sharpness <span class="sv" id="sv_sharpness">0</span></label>
-            <input type="range" id="sl_sharpness" min="0" max="100" value="0">
-          </div>
-          <div class="slider-group">
-            <label>Saturation <span class="sv" id="sv_saturation">0</span></label>
-            <input type="range" id="sl_saturation" min="-100" max="100" value="0">
-          </div>
-        </div>
-
-        </details><label class="apply-all">
-          <input type="checkbox" id="applyToAll"> Apply to all pages
-        </label>
-
-        <!-- Batch auto-process banner — only shows when queue has multiple images -->
-        <div id="batchBanner" style="display:none;background:var(--primary-soft);border:1px solid var(--primary);border-radius:var(--radius-sm);padding:10px 12px;margin-top:12px">
-          <p style="font-size:12px;font-weight:700;color:var(--primary);margin-bottom:6px">⚡ Batch Mode</p>
-          <p id="batchBannerMsg" style="font-size:11px;color:var(--text-2);margin-bottom:8px">Remaining images will be auto-cropped and processed with these same settings.</p>
-          <button class="btn btn-primary" id="btnBatchAll" style="width:100%;font-size:12px">⚡ Apply to All Remaining &amp; Done</button>
-        </div>
-
-        <div style="display:none" aria-hidden="true">
-          <button class="btn btn-secondary btn-sm" id="btnBackToCrop">← Back to Crop</button>
-          <button class="btn btn-primary" id="btnAddPage">✓ Add This Page →</button>
-        </div>
-      </div>
-    </div>
-    <!-- Keep the main decision after all filter controls on desktop and mobile. -->
-    <div class="scanner-primary-row">
-      <button class="btn btn-secondary" id="btnBackToCropMain" style="flex-shrink:0">← Back</button>
-      <button class="btn btn-primary btn-lg" id="btnAddPageMain" style="flex:1;font-size:15px">✓ Save Page &amp; Continue →</button>
-    </div>
-  </div>
-
-  <!-- ======== SCREEN: PAGES ======== -->
-  <div class="scanner-screen pages-screen" id="screen-pages">
-    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 4 of 5</span><h2>Organize pages</h2><p>Drag to reorder, tap a page to edit, or add more scans.</p></div></div>
-    <div class="scanner-action-bar">
-      <p><strong>Tip:</strong> Drag pages to reorder them, or tap a page to edit it.</p>
-      <div class="scanner-action-buttons">
-        <button class="btn btn-secondary" id="btnAddMore">+ Add More</button>
-        <button class="btn btn-primary" id="btnGoExport">Choose Download Format →</button>
-      </div>
-    </div>
-    <div class="pages-grid" id="pagesGrid"></div>
-    <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
-  </div>
-
+  <div class="scan-backdrop" id="scanBackdrop" hidden></div>
+  <section class="scan-editor" id="scanEditor" role="dialog" aria-modal="true" aria-labelledby="scanEditorTitle" data-mode="filter" hidden>
+    <header class="scan-editor-head"><h2 id="scanEditorTitle">Import Images</h2><button class="scan-close" id="scanClose" aria-label="Close editor" title="Close editor; documents stay available in this tab">×</button></header>
+    <div class="scan-editor-body">
+      <aside class="scan-page-rail" aria-label="Document pages"><div class="scan-page-list" id="scanPageList" aria-label="Page thumbnails"></div><button class="scan-add" id="scanAddImages">+ Add files</button></aside>
+      <main class="scan-workstage" id="scanWorkstage">
+        <p class="scan-source-name" id="scanSourceName" aria-live="polite"></p>
+        <div class="scanner-screen" id="screen-crop"><canvas id="cropCanvas" aria-label="Crop document; drag corner or edge handles"></canvas></div>
+        <div class="scanner-screen" id="screen-filter"><canvas id="previewCanvas" aria-label="Processed document preview"></canvas></div>
   <!-- ======== SCREEN: EXPORT ======== -->
   <div class="scanner-screen" id="screen-export">
-    <label style="display:block;margin:12px 0">Image / ZIP file name
-      <input id="scanExportName" type="text" maxlength="120" placeholder="PDFdukan scan" style="display:block;max-width:100%;width:320px;padding:10px;margin-top:6px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)">
-    </label>
-    <div class="scanner-stage-head"><div class="scanner-stage-copy"><span class="scanner-kicker">Step 5 of 5</span><h2>Choose your output</h2><p>PDF is best for sharing; JPG or ZIP is best for image workflows.</p></div></div>
     <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px">
       <button class="btn btn-secondary" id="btnBackToPages">← Back to Pages</button>
       <span style="font-size:14px;color:var(--text-3)">Ready to export — <strong id="exportPageCount">0 pages</strong></span>
@@ -481,14 +343,13 @@
             </select>
           </div>
           <div class="po-row">
-            <label for="pdfQuality">PDF image quality</label>
+            <label>Quality</label>
             <select id="pdfQuality">
-              <option value="0.97" selected>Best quality (recommended)</option>
-              <option value="0.90">Balanced (smaller file)</option>
-              <option value="0.78">Compact (smallest file)</option>
+              <option value="0.98" selected>High (clear text)</option>
+              <option value="0.85">Medium (smaller file)</option>
+              <option value="0.7">Low (smaller file)</option>
             </select>
           </div>
-          <p style="font-size:12px;color:var(--text-3);margin:8px 0 0">Best quality preserves the most scan detail. Choose a smaller setting only when a portal or email has a file-size limit.</p>
         </div>
         <button class="download-btn" id="btnDownloadPDF">
           <span>📄</span> Download PDF
@@ -498,20 +359,13 @@
       <!-- Image Options -->
       <div class="export-card">
         <h3><span class="ec-icon">🖼️</span> Export as Images</h3>
-        <p style="font-size:13px;color:var(--text-3);margin-bottom:12px">Single page → one image<br>Multiple pages → one ZIP archive</p>
-        <div class="po-row" style="margin-bottom:14px">
-          <label for="imageExportFormat">Image format</label>
-          <select id="imageExportFormat">
-            <option value="jpeg" selected>JPG — high quality, smaller</option>
-            <option value="png">PNG — lossless, larger</option>
-          </select>
-        </div>
+        <p style="font-size:13px;color:var(--text-3);margin-bottom:16px">Single page → JPG download<br>Multiple pages → ZIP archive</p>
         <div style="display:flex;flex-direction:column;gap:10px">
           <button class="btn btn-primary" id="btnDownloadJPG">
             <span>🖼️</span> Download JPG
           </button>
           <button class="btn btn-secondary" id="btnDownloadZIP">
-            <span>📦</span> Download JPG ZIP (all pages)
+            <span>📦</span> Download ZIP (all pages)
           </button>
         </div>
         <div class="ad-slot" style="margin-top:16px;min-height:60px"></div>
@@ -519,18 +373,79 @@
     </div>
   </div>
 
-</div><!-- /scanner-shell -->
+
+        <p class="scan-preview-status" id="scanPreviewStatus" role="status" aria-live="polite"></p>
+        <div class="scan-stage-busy" id="scanStageBusy" role="status" aria-live="polite" hidden><span class="scan-stage-spinner" aria-hidden="true"></span><span id="scanBusyText">Processing…</span></div>
+      </main>
+      <aside class="scan-tools" id="scanTools" aria-label="Document editing tools">
+        <div class="scan-transform-row">
+          <button id="scanTransform-left" aria-label="Rotate left" title="Rotate left"><svg viewBox="0 0 24 24"><path d="m7 3-3 3 3 3M4 6h10a5 5 0 0 1 5 5v3M5 11h10v9H5z"/></svg></button>
+          <button id="scanTransform-right" aria-label="Rotate right" title="Rotate right"><svg viewBox="0 0 24 24"><path d="m17 3 3 3-3 3M20 6H10a5 5 0 0 0-5 5M5 11h10v9H5z"/></svg></button>
+          <button id="scanTransform-horizontal" aria-label="Flip horizontally" title="Flip horizontally"><svg viewBox="0 0 24 24"><path d="M12 3v18M8 5 3 18h5M16 5l5 13h-5"/></svg></button>
+          <button id="scanTransform-vertical" aria-label="Flip vertically" title="Flip vertically"><svg viewBox="0 0 24 24"><path d="M3 12h18M5 8l13-5v5M5 16l13 5v-5"/></svg></button>
+        </div>
+        <button class="scan-crop-toggle" id="scanCropToggle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M6 3v15h15M3 6h15v15"/></svg> Crop</button><hr class="scan-divider">
+        <div class="scan-crop-options" id="scanCropOptions" hidden>
+          <p>Drag corners or edge handles to fit the document. Apply to keep this crop.</p><div id="detectionBadge" class="detect-badge"></div>
+          <button id="btnResetCrop">Auto detect</button><button id="btnFitCrop">Full image</button><button id="btnPreviousDetection" title="Restore the original detector result">Previous detection</button>
+        </div>
+        <div class="scan-filter-grid" id="filterStrip" aria-label="Filters"></div>
+        <div class="scan-filter-more">
+          <p class="scan-unavailable-note" id="scanHandwritingNote">Handwriting removal is not ready. Tested models also changed printed text and graphics, so this feature remains unavailable.</p>
+          <details><summary>More controls</summary><div class="scan-extra-filters" id="scanExtraFilters"></div>
+          <div class="sliders-grid">
+<div class="slider-group"><label for="sl_brightness">Brightness<output id="sv_brightness">0</output></label><input type="range" id="sl_brightness" min="-100" max="100" value="0"></div>
+<div class="slider-group"><label for="sl_contrast">Contrast<output id="sv_contrast">0</output></label><input type="range" id="sl_contrast" min="-100" max="100" value="0"></div>
+<div class="slider-group"><label for="sl_sharpness">Sharpness<output id="sv_sharpness">0</output></label><input type="range" id="sl_sharpness" min="0" max="100" value="0"></div>
+<div class="slider-group"><label for="sl_saturation">Saturation<output id="sv_saturation">0</output></label><input type="range" id="sl_saturation" min="-100" max="100" value="0"></div>
+</div><button class="scan-delete" id="scanDeletePage">Delete selected page</button></details></div>
+        <label class="scan-apply-all"><input type="checkbox" id="applyToAll" checked>Apply to All Pages</label>
+      </aside>
+    </div>
+    <footer class="scan-editor-footer" id="scanEditorFooter">
+      <div class="scan-zoom" id="scanZoom"><button id="scanZoomOut" aria-label="Zoom out">−</button><output id="scanZoomValue">100%</output><button id="scanZoomIn" aria-label="Zoom in">+</button></div>
+      <span class="scan-footer-info" id="scanFooterInfo" aria-live="polite"></span>
+      <span class="scan-import-status" id="scanImportStatus" role="status" aria-live="polite"></span>
+      <button id="scanCancelCrop" hidden>Cancel Crop</button><button id="scanOriginalImages" title="Use the uncropped original and remove enhancement for the selected scope">Upload Original Images</button>
+      <button class="scan-confirm" id="scanConfirm">Confirm</button>
+    </footer>
+  </section>
 </div><!-- /scanner-wrap -->
 
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button><button class="mob-nav-item" onclick="openAuth()"><span class="mni">👤</span><span>Account</span></button>
   </div>
 </nav>
+
+<div class="scanner-wrap" style="padding-top:0">
+  <div class="scanner-seo-desc">
+    CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
+  </div>
+  <div style="max-width:700px;margin:28px auto;padding:0 20px">
+    <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the automatic edge detection?</button>
+      <div class="faq-a">CamMaster's AI edge detection (powered by OpenCV.js Canny edge detection and contour analysis) suggests document corners based on image contrast and an on-device model. Check the suggested edges, especially on folded pages, small cards and patterned backgrounds. For best results, place documents on a dark, non-reflective surface with good, even lighting. Manual corner adjustment is always available if auto-detection misses.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
+      <div class="faq-a">Yes. After processing your first image through the crop and filter steps, you arrive at the Pages view. Click "Add More" to upload additional images or PDF pages. All pages appear as thumbnails you can drag to reorder. Export all pages as a single multi-page PDF or as individual JPG files in a ZIP archive.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the Magic Pro filter?</button>
+      <div class="faq-a">Magic Pro is CamMaster's most powerful scan enhancement filter. It applies deep shadow removal using local contrast normalization, aggressive sharpening, and adaptive thresholding to produce crisp, print-quality document scans from phone photos. It's especially effective for documents photographed in low light or with shadows from the photographer's hand.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster work on mobile phones?</button>
+      <div class="faq-a">Yes — CamMaster is fully mobile-optimized. On smartphones, you can upload images directly from your camera roll or take a new photo. The interface adapts to touch controls with larger crop handles and buttons. The entire scanning and export workflow works in mobile browsers without any app installation required.</div>
+    </div>
+  </div>
+</div>
 
 <!-- AUTH MODAL — tabbed Sign In / Sign Up -->
 <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleScanner">
@@ -555,7 +470,7 @@
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
-      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">The basic scanner is currently free. No credit card required.</p>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">
         <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Sign Up with Google
@@ -611,40 +526,37 @@
 
 <!-- Hidden file inputs -->
 <input type="file" id="fileInputScanner" accept="image/*,.pdf,application/pdf" multiple>
-<input type="file" id="fileInputQuickScan" accept="image/*" multiple>
 <input type="file" id="fileInputPdfScan" accept=".pdf,application/pdf" multiple>
 
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20260825i"></script>
-<script src="js/paper-detector.js?v=20260908e"></script>
-<script src="js/scan-edge-refiner.js?v=20260908b"></script>
-<script src="js/crop.js?v=20260914-selection80"></script>
-<script src="js/filters.js?v=20260909c"></script>
-<script src="js/scan-renderer.js?v=20260914-preview-export-match"></script>
-<script src="js/scanner.js?v=20260909c"></script>
+<script src="js/app.js?v=20261019_v5_pro"></script>
+<script src="js/particles.js?v=20261019_v5_pro"></script>
+<script src="js/scan-paper-profile.js?v=20261104_autocrop"></script>
+<script src="js/document-boundary.js?v=20261104_autocrop"></script>
+<script src="js/crop.js?v=20261104_autocrop"></script>
+<script src="js/filters.js?v=20261104_autocrop"></script>
+<script src="js/scan-renderer.js?v=20261104_autocrop"></script>
+<script src="js/scan-processor.js?v=20261104_autocrop"></script>
+<script src="js/scan-pdf-source.js?v=20261104_autocrop"></script>
+<script src="js/scanner.js?v=20261104_autocrop"></script>
 
 <!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
   <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
-    📖 <strong>Related guides:</strong> <a href="blog/scan-documents-phone.html" style="color:var(--primary);font-weight:600">How to scan documents on your phone</a> · <a href="alternatives.html" style="color:var(--primary);font-weight:600">Compare current CamScanner alternatives</a>
+    📖 <strong>Related guide:</strong> <a href="blog/scan-documents-phone.html" style="color:var(--primary);font-weight:600">How to Scan Documents on Your Phone for Free →</a>
   </div>
 
 <section class="tool-seo-section" aria-label="CamMaster Scanner Info">
-  <h2>Scan Documents Online Without Installing an App</h2>
-  <p><strong>CamMaster is a free online document scanner and browser-based CamScanner alternative for people who want a local download instead of an app-first workflow.</strong> Add a document photo, check the detected edges, adjust any incorrect corner, improve readability, reorder pages and export a PDF or image.</p>
-  <p>Core image processing and PDF export run in your browser. Optional connected features, such as saving to Google Drive, communicate with that service only when you choose them. For sensitive documents, always review the result and the destination before sharing.</p>
-
-  <figure style="margin:24px 0;text-align:center">
-    <img src="/images/hero-scanner.svg?v=20260825" width="600" height="400" loading="lazy" decoding="async" alt="Illustration of document edges being detected on a phone before export to PDF" style="display:block;width:min(100%,600px);height:auto;margin:0 auto;border-radius:16px;border:1px solid var(--border)">
-    <figcaption style="font-size:12px;color:var(--text-3);margin-top:8px">The crop remains adjustable before perspective correction and export.</figcaption>
-  </figure>
+  <h2>CamMaster — Free AI Document Scanner Online</h2>
+  <p>CamMaster by PDFdukan is a free, browser-based document scanner that turns photos of documents into clean, professional scans — without any app download. Point your phone camera at any document, upload the photo, and CamMaster automatically detects the document edges, corrects the perspective, removes shadows, and enhances the contrast to produce a sharp, readable scan.</p>
+  <p>The entire process runs in your browser using AI and WebGL — no photo is uploaded to any server. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, salary slips, academic certificates, property papers, and medical reports. Your data stays completely on your device.</p>
 
   <h2>What Makes CamMaster Different from Other Scanners?</h2>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>🤖 AI Edge Detection</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">A browser ONNX model attempts corner detection first, with OpenCV.js fallbacks. Review and adjust all four crop handles before perspective correction.</p>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">An ONNX neural network running in your browser automatically finds document corners and corrects perspective — even for documents held at an angle.</p>
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>📷 No App Needed</strong>
@@ -652,11 +564,11 @@
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
       <strong>📄 Batch Scanning</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Scan multiple pages and combine them into one multi-page PDF for forms, booklets or document submissions.</p>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Scan multiple pages and combine them all into one multi-page PDF. Perfect for multi-page forms, booklets, and multi-document submissions.</p>
     </div>
     <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>🔒 Local Core Processing</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Core detection, enhancement, and PDF export run locally. Optional cloud-saving features transfer a file only when you choose to use them.</p>
+      <strong>🔒 100% Private</strong>
+      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Photos never leave your device. AI processing, enhancement, and PDF export all happen locally. No cloud, no server, no privacy risk.</p>
     </div>
   </div>
 
@@ -685,7 +597,7 @@
         <div class="sg-arrow" aria-hidden="true">→</div>
         <div class="sg-step"><div class="sg-num">4</div><div class="sg-ico" aria-hidden="true">📄</div><div class="sg-h">Pages</div><div class="sg-d">Add, reorder or delete pages for multi-page docs.</div></div>
         <div class="sg-arrow" aria-hidden="true">→</div>
-        <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF, high-quality JPG or lossless PNG.</div></div>
+        <div class="sg-step"><div class="sg-num">5</div><div class="sg-ico" aria-hidden="true">📥</div><div class="sg-h">Export</div><div class="sg-d">Download as PDF or JPG — all in your browser.</div></div>
       </div>
     </div>
    </div>
@@ -693,9 +605,9 @@
 
   <ol>
     <li><strong>Take a photo or upload an image</strong> — Use your phone camera to photograph the document, or upload an existing photo from your gallery. Place the document on a flat, dark surface with good lighting for best results.</li>
-    <li><strong>Detect and crop</strong> — CamMaster attempts to detect four document corners and applies perspective correction from the selected points. Inspect and adjust the handles manually when needed.</li>
-    <li><strong>Enhance the scan</strong> — Try an enhancement preset to adjust contrast, shadows and perceived sharpness. Choose colour, greyscale or black-and-white output, and compare the preview with the original.</li>
-    <li><strong>Export as PDF, JPG or PNG</strong> — Use Best PDF quality when detail matters, JPG for a smaller high-quality image, or PNG for lossless image output. Multi-page scans can become one PDF or a ZIP of images.</li>
+    <li><strong>Auto-detect and crop</strong> — CamMaster's AI automatically detects the four corners of your document and applies perspective correction to remove any tilt or angle. You can also adjust the crop corners manually.</li>
+    <li><strong>Enhance the scan</strong> — Apply the auto-enhance filter to increase contrast, remove shadows, and make text sharper. Choose between colour, greyscale, or black-and-white output.</li>
+    <li><strong>Export as PDF or JPG</strong> — Download your scan as a high-quality PDF (ideal for submitting documents) or JPG image. For multi-page documents, all pages are combined into one PDF.</li>
   </ol>
 
   <h2>Best Uses for CamMaster Scanner in Pakistan</h2>
@@ -722,35 +634,35 @@
   <h2>Frequently Asked Questions</h2>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How does the AI document scanner work?</button>
-      <div class="faq-a"><p>CamMaster attempts an ONNX document-corner model in the browser, with an OpenCV.js multi-method fallback when the model cannot load or detect a reliable quadrilateral. Perspective correction uses the selected four corners. Always inspect the crop handles because automatic detection can be wrong.</p></div>
+      <div class="faq-a"><p>CamMaster uses an ONNX neural network running inside your browser to detect document edges and automatically apply perspective correction. This AI model identifies the four corners of a document even when photographed at an angle, then warps the image to produce a straight, flat scan — all without sending any data to a server.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
-      <div class="faq-a"><p>Yes. Batch Mode processes pages individually and combines them into one multi-page PDF. The practical page count depends on image dimensions, browser limits and available device memory, so large batches may work better when split into smaller groups.</p></div>
+      <div class="faq-a"><p>Yes. Use Batch Mode to scan as many pages as you need. Each page is processed individually and then combined into a single multi-page PDF for download. This is ideal for scanning multi-page forms, booklets, or any document with more than one page.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster upload my photos to a server?</button>
-      <div class="faq-a"><p>Core edge detection, enhancement and export run locally in your browser. Optional connected actions, such as saving an output to Google Drive, communicate with that provider only when selected. For sensitive documents, inspect the destination and output before sharing.</p></div>
+      <div class="faq-a"><p>No. All AI processing, edge detection, image enhancement, and PDF export happen locally in your browser using WebGL and JavaScript. Your photos and documents never leave your device. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, financial records, and medical reports.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to install an app?</button>
-      <div class="faq-a"><p>No app download is required. CamMaster is designed for current Chrome, Safari and Samsung Internet releases. Available memory, browser features and file size can affect performance.</p></div>
+      <div class="faq-a"><p>No app download is required. CamMaster works directly in your mobile browser — Chrome on Android, Safari on iPhone, Samsung Internet, or any modern browser. Just open pdfdukan.com on your phone and start scanning immediately.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best way to scan a CNIC with CamMaster?</button>
-      <div class="faq-a"><p>Place the card flat on a contrasting surface with even light. CamMaster will attempt to find the edges, but automatic detection can be wrong, so inspect and adjust all four crop handles. Compare the available filters, repeat for the back, and export both sides with Batch Mode or combine them with the <a href="tools/merge-pdf.html">Merge PDF tool</a>.</p></div>
+      <div class="faq-a"><p>Place your CNIC flat on a dark surface. Open CamMaster on your phone and use the camera to capture the card — the AI will detect the edges automatically. After processing, use the enhance filter for a sharp black-and-white scan. Repeat for the back side, then combine both into one PDF using Batch Mode or the <a href="tools/merge-pdf.html">Merge PDF tool</a>.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What export formats does CamMaster support?</button>
-      <div class="faq-a"><p>CamMaster exports a multi-page PDF, a high-quality JPG for a single page, a lossless PNG for a single page, or a ZIP of JPG or PNG images for multiple pages. PDF quality can be set to Best, Balanced or Compact before download.</p></div>
+      <div class="faq-a"><p>CamMaster exports scanned documents as a multi-page PDF or individual JPG images. PDF export is ideal for submitting documents to portals and sharing professionally. JPG export is useful if you want to further edit the image or upload it to another tool.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best lighting for scanning documents?</button>
-      <div class="faq-a"><p>Use even light and avoid glare, hard shadows and backlighting. Compare the Original and readability filters after cropping; a filter can help one source and harm another, so inspect names, numbers, stamps and small text before export.</p></div>
+      <div class="faq-a"><p>Natural daylight or bright indoor overhead light gives the best results. Avoid direct flash from your phone — it creates glare and washes out text. Avoid shooting near windows where backlight can silhouette the document. If your scan looks too dark or faded, apply the auto-enhance filter inside CamMaster to correct brightness and contrast.</p></div>
     </div>
     <div class="faq-item">
       <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is CamMaster completely free?</button>
-      <div class="faq-a"><p>The basic scanner is currently available without a subscription, credit card or account. Practical batch size depends on your device memory and the dimensions of the source images.</p></div>
+      <div class="faq-a"><p>Yes. CamMaster is 100% free — no subscription, no per-scan fee, no account required, no daily limit. Scan as many documents as you need every day without any cost.</p></div>
     </div>
 </section>
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
@@ -768,7 +680,7 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>
@@ -808,7 +720,7 @@
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>

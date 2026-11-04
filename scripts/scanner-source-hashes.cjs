@@ -1,0 +1,4 @@
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const allowed=path.resolve('D:/website data/PdfDukan/pk24updates/Data Folder (CamMaster)'),files=JSON.parse(fs.readFileSync('output/scanner-corner-repair-20261102/source-inventory.json')).files;
+const rows=files.map(file=>{const relative=path.relative(allowed,path.resolve(file.source_path));assert.ok(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'Source must stay in the approved test folder');const sha256=crypto.createHash('sha256').update(fs.readFileSync(file.source_path)).digest('hex');assert.equal(sha256,file.sha256,'Original changed: '+file.id);return {id:file.id,sha256,unchanged:true};});
+fs.writeFileSync('output/scanner-bulk-20261103/source-hashes.json',JSON.stringify({files:rows.length,allUnchanged:true,rows},null,2));console.log('PASS: all '+rows.length+' original files match their saved SHA-256 hashes.');

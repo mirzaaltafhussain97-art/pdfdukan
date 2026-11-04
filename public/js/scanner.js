@@ -1,715 +1,355 @@
-/* ================================================================
-   CamMaster — Scanner Flow
-   Upload → Crop → Filter → Pages → Export
-================================================================ */
-
+/* CamMaster: local document workspace. All source pixels stay in the browser. */
 const ScannerApp = (() => {
-
-  const LIB_URLS = {
-    pdfjs: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js',
-    jspdf: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
-    jszip: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
-    sortable: 'https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js',
+  const state = {screen:'upload',pages:[],editingIndex:-1,currentFilter:'magicpro',adjustments:{brightness:0,contrast:0,sharpness:0,saturation:0},applyToAll:true};
+  const $ = id => document.getElementById(id);
+  const copy = value => JSON.parse(JSON.stringify(value));
+  let cropEditor, autoCropEditor, autoTask=null, busy=false, importing=false, previewRevision=0, zoom=1, focusBeforeEditor;
+  let sortable, pageDragging=false;
+  const thumbnailJobs=new Map();
+  let thumbnailTask=null;
+  const MAX_IMAGE_PX=16_000_000;
+  const filterIcons = {
+    original:'▤', enhance:'<svg viewBox="0 0 40 40" fill="none"><path d="M5 32 18 7q2-3 4 0l13 25q1 3-3 3H8q-4 0-3-3" fill="currentColor"/><path d="m27 8 9 18q2 3 0 6h-5L22 14" fill="currentColor" opacity=".4"/></svg>',
+    magicpro:'<span style="font-style:italic;font-weight:800">A<span style="font-size:24px">✦</span></span>',lighten:'<span style="color:#ffb800">☀</span>',
+    noshadow:'<span style="color:#999">▧<small style="color:#fa7758">⊘</small></span>',bw:'<span style="color:black;letter-spacing:-14px;padding-right:14px">●<span style="color:white">●</span></span>',eco:'<span style="color:#333;letter-spacing:-14px;padding-right:14px">◯<span style="color:white">●</span></span>',handwriting:'<span style="color:#0785ff">〰<small style="color:#fa7758">⊘</small></span>'
   };
-
-  async function _ensureLibrary(url, isReady, label) {
-    if (isReady()) return;
-    if (!window.loadScriptOnce) throw new Error(label + ' loader is unavailable');
-    await window.loadScriptOnce(url);
-    if (!isReady()) throw new Error(label + ' could not initialize');
-  }
-
-  async function _ensurePdfJs() {
-    await _ensureLibrary(LIB_URLS.pdfjs, () => !!window.pdfjsLib, 'PDF import');
-    if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-  }
-
-  const _ensureJsPdf = () => _ensureLibrary(LIB_URLS.jspdf, () => !!window.jspdf?.jsPDF, 'PDF export');
-  const _ensureZip = () => _ensureLibrary(LIB_URLS.jszip, () => typeof window.JSZip !== 'undefined', 'ZIP export');
-  const _ensureSortable = () => _ensureLibrary(LIB_URLS.sortable, () => typeof window.Sortable !== 'undefined', 'Page reorder');
-
-  const SCREENS = ['upload', 'crop', 'filter', 'pages', 'export'];
-  let state = {
-    screen: 'upload',
-    queue: [],          // Files pending processing
-    queueIndex: 0,
-    pages: [],          // [{id, croppedImg, filter, adjustments, canvas}]
-    editingIndex: -1,   // Which page is being edited (-1 = new)
-    currentFilter: 'enhance',
-    adjustments: { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 },
-    applyToAll: false,
-    quickScan: false,
-  };
-
-  let cropEditor = null;
-  function _snapshotCrop() {
-    return { img: cropEditor.img, rotation: cropEditor.rotation,
-      corners: JSON.parse(JSON.stringify(cropEditor.corners)) };
-  }
-
-  /* ── INIT ─────────────────────────────────────────────────── */
-  function init() {
-    cropEditor = new CropEditor('cropCanvas');
-
-    /* Warm up the AI corner-detection model on the user's first interaction
-       (not at page load) so visitors who never scan don't download it, while
-       anyone about to scan gets it preloaded before the crop step. */
-    if (window.MLDetector) {
-      const warm = () => { window.MLDetector.load().catch(() => {}); };
-      const uploadZone = document.getElementById('uploadZone');
-      ['pointerdown', 'dragover', 'keydown', 'touchstart'].forEach(ev =>
-        uploadZone?.addEventListener(ev, warm, { once: true, passive: true }));
-    }
-
-    _bindUploadZone();
-    _bindCropControls();
-    _bindFilterControls();
-    _bindPagesControls();
-    _bindExportControls();
-
+  function init(){
+    cropEditor=new CropEditor('cropCanvas');
+    autoCropEditor=new CropEditor('scanBackgroundCanvas');
+    autoCropEditor.silent=true;
+    _bindUploadZone(); _bindWorkspace(); _bindExportControls();
     showScreen('upload');
-
-    // Consume any file that was pre-loaded from the homepage unified drop UX
-    if (typeof consumePendingFiles === 'function') {
-      const pending = consumePendingFiles();
-      if (pending && pending.length) {
-        setTimeout(() => handleFiles(pending), 100);
+    if(typeof consumePendingFiles==='function'){const pending=consumePendingFiles();if(pending?.length)handleFiles(pending);}
+    window.addEventListener('resize',_fitCrop);
+    if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(state.screen==='crop')requestAnimationFrame(_fitCrop);}).observe($('screen-crop'));
+    if(window.ScanProcessor?.available)ScanProcessor.warmup().then(()=>{const status=$('cvStatus');if(status){status.textContent='✓ Background scanner ready';status.className='cv-badge ready';}}).catch(error=>console.warn('Document worker warmup:',error));
+    else if(window.loadScriptOnce)window.loadScriptOnce('/vendor/opencv/opencv.js').then(onOpenCvReady).catch(error=>console.warn('Scanner fallback:',error));
+    window.ScanRenderer?.warmup().catch(error=>console.warn('Filter worker warmup:',error));
+  }
+  function _openEditor(){
+    if($('scanEditor').hidden){focusBeforeEditor=document.activeElement;$('scanEditor').hidden=false;$('scanBackdrop').hidden=false;document.body.classList.add('scan-editor-open');$('scanClose').focus();}
+  }
+  function _closeEditor(){
+    if(busy){toast('Please wait for the current page to finish.','warning');return;}
+    _saveCurrent();$('scanEditor').hidden=true;$('scanBackdrop').hidden=true;document.body.classList.remove('scan-editor-open');
+    $('resumeEditor').hidden=!state.pages.length;focusBeforeEditor?.focus();
+  }
+  function showScreen(name){
+    if(name==='pages'){if(state.pages.length)_editPage(Math.max(0,state.editingIndex));else showScreen('upload');return;}
+    state.screen=name;
+    if(name==='upload'){$('screen-upload').classList.add('active');return;}
+    _openEditor();$('scanEditor').dataset.mode=name;
+    $('scanTools').inert=name==='crop';
+    for(const s of ['crop','filter','export'])$('screen-'+s)?.classList.toggle('active',s===name);
+    $('scanCropOptions').hidden=name!=='crop';$('scanCropToggle').setAttribute('aria-pressed',String(name==='crop'));
+    const actions=name==='crop'?$('scanCropOptions'):$('scanEditorFooter');
+    actions.append($('scanCancelCrop'),$('scanConfirm'));
+    $('scanConfirm').textContent=name==='crop'?'Apply':name==='export'?'Back to Editor':'Confirm';
+    $('scanCancelCrop').hidden=name!=='crop';$('scanOriginalImages').hidden=name==='crop'||name==='export';
+    $('scanPreviewStatus').hidden=name!=='filter';$('scanZoom').hidden=name!=='filter';
+    $('scanEditorTitle').textContent=name==='export'?'Export Documents':name==='crop'?'Adjust Crop':'Import Images';
+    if(name==='crop')requestAnimationFrame(_fitCrop);
+  }
+  function _bindUploadZone(){
+    const zone=$('uploadZone'),input=$('fileInputScanner'),pdf=$('fileInputPdfScan');
+    for(const ev of ['dragenter','dragover'])zone.addEventListener(ev,e=>{e.preventDefault();zone.classList.add('drag-over');});
+    for(const ev of ['dragleave','drop'])zone.addEventListener(ev,e=>{e.preventDefault();zone.classList.remove('drag-over');});
+    zone.addEventListener('drop',e=>handleFiles([...e.dataTransfer.files]));
+    zone.addEventListener('click',()=>input.click());zone.addEventListener('keydown',e=>{if(e.target===zone&&(e.key==='Enter'||e.key===' ')){e.preventDefault();input.click();}});
+    for(const picker of [input,pdf])picker.addEventListener('change',e=>{handleFiles([...e.target.files]);picker.value='';});
+    $('resumeEditor').onclick=()=>_editPage(Math.max(0,state.editingIndex));
+  }
+  async function _loadFile(file){
+    const url=URL.createObjectURL(file);
+    try{return await new Promise((resolve,reject)=>{const img=new Image();img.decoding='async';img.onload=()=>{const decoded=typeof img.decode==='function'?img.decode():Promise.resolve();decoded.then(()=>resolve(img),reject);};img.onerror=()=>reject(new Error('Image could not be read'));img.src=url;});}
+    finally{URL.revokeObjectURL(url);}
+  }
+  async function _imageFromBlob(blob){return _loadFile(blob);}
+  function _limitImage(img){
+    const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;if(w*h<=MAX_IMAGE_PX)return img;
+    const s=Math.sqrt(MAX_IMAGE_PX/(w*h)),c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);return c;
+  }
+  async function handleFiles(files){
+    if(importing){toast('Please let these images finish loading, then add more.','warning');return;}
+    if(busy||!files.length)return;
+    _saveCurrent();_openEditor();showScreen('filter');importing=true;const start=state.pages.length,failures=[];
+    const settings={filter:state.currentFilter,adjustments:{...state.adjustments}};
+    $('scanImportStatus').textContent='Reading images…';
+    _updateAutoStatus();
+    try{
+      for(let i=0;i<files.length;i++){
+        const f=files[i];$('scanImportStatus').textContent=`Reading ${i+1} / ${files.length}`;
+        try{
+          if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){
+            if(typeof pdfjsLib==='undefined')throw new Error('PDF engine is still loading');
+            const owner=await ScanPdf.open(f);
+            try{for(let n=1;n<=owner.document.numPages;n++){
+              $('scanImportStatus').textContent=`Reading PDF page ${n} / ${owner.document.numPages}`;
+              const preview=await ScanPdf.preview(owner,n);owner.refs++;
+              await _importImage(preview.image,settings,`${f.name} — page ${n}`,{pdfSource:{owner,number:n},sourceOperations:[],autoStatus:preview.flat?'ready':'pending'});
+            }}finally{if(owner.refs)await owner.document.cleanup();else await owner.document.destroy();}
+          }else if(f.type.startsWith('image/')||/\.(jpe?g|png|webp|bmp)$/i.test(f.name)){
+            await _importImage(_limitImage(await _loadFile(f)),settings,f.name);_renderPages();
+          }else throw new Error('Unsupported file type');
+        }catch(error){console.error('Import failed',f.name,error);failures.push(f.name);}
+        await new Promise(resolve=>setTimeout(resolve,0));
       }
-    }
-
-    console.log('ScannerApp initialized');
+    }finally{importing=false;_updateAutoStatus();_queueAutoCrops();}
+    if(state.editingIndex<0&&state.pages.length>start)_editPage(start);else if(!state.pages.length){_closeEditor();showScreen('upload');}
+    if(failures.length)toast(`${failures.length} file(s) could not be imported. Other pages are ready.`,'error');
   }
-
-  /* ── SCREEN MANAGEMENT ────────────────────────────────────── */
-  function showScreen(name) {
-    SCREENS.forEach(s => {
-      const el = document.getElementById('screen-' + s);
-      if (el) el.classList.toggle('active', s === name);
-    });
-    state.screen = name;
-    if (name !== 'filter') {
-      ++previewVersion;
-      clearTimeout(previewTimer);
-    }
-
-    // Update step indicator
-    document.querySelectorAll('.scanner-step').forEach((el, i) => {
-      const stepName = el.dataset.step;
-      const stepIdx = SCREENS.indexOf(stepName);
-      const curIdx = SCREENS.indexOf(name);
-      el.classList.toggle('active', stepName === name);
-      el.classList.toggle('done', stepIdx < curIdx);
-    });
+  async function _importImage(img,settings,sourceName='',metadata={}){
+    const corners=_fullCorners(img);
+    state.pages.push({id:Date.now()+Math.random(),sourceName,sourceImg:img,croppedImg:img,cropCorners:copy(corners),previousCorners:copy(corners),needsCropReview:false,autoStatus:'pending',editVersion:0,filter:state.applyToAll?state.currentFilter:settings.filter,adjustments:{...(state.applyToAll?state.adjustments:settings.adjustments)},...metadata});
+    _renderPages();
+    if(state.editingIndex<0)_editPage(state.pages.length-1);
+    // Let the first picture and new thumbnails paint before further decoding.
+    await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
   }
-
-  /* ── UPLOAD ZONE ──────────────────────────────────────────── */
-  function _bindUploadZone() {
-    const zone = document.getElementById('uploadZone');
-    if (!zone) return;
-
-    ['dragenter', 'dragover'].forEach(ev =>
-      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag-over'); })
-    );
-    ['dragleave', 'drop'].forEach(ev =>
-      zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.remove('drag-over'); })
-    );
-    zone.addEventListener('drop', e => {
-      const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/') || f.type === 'application/pdf');
-      if (files.length) handleFiles(files);
-    });
-    zone.addEventListener('click', () => document.getElementById('fileInputScanner').click());
-
-    const fileInput = document.getElementById('fileInputScanner');
-    if (fileInput) fileInput.addEventListener('change', e => handleFiles([...e.target.files]));
-    const quickInput = document.getElementById('fileInputQuickScan');
-    if (quickInput) quickInput.addEventListener('change', e => { handleFiles([...e.target.files], true); e.target.value = ''; });
-
-    // PDF import input (separate input for accept=".pdf")
-    const pdfInput = document.getElementById('fileInputPdfScan');
-    if (pdfInput) pdfInput.addEventListener('change', e => handleFiles([...e.target.files]));
+  function _updateAutoStatus(){
+    const pending=state.pages.filter(p=>p.autoStatus==='pending'||p.autoStatus==='processing').length;
+    if(!importing)$('scanImportStatus').textContent=pending?`Auto-crop ${state.pages.length-pending} / ${state.pages.length}`:'';
+    $('scanAddImages').disabled=busy||importing;
+    if(state.screen!=='crop')$('scanConfirm').disabled=busy||importing||pending>0;
   }
-
-  function handleFiles(files, quickScan = false) {
-    if (!files.length) return;
-    // Signup optional — no login gate; process files for everyone.
-    state.queue = files.map(f => ({ file: f, type: f.type }));
-    state.queueIndex = 0;
-    state.editingIndex = -1;
-    state.quickScan = quickScan;
-    _processNextInQueue();
-  }
-
-  function _processNextInQueue() {
-    if (state.queueIndex >= state.queue.length) {
-      if (state.pages.length > 0) showScreen('pages');
-      else showScreen('upload');
-      return;
-    }
-
-    const item = state.queue[state.queueIndex];
-    if (item.img) {
-      // pre-rendered image (e.g. a rasterised PDF page) — run it through the
-      // same crop + filter pipeline as a photo so all editing tools apply.
-      _startCropScreen(item.img);
-    } else if (item.file.type === 'application/pdf') {
-      _processPDFFile(item.file);
-    } else {
-      _processImageFile(item.file);
-    }
-  }
-
-  const MAX_IMAGE_PX = 16_000_000; // 16MP — above this we resize before processing
-
-  function _processImageFile(file) {
-    showProcessing('Loading image…');
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        const px = (img.naturalWidth || img.width) * (img.naturalHeight || img.height);
-        if (px > MAX_IMAGE_PX) {
-          // Downscale to fit within MAX_IMAGE_PX, preserving aspect ratio
-          showProcessing('Resizing large image…');
-          const scale = Math.sqrt(MAX_IMAGE_PX / px);
-          const nW = Math.round((img.naturalWidth  || img.width)  * scale);
-          const nH = Math.round((img.naturalHeight || img.height) * scale);
-          const c  = document.createElement('canvas');
-          c.width = nW; c.height = nH;
-          c.getContext('2d').drawImage(img, 0, 0, nW, nH);
-          const resized = new Image();
-          resized.onload = () => { hideProcessing(); _startCropScreen(resized); };
-          resized.src = c.toDataURL('image/jpeg', 0.95);
-        } else {
-          hideProcessing();
-          _startCropScreen(img);
+  function _invalidateAuto(page){page.editVersion=(page.editVersion||0)+1;page.autoStatus='manual';_updateAutoStatus();}
+  function _queueAutoCrops(){
+    if(autoTask||importing||state.screen==='crop')return;
+    autoTask=(async()=>{
+      while(true){
+        if(importing||state.screen==='crop')break;
+        const selected=state.pages[state.editingIndex];
+        const page=selected?.autoStatus==='pending'?selected:state.pages.find(p=>p.autoStatus==='pending');
+        if(!page)break;
+        const source=page.sourceImg,version=page.editVersion;page.autoStatus='processing';_updateAutoStatus();
+        await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+        try{
+          let cropped,corners,previousCorners,needsCropReview,autoProfile=false,previewOnly=false;
+          if(window.ScanProcessor?.available){
+            const result=await ScanProcessor.detect(source,{preview:true},()=>state.pages.includes(page)&&page.editVersion===version);
+            if(!result)continue;
+            cropped=result.blob?await _imageFromBlob(result.blob):source;corners=result.corners;previousCorners=result.previousCorners;needsCropReview=result.needsReview;autoProfile=result.hasPhotoPadding&&!!result.blob;previewOnly=!!result.previewOnly;
+          }else{
+            await autoCropEditor.setImageAsync(source);
+            const warped=window.cvReady?await autoCropEditor.applyCrop():await autoCropEditor.perspectiveCrop();
+            cropped=autoCropEditor.hasPhotoPadding&&window.rectifyScanPaperBands?window.rectifyScanPaperBands(warped):warped;corners=autoCropEditor.corners;previousCorners=autoCropEditor.legacyCorners;needsCropReview=autoCropEditor.detectionNeedsReview;
+          }
+          // The job owns a page object and source revision, never a page index.
+          // Manual edits, rotations, deletions and reordering cannot redirect it.
+          if(!state.pages.includes(page)||page.editVersion!==version||page.sourceImg!==source)continue;
+          Object.assign(page,{croppedImg:cropped,cropCorners:copy(corners),previousCorners:copy(previousCorners||corners),needsCropReview:!!needsCropReview,autoProfile,previewOnly,autoStatus:'ready'});
+        }catch(error){
+          console.warn('Automatic crop unavailable; keeping this original:',error);
+          if(!state.pages.includes(page)||page.editVersion!==version)continue;
+          page.autoStatus='ready';page.needsCropReview=true;
         }
-      };
-      img.onerror = () => { hideProcessing(); toast('Failed to load image', 'error'); };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function _processPDFFile(file) {
-    showProcessing('Rendering PDF pages…');
-    try {
-      showProcessing('Loading PDF engine…');
-      await _ensurePdfJs();
-      showProcessing('Rendering PDF pages…');
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      const allImgs = [];
-
-      for (let pg = 1; pg <= pdf.numPages; pg++) {
-        const page = await pdf.getPage(pg);
-        const vp = page.getViewport({ scale: 2.0 });
-        const c = document.createElement('canvas');
-        c.width = vp.width; c.height = vp.height;
-        await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
-        const img = new Image();
-        await new Promise(r => { img.onload = r; img.src = c.toDataURL('image/png'); });
-        allImgs.push(img);
+        if(state.pages[state.editingIndex]===page&&state.screen==='filter'&&!$('scanEditor').hidden)await _editPage(state.editingIndex);
+        else _renderPages();
+        _updateAutoStatus();
       }
-
-      hideProcessing();
-      if (!allImgs.length) {
-        toast('PDF has no pages', 'error');
-        state.queueIndex++;
-        _processNextInQueue();
-        return;
-      }
-      // Expand this PDF item into one queue item per rendered page, then run
-      // them through the normal crop + filter pipeline (so crop/filter/adjust
-      // tools all apply to PDF pages, just like uploaded photos).
-      const items = allImgs.map(img => ({ img }));
-      state.queue.splice(state.queueIndex, 1, ...items);
-      _processNextInQueue();
-    } catch (e) {
-      hideProcessing();
-      toast('Failed to load PDF', 'error');
-      console.error(e);
-    }
+    })().finally(()=>{autoTask=null;_updateAutoStatus();if(state.screen!=='crop'&&state.pages.some(p=>p.autoStatus==='pending'))_queueAutoCrops();});
   }
-
-  /* ── CROP SCREEN ──────────────────────────────────────────── */
-  function _startCropScreen(img) {
-    showProcessing('Detecting document edges…');
-    setTimeout(async () => {
-      try { await cropEditor.setImageAsync(img); }
-      catch (e) { console.warn('Document detection failed:', e); cropEditor.setImage(img); }   // hard fallback
-      hideProcessing();
-      if (state.quickScan && cropEditor.autoDetected) {
-        await _applyCrop();
-        return;
-      }
-      showScreen('crop');
-    }, 100);
+  function _fullCorners(img){const w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;return{tl:{x:0,y:0},tr:{x:w,y:0},br:{x:w,y:h},bl:{x:0,y:h}};}
+  function _saveCurrent(){
+    const p=state.pages[state.editingIndex];if(!p)return;
+    p.filter=state.currentFilter;p.adjustments={...state.adjustments};
   }
-
-  function _bindCropControls() {
-    const btnApply      = document.getElementById('btnApplyCrop');
-    const btnReset      = document.getElementById('btnResetCrop');
-    const btnFit        = document.getElementById('btnFitCrop');
-    const btnRotateL    = document.getElementById('btnRotateL');
-    const btnRotateR    = document.getElementById('btnRotateR');
-    const btnSkip       = document.getElementById('btnSkipCrop');
-    const btnBackUpload = document.getElementById('btnBackToUpload');
-
-    if (btnApply)      btnApply.onclick      = _applyCrop;
-    if (btnReset)      btnReset.onclick      = () => cropEditor.resetCorners();
-    if (btnFit)        btnFit.onclick        = () => cropEditor.fitFull();
-    if (btnRotateL)    btnRotateL.onclick    = () => cropEditor.rotate(-90);
-    if (btnRotateR)    btnRotateR.onclick    = () => cropEditor.rotate(90);
-    if (btnBackUpload) btnBackUpload.onclick = () => showScreen('upload');
-    if (btnSkip)    btnSkip.onclick    = async () => {
-      showProcessing('Processing…');
-      // Skip really keeps the complete image, including the chosen rotation.
-      const img = cropEditor._getRotatedImg();
-      hideProcessing();
-      _startFilterScreen(img);
-    };
+  function _editPage(index){
+    if(busy||!state.pages[index])return;
+    _saveCurrent();state.editingIndex=index;
+    const page=state.pages[index];state.currentFilter=page.filter;state.adjustments={...page.adjustments};state._currentCropped=page.croppedImg;
+    $('scanSourceName').textContent=page.sourceName||`Page ${index+1}`;
+    cropEditor.img=page.sourceImg;cropEditor.rotation=0;cropEditor.pendingTransform=null;cropEditor.corners=copy(page.cropCorners);cropEditor.legacyCorners=copy(page.previousCorners||page.cropCorners);cropEditor.detectionNeedsReview=page.needsCropReview;
+    zoom=1;showScreen('filter');_syncControls();_renderPages();_paintImmediate(page.croppedImg);const rendering=_reprocess();_updateAutoStatus();return rendering;
   }
-
-  async function _applyCrop() {
-    showProcessing('Flattening document…');
-    try {
-      let img;
-      if (window.cvReady) {
-        // Use OpenCV for best quality when available
-        img = await cropEditor.applyCrop();
-      } else {
-        // Pure JS homography warp — always accurate, no OpenCV dependency
-        img = await cropEditor.perspectiveCrop();
-      }
-      hideProcessing();
-      _startFilterScreen(img);
-    } catch (e) {
-      console.error('Crop error:', e);
-      hideProcessing();
-      toast('Retrying with fallback engine…', 'warning');
-      try {
-        // Second attempt: pure JS warp
-        const img = await cropEditor.perspectiveCrop();
-        _startFilterScreen(img);
-      } catch (e2) {
-        // Absolute last resort: bounding-box crop
-        const img = await cropEditor.simpleCrop();
-        _startFilterScreen(img);
-      }
-    }
+  function _syncControls(){
+    for(const key of ['brightness','contrast','sharpness','saturation']){$('sl_'+key).value=state.adjustments[key]||0;$('sv_'+key).textContent=state.adjustments[key]||0;}
+    $('applyToAll').checked=state.applyToAll;
+    _buildFilters();
+    $('scanFooterInfo').textContent=state.pages.length?`${state.editingIndex+1} / ${state.pages.length}`:'';
   }
-
-  /* ── FILTER SCREEN ────────────────────────────────────────── */
-  function _startFilterScreen(croppedImg) {
-    state._currentCropped = croppedImg;
-    // Only reset filter/adjustments when processing a fresh image (not re-editing an existing page)
-    if (state.editingIndex < 0) {
-      state.currentFilter = state.quickScan ? 'magicpro' : 'enhance';
-      state.adjustments = { brightness: 0, contrast: 0, sharpness: 0, saturation: 0 };
-    }
-
-    // Reset sliders to current state
-    ['brightness', 'contrast', 'sharpness', 'saturation'].forEach(k => {
-      const sl = document.getElementById('sl_' + k);
-      const vl = document.getElementById('sv_' + k);
-      if (sl) sl.value = state.adjustments[k] ?? 0;
-      if (vl) vl.textContent = String(state.adjustments[k] ?? 0);
-    });
-
-    // Show batch banner when multiple images are queued
-    const remaining = state.editingIndex >= 0 ? 0 : state.queue.length - state.queueIndex - 1;
-    const banner = document.getElementById('batchBanner');
-    const bannerMsg = document.getElementById('batchBannerMsg');
-    if (banner) {
-      banner.style.display = remaining > 0 ? 'block' : 'none';
-      if (bannerMsg && remaining > 0) {
-        bannerMsg.textContent = `${remaining} more image${remaining > 1 ? 's' : ''} will be auto-cropped and processed with these same settings.`;
-      }
-    }
-
-    // Build filter strip
-    const rail=document.getElementById('scanPageRail');
-    if(rail){
-      rail.replaceChildren();
-      const currentNumber=state.editingIndex>=0?state.editingIndex+1:state.pages.length+1;
-      const pages=state.pages.map((page,i)=>({image:page.croppedImg,number:i+1}));
-      if(state.editingIndex<0)pages.push({image:croppedImg,number:currentNumber});
-      pages.forEach(page=>{
-        const item=document.createElement('div');item.className='scan-rail-page'+(page.number===currentNumber?' current':'');
-        const thumb=document.createElement('canvas');ScanRenderer.fit(page.number===currentNumber?croppedImg:page.image,thumb,70,100);
-        item.append(thumb,document.createTextNode('Page '+page.number));
-        if(page.number===currentNumber)item.setAttribute('aria-current','page');
-        rail.append(item);
-      });
-    }
-    buildFilterStrip('filterStrip', croppedImg, state.currentFilter, fid => {
-      state.currentFilter = fid;
-      _reprocess();
-    });
-
-    // Draw original mini
-    const origCanvas = document.getElementById('origMini');
-    if (origCanvas) {
-      const ms = Math.min(280 / croppedImg.width, 200 / croppedImg.height, 1);
-      origCanvas.width = Math.round(croppedImg.width * ms);
-      origCanvas.height = Math.round(croppedImg.height * ms);
-      origCanvas.getContext('2d').drawImage(croppedImg, 0, 0, origCanvas.width, origCanvas.height);
-    }
-
-    showScreen('filter');
-    _reprocess();
-  }
-
-  let previewVersion = 0, previewTimer;
-  function _reprocess() {
-    const version = ++previewVersion;
-    clearTimeout(previewTimer);
-    const status = document.getElementById('scanPreviewStatus');
-    if (status) status.textContent = 'Preparing preview…';
-    const canvas = document.getElementById('previewCanvas');
-    if (canvas) canvas.style.opacity = '.45';
-    const busy = document.getElementById('filterBusy');
-    if (busy) busy.hidden = false;
-    const doneButtons = ['btnAddPage', 'btnAddPageMain', 'btnBatchAll'];
-    doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = true; });
-    previewTimer = setTimeout(async () => {
-      try {
-        const result = await ScanRenderer.preview(state._currentCropped, state.currentFilter, state.adjustments, () => version === previewVersion);
-        if (!result || version !== previewVersion) return;
-        ScanRenderer.fit(result, canvas, 1320, 1000);
-        canvas.style.opacity = '1';
-        if (busy) busy.hidden = true;
-        const mini = document.getElementById('procMini');
-        if (mini) ScanRenderer.fit(result, mini, 280, 200);
-        doneButtons.forEach(id => { const button = document.getElementById(id); if (button) button.disabled = false; });
-        if (status) status.textContent = 'Preview ready · Full resolution is preserved when you export.';
-      } catch (error) {
-        if (version !== previewVersion) return;
-        if (busy) busy.hidden = true;
-        if (status) status.textContent = 'Preview failed. Please retry or choose Original.';
-        toast(error.message, 'error');
-      }
-    }, 140);
-  }
-
-  function _backToCrop(restore = false) {
-    // Restore this page's source and corners, never another page's crop state.
-    const saved = state.editingIndex >= 0 ? state.pages[state.editingIndex].cropState : null;
-    if (restore === true && saved) {
-      cropEditor.img = saved.img;
-      cropEditor.rotation = saved.rotation;
-      cropEditor.corners = JSON.parse(JSON.stringify(saved.corners));
-      cropEditor.draw();
-    } else if (restore === true && state.editingIndex >= 0) {
-      cropEditor.setImage(state._currentCropped);
-      cropEditor.fitFull();
-    }
-    showScreen('crop');
-  }
-
-  function _bindFilterControls() {
-    ['brightness', 'contrast', 'sharpness', 'saturation'].forEach(k => {
-      const sl = document.getElementById('sl_' + k);
-      const vl = document.getElementById('sv_' + k);
-      if (sl) {
-        sl.addEventListener('input', () => {
-          state.adjustments[k] = +sl.value;
-          if (vl) vl.textContent = sl.value;
-          _reprocess();
-        });
-      }
-    });
-
-    const btnAddPage         = document.getElementById('btnAddPage');
-    const btnAddPageMain     = document.getElementById('btnAddPageMain');
-    const btnBackCrop        = document.getElementById('btnBackToCrop');
-    const btnBackCropMain    = document.getElementById('btnBackToCropMain');
-    const applyAll           = document.getElementById('applyToAll');
-    const btnBatchAll        = document.getElementById('btnBatchAll');
-
-    if (btnAddPage)      btnAddPage.onclick      = _addPage;
-    if (btnAddPageMain)  btnAddPageMain.onclick  = _addPage;
-    if (btnBackCrop)     btnBackCrop.onclick     = _backToCrop;
-    if (btnBackCropMain) btnBackCropMain.onclick = _backToCrop;
-    if (applyAll) applyAll.addEventListener('change', e => { state.applyToAll = e.target.checked; });
-    if (btnBatchAll)     btnBatchAll.onclick     = _batchProcessRemaining;
-  }
-
-  /* ── BATCH AUTO-PROCESS ───────────────────────────────────────
-     Auto-crops and applies current filter to all remaining queue
-     items without stopping for user input on each one.         */
-  async function _batchProcessRemaining() {
-    const img = state._currentCropped;
-    if (!img || state.editingIndex >= 0 || state.batchRunning) return;
-    state.batchRunning = true;
-
-    // First: save the current image as a page
-    state.pages.push({
-      id: Date.now() + Math.random(),
-      croppedImg: img,
-      cropState: _snapshotCrop(),
-      filter: state.currentFilter,
-      adjustments: { ...state.adjustments },
-    });
-    state.queueIndex++;
-
-    const savedFilter      = state.currentFilter;
-    const savedAdjustments = { ...state.adjustments };
-    const remaining        = state.queue.length - state.queueIndex;
-
-    if (remaining === 0) { state.batchRunning = false; showScreen('pages'); _renderPages(); return; }
-
-    showProcessing(`Auto-processing ${remaining} remaining image${remaining > 1 ? 's' : ''}…`);
-
-    let failed = 0;
-    for (let i = state.queueIndex; i < state.queue.length; i++) {
-      const item = state.queue[i];
-      const processedImg = item.img
-        ? await _autoProcessLoadedImage(item.img)   // pre-rendered PDF page
-        : await _autoProcessImage(item.file);
-      if (processedImg) {
-        state.pages.push({
-          id: Date.now() + Math.random(),
-          croppedImg: processedImg,
-          cropState: _snapshotCrop(),
-          filter: savedFilter,
-          adjustments: { ...savedAdjustments },
-        });
-      } else { failed++; }
-      // Update progress message
-      const done = i - state.queueIndex + 1;
-      showProcessing(`Processed ${done} of ${remaining} images…`);
-    }
-
-    state.queueIndex = state.queue.length;
-    state.batchRunning = false;
-    hideProcessing();
-    toast(failed ? `${state.pages.length} pages ready; ${failed} images could not be read. Please import those again.` : `✓ All ${state.pages.length} pages ready!`, failed ? 'warning' : 'success');
-    showScreen('pages');
-    _renderPages();
-  }
-
-  /* Load an image file, auto-detect edges, return cropped image */
-  async function _autoProcessImage(file) {
-    return new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = new Image();
-        img.onload  = () => _autoProcessLoadedImage(img).then(resolve, () => resolve(null));
-        img.onerror = () => resolve(null);
-        img.src = e.target.result;
-      };
-      reader.onerror = () => resolve(null);
-      reader.readAsDataURL(file);
-    });
-  }
-
-  /* Auto-detect edges + perspective-correct an already-loaded Image */
-  async function _autoProcessLoadedImage(img) {
-    try {
-      // Downscale if needed
-      const px = (img.naturalWidth || img.width) * (img.naturalHeight || img.height);
-      let sourceImg = img;
-      if (px > MAX_IMAGE_PX) {
-        const scale = Math.sqrt(MAX_IMAGE_PX / px);
-        const nW = Math.round((img.naturalWidth  || img.width)  * scale);
-        const nH = Math.round((img.naturalHeight || img.height) * scale);
-        const c  = document.createElement('canvas');
-        c.width = nW; c.height = nH;
-        c.getContext('2d').drawImage(img, 0, 0, nW, nH);
-        sourceImg = new Image();
-        await new Promise(r => { sourceImg.onload = r; sourceImg.src = c.toDataURL('image/jpeg', 0.95); });
-      }
-      // Auto-detect + perspective-correct
-      await cropEditor.setImageAsync(sourceImg).catch(() => cropEditor.setImage(sourceImg));
-      const cropped = await cropEditor.perspectiveCrop().catch(() => sourceImg);
-      return cropped;
-    } catch (err) {
-      console.warn('Auto-process failed for image, using original:', err);
-      cropEditor.img = img;
-      cropEditor.rotation = 0;
-      cropEditor.corners = getFallbackCorners(img);
-      return img;
-    }
-  }
-
-  function _addPage() {
-    const img = state._currentCropped;
-    if (!img) return;
-
-    // If applyToAll, apply current filter/adjustments to all existing pages
-    if (state.applyToAll && state.pages.length > 0) {
-      state.pages.forEach(p => {
-        p.filter = state.currentFilter;
-        p.adjustments = { ...state.adjustments };
-      });
-    }
-
-    const wasEditing = state.editingIndex >= 0;
-    const cropState = _snapshotCrop();
-    if (wasEditing) {
-      state.pages[state.editingIndex].cropState = cropState;
-      // Update existing page
-      state.pages[state.editingIndex].croppedImg  = img;
-      state.pages[state.editingIndex].filter      = state.currentFilter;
-      state.pages[state.editingIndex].adjustments = { ...state.adjustments };
-      state.editingIndex = -1;
-    } else {
-      state.pages.push({
-        id: Date.now() + Math.random(),
-        croppedImg: img,
-        cropState,
-        filter: state.currentFilter,
-        adjustments: { ...state.adjustments },
-      });
-    }
-
-    if (!wasEditing) state.queueIndex++;
-    if (!wasEditing && state.queueIndex < state.queue.length) {
-      _processNextInQueue();
-    } else {
-      showScreen('pages');
-      _renderPages();
-    }
-  }
-
-  /* ── PAGES SCREEN ─────────────────────────────────────────── */
-  function _renderPages() {
-    const grid = document.getElementById('pagesGrid');
-    if (!grid) return;
-
-    if (!state.pages.length) {
-      grid.innerHTML = '<div class="empty-state"><div class="es-icon">📄</div><p>No pages yet</p></div>';
+  function _buildFilters(){
+    const grid=$('filterStrip');
+    if(grid.children.length===8){
+      for(const b of grid.children){b.classList.toggle('active',b.dataset.filter===state.currentFilter);b.setAttribute('aria-pressed',String(b.dataset.filter===state.currentFilter));}
+      for(const b of $('scanExtraFilters').children)b.setAttribute('aria-pressed',String(b.dataset.filter===state.currentFilter));
       return;
     }
-
-    grid.innerHTML = '';
-    state.pages.forEach((page, idx) => {
-      const thumb = document.createElement('div');
-      thumb.className = 'page-thumb';
-      thumb.dataset.id = page.id;
-
-      const imgWrap = document.createElement('div');
-      imgWrap.className = 'pt-img';
-
-      const c = document.createElement('canvas');
-      ScanRenderer.preview(page.croppedImg, page.filter, page.adjustments, () => c.isConnected).then(result => {
-        if (result && c.isConnected) ScanRenderer.fit(result, c, 160, 180);
-      }).catch(error => { if (c.isConnected) c.replaceWith(document.createTextNode('Preview unavailable')); console.warn(error); });
-      imgWrap.appendChild(c);
-
-      const info = document.createElement('div');
-      info.className = 'pt-info';
-      info.innerHTML = `<div class="page-num">Page ${idx + 1}</div><div class="page-filter">${page.filter}</div>`;
-
-      const dl = document.createElement('button');
-      dl.type = 'button';
-      dl.textContent = '⬇ JPG';
-      dl.title = 'Download this page as JPG';
-      dl.style.cssText = 'margin-top:6px;font-size:11px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--primary);cursor:pointer;font-weight:600';
-      dl.onclick = (e) => { e.stopPropagation(); _downloadPage(idx); };
-      info.appendChild(dl);
-
-      const del = document.createElement('button');
-      del.className = 'page-del';
-      del.innerHTML = '✕';
-      del.title = 'Remove page';
-      del.onclick = (e) => { e.stopPropagation(); _deletePage(idx); };
-
-      thumb.appendChild(imgWrap);
-      thumb.appendChild(info);
-      thumb.appendChild(del);
-      thumb.addEventListener('click', () => _editPage(idx));
-      grid.appendChild(thumb);
-    });
-
-    // Load drag-reorder only when the pages screen is actually used.
-    if (!grid._pdfDukanSortable) {
-      _ensureSortable().then(() => {
-        if (!grid.isConnected || grid._pdfDukanSortable) return;
-        grid._pdfDukanSortable = Sortable.create(grid, {
-        animation: 150,
-        ghostClass: 'sortable-ghost',
-        onEnd: e => {
-          const moved = state.pages.splice(e.oldIndex, 1)[0];
-          state.pages.splice(e.newIndex, 0, moved);
-        },
-      });
-      }).catch(error => console.warn('Page reorder library could not load:', error));
+    grid.replaceChildren();
+    for(const id of ['original','enhance','magicpro','lighten','noshadow','bw','eco','handwriting']){
+      const label=id==='handwriting'?'Remove Handwriting':id==='magicpro'?'Magic Pro':FILTERS.find(f=>f.id===id).name;
+      const b=document.createElement('button');b.type='button';b.className='filter-card'+(id===state.currentFilter?' active':'');b.dataset.filter=id;b.setAttribute('aria-pressed',String(id===state.currentFilter));
+      const icon=document.createElement('span');icon.className='scan-filter-icon';icon.setAttribute('aria-hidden','true');icon.innerHTML=filterIcons[id];
+      const text=document.createElement('span');text.className='fc-label';text.textContent=label;b.append(icon,text);
+      if(id==='handwriting'){b.disabled=true;b.title='Not ready: tested models also changed printed text and graphics.';b.setAttribute('aria-describedby','scanHandwritingNote');const availability=document.createElement('span');availability.className='fc-availability';availability.textContent='Unavailable';b.append(availability);}
+      else b.onclick=()=>_selectFilter(id);
+      grid.append(b);
     }
+    $('scanExtraFilters').replaceChildren();
+    for(const id of ['bwsoft','grayscale','invert']){const b=document.createElement('button');b.dataset.filter=id;b.textContent=FILTERS.find(f=>f.id===id).name;b.setAttribute('aria-pressed',String(id===state.currentFilter));b.onclick=()=>_selectFilter(id);$('scanExtraFilters').append(b);}
   }
-
-  // Export one page (with its filter/adjustments applied) as a standalone JPG,
-  // so multi-page scans don't force a ZIP download for a single page.
-  async function _downloadPage(idx) {
-    const page = state.pages[idx];
-    if (!page) return;
-    try {
-      const blob = await _pageToBlob(page, 'jpeg');
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'PDFdukan.com_page_' + (idx + 1) + '.jpg';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      toast('Page downloaded', 'success');
-    } catch (error) { toast('Download failed: ' + error.message, 'error'); }
+  function _selectFilter(id){
+    if(busy)return;if(state.screen==='crop'){toast('Apply or cancel your crop first.','warning');return;}
+    state.currentFilter=id;_applySettings();_buildFilters();_reprocess();
   }
-
-  function _deletePage(idx) {
-    state.pages.splice(idx, 1);
+  function _applySettings(){
+    _saveCurrent();if(state.applyToAll)for(const p of state.pages){p.filter=state.currentFilter;p.adjustments={...state.adjustments};}
     _renderPages();
-    if (state.pages.length === 0) showScreen('upload');
   }
-
-  function _editPage(idx) {
-    state.editingIndex = idx;
-    const page = state.pages[idx];
-    state._currentCropped = page.croppedImg;
-    state.currentFilter = page.filter;
-    state.adjustments = { ...page.adjustments };
-    _backToCrop(true);
-    _startFilterScreen(page.croppedImg);
+  async function _renderFiltered(image,filter,adjustments,isCurrent=()=>true){
+    if(window.ScanRenderer)return ScanRenderer.render(image,filter,adjustments,isCurrent);
+    if(!isCurrent())return null;const c=document.createElement('canvas');c.width=image.naturalWidth||image.width;c.height=image.naturalHeight||image.height;c.getContext('2d').drawImage(image,0,0);applyFilterToContext(c.getContext('2d'),c.width,c.height,filter,adjustments);return c;
   }
-
-  function _bindPagesControls() {
-    const btnAddMore = document.getElementById('btnAddMore');
-    const btnExport  = document.getElementById('btnGoExport');
-
-    if (btnAddMore) btnAddMore.onclick = () => {
-      document.getElementById('fileInputScanner').click();
-    };
-    if (btnExport) btnExport.onclick = () => {
-      showScreen('export');
-      _renderExportPreview();
-    };
+  async function _reprocess(){
+    const img=state._currentCropped;if(!img)return;
+    const rev=++previewRevision,current=()=>rev===previewRevision&&state._currentCropped===img;
+    $('previewCanvas').setAttribute('aria-busy','true');
+    const page=state.pages[state.editingIndex];
+    const findingEdges=page&&(page.autoStatus==='pending'||page.autoStatus==='processing');
+    $('scanPreviewStatus').textContent=findingEdges?'Updating filter · finding document edges…':'Processing preview…';
+    try{const rendered=window.ScanRenderer?await ScanRenderer.preview(img,state.currentFilter,{...state.adjustments},current):await _renderFiltered(img,state.currentFilter,{...state.adjustments},current);if(!rendered||!current())return;
+      const target=$('previewCanvas'),scale=Math.min(1800/rendered.width,1800/rendered.height,1);target.width=Math.max(1,Math.round(rendered.width*scale));target.height=Math.max(1,Math.round(rendered.height*scale));target.getContext('2d').drawImage(rendered,0,0,target.width,target.height);_applyZoom();
+      const active=state.pages[state.editingIndex];
+      if(active&&active.croppedImg===img){_cacheThumbnail(active,rendered,_thumbnailKey(active));_renderPages();}
+      $('scanPreviewStatus').textContent=active&&(active.autoStatus==='pending'||active.autoStatus==='processing')?'Finding document edges…':'';
+      $('previewCanvas').setAttribute('aria-busy','false');
+    }catch(error){if(current()){$('scanPreviewStatus').textContent='Preview failed. Please try another filter.';$('previewCanvas').setAttribute('aria-busy','false');}console.error(error);}
+  }
+  function _paintImmediate(image){
+    const target=$('previewCanvas'),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,s=Math.min(1400/w,1400/h,1);
+    target.width=Math.max(1,Math.round(w*s));target.height=Math.max(1,Math.round(h*s));target.getContext('2d').drawImage(image,0,0,target.width,target.height);_applyZoom();
+  }
+  function _thumbnailKey(page){const a=page.adjustments||{};return JSON.stringify([!!window.cvReady,page.filter,a.brightness||0,a.contrast||0,a.sharpness||0,a.saturation||0]);}
+  function _smallThumbnail(image){
+    const w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,s=Math.min(96/w,100/h,1),c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(w*s));c.height=Math.max(1,Math.round(h*s));c.getContext('2d').drawImage(image,0,0,c.width,c.height);return c;
+  }
+  function _cacheThumbnail(page,image,key){page._thumbnail={source:page.croppedImg,key,canvas:_smallThumbnail(image)};}
+  function _baseThumbnail(page){
+    if(page._baseThumbnail?.source!==page.croppedImg)page._baseThumbnail={source:page.croppedImg,canvas:_smallThumbnail(page.croppedImg)};
+    return page._baseThumbnail.canvas;
+  }
+  function _thumbnailCurrent(job){return state.pages.includes(job.page)&&job.page.croppedImg===job.image&&_thumbnailKey(job.page)===job.key;}
+  function _queueThumbnails(){
+    if(thumbnailTask)return;
+    thumbnailTask=(async()=>{
+      while(thumbnailJobs.size){
+        await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+        const [id,job]=thumbnailJobs.entries().next().value;thumbnailJobs.delete(id);
+        if(!_thumbnailCurrent(job))continue;
+        if(job.page._thumbnail?.source===job.image&&job.page._thumbnail.key===job.key)continue;
+        try{
+          const small=_baseThumbnail(job.page);
+          const canvas=window.ScanRenderer?await ScanRenderer.render(small,job.filter,job.adjustments,()=>_thumbnailCurrent(job)):small;
+          if(!window.ScanRenderer)applyFilterToContext(canvas.getContext('2d'),canvas.width,canvas.height,job.filter,job.adjustments);
+          if(!canvas)continue;
+          if(!_thumbnailCurrent(job))continue;
+          job.page._thumbnail={source:job.image,key:job.key,canvas};
+          _renderPages();
+        }catch(error){console.warn('Thumbnail treatment unavailable:',error);}
+      }
+    })().finally(()=>{thumbnailTask=null;if(thumbnailJobs.size)_queueThumbnails();});
+  }
+  function _pageCropLabel(page){
+    if(page.autoStatus==='pending'||page.autoStatus==='processing')return 'Finding edges';
+    if(page.needsCropReview)return 'Check crop';
+    const full=_fullCorners(page.sourceImg),q=page.cropCorners;
+    return q&&['tl','tr','br','bl'].some(k=>Math.hypot(q[k].x-full[k].x,q[k].y-full[k].y)>3)?'Cropped':'Full image';
+  }
+  function _renderPages(){
+    if(pageDragging)return;
+    const list=$('scanPageList'),existing=new Map([...list.children].map(b=>[b.dataset.id,b])),ids=new Set(state.pages.map(p=>String(p.id)));
+    state.pages.forEach((p,index)=>{
+      let b=existing.get(String(p.id));
+      if(!b){
+        b=document.createElement('button');b.type='button';b.dataset.id=p.id;
+        const wrap=document.createElement('span');wrap.className='scan-page-picture';wrap.append(document.createElement('canvas'));
+        const num=document.createElement('span');num.className='scan-page-number';
+        const meta=document.createElement('span');meta.className='scan-page-meta';b.append(wrap,num,meta);
+        b.onclick=()=>{if(state.screen==='crop'){toast('Apply or cancel your crop before changing pages.','warning');return;}const at=state.pages.findIndex(page=>String(page.id)===b.dataset.id);if(at>=0)_editPage(at);};
+      }
+      b.className='scan-page'+(index===state.editingIndex?' active':'');b.setAttribute('aria-label',`Page ${index+1}${p.needsCropReview?', check corners':''}`);b.setAttribute('aria-current',String(index===state.editingIndex));
+      b.title=p.sourceName||`Page ${index+1}`;
+      b.dataset.autoStatus=p.autoStatus||'ready';
+      const key=_thumbnailKey(p),cached=p._thumbnail?.source===p.croppedImg&&p._thumbnail.key===key;
+      // Keep batch-wide filter changes independent of hundreds of full photos.
+      // The existing small preview stays visible while its new treatment queues.
+      const neutral=p.filter==='original'&&!Object.values(p.adjustments||{}).some(Boolean);
+      const thumb=cached?p._thumbnail.canvas:neutral?_baseThumbnail(p):p._thumbnail?.source===p.croppedImg?p._thumbnail.canvas:_baseThumbnail(p);
+      if(b._scanImage!==thumb){const c=b.querySelector('canvas'),small=_smallThumbnail(thumb);c.width=small.width;c.height=small.height;c.getContext('2d').drawImage(small,0,0);b._scanImage=thumb;}
+      if(!cached&&p.autoStatus!=='pending'&&p.autoStatus!=='processing'){thumbnailJobs.set(p.id,{page:p,image:p.croppedImg,key,filter:p.filter,adjustments:{...p.adjustments}});_queueThumbnails();}
+      b.querySelector('.scan-page-picture').setAttribute('aria-busy',String(!cached&&p.autoStatus!=='pending'&&p.autoStatus!=='processing'));
+      b.querySelector('.scan-page-number').textContent=index+1;
+      b.querySelector('.scan-page-meta').textContent=`${FILTERS.find(f=>f.id===p.filter)?.name||p.filter} · ${_pageCropLabel(p)}`;
+      const warning=b.querySelector('.scan-page-warning');
+      if(p.needsCropReview&&!warning){const mark=document.createElement('span');mark.className='scan-page-warning';mark.textContent='!';mark.title='Check suggested corners';b.append(mark);}else if(!p.needsCropReview&&warning)warning.remove();
+      if(list.children[index]!==b)list.insertBefore(b,list.children[index]||null);
+    });
+    for(const [id,b] of existing)if(!ids.has(id))b.remove();
+    if(typeof Sortable!=='undefined'&&!sortable)sortable=Sortable.create(list,{animation:120,ghostClass:'sortable-ghost',onStart:()=>{pageDragging=true;},onMove:()=>!busy&&state.screen!=='crop',onEnd:e=>{
+      pageDragging=false;_saveCurrent();const selected=state.pages[state.editingIndex]?.id;const [p]=state.pages.splice(e.oldIndex,1);state.pages.splice(e.newIndex,0,p);state.editingIndex=state.pages.findIndex(p=>p.id===selected);_renderPages();_syncControls();
+    }});
+    $('scanFooterInfo').textContent=state.pages.length?`${Math.max(0,state.editingIndex)+1} / ${state.pages.length}`:'';
+  }
+  function _fitCrop(){
+    if(state.screen!=='crop')return;const viewport=$('screen-crop');cropEditor._maxW=Math.max(80,viewport.clientWidth-8);cropEditor._maxH=Math.max(80,viewport.clientHeight-8);cropEditor.draw();
+  }
+  function _applyZoom(){
+    const canvas=$('previewCanvas'),stage=$('scanWorkstage');$('scanZoomValue').textContent=Math.round(zoom*100)+'%';stage.dataset.zoomed=String(zoom>1);
+    if(zoom===1){canvas.style.width='';canvas.style.height='';canvas.style.maxWidth='100%';canvas.style.maxHeight='100%';return;}
+    const fit=Math.min((stage.clientWidth-32)/canvas.width,(stage.clientHeight-32)/canvas.height,1);canvas.style.width=Math.round(canvas.width*fit*zoom)+'px';canvas.style.height=Math.round(canvas.height*fit*zoom)+'px';canvas.style.maxWidth='none';canvas.style.maxHeight='none';
+  }
+  function _enterCrop(){if(busy||!state.pages.length)return;_saveCurrent();showScreen('crop');_showDetectionBadge(cropEditor.detectionNeedsReview?.25:.8);}
+  function _cancelCrop(){const p=state.pages[state.editingIndex];if(!p)return;cropEditor.img=p.sourceImg;cropEditor.rotation=0;cropEditor.corners=copy(p.cropCorners);cropEditor.legacyCorners=copy(p.previousCorners||p.cropCorners);state._currentCropped=p.croppedImg;showScreen('filter');_paintImmediate(p.croppedImg);_reprocess();_updateAutoStatus();_queueAutoCrops();}
+  async function _commitCrop(){
+    if(busy)return;showProcessing('Applying crop…');
+    _invalidateAuto(state.pages[state.editingIndex]);
+    try{
+      let result,image;
+      if(window.ScanProcessor?.available){result=await ScanProcessor.warp(cropEditor._getRotatedImg(),copy(cropEditor.corners),{preview:true});image=await _imageFromBlob(result.blob);}
+      else image=window.cvReady?await cropEditor.applyCrop():await cropEditor.perspectiveCrop();
+      const p=state.pages[state.editingIndex];p.previewOnly=!!result?.previewOnly;
+      p.sourceImg=cropEditor._getRotatedImg();p.cropCorners=copy(cropEditor.corners);p.previousCorners=copy(cropEditor.legacyCorners||cropEditor.corners);p.croppedImg=image;p.needsCropReview=false;p.autoProfile=false;
+      if(cropEditor.pendingTransform){(p.sourceOperations||=[]).push(cropEditor.pendingTransform);cropEditor.pendingTransform=null;}
+      cropEditor.img=p.sourceImg;cropEditor.rotation=0;state._currentCropped=image;zoom=1;showScreen('filter');_renderPages();_reprocess();
+    }catch(error){console.error(error);if(cropEditor.pendingTransform){cropEditor.pendingTransform=null;const p=state.pages[state.editingIndex];cropEditor.img=p.sourceImg;cropEditor.rotation=0;cropEditor.corners=copy(p.cropCorners);cropEditor.legacyCorners=copy(p.previousCorners||p.cropCorners);}toast('Could not apply crop. Adjust the corners and try again.','error');}
+    finally{hideProcessing();_queueAutoCrops();}
+  }
+  async function _transform(kind){
+    if(busy||!state.pages.length)return;
+    cropEditor.pendingTransform=kind;
+    if(kind==='left'||kind==='right'){cropEditor.rotate(kind==='left'?-90:90);}
+    else{
+      const img=cropEditor._getRotatedImg(),w=img.naturalWidth||img.width,h=img.naturalHeight||img.height,c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.translate(kind==='horizontal'?w:0,kind==='vertical'?h:0);ctx.scale(kind==='horizontal'?-1:1,kind==='vertical'?-1:1);ctx.drawImage(img,0,0);
+      const flip=q=>{const points=['tl','tr','br','bl'].map(k=>({x:kind==='horizontal'?w-q[k].x:q[k].x,y:kind==='vertical'?h-q[k].y:q[k].y}));return _sortCorners(points);};
+      cropEditor.corners=flip(cropEditor.corners);cropEditor.legacyCorners=flip(cropEditor.legacyCorners||cropEditor.corners);cropEditor.img=c;cropEditor.rotation=0;cropEditor.draw();
+    }
+    if(state.screen==='crop')_fitCrop();else await _commitCrop();
+  }
+  function _bindWorkspace(){
+    $('scanWorkstage').append($('scanCropOptions'));
+    $('scanClose').onclick=_closeEditor;$('scanAddImages').onclick=()=>{if(!busy&&state.screen!=='crop')$('fileInputScanner').click();};
+    $('scanCropToggle').onclick=()=>state.screen==='crop'?_cancelCrop():_enterCrop();$('scanCancelCrop').onclick=_cancelCrop;
+    $('scanConfirm').onclick=()=>{if(busy)return;if(state.screen==='crop')_commitCrop();else if(state.screen==='export')_editPage(state.editingIndex);else{_saveCurrent();showScreen('export');_renderExportPreview();}};
+    $('scanOriginalImages').onclick=()=>{if(busy)return;for(const p of state.applyToAll?state.pages:[state.pages[state.editingIndex]]){_invalidateAuto(p);p.croppedImg=p.sourceImg;p.cropCorners=_fullCorners(p.sourceImg);p.filter='original';p.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};p.needsCropReview=false;}state.currentFilter='original';state.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};_editPage(state.editingIndex);};
+    $('btnResetCrop').onclick=async()=>{if(busy)return;_invalidateAuto(state.pages[state.editingIndex]);showProcessing('Detecting document edges…');try{if(window.ScanProcessor?.available){const source=cropEditor._getRotatedImg(),result=await ScanProcessor.detect(source,{crop:false});cropEditor.img=source;cropEditor.rotation=0;cropEditor.corners=copy(result.corners);cropEditor.legacyCorners=copy(result.previousCorners||result.corners);cropEditor.detectionNeedsReview=result.needsReview;}else await cropEditor.resetCorners();_fitCrop();}catch(error){toast('Detection failed. Please adjust corners manually.','error');}finally{hideProcessing();}};
+    $('btnFitCrop').onclick=()=>{cropEditor.fitFull();_fitCrop();};$('btnPreviousDetection').onclick=()=>{cropEditor.useOriginalDetection();_fitCrop();};
+    for(const kind of ['left','right','horizontal','vertical'])$('scanTransform-'+kind).onclick=()=>_transform(kind);
+    $('scanDeletePage').onclick=()=>{if(busy)return;const removed=state.pages.splice(state.editingIndex,1)[0];if(removed?.pdfSource)ScanPdf.release(removed);state.editingIndex=-1;if(state.pages.length)_editPage(0);else{_renderPages();_closeEditor();}};
+    $('applyToAll').onchange=e=>{state.applyToAll=e.target.checked;if(state.applyToAll)_applySettings();};
+    for(const key of ['brightness','contrast','sharpness','saturation'])$('sl_'+key).oninput=e=>{if(busy)return;state.adjustments[key]=Number(e.target.value);$('sv_'+key).textContent=e.target.value;_applySettings();_reprocess();};
+    $('scanZoomIn').onclick=()=>{zoom=Math.min(3,zoom+.25);_applyZoom();};$('scanZoomOut').onclick=()=>{zoom=Math.max(1,zoom-.25);_applyZoom();};
+    $('scanEditor').addEventListener('keydown',e=>{
+      if(e.key==='Escape'){e.preventDefault();if(state.screen==='crop')_cancelCrop();else _closeEditor();}
+      if(e.key==='Tab'){const elements=[...$('scanEditor').querySelectorAll('button:not(:disabled),input,select,summary,[tabindex="0"]')].filter(el=>el.getClientRects().length);const first=elements[0],last=elements.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+    });
+    _buildFilters();
   }
 
   /* ── EXPORT SCREEN ────────────────────────────────────────── */
   function _renderExportPreview() {
     const count = document.getElementById('exportPageCount');
     if (count) count.textContent = `${state.pages.length} page${state.pages.length !== 1 ? 's' : ''}`;
-    const jpgButton = document.getElementById('btnDownloadJPG');
-    const zipButton = document.getElementById('btnDownloadZIP');
-    const isMultiPage = state.pages.length > 1;
-    if (jpgButton) jpgButton.style.display = isMultiPage ? 'none' : '';
-    if (zipButton) zipButton.style.display = isMultiPage ? '' : 'none';
-    _updateImageExportLabels();
-  }
-
-  function _selectedImageFormat() {
-    return document.getElementById('imageExportFormat')?.value === 'png' ? 'png' : 'jpeg';
-  }
-
-  function _updateImageExportLabels() {
-    const format = _selectedImageFormat();
-    const label = format === 'png' ? 'PNG' : 'JPG';
-    const imageButton = document.getElementById('btnDownloadJPG');
-    const zipButton = document.getElementById('btnDownloadZIP');
-    if (imageButton) imageButton.innerHTML = `<span>🖼️</span> Download ${label}`;
-    if (zipButton) zipButton.innerHTML = `<span>📦</span> Download ${label} ZIP (all pages)`;
   }
 
   function _bindExportControls() {
@@ -717,66 +357,57 @@ const ScannerApp = (() => {
     const btnDownloadJPG = document.getElementById('btnDownloadJPG');
     const btnDownloadZIP = document.getElementById('btnDownloadZIP');
     const btnBackPages   = document.getElementById('btnBackToPages');
-    const imageFormat    = document.getElementById('imageExportFormat');
 
     if (btnDownloadPDF) btnDownloadPDF.onclick = exportAsPDF;
-    if (btnDownloadJPG) btnDownloadJPG.onclick = () => exportAsImages(_selectedImageFormat());
-    if (btnDownloadZIP) btnDownloadZIP.onclick = () => exportAsZIP(_selectedImageFormat());
+    if (btnDownloadJPG) btnDownloadJPG.onclick = () => exportAsImages('jpeg');
+    if (btnDownloadZIP) btnDownloadZIP.onclick = exportAsZIP;
     if (btnBackPages)   btnBackPages.onclick   = () => { showScreen('pages'); _renderPages(); };
-    if (imageFormat) imageFormat.onchange = _updateImageExportLabels;
   }
 
   async function exportAsPDF() {
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
     showProcessing('Creating PDF…');
 
+    const { jsPDF } = window.jspdf;
     const pageSize = document.getElementById('pdfPageSize')?.value || 'a4';
     const orientation = document.getElementById('pdfOrientation')?.value || 'portrait';
-    const quality = +(document.getElementById('pdfQuality')?.value || 0.97);
-
+    const quality = +(document.getElementById('pdfQuality')?.value || 0.98);
+    let writer;
     try {
-      showProcessing('Loading PDF export engine…');
-      await _ensureJsPdf();
-      showProcessing('Creating PDF…');
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF({ orientation, unit: 'mm', format: pageSize });
-      const pW = doc.internal.pageSize.getWidth();
-      const pH = doc.internal.pageSize.getHeight();
-
+      if(typeof Worker!=='undefined'){
+        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261104_autocrop',document.baseURI));let id=0;
+        const request=(method,fields={},transfer=[])=>new Promise((resolve,reject)=>{const own=++id,timer=setTimeout(()=>reject(new Error('PDF processing timed out')),120000);worker.onmessage=({data})=>{if(data.id!==own)return;clearTimeout(timer);data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.postMessage({id:own,method,...fields},transfer);});
+        writer={request,dispose:()=>worker.terminate()};await request('start',{orientation,pageSize});
+      }else{
+        const doc=new jsPDF({orientation,unit:'mm',format:pageSize});let index=0;
+        writer={async request(method,data){if(method==='page'){if(index++)doc.addPage();const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),s=Math.min(W/data.width,H/data.height),w=data.width*s,h=data.height*s;doc.addImage(new Uint8Array(data.bytes),'JPEG',(W-w)/2,(H-h)/2,w,h);}if(method==='finish')return {bytes:doc.output('arraybuffer')};},dispose(){}};
+      }
       for (let i = 0; i < state.pages.length; i++) {
         const page = state.pages[i];
-        if (i > 0) doc.addPage();
-
-        const c = await ScanRenderer.render(page.croppedImg, page.filter, page.adjustments);
-
-        const dataUrl = c.toDataURL('image/jpeg', quality);
-
-        // Fit image to page maintaining aspect ratio
-        const imgAR = c.width / c.height;
-        const pageAR = pW / pH;
-        let iw, ih;
-        if (imgAR > pageAR) { iw = pW; ih = pW / imgAR; }
-        else { ih = pH; iw = pH * imgAR; }
-        const x = (pW - iw) / 2;
-        const y = (pH - ih) / 2;
-
-        doc.addImage(dataUrl, 'JPEG', x, y, iw, ih);
+        $('scanBusyText').textContent=`Creating PDF · page ${i+1} / ${state.pages.length}`;
+        const c = await _renderExportPage(page);
+        const blob=await new Promise(resolve=>c.toBlob(resolve,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');const bytes=await blob.arrayBuffer();
+        await writer.request('page',{bytes,width:c.width,height:c.height},[bytes]);
+        await new Promise(resolve=>requestAnimationFrame(resolve));
       }
-
-      doc.save(`PDFdukan.com_${Date.now()}.pdf`);
+      const result=await writer.request('finish');saveAs(new Blob([result.bytes],{type:'application/pdf'}),`PDFdukan.com_${Date.now()}.pdf`);
       hideProcessing();
       toast('PDF downloaded! ✓', 'success');
     } catch (e) {
       hideProcessing();
       console.error('PDF export error:', e);
       toast('PDF export failed: ' + e.message, 'error');
-    }
+    }finally{writer?.dispose();}
   }
 
   // Render one page (cropped + filtered) to an image blob.
+  async function _renderExportPage(page){
+    const source=page.pdfSource?await ScanPdf.exportSource(page):page.previewOnly?await _imageFromBlob((await ScanProcessor.warp(page.sourceImg,page.cropCorners,{rectify:!!page.autoProfile})).blob):page.croppedImg;
+    try{return await _renderFiltered(source,page.filter,page.adjustments);}finally{if(page.pdfSource&&source instanceof HTMLCanvasElement)source.width=source.height=1;}
+  }
   async function _pageToBlob(page, format) {
-    const c = await ScanRenderer.render(page.croppedImg, page.filter, page.adjustments);
-    return await new Promise((resolve, reject) => c.toBlob(blob => blob ? resolve(blob) : reject(new Error('The browser could not encode a scan page.')), 'image/' + format, format === 'jpeg' ? 0.95 : 1.0));
+    const c = await _renderExportPage(page);
+    return await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
   }
 
   // Strip illegal filename characters and any extension the user typed.
@@ -796,7 +427,13 @@ const ScannerApp = (() => {
     const fallback = 'PDFdukan.com_' + new Date().toISOString().slice(0, 10);
 
     // Ask for a file name; the rest are auto-numbered in the same pattern.
-    const input = document.getElementById('scanExportName')?.value || fallback;
+    const promptMsg = multi
+      ? `Enter a file name for your ${state.pages.length} images.\n\n` +
+        `They will be saved together in one ZIP as:\n` +
+        `"<name>_01.${ext}", "<name>_02.${ext}", …`
+      : `Enter a file name for your image:`;
+    const input = prompt(promptMsg, fallback);
+    if (input === null) return; // user cancelled
     const base = _sanitizeBaseName(input, fallback);
 
     showProcessing(multi ? `Packaging ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');
@@ -815,22 +452,14 @@ const ScannerApp = (() => {
 
       // Multiple pages → one ZIP so they all download together, every page named
       // in the same pattern. padStart width grows with page count (01.. / 001..).
-      showProcessing('Loading ZIP engine…');
-      await _ensureZip();
       const zip = new JSZip();
       const pad = Math.max(2, String(state.pages.length).length);
       for (let i = 0; i < state.pages.length; i++) {
         const blob = await _pageToBlob(state.pages[i], format);
         zip.file(`${base}_${String(i + 1).padStart(pad, '0')}.${ext}`, blob);
       }
-      const content = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } }, meta => {
-        showProcessing(`Packaging ${state.pages.length} ${ext.toUpperCase()} images… ${Math.round(meta.percent)}%`);
-      });
-      const zipUrl = URL.createObjectURL(content);
-      const zipLink = document.createElement('a');
-      zipLink.href = zipUrl; zipLink.download = `${base}.zip`;
-      document.body.appendChild(zipLink); zipLink.click(); document.body.removeChild(zipLink);
-      setTimeout(() => URL.revokeObjectURL(zipUrl), 4000);
+      const content = await zip.generateAsync({ type: 'blob' });
+      saveAs(content, `${base}.zip`);
       hideProcessing();
       toast(`${state.pages.length} ${ext.toUpperCase()} images downloaded as ${base}.zip ✓`, 'success');
     } catch (e) {
@@ -845,26 +474,20 @@ const ScannerApp = (() => {
     showProcessing('Creating ZIP…');
 
     try {
-      await _ensureZip();
       const zip = new JSZip();
       const folder = zip.folder('CamMaster');
 
       for (let i = 0; i < state.pages.length; i++) {
         const page = state.pages[i];
-        const blob = await _pageToBlob(page, format);
+        const c = await _renderExportPage(page);
+
+        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
         const ext = format === 'jpeg' ? 'jpg' : format;
         folder.file(`page_${String(i + 1).padStart(3, '0')}.${ext}`, blob);
       }
 
       const content = await zip.generateAsync({ type: 'blob' });
-      const url = URL.createObjectURL(content);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `PDFdukan.com_${Date.now()}.zip`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      saveAs(content, `PDFdukan.com_${Date.now()}.zip`);
       hideProcessing();
       toast('ZIP downloaded! ✓', 'success');
     } catch (e) {
@@ -874,26 +497,15 @@ const ScannerApp = (() => {
     }
   }
 
-  /* ── PROCESSING OVERLAY ───────────────────────────────────── */
-  function showProcessing(msg) {
-    if (typeof showBrandLoader === 'function') {
-      showBrandLoader(msg || 'Processing…', 'PDFdukan · CamMaster');
-      return;
-    }
-    const overlay = document.getElementById('processingOverlay');
-    const msgEl   = document.getElementById('processingMsg');
-    if (overlay) overlay.classList.add('show');
-    if (msgEl)   msgEl.textContent = msg || 'Processing…';
-  }
-  function hideProcessing() {
-    if (typeof hideBrandLoader === 'function') hideBrandLoader();
-    const overlay = document.getElementById('processingOverlay');
-    if (overlay) overlay.classList.remove('show');
-  }
 
-  return { init, handleFiles, showScreen, showProcessing, hideProcessing, exportAsPDF, exportAsZIP };
+  function showProcessing(message){
+    busy=true;$('scanStageBusy').hidden=false;$('scanBusyText').textContent=message||'Processing…';
+    $('scanTools').inert=true;$('scanPageList').inert=true;$('scanConfirm').disabled=true;$('scanOriginalImages').disabled=true;$('scanCancelCrop').disabled=true;
+  }
+  function hideProcessing(){
+    busy=false;$('scanStageBusy').hidden=true;$('scanTools').inert=state.screen==='crop';$('scanPageList').inert=false;$('scanConfirm').disabled=false;$('scanOriginalImages').disabled=false;$('scanCancelCrop').disabled=false;_updateAutoStatus();
+  }
+  return {init,handleFiles,showScreen,showProcessing,hideProcessing,exportAsPDF,exportAsZIP};
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-  ScannerApp.init();
-});
+window.ScannerApp=ScannerApp;
+document.addEventListener('DOMContentLoaded',()=>ScannerApp.init());
