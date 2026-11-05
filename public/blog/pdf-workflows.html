@@ -56,7 +56,8 @@
 <meta name="author" content="PDFdukan Editorial Team">
 <meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
-<body><header class="header" role="banner">
+<body>
+<header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
@@ -92,7 +93,7 @@
   <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
   <a href="/" class="mnd-link active">📝 Blog</a>
   <a href="../tools/merge-pdf.html" class="mnd-link">🔗 Merge PDF</a>
-  <a href="../tools/split-pdf.html" class="mnd-link">✂️ Split PDF</a>
+  <a href="../tools/extract-pdf-pages.html" class="mnd-link">✂️ Split PDF</a>
 </div>
 
 <div class="article-hero">
@@ -167,7 +168,7 @@
   <p>PDF file size matters more than most people realize. Email providers cap attachments at 25 MB (Gmail) or 10 MB (many corporate servers). Large PDFs slow down cloud sync, consume mobile data when shared, and frustrate recipients on slow connections. Here are the size optimization strategies in order of impact:</p>
 
   <h3>Downscale Embedded Images</h3>
-  <p>The single biggest contributor to PDF bloat is high-resolution images embedded at print quality (300 DPI) when the document will only ever be viewed on screen (72–96 DPI sufficient). A scanned page at 300 DPI is roughly 800 KB. The same page optimized for screen viewing at 96 DPI is under 80 KB — a 10x reduction. Use the <a href="../tools/compress.html" style="color:var(--primary)">image compression tool</a> to pre-compress images before inserting them into PDFs, or compress the final PDF directly.</p>
+  <p>The single biggest contributor to PDF bloat is high-resolution images embedded at print quality (300 DPI) when the document will only ever be viewed on screen (72–96 DPI sufficient). A scanned page at 300 DPI is roughly 800 KB. The same page optimized for screen viewing at 96 DPI is under 80 KB — a 10x reduction. Use the <a href="../tools/image-compress-resize.html" style="color:var(--primary)">image compression tool</a> to pre-compress images before inserting them into PDFs, or compress the final PDF directly.</p>
 
   <h3>Remove Hidden Data</h3>
   <p>PDFs often contain hidden data that balloons file size: embedded fonts (a complete copy of every font used), edit history, thumbnail previews, annotations, and metadata from the creating application. Flattening a PDF — re-exporting with clean settings — can reduce size by 20–40% on documents that have been edited multiple times.</p>
@@ -289,12 +290,12 @@
         <h4>Scanner</h4>
         <a href="../scanner.html">CamMaster Scanner</a>
         <a href="../tools/ocr.html">OCR Text</a>
-        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="../tools/merge-pdf.html">Merge PDF</a>
-        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
         <a href="../tools/compress-pdf.html">Compress PDF</a>
         <a href="../tools/pdf-to-word.html">PDF to Word</a>
         <a href="../tools/pdf-to-img.html">PDF to JPG</a>

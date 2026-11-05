@@ -78,7 +78,8 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does compressing a PDF damage the content or make it unreadable?","acceptedAnswer":{"@type":"Answer","text":"This tool renders each page as a JPEG image before rebuilding the PDF, so selectable text becomes part of the page image. Higher compression can reduce sharpness. Use the High Quality setting for printing or small text, and inspect the downloaded result before relying on it."}},{"@type":"Question","name":"How much can this tool reduce my PDF size?","acceptedAnswer":{"@type":"Answer","text":"Results vary by page complexity, image content, and the selected quality level. Some files shrink substantially, while an already optimized PDF may not shrink at all. PDFdukan keeps the original bytes when its generated file would be larger."}},{"@type":"Question","name":"Is my PDF uploaded to a server when I compress it?","acceptedAnswer":{"@type":"Answer","text":"No. PDFdukan uses client-side JavaScript (PDF.js and PDF-lib) to process the selected file inside your browser; the tool does not send the PDF to PDFdukan's server."}},{"@type":"Question","name":"What is the maximum file size I can compress?","acceptedAnswer":{"@type":"Answer","text":"There is no enforced file-size limit, but available memory, page count, page dimensions, and browser limits determine what your device can process. Large files can be slow or fail, especially on phones."}},{"@type":"Question","name":"Will the compressed PDF still be printable?","acceptedAnswer":{"@type":"Answer","text":"The result is a standard PDF and can be printed in mainstream readers. Because pages are rasterized and may be lossy, inspect fine text and graphics before printing."}},{"@type":"Question","name":"Can I compress a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"No. This tool does not ask for or bypass a PDF password. Open the file with software that is authorized to decrypt it and save an unprotected copy before compression. PDFdukan's Restriction Check only re-saves supported unencrypted PDFs; it is not a password-removal tool."}},{"@type":"Question","name":"Does the compressed PDF open correctly on mobile phones?","acceptedAnswer":{"@type":"Answer","text":"Yes. The output is a standard PDF produced by PDF-lib and should open in current mainstream PDF readers. If a particular reader has trouble, try the original file or another current reader."}},{"@type":"Question","name":"How is PDFdukan different from iLovePDF or Smallpdf?","acceptedAnswer":{"@type":"Answer","text":"PDFdukan performs this compression in your browser and does not require an account. Other services may use different processing methods, plans, or limits; check their current privacy and pricing pages when comparing them."}},{"@type":"Question","name":"Is this tool completely free with no hidden charges?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free with no subscription, no per-file fee, no credit card required, and no limit on how many files you compress. There is currently no paid tier for this tool."}},{"@type":"Question","name":"Does the tool work on mobile phones in Pakistan?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan works on any Android or iPhone browser — Chrome, Samsung Internet, Safari, Firefox. It is especially useful for students and job seekers in Pakistan who need to compress PDFs for PPSC, FPSC, NTS, and university portals that have strict file-size limits. No app download is needed."}},{"@type":"Question","name":"Can I compress multiple PDFs at once?","acceptedAnswer":{"@type":"Answer","text":"Currently the tool processes one PDF at a time. After compressing and downloading the first file, you can immediately upload and compress another. Batch compression for multiple files is on our roadmap. For now, the Merge PDF tool can combine multiple PDFs first, then you can compress the merged result."}}]}]}</script><meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
 </head>
-<body data-tool="compress-pdf"><header class="header" role="banner">
+<body data-tool="compress-pdf">
+<header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
       <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
@@ -109,10 +110,10 @@
       <div class="nav-dropdown mega" role="menu">
         <div class="nd-col">
           <span class="nd-section-head">&#128196; PDF Converters</span>
-          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
           <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
           <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
-          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
           <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
           <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
           <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
@@ -130,7 +131,7 @@
           <div class="nd-divider"></div>
           <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
           <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
-          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
           <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">&#128295; Calculators</span>
@@ -163,9 +164,9 @@
 <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
   <a href="/"              class="mnd-link">Home</a>
   <div class="mnd-section">PDF Tools</div>
-  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
   <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
-  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
   <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
   <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
   <div class="mnd-section">Edit &amp; Sign</div>
@@ -175,7 +176,7 @@
   <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
   <div class="mnd-section">Image &amp; Scan</div>
   <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
-  <a href="../tools/compress.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
   <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
   <div class="mnd-section">More</div>
   <a href="../blog/index.html" class="mnd-link">Blog</a>
@@ -624,7 +625,7 @@ function compressPDF() { CP.run(); }
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
   <h2>Related Tools</h2>
   <div class="related-tools-grid">
-      <a href="split-pdf.html" class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>      <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>      <a href="pdf-organizer.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>      <a href="pdf-to-img.html" class="related-tool-card"><span class="rtc-icon">🖼️</span>PDF to JPG</a>  </div>
+      <a href="extract-pdf-pages.html" class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>      <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>      <a href="pdf-organizer.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>      <a href="pdf-to-img.html" class="related-tool-card"><span class="rtc-icon">🖼️</span>PDF to JPG</a>  </div>
 </section>
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
@@ -638,12 +639,12 @@ function compressPDF() { CP.run(); }
         <h4>Scanner</h4>
         <a href="../scanner.html">CamMaster Scanner</a>
         <a href="../tools/ocr.html">OCR Text</a>
-        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="../tools/merge-pdf.html">Merge PDF</a>
-        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
         <a href="../tools/compress-pdf.html">Compress PDF</a>
         <a href="../tools/pdf-to-word.html">PDF to Word</a>
         <a href="../tools/pdf-to-img.html">PDF to JPG</a>

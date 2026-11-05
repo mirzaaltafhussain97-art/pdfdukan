@@ -1806,373 +1806,290 @@ const SplitPDF = (() => {
    5. COMPRESS IMAGE — Full resizer / compressor engine
 ================================================================ */
 const CompressImage = (() => {
-  let _result       = null;
-  let _srcImg       = null;   // original HTMLImageElement
-  let _origW        = 0;
-  let _origH        = 0;
-  let _origFileSize = 0;
-  let _sourceName   = 'image';
-  let _aspectLocked = true;
-  let _outputFormat = 'image/jpeg';
-  let _fitInsideCanvas = false;
-  const SUPPORTED_IMAGE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+  /* Image Compress & Resize — runs in the browser with <canvas>. Nothing is uploaded. */
+  const SUPPORTED = new Set(['image/jpeg', 'image/png', 'image/webp']);
   const MAX_SOURCE_BYTES = 50 * 1024 * 1024;
   const MAX_SOURCE_PIXELS = 80 * 1000 * 1000;
+  const MAX_DIM = 16000, MAX_AREA = 64000000;
+  const LEVELS = { small: 0.6, balanced: 0.8, high: 0.92 };
+  const FMT_NAME = { 'image/jpeg': 'JPG', 'image/png': 'PNG', 'image/webp': 'WebP' };
 
-  /* ── INIT ─────────────────────────────────────────────────── */
+  const st = {
+    img: null, file: null, w: 0, h: 0, bytes: 0, type: '', name: 'image', transparent: false,
+    level: 'balanced', targetKb: 0, size: 'original', pct: 50, pxW: 0, pxH: 0, lock: true,
+    preset: null, fmt: 'auto', result: null, gen: 0, timer: 0
+  };
+  const $ = id => document.getElementById(id);
+  const setText = (id, t) => { const el = $(id); if (el) el.textContent = t; };
+
+  /* ── INIT ── */
   function init() {
     _bindDropZone('dropZone', 'fileInput', loadImage);
-
-    // Quality slider label sync
-    const qualSlider = document.getElementById('quality');
-    const qualVal    = document.getElementById('qualityVal');
-    if (qualSlider && qualVal) {
-      qualSlider.addEventListener('input', () => {
-        qualVal.textContent = qualSlider.value + '%';
-        _resetResult();
-      });
-    }
-
-    // Scale % slider → update W/H inputs (keeps aspect ratio)
-    const scaleSlider = document.getElementById('scaleSlider');
-    const scaleVal    = document.getElementById('scaleVal');
-    if (scaleSlider) {
-      scaleSlider.addEventListener('input', () => {
-        const pct = +scaleSlider.value;
-        scaleVal.textContent = pct + '%';
-        _fitInsideCanvas = false;
-        _clearTemplate();
-        _resetResult();
-        if (_origW && _origH) {
-          _setDimInputs(
-            Math.round(_origW * pct / 100),
-            Math.round(_origH * pct / 100),
-            false  // don't re-trigger scale slider
-          );
-        }
-      });
-    }
-
-    // Width / Height inputs — keep aspect ratio if locked
-    const wIn = document.getElementById('outWidth');
-    const hIn = document.getElementById('outHeight');
-    if (wIn) {
-      wIn.addEventListener('input', () => {
-        _fitInsideCanvas = false;
-        _clearTemplate();
-        _resetResult();
-        if (!_aspectLocked || !_origW) return;
-        const w = +wIn.value;
-        if (w > 0) hIn.value = Math.round(w * _origH / _origW);
-      });
-    }
-    if (hIn) {
-      hIn.addEventListener('input', () => {
-        _fitInsideCanvas = false;
-        _clearTemplate();
-        _resetResult();
-        if (!_aspectLocked || !_origH) return;
-        const h = +hIn.value;
-        if (h > 0) wIn.value = Math.round(h * _origW / _origH);
-      });
-    }
-
-    // Aspect ratio lock toggle
-    const lockBtn = document.getElementById('lockAspect');
-    if (lockBtn) {
-      lockBtn.addEventListener('click', () => {
-        _aspectLocked = !_aspectLocked;
-        lockBtn.textContent = _aspectLocked ? '🔒' : '🔓';
-        lockBtn.classList.toggle('locked', _aspectLocked);
-      });
-    }
-    const targetKb = document.getElementById('targetKb');
-    if (targetKb) targetKb.addEventListener('input', _resetResult);
+    document.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => setLevel(b.dataset.level)));
+    document.querySelectorAll('[data-size]').forEach(b => b.addEventListener('click', () => setSize(b.dataset.size)));
+    document.querySelectorAll('[data-fmt]').forEach(b => b.addEventListener('click', () => setFormat(b.dataset.fmt)));
+    document.querySelectorAll('[data-kb]').forEach(b => b.addEventListener('click', () => {
+      $('targetKb').value = b.dataset.kb; st.targetKb = +b.dataset.kb; _markKb(); schedule();
+    }));
+    $('targetKb').addEventListener('input', () => { st.targetKb = Math.max(0, +$('targetKb').value || 0); _markKb(); schedule(400); });
+    $('scaleSlider').addEventListener('input', () => { st.pct = +$('scaleSlider').value; _scaleLabel(); schedule(); });
+    $('outWidth').addEventListener('input', () => {
+      const w = +$('outWidth').value || 0; st.pxW = w;
+      if (st.lock && w > 0 && st.w) { st.pxH = Math.max(1, Math.round(w * st.h / st.w)); $('outHeight').value = st.pxH; }
+      schedule(400);
+    });
+    $('outHeight').addEventListener('input', () => {
+      const h = +$('outHeight').value || 0; st.pxH = h;
+      if (st.lock && h > 0 && st.h) { st.pxW = Math.max(1, Math.round(h * st.w / st.h)); $('outWidth').value = st.pxW; }
+      schedule(400);
+    });
+    $('lockAspect').addEventListener('click', () => {
+      st.lock = !st.lock;
+      const b = $('lockAspect'); b.textContent = st.lock ? '🔒' : '🔓';
+      b.classList.toggle('locked', st.lock); b.setAttribute('aria-pressed', String(st.lock));
+      b.title = st.lock ? 'Keep proportions' : 'Proportions unlocked';
+    });
+    document.querySelectorAll('.tpl-btn').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('.tpl-btn').forEach(x => x.classList.toggle('active', x === b));
+      st.preset = { w: +b.dataset.w, h: +b.dataset.h }; schedule();
+    }));
+    $('czChange').addEventListener('click', () => $('fileInput').click());
+    $('downloadBtn').addEventListener('click', download);
   }
 
-  /* ── LOAD IMAGE ───────────────────────────────────────────── */
+  /* ── LOAD ── */
   function loadImage(files) {
-    const file = files.find(f => SUPPORTED_IMAGE_TYPES.has(f.type.toLowerCase()));
+    const file = (files || []).find(f => SUPPORTED.has((f.type || '').toLowerCase()));
     if (!file) { toast('Choose a JPG, PNG or WebP image.', 'error'); return; }
-    if (file.size > MAX_SOURCE_BYTES) { toast('This image is over the 50 MB browser-processing limit.', 'error'); return; }
-
-    _srcImg = null;
-    _resetResult();
-    _origFileSize = file.size;
-    _sourceName = file.name.replace(/\.[^.]+$/, '') || 'image';
-    const reader  = new FileReader();
-    reader.onload = e => {
-      const img = new Image();
-      img.onload = () => {
-        _srcImg = img;
-        _origW  = img.naturalWidth;
-        _origH  = img.naturalHeight;
-        if (_origW * _origH > MAX_SOURCE_PIXELS) {
-          _srcImg = null;
-          toast('This image exceeds the 80-megapixel browser-processing limit.', 'error');
-          return;
-        }
-
-        // Draw original preview
-        const origCanvas = document.getElementById('origPreview');
-        if (origCanvas) {
-          const s = Math.min(300 / _origW, 250 / _origH, 1);
-          origCanvas.width  = Math.round(_origW * s);
-          origCanvas.height = Math.round(_origH * s);
-          origCanvas.getContext('2d').drawImage(img, 0, 0, origCanvas.width, origCanvas.height);
-        }
-
-        _el('statOrigSize',   _fmtBytes(_origFileSize));
-        _el('cpOrigSizeTag',  _fmtBytes(_origFileSize));
-        _el('statOrigDims', `${_origW} × ${_origH}`);
-
-        // Pre-fill dimension inputs
-        _setDimInputs(_origW, _origH, true);
-        _fitInsideCanvas = false;
-        _clearTemplate();
-        _resetResult();
-        _el('targetKbStatus', 'Enter a KB limit to auto-reduce quality');
-
-        // Show settings card
-        const sc = document.getElementById('settingsCard');
-        if (sc) sc.style.display = '';
-
-        const cb = document.getElementById('compressBtn');
-        if (cb) cb.disabled = false;
-      };
-      img.onerror = () => toast('Failed to load image', 'error');
-      img.src = e.target.result;
+    if (file.size > MAX_SOURCE_BYTES) { toast('This image is over the 50 MB limit.', 'error'); return; }
+    try { $('fileInput').value = ''; } catch (e) { /* ignore */ }
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      if (img.naturalWidth * img.naturalHeight > MAX_SOURCE_PIXELS) {
+        URL.revokeObjectURL(url); toast('This image is over the 80-megapixel limit.', 'error'); return;
+      }
+      if (st.img && st.img._url) URL.revokeObjectURL(st.img._url);
+      img._url = url;
+      Object.assign(st, {
+        img, file, w: img.naturalWidth, h: img.naturalHeight, bytes: file.size,
+        type: file.type.toLowerCase(), name: file.name.replace(/\.[^.]+$/, '') || 'image',
+        preset: null, result: null
+      });
+      st.transparent = st.type === 'image/jpeg' ? false : _hasAlpha(img);
+      st.pxW = st.w; st.pxH = st.h;
+      $('outWidth').value = st.w; $('outHeight').value = st.h;
+      document.querySelectorAll('.tpl-btn').forEach(x => x.classList.remove('active'));
+      _scaleLabel();
+      setText('czFileName', file.name);
+      setText('czFileMeta', `${FMT_NAME[st.type]} · ${_fmtBytes(st.bytes)} · ${st.w} × ${st.h} px`);
+      _drawFit($('czThumb'), img, 56, 56);
+      _drawFit($('origPreview'), img, 360, 280);
+      setText('statOrigSize', _fmtBytes(st.bytes));
+      setText('statOrigDims', `${st.w} × ${st.h} px`);
+      $('settingsCard').hidden = false;
+      $('resultSection').hidden = false;
+      _notes();
+      schedule(0);
+      setTimeout(() => $('settingsCard').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
     };
-    reader.onerror = () => toast('Failed to read image file', 'error');
-    reader.readAsDataURL(file);
+    img.onerror = () => { URL.revokeObjectURL(url); toast('This image could not be opened. Try another file.', 'error'); };
+    img.src = url;
   }
 
-  /* ── APPLY TEMPLATE ───────────────────────────────────────── */
-  function applyTemplate(btn) {
-    const w = +btn.dataset.w;
-    const h = +btn.dataset.h;
-    document.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    // Templates create an exact canvas while preserving the image aspect ratio.
-    _fitInsideCanvas = true;
-    _setDimInputs(w, h, false);
-    // Reset scale slider to custom
-    const scaleSlider = document.getElementById('scaleSlider');
-    const scaleVal    = document.getElementById('scaleVal');
-    if (scaleSlider) { scaleSlider.value = 100; }
-    if (scaleVal)    { scaleVal.textContent = 'Preset canvas'; }
-    _resetResult();
-  }
-
-  /* ── SET FORMAT ───────────────────────────────────────────── */
-  function setFormat(btn) {
-    _outputFormat = btn.dataset.fmt;
-    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    // PNG is lossless — quality slider irrelevant, dim it
-    const qualSlider = document.getElementById('quality');
-    const qualGroup  = qualSlider ? qualSlider.closest('.slider-group') : null;
-    if (qualGroup) qualGroup.style.opacity = _outputFormat === 'image/png' ? '0.4' : '1';
-    if (qualSlider) qualSlider.disabled = _outputFormat === 'image/png';
-    const targetKb = document.getElementById('targetKb');
-    if (targetKb) targetKb.disabled = _outputFormat === 'image/png';
-    _el('targetKbStatus', _outputFormat === 'image/png'
-      ? 'PNG uses lossless encoding; quality and target-KB controls do not apply'
-      : 'Enter a KB limit to auto-reduce quality');
-    _resetResult();
-  }
-
-  /* ── MAIN COMPRESS ────────────────────────────────────────── */
-  async function compress() {
-    if (!_srcImg) { toast('No image loaded', 'error'); return; }
-
-    const btn = document.getElementById('compressBtn');
-    if (btn) { btn.disabled = true; btn.textContent = '⏳ Processing…'; }
-
-    try {
-      // Resolve output dimensions
-      const wIn = +(document.getElementById('outWidth')?.value  || 0);
-      const hIn = +(document.getElementById('outHeight')?.value || 0);
-      let outW = wIn  > 0 ? wIn  : _origW;
-      let outH = hIn  > 0 ? hIn  : _origH;
-
-      // Guard browser canvas limits instead of silently changing requested dimensions.
-      outW = Math.round(outW);
-      outH = Math.round(outH);
-      const maxDimension = 16000;
-      const maxArea = 64000000;
-      if (outW < 1 || outH < 1 || outW > maxDimension || outH > maxDimension || outW * outH > maxArea) {
-        throw new Error('Output is too large for safe browser processing. Use dimensions up to 16,000 px and 64 megapixels.');
-      }
-
-      const targetKbEl = document.getElementById('targetKb');
-      const targetKb   = targetKbEl ? +targetKbEl.value : 0;
-      const quality    = +(document.getElementById('quality')?.value || 85) / 100;
-      const format     = _outputFormat;
-
-      // Draw source onto output-sized canvas
-      const srcCanvas  = document.createElement('canvas');
-      srcCanvas.width  = outW;
-      srcCanvas.height = outH;
-      const srcCtx = srcCanvas.getContext('2d');
-      if (format === 'image/jpeg') {
-        srcCtx.fillStyle = '#ffffff';
-        srcCtx.fillRect(0, 0, outW, outH);
-      }
-      if (_fitInsideCanvas) {
-        const scale = Math.min(outW / _origW, outH / _origH);
-        const drawW = Math.max(1, Math.round(_origW * scale));
-        const drawH = Math.max(1, Math.round(_origH * scale));
-        const drawX = Math.round((outW - drawW) / 2);
-        const drawY = Math.round((outH - drawH) / 2);
-        srcCtx.drawImage(_srcImg, drawX, drawY, drawW, drawH);
-      } else {
-        srcCtx.drawImage(_srcImg, 0, 0, outW, outH);
-      }
-
-      let blob;
-      let finalQuality = quality;
-
-      if (targetKb > 0 && format !== 'image/png') {
-        // Target-size mode: binary search quality until under targetKb
-        const targetResult = await _compressToTargetKb(srcCanvas, format, targetKb);
-        blob = targetResult.blob;
-        finalQuality = targetResult.quality;
-        _el('targetKbStatus', targetResult.metTarget
-          ? `✓ ${(blob.size / 1024).toFixed(1)} KB at ${Math.round(finalQuality * 100)}% quality`
-          : `Could not reach ${targetKb} KB at these dimensions; smallest tested output is ${(blob.size / 1024).toFixed(1)} KB`);
-      } else {
-        blob = await _canvasToBlob(srcCanvas, format, quality);
-        if (format !== 'image/png') _el('targetKbStatus', 'No target size selected');
-      }
-
-      _result = { blob, format, w: outW, h: outH, quality: finalQuality };
-
-      // Draw compressed preview
-      const compCanvas = document.getElementById('compPreview');
-      if (compCanvas) {
-        const s   = Math.min(300 / outW, 250 / outH, 1);
-        compCanvas.width  = Math.round(outW * s);
-        compCanvas.height = Math.round(outH * s);
-        const url = URL.createObjectURL(blob);
-        const pImg = new Image();
-        pImg.onload = () => {
-          compCanvas.getContext('2d').drawImage(pImg, 0, 0, compCanvas.width, compCanvas.height);
-          URL.revokeObjectURL(url);
-        };
-        pImg.src = url;
-      }
-
-      // Stats
-      const sizeDelta = (blob.size - _origFileSize) / _origFileSize * 100;
-      _el('statCompSize',      _fmtBytes(blob.size));
-      _el('cpCompSizeTag',     _fmtBytes(blob.size));
-      _el('statCompDims',      `${outW} × ${outH}`);
-      _el('statFinalQuality',  format === 'image/png' ? 'Lossless PNG' : Math.round(finalQuality * 100) + '%');
-      const savEl = document.getElementById('statSaving');
-      if (savEl) {
-        const rounded = Math.round(Math.abs(sizeDelta));
-        savEl.textContent = sizeDelta < -0.5 ? `${rounded}% smaller` : sizeDelta > 0.5 ? `${rounded}% larger` : 'About the same size';
-        savEl.className = 'rs-value' + (sizeDelta < -0.5 ? ' positive' : sizeDelta > 0.5 ? ' negative' : '');
-      }
-
-      // Show result card
-      const rs = document.getElementById('resultSection');
-      if (rs) {
-        rs.style.display = 'block';
-        rs.classList.add('show', 'visible');
-      }
-      rs?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    } catch (err) {
-      console.error('Compress error:', err);
-      toast('Compression failed: ' + err.message, 'error');
-    } finally {
-      if (btn) { btn.disabled = false; btn.textContent = '🗜️ Compress & Process'; }
-    }
-  }
-
-  /* ── TARGET-KB BINARY SEARCH ──────────────────────────────── */
-  async function _compressToTargetKb(canvas, format, targetKb) {
-    const targetBytes = targetKb * 1024;
-    let lo = 0.01, hi = 1.0, bestBlob = null;
-
-    // Up to 14 iterations of binary search
-    for (let i = 0; i < 14; i++) {
-      const mid  = (lo + hi) / 2;
-      const blob = await _canvasToBlob(canvas, format, mid);
-
-      if (blob.size <= targetBytes) {
-        bestBlob = blob;
-        lo = mid; // try higher quality while still under target
-      } else {
-        hi = mid;
-      }
-
-      if (hi - lo < 0.005) break;
-    }
-
-    if (!bestBlob) {
-      // Even quality=0.01 is too large — return it anyway
-      const blob = await _canvasToBlob(canvas, format, 0.01);
-      toast('Image too large to meet target KB at current dimensions', 'warning');
-      return { blob, quality: 0.01, metTarget: false };
-    }
-    return { blob: bestBlob, quality: lo, metTarget: true };
-  }
-
-  /* ── HELPERS ──────────────────────────────────────────────── */
-  function _canvasToBlob(canvas, format, quality) {
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        if (blob) resolve(blob);
-        else reject(new Error('toBlob returned null'));
-      }, format, quality);
+  /* ── CONTROLS ── */
+  function _press(attr, val) {
+    document.querySelectorAll(`[data-${attr}]`).forEach(b => {
+      const on = b.dataset[attr] === val; b.classList.toggle('active', on); b.setAttribute('aria-pressed', String(on));
     });
   }
+  function setLevel(level) {
+    st.level = level; _press('level', level);
+    $('czTargetPanel').hidden = level !== 'target';
+    if (level === 'target') {
+      if (!st.targetKb) { st.targetKb = Math.max(20, Math.round(st.bytes / 1024 / 2)); $('targetKb').value = st.targetKb; }
+      _markKb();
+    }
+    _notes(); schedule();
+  }
+  function setSize(mode) {
+    st.size = mode; _press('size', mode);
+    $('czPercentPanel').hidden = mode !== 'percent';
+    $('czPixelsPanel').hidden = mode !== 'pixels';
+    $('czPresetPanel').hidden = mode !== 'preset';
+    schedule();
+  }
+  function setFormat(fmt) { st.fmt = fmt; _press('fmt', fmt); _notes(); schedule(); }
+  function _markKb() {
+    document.querySelectorAll('[data-kb]').forEach(b => b.classList.toggle('active', +b.dataset.kb === st.targetKb));
+  }
+  function _scaleLabel() {
+    setText('scaleVal', st.pct + '%');
+    setText('scaleDims', st.w ? `→ ${Math.max(1, Math.round(st.w * st.pct / 100))} × ${Math.max(1, Math.round(st.h * st.pct / 100))} px` : '');
+  }
 
-  function _setDimInputs(w, h, updateScale) {
-    const wIn = document.getElementById('outWidth');
-    const hIn = document.getElementById('outHeight');
-    if (wIn) wIn.value = w;
-    if (hIn) hIn.value = h;
-    if (updateScale && _origW) {
-      const pct = Math.round(w / _origW * 100);
-      const scaleSlider = document.getElementById('scaleSlider');
-      const scaleVal    = document.getElementById('scaleVal');
-      if (scaleSlider) scaleSlider.value = Math.min(100, pct);
-      if (scaleVal)    scaleVal.textContent = Math.min(100, pct) + '%';
+  function _outFormat() {
+    if (st.fmt !== 'auto') return st.fmt;
+    if (st.type === 'image/png') return st.transparent ? 'image/webp' : 'image/jpeg';
+    return st.type;
+  }
+  function _notes() {
+    const out = _outFormat();
+    const png = out === 'image/png';
+    document.querySelectorAll('[data-level]').forEach(b => { b.disabled = png; });
+    let lv = '';
+    if (png) lv = 'PNG is lossless here, so compression levels do not apply. Only a smaller pixel size makes a PNG lighter.';
+    else if (st.level === 'target') lv = 'We pick the highest quality that fits under your limit. If it cannot fit, make the image smaller in pixels too.';
+    setText('czLevelNote', lv);
+    let fn = '';
+    if (st.fmt === 'auto') {
+      if (st.type === 'image/png' && st.transparent) fn = 'Auto saves this PNG as WebP: it keeps the transparent background and is usually much smaller.';
+      else if (st.type === 'image/png') fn = 'Auto saves this PNG as JPG, which is usually much smaller. Choose PNG to keep the format.';
+      else fn = `Auto keeps your ${FMT_NAME[st.type] || 'original'} format.`;
+    } else if (out === 'image/jpeg' && st.transparent) {
+      fn = 'JPG has no transparency, so transparent areas turn white.';
+    }
+    setText('czFormatNote', fn);
+  }
+
+  function _outSize() {
+    if (st.size === 'percent') return { w: Math.max(1, Math.round(st.w * st.pct / 100)), h: Math.max(1, Math.round(st.h * st.pct / 100)), fit: false };
+    if (st.size === 'pixels') return { w: Math.round(st.pxW || st.w), h: Math.round(st.pxH || st.h), fit: false };
+    if (st.size === 'preset' && st.preset) return { w: st.preset.w, h: st.preset.h, fit: true };
+    return { w: st.w, h: st.h, fit: false };
+  }
+
+  /* ── PROCESS (live, debounced) ── */
+  function schedule(delay = 200) {
+    if (!st.img) return;
+    clearTimeout(st.timer);
+    st.gen++;
+    $('czBusy').hidden = false;
+    $('downloadBtn').disabled = true;
+    st.timer = setTimeout(process, delay);
+  }
+
+  async function process() {
+    const run = st.gen;
+    const { w, h, fit } = _outSize();
+    const format = _outFormat();
+    $('czWarn').hidden = true;
+    if (!(w >= 1 && h >= 1) || w > MAX_DIM || h > MAX_DIM || w * h > MAX_AREA) {
+      $('czBusy').hidden = true;
+      _warn('Use a size up to 16,000 px per side and 64 megapixels in total.');
+      return;
+    }
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+      if (format === 'image/jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h); }
+      if (fit) {
+        const s = Math.min(w / st.w, h / st.h);
+        const dw = Math.max(1, Math.round(st.w * s)), dh = Math.max(1, Math.round(st.h * s));
+        ctx.drawImage(st.img, Math.round((w - dw) / 2), Math.round((h - dh) / 2), dw, dh);
+      } else {
+        ctx.drawImage(st.img, 0, 0, w, h);
+      }
+
+      let blob, quality = null, met = true;
+      if (format === 'image/png') {
+        blob = await _toBlob(canvas, format);
+      } else if (st.level === 'target' && st.targetKb > 0) {
+        const r = await _fitTarget(canvas, format, st.targetKb * 1024, () => run !== st.gen);
+        if (!r) return; // a newer run started
+        ({ blob, quality, met } = r);
+      } else {
+        quality = LEVELS[st.level] || LEVELS.balanced;
+        blob = await _toBlob(canvas, format, quality);
+      }
+      if (run !== st.gen) return;
+
+      st.result = { blob, format, w, h, quality };
+      _drawBlob($('compPreview'), blob, 360, 280);
+      setText('statCompSize', _fmtBytes(blob.size));
+      setText('statCompDims', `${w} × ${h} px · ${FMT_NAME[format]}${quality != null ? ' · ' + Math.round(quality * 100) + '% quality' : ''}`);
+      const delta = (blob.size - st.bytes) / st.bytes * 100;
+      const sav = $('statSaving');
+      sav.textContent = delta < -0.5 ? `${Math.round(-delta)}% smaller` : delta > 0.5 ? `${Math.round(delta)}% larger` : 'Same size';
+      sav.classList.toggle('worse', delta > 0.5);
+      setText('downloadLabel', `Download ${FMT_NAME[format]} (${_fmtBytes(blob.size)})`);
+
+      if (!met) _warn(`Could not get under ${st.targetKb} KB at ${w} × ${h} px. The smallest result is ${_fmtBytes(blob.size)}. Pick a smaller size in step 2.`);
+      else if (quality != null && quality < 0.4 && st.level === 'target') _warn(`To reach ${st.targetKb} KB, quality dropped to ${Math.round(quality * 100)}%, so the image may look blurry. Making it smaller in pixels (step 2) usually looks better.`);
+      else if (delta > 0.5) _warn(format === 'image/png'
+        ? 'The new PNG is larger than your file. Choose JPG or WebP, or make it smaller in pixels.'
+        : 'Your file is already well compressed, so this result is larger. Keep your original, or choose Smallest file.');
+      $('downloadBtn').disabled = false;
+    } catch (err) {
+      console.error('Compress error:', err);
+      if (run === st.gen) _warn('This browser could not process the image. Try a smaller size or another format.');
+    } finally {
+      if (run === st.gen) $('czBusy').hidden = true;
     }
   }
 
-  function _clearTemplate() {
-    document.querySelectorAll('.tpl-btn.active').forEach(button => button.classList.remove('active'));
-  }
-
-  function _resetResult() {
-    _result = null;
-    const result = document.getElementById('resultSection');
-    if (result) {
-      result.style.display = 'none';
-      result.classList.remove('show', 'visible');
+  async function _fitTarget(canvas, format, targetBytes, stale) {
+    let lo = 0.02, hi = 0.95, best = null, bestQ = 0;
+    const top = await _toBlob(canvas, format, hi);
+    if (stale()) return null;
+    if (top.size <= targetBytes) return { blob: top, quality: hi, met: true };
+    for (let i = 0; i < 9; i++) {
+      const mid = (lo + hi) / 2;
+      const b = await _toBlob(canvas, format, mid);
+      if (stale()) return null;
+      if (b.size <= targetBytes) { best = b; bestQ = mid; lo = mid; } else { hi = mid; }
     }
+    if (best) return { blob: best, quality: bestQ, met: true };
+    const low = await _toBlob(canvas, format, 0.02);
+    if (stale()) return null;
+    return { blob: low, quality: 0.02, met: low.size <= targetBytes };
   }
 
-  function _el(id, text) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
+  /* ── HELPERS ── */
+  function _toBlob(canvas, format, q) {
+    return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob failed')), format, q));
   }
+  function _hasAlpha(img) {
+    try {
+      const s = Math.min(1, 256 / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas');
+      c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+      const x = c.getContext('2d', { willReadFrequently: true });
+      x.drawImage(img, 0, 0, c.width, c.height);
+      const d = x.getImageData(0, 0, c.width, c.height).data;
+      for (let i = 3; i < d.length; i += 4) if (d[i] < 250) return true;
+    } catch (e) { /* ignore */ }
+    return false;
+  }
+  function _drawFit(canvas, img, maxW, maxH) {
+    if (!canvas) return;
+    const s = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+    canvas.width = Math.max(1, Math.round(img.naturalWidth * s));
+    canvas.height = Math.max(1, Math.round(img.naturalHeight * s));
+    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+  }
+  function _drawBlob(canvas, blob, maxW, maxH) {
+    const url = URL.createObjectURL(blob);
+    const im = new Image();
+    im.onload = () => { _drawFit(canvas, im, maxW, maxH); URL.revokeObjectURL(url); };
+    im.onerror = () => URL.revokeObjectURL(url);
+    im.src = url;
+  }
+  function _warn(msg) { const el = $('czWarn'); el.textContent = msg; el.hidden = false; }
 
   function download() {
-    if (!_result) return;
-    const ext = _result.format.split('/')[1].replace('jpeg', 'jpg');
-    const safeBase = _sourceName.replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '') || 'image';
-    _downloadBlob(_result.blob, `${safeBase}-compressed.${ext}`, 'Image Compressor', 'compress');
-    toast('Image downloaded! ✓', 'success');
+    if (!st.result) return;
+    const ext = FMT_NAME[st.result.format].toLowerCase();
+    const resized = st.result.w !== st.w || st.result.h !== st.h;
+    const base = st.name.replace(/[^a-z0-9_-]+/gi, '-').replace(/^-+|-+$/g, '') || 'image';
+    _downloadBlob(st.result.blob, `${base}-${resized ? 'resized' : 'compressed'}.${ext}`, 'Image Compressor', 'compress');
   }
 
-  return { init, loadImage, compress, download, applyTemplate, setFormat };
+  return { init, loadImage, setLevel, setSize, setFormat, _state: st };
 })();
+
 
 /* ================================================================
    6. OCR TEXT EXTRACTION

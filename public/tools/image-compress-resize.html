@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Image Compress &amp; Resize Online – Free, No Upload | PDFdukan</title>
+<meta name="description" content="Image compress &amp; resize online: shrink JPG, PNG or WebP to a target KB or new pixel size, see the result live, then download. Free, no sign-up.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/image-compress-resize.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/image-compress-resize.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/image-compress-resize.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/image-compress-resize.html">
+<meta property="og:title" content="Image Compress &amp; Resize Online – Free, No Upload | PDFdukan">
+<meta property="og:description" content="Image compress &amp; resize online: shrink JPG, PNG or WebP to a target KB or new pixel size, see the result live, then download. Free, no sign-up.">
+<meta property="og:image" content="https://pdfdukan.com/images/compress-image.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Image Compress &amp; Resize Online – Free, No Upload | PDFdukan">
+<meta name="twitter:description" content="Image compress &amp; resize online: shrink JPG, PNG or WebP to a target KB or new pixel size, see the result live, then download. Free, no sign-up.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/compress-image.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+/* ── Image Compress & Resize ── */
+.tool-hero.compress-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.compress-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.compress-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.compress-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.compress-tool-hero .tool-feature-visual{max-height:180px}}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-file{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:6px}
+.cz-file canvas{width:56px;height:56px;border-radius:8px;background:var(--card);flex-shrink:0;object-fit:contain}
+.cz-file-info{flex:1;min-width:0}
+.cz-file-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-file-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.cz-link{background:none;border:1px solid var(--border);color:var(--primary);font-weight:700;font-size:12px;padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer;flex-shrink:0}
+.cz-link:hover,.cz-link:focus-visible{border-color:var(--primary)}
+.cz-group{padding-top:16px;margin-top:14px;border-top:1px solid var(--border);text-align:left}
+.cz-label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.cz-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media(max-width:560px){.cz-chips{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cz-chip{background:var(--card-2);border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer;transition:border-color .15s,color .15s,background .15s;line-height:1.25}
+.cz-chip:hover{border-color:var(--primary);color:var(--primary)}
+.cz-chip.active{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.cz-chip:disabled{opacity:.45;cursor:not-allowed}
+.cz-chip:focus-visible,.cz-mini-chips button:focus-visible,.tpl-btn:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.cz-panel{margin-top:12px}
+.cz-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cz-inline label{font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-inline input,.cz-dims input{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:15px;width:120px;outline:none}
+.cz-inline input:focus,.cz-dims input:focus{border-color:var(--primary)}
+.cz-unit{font-size:13px;color:var(--text-3);font-weight:600}
+.cz-mini-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cz-mini-chips button{background:var(--card);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.cz-mini-chips button:hover,.cz-mini-chips button.active{border-color:var(--primary);color:var(--primary)}
+.cz-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.cz-note:empty{display:none}
+.cz-slider-label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:6px}
+.cz-slider-label span{color:var(--text-3);font-weight:500}
+#scaleSlider{width:100%;accent-color:var(--primary)}
+.cz-dims{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.cz-dims>div{display:flex;flex-direction:column;gap:5px;flex:1;min-width:110px}
+.cz-dims label{font-size:12px;font-weight:600;color:var(--text-2)}
+.cz-dims input{width:100%;box-sizing:border-box}
+.lock-btn{background:var(--card-2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;color:var(--text-2);font-size:16px;flex-shrink:0}
+.lock-btn.locked{color:var(--primary);border-color:var(--primary);background:rgba(255,99,51,.1)}
+.template-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media(max-width:560px){.template-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tpl-btn{display:flex;flex-direction:column;gap:2px;align-items:flex-start;background:var(--card-2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;cursor:pointer;text-align:left}
+.tpl-btn:hover,.tpl-btn.active{border-color:var(--primary)}
+.tpl-btn.active{background:rgba(255,99,51,.08)}
+.tpl-name{font-size:12px;font-weight:700;color:var(--text)}
+.tpl-dims{font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.cz-result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.cz-result-head h3{margin:0}
+.cz-busy{font-size:12px;font-weight:700;color:var(--primary)}
+.cz-summary{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:10px}
+.cz-sum-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.cz-sum-box.cz-new{border-color:var(--primary)}
+.cz-sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.cz-sum-val{font-size:20px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.cz-new .cz-sum-val{color:var(--primary)}
+.cz-sum-sub{font-size:12px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.cz-arrow{color:var(--text-3);font-size:18px}
+.cz-saving{font-size:14px;font-weight:800;padding:8px 12px;border-radius:999px;background:rgba(46,160,67,.12);color:var(--success,#2ea043);white-space:nowrap}
+.cz-saving.worse{background:rgba(217,119,6,.12);color:var(--warning,#d97706)}
+@media(max-width:560px){.cz-summary{grid-template-columns:1fr 1fr}.cz-arrow{display:none}.cz-saving{grid-column:1/-1;justify-self:center}.cz-sum-val{font-size:18px}.cz-file{flex-wrap:wrap}.cz-file-info{flex:1 1 140px}.cz-link{width:100%}}
+.cz-warn{margin-top:12px;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5;text-align:left}
+.compare-preview{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+@media(max-width:500px){.compare-preview{grid-template-columns:1fr}}
+.cp-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px;text-align:center;min-width:0}
+.cp-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3);margin-bottom:8px}
+.cp-box canvas{max-width:100%;height:auto;border-radius:6px;background:repeating-conic-gradient(#e6e6e6 0 25%,#fff 0 50%) 0 0/16px 16px}
+.download-btn:disabled{opacity:.6;cursor:wait}
+[hidden]{display:none!important}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-cards>div{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.i2p-cards p{margin:6px 0 0;font-size:13px;color:var(--text-2)}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table th{background:var(--card-2);font-weight:700}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Image Compress & Resize", "item": "https://pdfdukan.com/tools/image-compress-resize.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I compress an image to 100 KB?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, in most cases. Choose Target size (KB) and tap 100 KB. If a large photo can't fit, the tool tells you; reduce its pixel size and try again."}}, {"@type": "Question", "name": "Does compressing reduce image quality?", "acceptedAnswer": {"@type": "Answer", "text": "JPG and WebP compression removes some detail, but at Balanced or High quality the change is hard to see. Compare Before and After before you download."}}, {"@type": "Question", "name": "Why is the new file sometimes larger?", "acceptedAnswer": {"@type": "Answer", "text": "A file that is already well compressed can grow when it is saved again. The tool warns you when this happens, so you can keep your original or choose Smallest file."}}, {"@type": "Question", "name": "Will resizing crop or stretch my image?", "acceptedAnswer": {"@type": "Answer", "text": "No. Width × Height keeps the proportions while the lock is on. Social sizes fit the whole image inside the canvas and fill any spare space."}}, {"@type": "Question", "name": "Can I compress several images at once?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet. The tool handles one image at a time, so you can check each result before you save it."}}, {"@type": "Question", "name": "Can I compress a PDF the same way?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, with Compress PDF. To turn compressed photos into one PDF, use Image to PDF."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Image Compress & Resize", "url": "https://pdfdukan.com/tools/image-compress-resize.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Image compress & resize online: shrink JPG, PNG or WebP to a target KB or new pixel size, see the result live, then download. Free, no sign-up.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
+</head>
+<body data-tool="compress">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/inheritance-calc-advanced.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Image Compress &amp; Resize</span>
+  </nav>
+
+  <div class="tool-hero compress-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#388e3c,#66bb6a)">🗜️</div>
+      <h1>Image Compress &amp; Resize Online</h1>
+      <p>Make a JPG, PNG or WebP smaller in KB or in pixels. Pick a level or a target size, see the result live, then download.</p>
+      <p class="i2p-trust">Free · No sign-up · Your image stays in your browser</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/compress-image.svg?v=20260825" alt="Photo before and after compression, with the smaller file size shown" width="500" height="300">
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <!-- ── Upload ── -->
+  <div class="tool-card" id="uploadCard">
+    <h3><span class="tc-icon">📂</span> Upload Image</h3>
+    <div class="drop-zone" id="dropZone">
+      <div class="dz-icon">🖼️</div>
+      <div class="dz-title">Drop an image here or click to browse</div>
+      <div class="dz-hint">JPG, PNG or WebP · up to 50 MB and 80 megapixels</div>
+      <span class="dz-btn">Choose Image</span>
+      <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp">
+    </div>
+  </div>
+
+  <!-- ── Settings ── -->
+  <div class="tool-card" id="settingsCard" hidden>
+    <div class="cz-file">
+      <canvas id="czThumb" width="56" height="56" aria-hidden="true"></canvas>
+      <div class="cz-file-info">
+        <div class="cz-file-name" id="czFileName">image.jpg</div>
+        <div class="cz-file-meta" id="czFileMeta">—</div>
+      </div>
+      <button type="button" class="cz-link" id="czChange">Change image</button>
+    </div>
+
+    <div class="cz-group">
+      <div class="cz-label">1. Compression</div>
+      <div class="cz-chips" role="group" aria-label="Compression level">
+        <button type="button" class="cz-chip" data-level="small">Smallest file</button>
+        <button type="button" class="cz-chip active" data-level="balanced" aria-pressed="true">Balanced</button>
+        <button type="button" class="cz-chip" data-level="high">High quality</button>
+        <button type="button" class="cz-chip" data-level="target">Target size (KB)</button>
+      </div>
+      <div class="cz-panel" id="czTargetPanel" hidden>
+        <div class="cz-inline">
+          <label for="targetKb">Max size</label>
+          <input type="number" id="targetKb" min="5" max="99999" inputmode="numeric" placeholder="e.g. 200">
+          <span class="cz-unit">KB</span>
+        </div>
+        <div class="cz-mini-chips" role="group" aria-label="Common size limits">
+          <button type="button" data-kb="20">20 KB</button>
+          <button type="button" data-kb="50">50 KB</button>
+          <button type="button" data-kb="100">100 KB</button>
+          <button type="button" data-kb="200">200 KB</button>
+          <button type="button" data-kb="500">500 KB</button>
+          <button type="button" data-kb="1024">1 MB</button>
+        </div>
+      </div>
+      <div class="cz-note" id="czLevelNote"></div>
+    </div>
+
+    <div class="cz-group">
+      <div class="cz-label">2. Size (pixels)</div>
+      <div class="cz-chips" role="group" aria-label="Output size">
+        <button type="button" class="cz-chip active" data-size="original" aria-pressed="true">Keep size</button>
+        <button type="button" class="cz-chip" data-size="percent">By percent</button>
+        <button type="button" class="cz-chip" data-size="pixels">Width × Height</button>
+        <button type="button" class="cz-chip" data-size="preset">Social sizes</button>
+      </div>
+      <div class="cz-panel" id="czPercentPanel" hidden>
+        <label for="scaleSlider" class="cz-slider-label">Scale: <strong id="scaleVal">50%</strong> <span id="scaleDims"></span></label>
+        <input type="range" id="scaleSlider" min="5" max="100" step="5" value="50">
+      </div>
+      <div class="cz-panel" id="czPixelsPanel" hidden>
+        <div class="cz-dims">
+          <div><label for="outWidth">Width (px)</label><input type="number" id="outWidth" min="1" max="16000" inputmode="numeric"></div>
+          <button type="button" class="lock-btn locked" id="lockAspect" aria-pressed="true" title="Keep proportions">🔒</button>
+          <div><label for="outHeight">Height (px)</label><input type="number" id="outHeight" min="1" max="16000" inputmode="numeric"></div>
+        </div>
+      </div>
+      <div class="cz-panel" id="czPresetPanel" hidden>
+        <div class="template-grid">
+          <button type="button" class="tpl-btn" data-w="1080" data-h="1080"><span class="tpl-name">Square post</span><span class="tpl-dims">1080 × 1080</span></button>
+          <button type="button" class="tpl-btn" data-w="1080" data-h="1350"><span class="tpl-name">Portrait post</span><span class="tpl-dims">1080 × 1350</span></button>
+          <button type="button" class="tpl-btn" data-w="1080" data-h="1920"><span class="tpl-name">Story / Reel</span><span class="tpl-dims">1080 × 1920</span></button>
+          <button type="button" class="tpl-btn" data-w="1280" data-h="720"><span class="tpl-name">Video thumbnail</span><span class="tpl-dims">1280 × 720</span></button>
+          <button type="button" class="tpl-btn" data-w="1200" data-h="630"><span class="tpl-name">Link preview</span><span class="tpl-dims">1200 × 630</span></button>
+          <button type="button" class="tpl-btn" data-w="1584" data-h="396"><span class="tpl-name">Profile banner</span><span class="tpl-dims">1584 × 396</span></button>
+        </div>
+        <div class="cz-note">The whole image fits inside the canvas, centered. Nothing is cropped or stretched; any spare space is filled.</div>
+      </div>
+    </div>
+
+    <div class="cz-group">
+      <div class="cz-label">3. Format</div>
+      <div class="cz-chips" role="group" aria-label="Output format">
+        <button type="button" class="cz-chip active" data-fmt="auto" aria-pressed="true">Auto</button>
+        <button type="button" class="cz-chip" data-fmt="image/jpeg">JPG</button>
+        <button type="button" class="cz-chip" data-fmt="image/png">PNG</button>
+        <button type="button" class="cz-chip" data-fmt="image/webp">WebP</button>
+      </div>
+      <div class="cz-note" id="czFormatNote"></div>
+    </div>
+  </div>
+
+  <!-- ── Result ── -->
+  <div class="tool-card" id="resultSection" hidden>
+    <div class="cz-result-head">
+      <h3><span class="tc-icon">🔍</span> Result</h3>
+      <span class="cz-busy" id="czBusy" hidden>Updating…</span>
+    </div>
+    <div class="cz-summary">
+      <div class="cz-sum-box"><div class="cz-sum-label">Original</div><div class="cz-sum-val" id="statOrigSize">—</div><div class="cz-sum-sub" id="statOrigDims">—</div></div>
+      <div class="cz-arrow" aria-hidden="true">→</div>
+      <div class="cz-sum-box cz-new"><div class="cz-sum-label">New</div><div class="cz-sum-val" id="statCompSize">—</div><div class="cz-sum-sub" id="statCompDims">—</div></div>
+      <div class="cz-saving" id="statSaving">—</div>
+    </div>
+    <div class="cz-warn" id="czWarn" hidden></div>
+    <div class="compare-preview">
+      <div class="cp-box"><div class="cp-label">Before</div><canvas id="origPreview"></canvas></div>
+      <div class="cp-box"><div class="cp-label">After</div><canvas id="compPreview"></canvas></div>
+    </div>
+    <button class="download-btn" id="downloadBtn" type="button" disabled>
+      <span>📥</span> <span id="downloadLabel">Download</span>
+    </button>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
+    📖 <strong>Related guide:</strong> <a href="../blog/compress-images-guide.html" style="color:var(--primary);font-weight:600">Compress Images While Managing Quality →</a>
+  </div>
+
+
+<section class="seo-section i2p-copy">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with JPG, PNG and WebP photos</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+
+    <h2>What Does the Image Compress &amp; Resize Tool Do?</h2>
+    <p class="lead">PDFdukan's image compress &amp; resize online tool makes a JPG, PNG or WebP smaller in file size, in pixels, or both. Pick a compression level or a target size in KB, and the result updates live. The image is processed in your browser, not on our server.</p>
+    <p>You see the original and the new file side by side, with the size in KB or MB and the pixel dimensions, before you download anything.</p>
+
+    <h3>How Do I Compress and Resize an Image?</h3>
+    <p>The tool works in three steps:</p>
+    <ol>
+      <li><span><strong>Upload your image.</strong> Tap Choose Image or drop a JPG, PNG or WebP up to 50 MB.</span></li>
+      <li><span><strong>Pick your settings.</strong> Choose a Compression level, a Size and a Format. The result updates after each change.</span></li>
+      <li><span><strong>Check and download.</strong> Compare Before and After, then tap Download and name the file.</span></li>
+    </ol>
+
+    <h3>Which Setting Should I Choose?</h3>
+    <p>Each setting changes a different part of the file:</p>
+    <div class="i2p-cards">
+      <div><strong>Balanced</strong><p>Saves at 80% quality. A good default for photos you share by email or chat.</p></div>
+      <div><strong>Smallest file</strong><p>Saves at 60% quality. Use it when size matters more than fine detail.</p></div>
+      <div><strong>Target size (KB)</strong><p>Finds the highest quality under your limit, such as 50 KB or 200 KB for an upload form.</p></div>
+      <div><strong>Size in pixels</strong><p>Scale by percent, type a width and height, or fit a social size without cropping.</p></div>
+    </div>
+
+    <h3>Which Format Makes the Smallest File?</h3>
+    <p>The right format depends on the image:</p>
+    <div style="overflow-x:auto"><table class="i2p-table">
+      <thead><tr><th scope="col">Format</th><th scope="col">Best for</th><th scope="col">Transparency</th></tr></thead>
+      <tbody>
+        <tr><td>JPG</td><td>Photos and scans</td><td>No, turns white</td></tr>
+        <tr><td>WebP</td><td>Websites and transparent images</td><td>Yes</td></tr>
+        <tr><td>PNG</td><td>Logos and screenshots that must stay exact</td><td>Yes, but files stay large</td></tr>
+      </tbody>
+    </table></div>
+    <p>Auto keeps JPG and WebP files in their format. It saves a PNG as JPG, or as WebP when the PNG has a transparent background.</p>
+
+    <h3>How Do I Get a Small File That Still Looks Sharp?</h3>
+    <p>Reduce the pixels first, then the quality. A 12-megapixel phone photo is about 4,000 pixels wide, far more than most screens show. Shrinking it with By percent or Width × Height cuts the file size a lot before any quality is lost.</p>
+    <p>If you set a small target size, such as 20 KB, on a large photo, the tool warns you when quality drops below 40%. That is your signal to make the image smaller in pixels instead.</p>
+
+    <h3>Are My Images Uploaded?</h3>
+    <p>No. The image compress &amp; resize tool reads and saves your image with code that runs in your browser, so the photo is not sent to a PDFdukan server. The page still loads site files, analytics and ads.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress an image to 100 KB?</button></h3><div class="faq-a"><p>Yes, in most cases. Choose Target size (KB) and tap 100 KB. If a large photo can't fit, the tool tells you; reduce its pixel size and try again.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does compressing reduce image quality?</button></h3><div class="faq-a"><p>JPG and WebP compression removes some detail, but at Balanced or High quality the change is hard to see. Compare Before and After before you download.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is the new file sometimes larger?</button></h3><div class="faq-a"><p>A file that is already well compressed can grow when it is saved again. The tool warns you when this happens, so you can keep your original or choose Smallest file.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will resizing crop or stretch my image?</button></h3><div class="faq-a"><p>No. Width × Height keeps the proportions while the lock is on. Social sizes fit the whole image inside the canvas and fill any spare space.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress several images at once?</button></h3><div class="faq-a"><p>Not yet. The tool handles one image at a time, so you can check each result before you save it.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a PDF the same way?</button></h3><div class="faq-a"><p>Yes, with <a href="compress-pdf.html">Compress PDF</a>. To turn compressed photos into one PDF, use <a href="image-to-pdf-converter.html">Image to PDF</a>.</p></div></div>
+  </section>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
+<!-- Auth Modal -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20260825i"></script>
+<script src="../js/header.js?v=20260825i"></script>
+<script src="../js/tools.js?v=20261105"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>
