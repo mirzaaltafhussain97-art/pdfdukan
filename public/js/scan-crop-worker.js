@@ -1,4 +1,4 @@
-importScripts('scan-cv-runtime.js?v=20261104_autocrop','crop.js?v=20261104_autocrop','document-boundary.js?v=20261104_autocrop','scan-paper-profile.js?v=20261104_autocrop');
+importScripts('scan-cv-runtime.js?v=20261105_fixes','crop.js?v=20261105_fixes','document-boundary.js?v=20261105_fixes','scan-paper-profile.js?v=20261105_fixes');
 const editor=new CropEditor('worker');editor.silent=true;
 async function warp(image,corners,preview=false){
  const ordered=ensureCornerOrder(corners),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),W=Math.max(dist(ordered.tl,ordered.tr),dist(ordered.bl,ordered.br)),H=Math.max(dist(ordered.tl,ordered.bl),dist(ordered.tr,ordered.br));
@@ -13,7 +13,7 @@ async function warp(image,corners,preview=false){
 self.onmessage=async({data:{id,method,bitmap,options={}}})=>{
  try{
   await self.scanCvReady;
-  if(method==='warmup'){self.postMessage({id,ready:true});return;}
+  if(method==='warmup'){if(options.models){try{await self.MLDetector?.load();}catch(error){console.warn('Model preload unavailable:',error);}}self.postMessage({id,ready:true});return;}
   let corners=options.corners,previousCorners,needsReview=false,hasPhotoPadding=false;
   if(method==='detect'){await editor.setImageAsync(bitmap);corners=editor.corners;previousCorners=editor.legacyCorners;needsReview=editor.detectionNeedsReview;hasPhotoPadding=editor.hasPhotoPadding;}
   const full=['tl','tr','br','bl'].every(k=>{const x=k.includes('r')?bitmap.width:0,y=k.includes('b')?bitmap.height:0;return Math.hypot(corners[k].x-x,corners[k].y-y)<2;});

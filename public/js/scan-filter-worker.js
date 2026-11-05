@@ -1,10 +1,10 @@
 // filters.js has no DOM dependency in its pixel-processing functions.
 self.window = self;
-importScripts('filters.js?v=20261104_autocrop');
+importScripts('filters.js?v=20261105_fixes');
 self.onmessage = async ({ data: { pixels, bitmap, filter, adjustments } }) => {
   try {
     if(['bw','bwsoft','noshadow','enhance','grayscale'].includes(filter)){
-      if(!self.scanCvReady)importScripts('scan-cv-runtime.js?v=20261104_autocrop');
+      if(!self.scanCvReady)importScripts('scan-cv-runtime.js?v=20261105_fixes');
       await self.scanCvReady;
     }
     const canvas = new OffscreenCanvas(bitmap?.width||pixels.width,bitmap?.height||pixels.height);

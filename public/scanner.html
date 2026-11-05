@@ -57,7 +57,7 @@
 
 <link rel="stylesheet" href="css/style.css?v=20260616c">
 <style>
-.scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 100px; }
+.scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 24px; }
 .cv-badge { display: none !important; }
 .cv-badge.ready { display: none !important; }
 
@@ -114,10 +114,12 @@
   .export-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
-  .scanner-wrap { padding: 16px 12px 90px; }
+  .scanner-wrap { padding: 16px 12px 16px; }
 }
+/* Keep the last footer links clear of the fixed bottom nav on phones. */
+@media (max-width: 900px) { .footer { padding-bottom: 72px; } }
 </style>
-<link rel="stylesheet" href="css/scanner-workspace.css?v=20261104_btnfix">
+<link rel="stylesheet" href="css/scanner-workspace.css?v=20261105_fixes">
 <meta name="theme-color" content="#ff6333">
 <!-- Google Analytics 4 (replace G-0RWPHD8MHR with your Measurement ID) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-0RWPHD8MHR"></script>
@@ -127,99 +129,132 @@
   gtag('js', new Date());
   gtag('config', 'G-0RWPHD8MHR', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the smart document scanner work?","acceptedAnswer":{"@type":"Answer","text":"CamMaster uses AI-powered edge detection (ONNX neural network) running inside your browser to detect document corners and automatically apply perspective correction."}},{"@type":"Question","name":"Can I scan multiple pages into one PDF?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use Batch Mode to scan as many pages as you need. The scanner auto-processes each one and combines them into a single multi-page PDF."}},{"@type":"Question","name":"Does the scanner upload my photos to a server?","acceptedAnswer":{"@type":"Answer","text":"No. All AI processing, edge detection, and PDF export happen locally in your browser. Your photos and documents never leave your device."}},{"@type":"Question","name":"What is the best lighting for scanning documents?","acceptedAnswer":{"@type":"Answer","text":"Good ambient lighting with no harsh shadows gives the best results. Avoid backlit backgrounds. The auto-enhance filter can correct mild brightness issues."}},{"@type":"Question","name":"What export formats does CamMaster support?","acceptedAnswer":{"@type":"Answer","text":"CamMaster exports scanned documents as multi-page PDF or individual JPG images. PDF export is ideal for sharing; JPG is best for further image editing."}}]}]}</script></head>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What Is the Magic Pro Filter in CamMaster?", "acceptedAnswer": {"@type": "Answer", "text": "Magic Pro is CamMaster's default scan filter: it turns the paper white, darkens and sharpens the text, and keeps colour in signatures, stamps and photos. It works best on phone photos with uneven light. If a page looks too harsh, switch to Enhance or Original, and with Apply to All Pages ticked the change covers every page."}}, {"@type": "Question", "name": "What Exactly Is a PDF Document Scanner?", "acceptedAnswer": {"@type": "Answer", "text": "A PDF document scanner is software that converts photos of physical pages into PDF files that look like they came from a flatbed machine. Browser versions turn a single photo into a scanner-like page, and some also save a scanned-style image when you do not need a PDF. The phrase online document scanner usually means the kind that runs entirely in the browser, which makes it an easy first step toward a paperless workflow."}}, {"@type": "Question", "name": "Is an Online Document Scanner Really Free?", "acceptedAnswer": {"@type": "Answer", "text": "Most browser-based document scanners are free to use, while larger app makers keep some features behind paid plans. Browser tools are often free with no catch, and CamScanner says basic scanning on mobile and web costs nothing, with web converters such as PDF to Word, Word to PDF, PDF to Excel, and PDF to PPT included. Its mobile app offers only limited free OCR, and some features need an upgraded account. For remote workers filing expense reports, the free tier usually covers the essentials."}}, {"@type": "Question", "name": "Are My Scanned Documents Secure?", "acceptedAnswer": {"@type": "Answer", "text": "Scanned documents are secure in a browser scanner that does all processing on your device, because the images never reach a remote server. Tools built this way say files are processed locally, often through WebAssembly, so they never leave your browser and are not stored on a server. One scanner adds that files are deleted after processing, with encrypted transfer and GDPR compliance, while another says nothing goes to third-party services. These are the providers' own claims, so read each privacy policy and run the offline test before scanning anything confidential."}}, {"@type": "Question", "name": "Do I Need to Install an App or Create an Account?", "acceptedAnswer": {"@type": "Answer", "text": "You do not need to install an app or create an account to use a browser-based document scanner. Opening the site gives immediate access with no app, no cost, and, on some tools, no cap on documents. That skips the large installation, steep learning curve, and costly licenses that come with desktop software. For basic scanning of printed documents into digital files, the browser is enough."}}, {"@type": "Question", "name": "Which Devices Can Run an Online Document Scanner?", "acceptedAnswer": {"@type": "Answer", "text": "Any device with a modern browser can run an online document scanner, including phones, tablets, and computers. Browser tools work on PC and Mac as well as phones, which saves phone storage when you scan on the go; the camera option simply needs a device camera. CamScanner competes on reach instead, reporting 200+ countries and regions, 660+ App Store features, a 4.9 App Store rating, and a #1 free productivity app ranking by downloads, plus a web version beside its apps."}}, {"@type": "Question", "name": "Can I Combine Multiple Pages Into One PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, most online document scanners let you combine multiple pages into a single PDF file. You add pages, reorder them by dragging, and delete the ones you do not want, and some tools let you import existing PDFs or WEBP and JPEG images into the same single PDF. For very large jobs, batch processing in desktop software is faster, and free PDF tools such as Merge PDF, Split PDF, and options to compress the file handle the rest."}}, {"@type": "Question", "name": "How Do I Pull Text Out of a Scanned Document?", "acceptedAnswer": {"@type": "Answer", "text": "You pull text out of a scanned document with OCR (optical character recognition), which reads the letters in the image and returns editable text. CamScanner says its OCR covers 41 languages and averages 99.77% accuracy on standard printed text, while handwriting is harder to read. For cleaner results, export a monochrome scan first, or turn several photos into one file with an Image to PDF Converter before running recognition."}}, {"@type": "Question", "name": "Why Won't My Camera Read a QR Code?", "acceptedAnswer": {"@type": "Answer", "text": "A camera fails to read a QR code when the code is out of focus, too small, or badly framed. Blurry, small, or tilted QR code images are the usual culprits, so add even lighting, sharp focus, and the right orientation, and keep the phone still, since steadiness cuts motion blur. A dedicated QR Code Scanner can also read a saved image, and when the code holds a linked website, it shows a clickable link. Product codes work the same way in a Barcode Scanner that reads UPC and EAN formats."}}]}]}</script></head>
 <body>
-<canvas id="particleCanvas"></canvas>
 
 <!-- HEADER -->
 <header class="header" role="banner">
-  <a href="index.html" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+  <!-- Brand Logo (SVG) -->
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
-      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
-      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
-      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs>
+        <linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff6333"/>
+          <stop offset="100%" stop-color="#ff9055"/>
+        </linearGradient>
+      </defs>
+      <rect width="40" height="40" rx="10" fill="url(#lgrad)"/>
+      <!-- Scanner corner brackets -->
+      <path d="M6 12 L6 6 L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 12 L34 6 L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M6 28 L6 34 L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 28 L34 34 L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <!-- Document shape (center) -->
       <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
-      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <!-- Folded corner tab -->
+      <path d="M21 10 L24 13 L21 13 Z" fill="#ff6333" fill-opacity="0.55"/>
+      <!-- Text lines on document -->
       <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
       <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
       <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
-      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <!-- Gear badge (bottom-right overlap) -->
+      <circle cx="28.5" cy="29" r="7" fill="url(#lgrad)"/>
       <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
       <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <!-- Gear teeth -->
       <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
       <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
       <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
       <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
     </svg>
-    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+    <div class="logo-text">
+      <div class="brand">PDFdukan</div>
+      <div class="sub">CamMaster</div>
+    </div>
   </a>
+
+  <!-- Mega Navigation -->
   <nav class="nav-links" aria-label="Site navigation">
-    <a href="index.html" class="nav-item">Home</a>
-    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+    <a href="/" class="nav-item">Home</a>
+
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
       Tools <span class="nav-chevron">▾</span>
       <div class="nav-dropdown mega" role="menu">
         <div class="nd-col">
           <span class="nd-section-head">📄 PDF Converters</span>
-          <a href="tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
-          <a href="tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
-          <a href="tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
-          <a href="tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
-          <a href="tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">📉</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
-          <a href="tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
-          <a href="tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
-          <a href="tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">📊</span><div class="nd-link-body"><div class="nd-link-name">PDF → PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
-          <a href="tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">PDF → Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
-          <a href="tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">🌐</span><div class="nd-link-body"><div class="nd-link-name">HTML → PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+          <a href="tools/img-to-pdf.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="tools/pdf-to-img.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="tools/merge-pdf.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="tools/split-pdf.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="tools/compress-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📉</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="tools/pdf-to-word.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="tools/word-to-pdf.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div><div class="nd-link-desc">Convert DOCX to PDF</div></div></a>
+          <a href="tools/pdf-to-ppt.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">📊</span><div class="nd-link-body"><div class="nd-link-name">PDF → PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="tools/pdf-to-excel.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">PDF → Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="tools/html-to-pdf.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🌐</span><div class="nd-link-body"><div class="nd-link-name">HTML → PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
         </div>
         <div class="nd-col">
           <span class="nd-section-head">✏️ Edit &amp; Sign</span>
-          <a href="tools/pdf-editor.html"    class="nd-link"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a>
-          <a href="tools/fill-sign.html"     class="nd-link"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
-          <a href="tools/watermark.html"     class="nd-link"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
-          <a href="tools/page-numbers.html"  class="nd-link"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
-          <a href="tools/delete-pages.html"  class="nd-link"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <a href="tools/pdf-editor.html"    class="nd-link" role="menuitem"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="tools/fill-sign.html"     class="nd-link" role="menuitem"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="tools/watermark.html"     class="nd-link" role="menuitem"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp text or image</div></div></a>
+          <a href="tools/page-numbers.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number all pages</div></div></a>
+          <a href="tools/pdf-organizer.html"  class="nd-link" role="menuitem"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">🖼️ Image &amp; Scan</span>
-          <a href="scanner.html"           class="nd-link"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
-          <a href="tools/compress.html"    class="nd-link"><span class="nd-link-icon">🗜️</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
-          <a href="tools/ocr.html"         class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <a href="scanner.html"          class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="tools/compress.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">🗜️</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor &amp; Resizer</div><div class="nd-link-desc">JPG, PNG, WebP optimizer</div></div></a>
+          <a href="tools/ocr.html"        class="nd-link" role="menuitem"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to editable text</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">🔧 Calculators</span>
-          <a href="tools/age-calc.html"      class="nd-link"><span class="nd-link-icon">📅</span><div class="nd-link-body"><div class="nd-link-name">Age Calculator</div></div></a>
-          <a href="tools/bmi-calc.html"      class="nd-link"><span class="nd-link-icon">⚖️</span><div class="nd-link-body"><div class="nd-link-name">BMI Calculator</div></div></a>
-          <a href="tools/discount-calc.html" class="nd-link"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">Discount Calc</div></div></a><a href="tools/inheritance-calc.html" class="nd-link"><span class="nd-link-icon">&#9770;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
+          <a href="tools/inheritance-calc-advanced.html" class="nd-link" role="menuitem"><span class="nd-link-icon">☪️</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div><div class="nd-link-desc">Warasat Intikal calculator</div></div></a>
         </div>
       </div>
     </div>
-    <a href="blog/index.html" class="nav-item">Blog</a>
-    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
-      Legal <span class="nav-chevron">▾</span>
+
+    <a href="blog/index.html" class="nav-item" data-i18n="nav.blog">Blog</a>
+
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+      <span data-i18n="nav.legal">Legal</span> <span class="nav-chevron">▾</span>
       <div class="nav-dropdown legal" role="menu">
-        <a href="about.html"   class="nd-link"><span class="nd-link-icon">🏢</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
-        <a href="privacy.html" class="nd-link"><span class="nd-link-icon">🔒</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
-        <a href="terms.html"   class="nd-link"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
-        <a href="cookies.html" class="nd-link"><span class="nd-link-icon">🍪</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <a href="about.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">🏢</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="privacy.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔒</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="terms.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="cookies.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🍪</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
         <div class="nd-divider"></div>
-        <a href="sitemap.xml"  class="nd-link"><span class="nd-link-icon">🗺️</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+        <a href="sitemap.xml"  class="nd-link" role="menuitem"><span class="nd-link-icon">🗺️</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
       </div>
     </div>
   </nav>
+
+  <div class="search-wrap" role="search">
+    <span class="search-icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input type="search" class="search-input" placeholder="Search tools… (Ctrl+K)" aria-label="Search">
+  </div>
+
   <div class="header-actions">
-    <div id="cvStatus" class="cv-badge">⏳ Loading OpenCV…</div>
-    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
-    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle dark/light mode">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <button class="icon-btn notif-btn-wrap" id="notifBtn" onclick="toggleNotifications()" aria-label="Notifications" style="position:relative">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span id="notifBadge" aria-hidden="true" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--error);color:#fff;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+    </button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
     <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
-      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+      <span class="avatar" id="userAvatar">U</span>
+      <span id="authLabel">Sign In</span>
     </button>
   </div>
 </header>
 
 <!-- Mobile nav drawer -->
 <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
-  <a href="index.html"              class="mnd-link">🏠 Home</a>
+  <a href="/" class="mnd-link">🏠 Home</a>
   <div class="mnd-section">📄 PDF Tools</div>
   <a href="tools/img-to-pdf.html"   class="mnd-link">📑 Image to PDF</a>
   <a href="tools/pdf-to-img.html"   class="mnd-link">🖼️ PDF to JPG</a>
@@ -229,22 +264,25 @@
   <a href="tools/pdf-to-word.html"  class="mnd-link">📝 PDF to Word</a>
   <a href="tools/word-to-pdf.html"  class="mnd-link">📄 Word to PDF</a>
   <div class="mnd-section">✏️ Edit &amp; Sign</div>
-  <a href="tools/fill-sign.html"    class="mnd-link">✍️ Fill &amp; Sign</a>
-  <a href="tools/watermark.html"    class="mnd-link">💧 Watermark</a>
-  <a href="tools/page-numbers.html" class="mnd-link">🔢 Page Numbers</a>
-  <a href="tools/delete-pages.html" class="mnd-link">🗑️ Delete Pages</a>
+  <a href="tools/fill-sign.html"     class="mnd-link">✍️ Fill &amp; Sign</a>
+  <a href="tools/watermark.html"     class="mnd-link">💧 Watermark</a>
+  <a href="tools/page-numbers.html"  class="mnd-link">🔢 Page Numbers</a>
+  <a href="tools/pdf-organizer.html"  class="mnd-link">🗑️ Delete Pages</a>
+  <a href="tools/html-to-pdf.html"   class="mnd-link">🌐 HTML to PDF</a>
+  <a href="tools/pdf-editor.html"    class="mnd-link">✏️ PDF Editor</a>
   <div class="mnd-section">🖼️ Image &amp; Scan</div>
-  <a href="scanner.html"            class="mnd-link active">📷 Smart Scan</a>
+  <a href="scanner.html"            class="mnd-link active" aria-current="page">📷 Smart Scan</a>
   <a href="tools/compress.html"     class="mnd-link">🗜️ Compress Image</a>
   <a href="tools/ocr.html"          class="mnd-link">🔤 OCR Text</a>
+  <div class="mnd-section">📊 Convert</div>
+  <a href="tools/pdf-to-ppt.html"   class="mnd-link">📊 PDF to PowerPoint</a>
+  <a href="tools/pdf-to-excel.html" class="mnd-link">📋 PDF to Excel</a>
   <div class="mnd-section">🔧 Calculators</div>
-  <a href="tools/age-calc.html"      class="mnd-link">📅 Age Calculator</a>
-  <a href="tools/bmi-calc.html"      class="mnd-link">⚖️ BMI Calculator</a>
-  <a href="tools/discount-calc.html" class="mnd-link">🏷️ Discount Calc</a>
-  <a href="tools/inheritance-calc.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <a href="tools/inheritance-calc-advanced.html" class="mnd-link">☪️ Islamic Inheritance</a>
   <div class="mnd-section">More</div>
   <a href="blog/index.html" class="mnd-link">📝 Blog</a>
   <a href="about.html"      class="mnd-link">🏢 About</a>
+  <a href="privacy.html"    class="mnd-link">🔒 Privacy Policy</a>
 </div>
 
 <div style="text-align:center;max-width:760px;margin:0 auto;padding:18px 20px 4px">
@@ -308,7 +346,7 @@
   </div>
   <div class="scan-backdrop" id="scanBackdrop" hidden></div>
   <section class="scan-editor" id="scanEditor" role="dialog" aria-modal="true" aria-labelledby="scanEditorTitle" data-mode="filter" hidden>
-    <header class="scan-editor-head"><h2 id="scanEditorTitle">Import Images</h2><button class="scan-close" id="scanClose" aria-label="Close editor" title="Close editor; documents stay available in this tab">×</button></header>
+    <header class="scan-editor-head"><h2 id="scanEditorTitle">Import Images</h2><button class="scan-close" id="scanClose" aria-label="Close and discard this scan" title="Close and discard this scan">×</button></header>
     <div class="scan-editor-body">
       <aside class="scan-page-rail" aria-label="Document pages"><div class="scan-page-list" id="scanPageList" aria-label="Page thumbnails"></div><button class="scan-add" id="scanAddImages">+ Add files</button></aside>
       <main class="scan-workstage" id="scanWorkstage">
@@ -412,39 +450,8 @@
   </section>
 </div><!-- /scanner-wrap -->
 
-<!-- MOBILE NAV -->
-<nav class="mobile-nav" aria-label="Mobile navigation">
-  <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
-    <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
-    <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button><button class="mob-nav-item" onclick="openAuth()"><span class="mni">👤</span><span>Account</span></button>
-  </div>
-</nav>
 
-<div class="scanner-wrap" style="padding-top:0">
-  <div class="scanner-seo-desc">
-    CamMaster by PDFdukan is a free online document scanner that uses OpenCV.js computer vision to automatically detect document edges in your photos. Upload any image taken with your phone or camera — CamMaster identifies the four corners of your document and applies perspective correction so the output looks like it was photographed straight on, perfectly flat. Choose from nine scan filters including Magic Pro (shadow removal), Black &amp; White (crisp text), and Auto-Enhance (general improvement). Combine multiple scanned pages into a single multi-page PDF. Supports batch import of multiple images and full PDF rendering. All processing runs entirely in your browser — your documents never leave your device, keeping every file completely private and secure.
-  </div>
-  <div style="max-width:700px;margin:28px auto;padding:0 20px">
-    <h2 style="font-size:18px;font-weight:700;margin:0 0 16px">Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the automatic edge detection?</button>
-      <div class="faq-a">CamMaster's AI edge detection (powered by OpenCV.js Canny edge detection and contour analysis) suggests document corners based on image contrast and an on-device model. Check the suggested edges, especially on folded pages, small cards and patterned backgrounds. For best results, place documents on a dark, non-reflective surface with good, even lighting. Manual corner adjustment is always available if auto-detection misses.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
-      <div class="faq-a">Yes. After processing your first image through the crop and filter steps, you arrive at the Pages view. Click "Add More" to upload additional images or PDF pages. All pages appear as thumbnails you can drag to reorder. Export all pages as a single multi-page PDF or as individual JPG files in a ZIP archive.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the Magic Pro filter?</button>
-      <div class="faq-a">Magic Pro is CamMaster's most powerful scan enhancement filter. It applies deep shadow removal using local contrast normalization, aggressive sharpening, and adaptive thresholding to produce crisp, print-quality document scans from phone photos. It's especially effective for documents photographed in low light or with shadows from the photographer's hand.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster work on mobile phones?</button>
-      <div class="faq-a">Yes — CamMaster is fully mobile-optimized. On smartphones, you can upload images directly from your camera roll or take a new photo. The interface adapts to touch controls with larger crop handles and buttons. The entire scanning and export workflow works in mobile browsers without any app installation required.</div>
-    </div>
-  </div>
+
 </div>
 
 <!-- AUTH MODAL — tabbed Sign In / Sign Up -->
@@ -532,49 +539,56 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="js/app.js?v=20261019_v5_pro"></script>
-<script src="js/particles.js?v=20261019_v5_pro"></script>
-<script src="js/scan-paper-profile.js?v=20261104_autocrop"></script>
-<script src="js/document-boundary.js?v=20261104_autocrop"></script>
-<script src="js/crop.js?v=20261104_autocrop"></script>
-<script src="js/filters.js?v=20261104_autocrop"></script>
-<script src="js/scan-renderer.js?v=20261104_autocrop"></script>
-<script src="js/scan-processor.js?v=20261104_autocrop"></script>
-<script src="js/scan-pdf-source.js?v=20261104_autocrop"></script>
-<script src="js/scanner.js?v=20261104_autocrop"></script>
+<script src="js/scan-paper-profile.js?v=20261105_fixes"></script>
+<script src="js/document-boundary.js?v=20261105_fixes"></script>
+<script src="js/crop.js?v=20261105_fixes"></script>
+<script src="js/filters.js?v=20261105_fixes"></script>
+<script src="js/scan-renderer.js?v=20261105_fixes"></script>
+<script src="js/scan-processor.js?v=20261105_fixes"></script>
+<script src="js/scan-pdf-source.js?v=20261105_fixes"></script>
+<script src="js/scanner.js?v=20261105_fixes"></script>
 
 <!-- AEO: FAQ + Related Tools (injected for GEO/AEO/SXO) -->
   <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
     📖 <strong>Related guide:</strong> <a href="blog/scan-documents-phone.html" style="color:var(--primary);font-weight:600">How to Scan Documents on Your Phone for Free →</a>
   </div>
 
-<section class="tool-seo-section" aria-label="CamMaster Scanner Info">
-  <h2>CamMaster — Free AI Document Scanner Online</h2>
-  <p>CamMaster by PDFdukan is a free, browser-based document scanner that turns photos of documents into clean, professional scans — without any app download. Point your phone camera at any document, upload the photo, and CamMaster automatically detects the document edges, corrects the perspective, removes shadows, and enhances the contrast to produce a sharp, readable scan.</p>
-  <p>The entire process runs in your browser using AI and WebGL — no photo is uploaded to any server. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, salary slips, academic certificates, property papers, and medical reports. Your data stays completely on your device.</p>
-
-  <h2>What Makes CamMaster Different from Other Scanners?</h2>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
-    <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>🤖 AI Edge Detection</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">An ONNX neural network running in your browser automatically finds document corners and corrects perspective — even for documents held at an angle.</p>
-    </div>
-    <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>📷 No App Needed</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Works directly in your mobile browser — Chrome, Safari, Samsung Internet. No Play Store or App Store download required. Open the website and scan immediately.</p>
-    </div>
-    <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>📄 Batch Scanning</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Scan multiple pages and combine them all into one multi-page PDF. Perfect for multi-page forms, booklets, and multi-document submissions.</p>
-    </div>
-    <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px">
-      <strong>🔒 100% Private</strong>
-      <p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Photos never leave your device. AI processing, enhancement, and PDF export all happen locally. No cloud, no server, no privacy risk.</p>
-    </div>
-  </div>
-
-  <h2>How to Scan a Document with CamMaster</h2>
-
-  <div class="scan-hero" style="border:1px solid var(--border);border-radius:var(--radius);margin:14px 0 22px">
+<style>
+.scan-article p{color:var(--text-2);line-height:1.75;font-size:15px;margin:0 0 14px}
+.scan-article strong{color:var(--text);font-weight:600}
+.scan-article h2{font-size:22px}
+.scan-article h3{font-size:18px;font-weight:750;margin:34px 0 10px;color:var(--text);letter-spacing:-.2px;padding-left:12px;border-left:3px solid var(--primary)}
+.scan-article ol,.scan-article ul{color:var(--text-2);line-height:1.75;font-size:15px;margin:0 0 16px;padding-left:22px}
+.scan-article li{margin-bottom:8px}
+.scan-article li::marker{color:var(--primary);font-weight:700}
+.scan-article a{color:var(--primary);font-weight:600}
+.sa-table-wrap{overflow-x:auto;margin:6px 0 18px;border:1px solid var(--border);border-radius:var(--radius)}
+.scan-article table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.scan-article th{background:var(--card-2);color:var(--text);text-align:left;font-weight:700;padding:11px 14px;border-bottom:1px solid var(--border)}
+.scan-article td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text-2);vertical-align:top}
+.scan-article tr:last-child td{border-bottom:0}
+.scan-article .sg-step{min-width:118px}
+.scan-article .scan-hero{padding:24px 12px 20px}
+.sa-faqs{display:grid;gap:12px;margin-top:30px}
+.sa-faq{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px}
+.sa-faq h3{margin:0 0 8px;border-left:0;padding-left:0;font-size:16px}
+.sa-faq p{margin:0;font-size:14.5px}
+</style>
+<section class="tool-seo-section scan-article" aria-label="Document Scanner Guide">
+<h2>What Is an Online Document Scanner and How Do You Use One?</h2>
+<p>An online document scanner is a browser tool that turns a phone picture of a page into a flat, cropped, readable PDF or image file by finding the page edges, fixing the angle, cleaning up contrast, and exporting the result.</p>
+<p>Flatbed machines used to be the only way to get a clean copy, and plenty of people I help still assume scanning needs extra hardware. A <strong>built-in camera</strong> and a <strong>modern browser</strong> now cover the same job: the page is photographed, <strong>edge detection</strong> traces its outline, and a filter such as <strong>Grayscale</strong> cleans the background before export.</p>
+<p>The bigger change is where the work happens. Nothing gets installed, the image pipeline runs as <strong>client-side</strong> code, and the finished file can be a <strong>multi-page PDF</strong> or a single <strong>JPG</strong> ready to attach to an email or a university portal.</p>
+<p>Speed is part of the appeal, too; at least one browser scanner advertises a scan time of only a few seconds per photo. The sections below walk through each stage, from what you can upload to filters, page editing, privacy, and the converters that usually sit beside a scanner.</p>
+<h3>How Do I Scan a Document Online, Step by Step?</h3>
+<p>Scanning a document online takes four actions in a fixed order: add the image, set the page boundary, apply a filter, and export the file.</p>
+<ol>
+<li><strong>Use Camera</strong> for a fresh shot (on a phone, the upload picker offers the camera), or <strong>choose an image</strong> already saved on your phone or computer.</li>
+<li><strong>Corner handles</strong> come next; drag them until they <strong>frame the page</strong> tightly.</li>
+<li><strong>Magic Color</strong>, <strong>SuperScan</strong> or a similar filter is the third stop in other tools; in CamMaster, compare Magic Pro with <strong>B&amp;W</strong> or the untouched version.</li>
+<li><strong>Page size</strong> is the last check before you save a PDF or image.</li>
+</ol>
+<div class="scan-hero" style="border:1px solid var(--border);border-radius:var(--radius);margin:14px 0 22px">
    <div class="scan-hero-inner">
     <div class="sd-stage" role="img" aria-label="Animated demo: a tilted photo is uploaded, its edges are auto-detected, the scan is enhanced, then exported as a PDF">
       <div class="sd-doc"><i></i><i></i><i></i><i></i><i></i></div>
@@ -602,68 +616,146 @@
     </div>
    </div>
   </div>
-
-  <ol>
-    <li><strong>Take a photo or upload an image</strong> — Use your phone camera to photograph the document, or upload an existing photo from your gallery. Place the document on a flat, dark surface with good lighting for best results.</li>
-    <li><strong>Auto-detect and crop</strong> — CamMaster's AI automatically detects the four corners of your document and applies perspective correction to remove any tilt or angle. You can also adjust the crop corners manually.</li>
-    <li><strong>Enhance the scan</strong> — Apply the auto-enhance filter to increase contrast, remove shadows, and make text sharper. Choose between colour, greyscale, or black-and-white output.</li>
-    <li><strong>Export as PDF or JPG</strong> — Download your scan as a high-quality PDF (ideal for submitting documents) or JPG image. For multi-page documents, all pages are combined into one PDF.</li>
-  </ol>
-
-  <h2>Best Uses for CamMaster Scanner in Pakistan</h2>
-  <ul>
-    <li><strong>CNIC scanning:</strong> Scan both sides of your National Identity Card for online applications, bank account openings, and government portals.</li>
-    <li><strong>Educational documents:</strong> Scan degree certificates, transcripts, and mark sheets for university applications, HEC attestation, and scholarship forms.</li>
-    <li><strong>Job applications:</strong> Scan experience letters, appointment letters, and salary slips for CV submission and employment verification.</li>
-    <li><strong>Legal and property documents:</strong> Create clean, readable scans of property papers, tenancy agreements, and court documents.</li>
-    <li><strong>Bank documents:</strong> Scan cheques, bank statements, and account opening forms for loan applications and financial processes.</li>
-    <li><strong>Student assignments:</strong> Photograph handwritten assignments page by page and export as a single multi-page PDF for submission.</li>
-  </ul>
-
-  <h2>Tips for the Best Scan Quality</h2>
-  <ul>
-    <li>Place the document on a <strong>dark or contrasting background</strong> — a dark table or floor helps the AI find document edges accurately.</li>
-    <li>Use <strong>natural daylight or bright indoor light</strong>. Avoid direct flash which creates glare and washes out text.</li>
-    <li>Hold the camera <strong>directly above the document</strong>, not at an angle — the perspective correction works best with less tilt to correct.</li>
-    <li>Make sure the <strong>entire document is within the frame</strong> — don't crop off corners before uploading.</li>
-    <li>For very old or faded documents, use the <strong>enhance filter</strong> to boost contrast and make text readable.</li>
-  </ul>
-</section>
-
-<section class="tool-seo-section" aria-label="Frequently Asked Questions">
-  <h2>Frequently Asked Questions</h2>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How does the AI document scanner work?</button>
-      <div class="faq-a"><p>CamMaster uses an ONNX neural network running inside your browser to detect document edges and automatically apply perspective correction. This AI model identifies the four corners of a document even when photographed at an angle, then warps the image to produce a straight, flat scan — all without sending any data to a server.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I scan multiple pages into one PDF?</button>
-      <div class="faq-a"><p>Yes. Use Batch Mode to scan as many pages as you need. Each page is processed individually and then combined into a single multi-page PDF for download. This is ideal for scanning multi-page forms, booklets, or any document with more than one page.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does CamMaster upload my photos to a server?</button>
-      <div class="faq-a"><p>No. All AI processing, edge detection, image enhancement, and PDF export happen locally in your browser using WebGL and JavaScript. Your photos and documents never leave your device. This makes CamMaster safe for scanning sensitive documents like CNICs, passports, financial records, and medical reports.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to install an app?</button>
-      <div class="faq-a"><p>No app download is required. CamMaster works directly in your mobile browser — Chrome on Android, Safari on iPhone, Samsung Internet, or any modern browser. Just open pdfdukan.com on your phone and start scanning immediately.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best way to scan a CNIC with CamMaster?</button>
-      <div class="faq-a"><p>Place your CNIC flat on a dark surface. Open CamMaster on your phone and use the camera to capture the card — the AI will detect the edges automatically. After processing, use the enhance filter for a sharp black-and-white scan. Repeat for the back side, then combine both into one PDF using Batch Mode or the <a href="tools/merge-pdf.html">Merge PDF tool</a>.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What export formats does CamMaster support?</button>
-      <div class="faq-a"><p>CamMaster exports scanned documents as a multi-page PDF or individual JPG images. PDF export is ideal for submitting documents to portals and sharing professionally. JPG export is useful if you want to further edit the image or upload it to another tool.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is the best lighting for scanning documents?</button>
-      <div class="faq-a"><p>Natural daylight or bright indoor overhead light gives the best results. Avoid direct flash from your phone — it creates glare and washes out text. Avoid shooting near windows where backlight can silhouette the document. If your scan looks too dark or faded, apply the auto-enhance filter inside CamMaster to correct brightness and contrast.</p></div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is CamMaster completely free?</button>
-      <div class="faq-a"><p>Yes. CamMaster is 100% free — no subscription, no per-scan fee, no account required, no daily limit. Scan as many documents as you need every day without any cost.</p></div>
-    </div>
+<p>Order matters. Filter before cropping and the filter judges brightness partly from the tabletop around the sheet, so I fix corners first and compare effects afterward.</p>
+<p>Tools package this flow differently. On most of them you simply <strong>open the page</strong>, and the <strong>upload area</strong> takes a file through <strong>file selection</strong> or a drop. One tool runs its <strong>Magic</strong> effect, <strong>applied automatically by default</strong>, before you touch a control, while others line up <strong>thumbnails</strong> of each page along the bottom.</p>
+<p>Add any extra sheet before exporting, so every page is <strong>combined</strong> into one file in a single pass.</p>
+<h3>Which File Formats and Page Sizes Can I Upload?</h3>
+<p>Online document scanners generally accept JPG, PNG, and WEBP photos, and several also import PDF pages, so an older scan can be cleaned up without being photographed again.</p>
+<p>On a laptop, <strong>drag and drop</strong> onto the editor is the quickest route; on <strong>smartphones</strong> and <strong>tablets</strong>, most people <strong>upload</strong> straight from the <strong>camera</strong>. Either way, the image lands in the same editor, so the rest of the workflow does not change between devices.</p>
+<p>Paper size is the setting people skip. One scanner offers sizes from A0 through A5 plus Letter and Legal; CamMaster&#39;s PDF export offers A4, Letter and A3 in portrait or landscape. Picking the right one before export stops a narrow receipt from floating in a sea of white <strong>margins</strong> on a full A4 sheet.</p>
+<p>For <strong>ID cards</strong> in particular, choose a small page size or crop tightly. A card stretched to fill a large page looks enlarged and grainy once it is printed.</p>
+<h3>How Does Automatic Edge Detection Straighten a Tilted Photo?</h3>
+<p>Automatic edge detection locates the four corners of the paper in a photo, then warps the image so the page looks as if it were shot from directly above.</p>
+<p>That warp is what separates a real scan from a plain <strong>crop</strong>. A page photographed at an angle forms a trapezoid, and trimming it without correcting the geometry leaves every line of text sloping toward one side.</p>
+<p>Detection depends on <strong>contrast</strong> between paper and surface. <strong>White paper</strong> on a <strong>dark background</strong> gives the software a crisp outline, and if you <strong>hold the camera</strong> <strong>parallel</strong> to the sheet, you keep the paper's <strong>edges easier to detect</strong> than any filter could.</p>
+<p>Even good detectors miss. <strong>Creases</strong>, <strong>finger occlusion</strong> near the margin, and a sheet sitting <strong>off-center</strong> in the frame can pull a corner inward. When that happens, <strong>adjust corners</strong> by hand instead of retaking the photo; <strong>mobile users</strong> can drag the same handles with a fingertip.</p>
+<h3>Which Scan Filter Should I Pick for a Clean Result?</h3>
+<p>The right scan filter depends on what is on the page: a color-boosting filter suits mixed documents, a monochrome filter suits plain text, and the untouched original suits photos.</p>
+<p>Filters do more than brighten. A high-contrast mode pushes paper toward white and ink toward black, which hides <strong>stains</strong> and light <strong>bleed-through</strong> from the reverse side, but it can also wipe out faint pencil, and it only partly fixes <strong>dark shadows</strong>.</p>
+<p>Here is how the filter names used across browser scanners group together, with the jobs I reach for each one.</p>
+<div class="sa-table-wrap"><table>
+<thead>
+<tr>
+<th>Filter family</th>
+<th>Names you will see</th>
+<th>Where I use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Color boost</td>
+<td>Magic, Magic Color, SuperScan</td>
+<td><strong>Invoices</strong> with logos, stamped forms</td>
+</tr>
+<tr>
+<td>Monochrome</td>
+<td>Black and White, B&amp;W</td>
+<td>Typed pages headed for text recognition</td>
+</tr>
+<tr>
+<td>Gray</td>
+<td>Grayscale</td>
+<td><strong>Handwritten notes</strong> in pencil</td>
+</tr>
+<tr>
+<td>Light or no filter</td>
+<td>Simple, Original</td>
+<td><strong>Family photos</strong>, colored ID cards</td>
+</tr>
+</tbody>
+</table></div>
+<p>Once you settle on a <strong>scanning effect</strong>, check for stray marks. In tools that have an <strong>eraser</strong> or <strong>repaint</strong> tool, a leftover smudge is quicker to fix there than with a rescan, and if the goal is searchable text, a <strong>text extraction tool</strong> usually reads a monochrome version more reliably than a colorful one.</p>
+<h3>Can I Add, Reorder, and Mark Up Pages Before Exporting?</h3>
+<p>Most browser scanners let you add, remove, and rearrange pages before export, and some also let you mark them up, so a multi-page document can be finished in one place. CamMaster covers adding, removing, reordering and rotating; for markup, open the finished PDF in the <a href="tools/pdf-editor.html">PDF Editor</a>.</p>
+<p>Page order is the first thing I check. Pages from a stapled set of <strong>contracts</strong> are rarely photographed in sequence, and dragging them into place takes seconds. Sideways shots need <strong>rotation</strong>, and a decent editor will <strong>rotate sideways pages</strong> one at a time instead of turning the whole set.</p>
+<p>Small markups belong at this stage, too, whether on <strong>homework</strong> or a <strong>whiteboard</strong> snapshot headed to a teacher or team. If a page is beyond saving, the <strong>X icon</strong> lets you <strong>discard</strong> it and reshoot just that one.</p>
+<p><strong>Multi-Page Support</strong> means you can keep adding <strong>as many pages as needed</strong>, and in tools that offer it, paper sizes from <strong>A0–A5</strong> are picked before export. Treat the final review screen (one tool calls it <strong>Edit &amp; Export</strong>) as your last check and confirm <strong>manual cropping</strong> did not clip a page number.</p>
+<h3>What Happens When I Save and Download the Scan?</h3>
+<p>Exporting a scan writes the edited pages into one PDF or into separate image files, which you then download to your device.</p>
+<p>The <strong>Save</strong> step and the download step are not always the same thing. In one editor, saving stores the page and a <strong>pop-up</strong> closes, and only the following screen offers the <strong>download</strong>; skip it and nothing lands on disk.</p>
+<p>Format choice follows the destination. Where a tool offers it, a <strong>PNG</strong> keeps sharp text edges for slides; CamMaster saves JPG, which is lighter for messaging, or a PDF, which lets you <strong>download them together</strong> as <strong>one PDF</strong>. Choosing <strong>Letter size</strong> (or <strong>Legal</strong>, where offered) for a US form, or switching <strong>portrait</strong> to <strong>landscape</strong> for a wide printout, keeps text from shrinking to fit.</p>
+<p>Before you <strong>Download &amp; Share</strong>, <strong>zoom</strong> into a corner, then zoom back out to <strong>fit</strong> the whole page and confirm the <strong>layout</strong>. I also compare the filtered page against <strong>Original</strong> (or <strong>Simple</strong>, in tools that have it) one last time, and if the file is headed for <strong>signing</strong>, I export at full size so signature lines stay readable.</p>
+<h3>Are Browser-Based Scanners Private and Secure?</h3>
+<p>A <strong>browser-based</strong> document scanner is private when it processes images on your own device, so the file never travels to the provider's <strong>servers</strong>.</p>
+<p>The engineering behind that promise varies, but <strong>local processing</strong> keeps the photo in browser memory either way. My quick test is simple: load the scanner, switch off Wi-Fi, and scan a page. If export still works, the processing really is local.</p>
+<p>Cloud apps take the opposite approach. They rely on <strong>cloud sync</strong> across phones and computers and on formal certifications, which buys access from anywhere at the cost of a copy stored on someone else's hardware.</p>
+<p>For <strong>sensitive</strong> files such as <strong>passports</strong> and <strong>official forms</strong>, an offline-capable browser scanner is a <strong>safe</strong> default. It does not protect a shared computer, though, so offices handling <strong>legal and administrative</strong> paperwork should make closing the tab a habit.</p>
+<h3>How Do I Take a Photo That Scans Well?</h3>
+<p>A photo scans well when the page is evenly lit, lies on a darker surface, and is shot with the phone held flat above it.</p>
+<p>Lighting causes most of the failures I see. An overhead lamp throws the phone's own shadow across the page; <strong>shadow removal</strong> in AI apps can rescue some of that, but a window to the side gives cleaner <strong>brightness</strong> from the start. A dark surface underneath also helps any app that <strong>automatically detects</strong> <strong>document borders</strong>.</p>
+<p><strong>Dull photos</strong> are a capture problem first and a filter problem second. A <strong>high-contrast</strong> filter can lift faded ink, yet <strong>legibility</strong> is decided when you press the shutter. That matters most in <strong>personal archiving</strong>, where <strong>recipes</strong> and <strong>letters</strong> already showing <strong>physical deterioration</strong> should not be handled more than once.</p>
+<p>Two more traps are worth knowing. A computer screen produces <strong>screen moiré</strong> ripples, so export the original file instead of photographing it, and previews <strong>may look blurry</strong> even when the saved page is sharp, so judge sharpness at full size before switching to <strong>Black and White</strong>.</p>
+<h3>Who Uses an Online Document Scanner, and for What?</h3>
+<p>Online document scanners are used mainly by students, freelancers, administrative staff, and families preserving keepsakes.</p>
+<p>Each group arrives with a different job, and the tool bends to all of them:</p>
+<ul>
+<li><strong>Notes</strong> from lectures and handwritten homework pages get submitted by students as one PDF to a course platform.</li>
+<li><strong>Receipts</strong> become clean expense attachments for freelancers, who also prepare contracts for an <strong>e-signature</strong>, flagging clauses with a <strong>highlighter</strong> or <strong>pen</strong>.</li>
+<li><strong>High-resolution</strong> captures let administrative teams archive IDs and forms with enough detail for <strong>Image to Text</strong> conversion.</li>
+<li><strong>Paper documents</strong> such as old photos, recipes, and letters get a digital backup from families before they fade further.</li>
+</ul>
+<p>The habit underneath all four is the same: someone <strong>digitizes</strong> a page once so the original can stay in a drawer, and the file travels wherever the work does.</p>
+<h3>Online Scanner vs. Mobile App vs. Desktop Software: Which Fits Me?</h3>
+<p>An online scanner fits occasional, install-free scanning on any device, a mobile app fits frequent scanning on the go, and desktop software fits heavy batch work if you accept the cost and setup.</p>
+<p>I default to the browser for one-off jobs. There is <strong>no installation</strong>, <strong>no login</strong>, and no <strong>sign-up</strong> or <strong>registration</strong> step, and the tool behaves the same on <strong>Windows</strong>, <strong>Linux</strong>, or a borrowed <strong>laptop</strong>.</p>
+<p>The trade-offs line up like this:</p>
+<div class="sa-table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Strengths</th>
+<th>Trade-offs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Online scanner</td>
+<td>Immediate access, no installation, works on PC, Mac, and phones, private processing</td>
+<td>Needs a web browser</td>
+</tr>
+<tr>
+<td>Mobile app</td>
+<td>Convenient for scanning on the go</td>
+<td>Download required, often subscription fees or watermarks, uses phone storage</td>
+</tr>
+<tr>
+<td>Desktop software</td>
+<td>Strong batch processing</td>
+<td>Costly, large installation, steep learning curve</td>
+</tr>
+</tbody>
+</table></div>
+<p>Price is where the gap shows. Browser tools pitched as <strong>100% free</strong> with <strong>no watermark</strong> present themselves as a <strong>CamScanner alternative</strong>, while app makers keep extras behind <strong>Premium</strong>. For <strong>students</strong> and <strong>freelancers</strong>, online editors that already <strong>annotate</strong> and <strong>draw</strong> on pages with <strong>high-quality PDF output</strong> usually make volume, not quality, the deciding factor.</p>
+<h3>What Can AI-Powered Scanner Apps Like CamScanner Do Beyond Cropping?</h3>
+<p>AI-powered scanner apps such as CamScanner go past cropping by cleaning damage out of the image, recognizing text, and bundling editing, conversion, and verification tools in one package.</p>
+<p>CamScanner is made by <strong>INTSIG</strong>, billed as a <strong>Professional Scanner App</strong>, and claims <strong>300 million+ users</strong> across <strong>iOS</strong>, <strong>Android</strong>, <strong>HarmonyOS</strong>, <strong>macOS</strong>, Windows, and the web. Its <strong>AI-powered</strong> pipeline <strong>auto-crops</strong>, <strong>straightens edges</strong>, and <strong>removes cluttered backgrounds</strong>, the same idea some browser tools sell as <strong>Smart Perspective Crop</strong> for fixing <strong>perspective distortion</strong>.</p>
+<p>The company sorts its use cases into <strong>School &amp; Note Archiving</strong>, <strong>Reimbursement &amp; Productivity</strong>, life paperwork, and business filing. That breadth is how <strong>mobile apps</strong> in this category tend to justify <strong>subscription fees</strong>.</p>
+<p>On security, CamScanner lists <strong>ISO/IEC 27001</strong> for information security, <strong>ISO/IEC 27701</strong> for privacy management, and <strong>ISO/IEC 20000</strong> for IT service management. Certifications matter more for a cloud product, because your pages are stored off-device.</p>
+<h3>Which Related Tools Pair With a Document Scanner?</h3>
+<p>A document scanner pairs naturally with PDF converters, merge and compress tools, OCR, and code scanners, because a scan is usually the first step in a longer document task.</p>
+<p>Text tools come first for most people. CamScanner's route is to <strong>scan or import</strong> an image, then <strong>tap</strong> <strong>Word</strong> or <strong>Extract Text</strong>; on PDFdukan, the same job goes to the <a href="tools/ocr.html">OCR Text tool</a>. Some scanners also let you <strong>copy the result</strong> into another app instead of downloading it.</p>
+<p>Course portals such as <strong>Canvas</strong> and <strong>Blackboard</strong> can be strict about uploads, so a scanned bundle may need to go through <a href="tools/compress-pdf.html">Compress PDF</a> or <a href="tools/merge-pdf.html">Merge PDF</a> before submission.</p>
+<p>AI scanner suites stretch the idea further with <strong>AI photo translation</strong>, <strong>Mega Scan</strong>, <strong>old photo restoration</strong>, <strong>AI tamper detection</strong>, <strong>Photoshop detection</strong>, and <strong>CountCam</strong>. Most are niche, but tamper checks are worth knowing about if you receive scanned documents rather than create them.</p>
+<div class="sa-faqs">
+<div class="sa-faq"><h3>What Is the Magic Pro Filter in CamMaster?</h3>
+<p>Magic Pro is CamMaster&#39;s default scan filter: it turns the paper white, darkens and sharpens the text, and keeps colour in signatures, stamps and photos. It works best on phone photos with uneven light. If a page looks too harsh, switch to Enhance or Original, and with Apply to All Pages ticked the change covers every page.</p></div>
+<div class="sa-faq"><h3>What Exactly Is a PDF Document Scanner?</h3>
+<p>A PDF document scanner is software that converts photos of physical pages into PDF files that look like they came from a flatbed machine. Browser versions turn a single <strong>photo</strong> into a <strong>scanner-like</strong> page, and some also save a <strong>scanned-style image</strong> when you do not need a PDF. The phrase <strong>online document scanner</strong> usually means the kind that <strong>runs entirely in the browser</strong>, which makes it an easy first step toward a <strong>paperless workflow</strong>.</p></div>
+<div class="sa-faq"><h3>Is an Online Document Scanner Really Free?</h3>
+<p>Most browser-based document scanners are free to use, while larger app makers keep some features behind paid plans. Browser tools are often <strong>free</strong> with no catch, and CamScanner says basic scanning on mobile and web costs nothing, with web converters such as <strong>PDF to Word</strong>, <strong>Word to PDF</strong>, <strong>PDF to Excel</strong>, and <strong>PDF to PPT</strong> included. Its mobile app offers only limited free OCR, and some features need an upgraded <strong>account</strong>. For <strong>remote workers</strong> filing <strong>expense reports</strong>, the free tier usually covers the essentials.</p></div>
+<div class="sa-faq"><h3>Are My Scanned Documents Secure?</h3>
+<p>Scanned documents are secure in a browser scanner that does all processing on your device, because the images never reach a remote server. Tools built this way say files are <strong>processed locally</strong>, often through <strong>WebAssembly</strong>, so they <strong>never leave your browser</strong> and are <strong>not stored on a server</strong>. One scanner adds that files are <strong>deleted after processing</strong>, with <strong>encrypted transfer</strong> and <strong>GDPR</strong> compliance, while another says nothing goes to <strong>third-party services</strong>. These are the providers' own claims, so read each <strong>privacy policy</strong> and run the offline test before scanning anything confidential.</p></div>
+<div class="sa-faq"><h3>Do I Need to Install an App or Create an Account?</h3>
+<p>You do not need to install an app or create an account to use a browser-based document scanner. Opening the site gives <strong>immediate access</strong> with <strong>no app</strong>, <strong>no cost</strong>, and, on some tools, <strong>no cap on documents</strong>. That skips the <strong>large installation</strong>, <strong>steep learning curve</strong>, and <strong>costly</strong> licenses that come with <strong>desktop software</strong>. For <strong>basic scanning</strong> of <strong>printed documents</strong> into <strong>digital files</strong>, the browser is enough.</p></div>
+<div class="sa-faq"><h3>Which Devices Can Run an Online Document Scanner?</h3>
+<p>Any device with a modern browser can run an online document scanner, including phones, tablets, and computers. Browser tools work on <strong>PC</strong> and <strong>Mac</strong> as well as phones, which saves <strong>phone storage</strong> when you scan <strong>on the go</strong>; the camera option simply needs a device camera. CamScanner competes on reach instead, reporting <strong>200+ countries and regions</strong>, <strong>660+ App Store features</strong>, a <strong>4.9 App Store rating</strong>, and a <strong>#1 free productivity app</strong> ranking by downloads, plus a <strong>web version</strong> beside its apps.</p></div>
+<div class="sa-faq"><h3>Can I Combine Multiple Pages Into One PDF?</h3>
+<p>Yes, most online document scanners let you combine multiple pages into a single PDF file. You <strong>add pages</strong>, <strong>reorder</strong> them by dragging, and <strong>delete</strong> the ones you do not want, and some tools let you <strong>import existing PDFs</strong> or <strong>WEBP</strong> and <strong>JPEG</strong> images into the same <strong>single PDF</strong>. For very large jobs, <strong>batch processing</strong> in <strong>desktop</strong> software is faster, and <strong>free PDF tools</strong> such as <strong>Merge PDF</strong>, <strong>Split PDF</strong>, and options to <strong>compress</strong> the file handle the rest.</p></div>
+<div class="sa-faq"><h3>How Do I Pull Text Out of a Scanned Document?</h3>
+<p>You pull text out of a scanned document with OCR (optical character recognition), which reads the letters in the image and returns editable text. CamScanner says its <strong>OCR</strong> covers <strong>41 languages</strong> and averages <strong>99.77%</strong> accuracy on <strong>standard printed text</strong>, while handwriting is harder to read. For cleaner results, export a monochrome scan first, or turn several photos into one file with an <strong>Image to PDF Converter</strong> before running recognition.</p></div>
+<div class="sa-faq"><h3>Why Won't My Camera Read a QR Code?</h3>
+<p>A camera fails to read a QR code when the code is out of focus, too small, or badly framed. <strong>Blurry</strong>, <strong>small</strong>, or tilted <strong>QR code</strong> images are the usual culprits, so add <strong>even lighting</strong>, sharp <strong>focus</strong>, and the right <strong>orientation</strong>, and keep the phone still, since <strong>steadiness</strong> cuts motion <strong>blur</strong>. A dedicated <strong>QR Code Scanner</strong> can also read a saved image, and when the code holds a <strong>linked website</strong>, it shows a <strong>clickable link</strong>. Product codes work the same way in a <strong>Barcode Scanner</strong> that reads <strong>UPC</strong> and <strong>EAN</strong> formats.</p></div>
+</div>
 </section>
 <section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
   <h2>Related Tools</h2>
@@ -680,21 +772,22 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3><span class="fb-icon">📄</span> PDFdukan</h3>
-        <p>Home of CamMaster — the best free online document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+        <p>Home of CamMaster, a browser-based document scanner. Convert, merge, split PDFs and extract text from images with clearly stated processing methods and limitations.</p>
       </div>
       <div class="footer-col">
         <h4>Scanner</h4>
         <a href="scanner.html">CamMaster Scanner</a>
+        <a href="scanner.html">Import Images</a>
+        <a href="scanner.html">Import PDF</a>
         <a href="tools/ocr.html">OCR Text</a>
-        <a href="tools/img-to-pdf.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
+        <a href="tools/img-to-pdf.html">Image to PDF</a>
+        <a href="tools/pdf-to-img.html">PDF to JPG</a>
         <a href="tools/merge-pdf.html">Merge PDF</a>
         <a href="tools/split-pdf.html">Split PDF</a>
-        <a href="tools/compress-pdf.html">Compress PDF</a>
-        <a href="tools/pdf-to-word.html">PDF to Word</a>
-        <a href="tools/pdf-to-img.html">PDF to JPG</a>
+        <a href="tools/compress.html">Compress Image</a>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
@@ -703,10 +796,13 @@
         <a href="contact.html">Contact Us</a>
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms of Service</a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="press.html">Press</a>
+        <a href="alternatives.html">Alternatives</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <p data-i18n="footer.rights">© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
       <div class="footer-links">
         <a href="privacy.html">Privacy</a>
         <a href="terms.html">Terms</a>
@@ -720,12 +816,20 @@
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" aria-label="Mobile navigation">
   <div class="mob-nav-items">
-    <button class="mob-nav-item" onclick="window.location.href='index.html'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
     <button class="mob-nav-item active"><span class="mni">📷</span><span>Scan</span></button>
     <button class="mob-nav-item" onclick="window.location.href='tools.html'"><span class="mni">🛠️</span><span>Tools</span></button>
     <button class="mob-nav-item" onclick="window.location.href='blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
     <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
   </div>
 </nav>
+<div id="notifOverlay" class="notif-overlay" role="dialog" aria-label="Notifications">
+  <div class="notif-header">
+    <span class="notif-title">🔔 Notifications</span>
+    <button id="markAllReadBtn" class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
+    <button class="notif-close" onclick="document.getElementById('notifOverlay').classList.remove('show')">✕</button>
+  </div>
+  <div id="notifList" class="notif-list"></div>
+</div>
 </body>
 </html>

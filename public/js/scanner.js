@@ -58,6 +58,10 @@ const ScannerApp = (() => {
     zone.addEventListener('click',()=>input.click());zone.addEventListener('keydown',e=>{if(e.target===zone&&(e.key==='Enter'||e.key===' ')){e.preventDefault();input.click();}});
     for(const picker of [input,pdf])picker.addEventListener('change',e=>{handleFiles([...e.target.files]);picker.value='';});
     $('resumeEditor').onclick=()=>_editPage(Math.max(0,state.editingIndex));
+    // Fetch the corner-detection models as soon as the visitor shows intent to
+    // scan (the file picker is open for a few seconds), not for every reader.
+    const preload=()=>window.ScanProcessor?.preloadModels?.();
+    for(const ev of ['pointerdown','dragenter','focusin','touchstart'])zone.addEventListener(ev,preload,{once:true,passive:true});
   }
   async function _loadFile(file){
     const url=URL.createObjectURL(file);
@@ -72,6 +76,7 @@ const ScannerApp = (() => {
   async function handleFiles(files){
     if(importing){toast('Please let these images finish loading, then add more.','warning');return;}
     if(busy||!files.length)return;
+    if(lastRemoved){_finalizeRemoval();$('toast')?.querySelector('.toast-undo')&&$('toast').classList.remove('show');}
     _saveCurrent();_openEditor();showScreen('filter');importing=true;const start=state.pages.length,failures=[];
     const settings={filter:state.currentFilter,adjustments:{...state.adjustments}};
     $('scanImportStatus').textContent='Reading images…';
@@ -103,6 +108,8 @@ const ScannerApp = (() => {
     state.pages.push({id:Date.now()+Math.random(),sourceName,sourceImg:img,croppedImg:img,cropCorners:copy(corners),previousCorners:copy(corners),needsCropReview:false,autoStatus:'pending',editVersion:0,filter:state.applyToAll?state.currentFilter:settings.filter,adjustments:{...(state.applyToAll?state.adjustments:settings.adjustments)},...metadata});
     _renderPages();
     if(state.editingIndex<0)_editPage(state.pages.length-1);
+    // Start finding edges while the remaining files are still being read.
+    _queueAutoCrops();
     // Let the first picture and new thumbnails paint before further decoding.
     await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
   }
@@ -114,10 +121,10 @@ const ScannerApp = (() => {
   }
   function _invalidateAuto(page){page.editVersion=(page.editVersion||0)+1;page.autoStatus='manual';_updateAutoStatus();}
   function _queueAutoCrops(){
-    if(autoTask||importing||state.screen==='crop')return;
+    if(autoTask||state.screen==='crop')return;
     autoTask=(async()=>{
       while(true){
-        if(importing||state.screen==='crop')break;
+        if(state.screen==='crop')break;
         const selected=state.pages[state.editingIndex];
         const page=selected?.autoStatus==='pending'?selected:state.pages.find(p=>p.autoStatus==='pending');
         if(!page)break;
@@ -258,16 +265,22 @@ const ScannerApp = (() => {
   }
   function _renderPages(){
     if(pageDragging)return;
-    const list=$('scanPageList'),existing=new Map([...list.children].map(b=>[b.dataset.id,b])),ids=new Set(state.pages.map(p=>String(p.id)));
+    const list=$('scanPageList'),existing=new Map([...list.children].map(item=>[item.dataset.id,item])),ids=new Set(state.pages.map(p=>String(p.id)));
     state.pages.forEach((p,index)=>{
-      let b=existing.get(String(p.id));
-      if(!b){
+      let item=existing.get(String(p.id)),b=item?.querySelector('.scan-page');
+      if(!item){
+        // Each rail entry = page button + its own remove button (never nested).
+        item=document.createElement('div');item.className='scan-page-item';item.dataset.id=p.id;
         b=document.createElement('button');b.type='button';b.dataset.id=p.id;
         const wrap=document.createElement('span');wrap.className='scan-page-picture';wrap.append(document.createElement('canvas'));
         const num=document.createElement('span');num.className='scan-page-number';
         const meta=document.createElement('span');meta.className='scan-page-meta';b.append(wrap,num,meta);
-        b.onclick=()=>{if(state.screen==='crop'){toast('Apply or cancel your crop before changing pages.','warning');return;}const at=state.pages.findIndex(page=>String(page.id)===b.dataset.id);if(at>=0)_editPage(at);};
+        b.onclick=()=>{if(state.screen==='crop'){toast('Apply or cancel your crop before changing pages.','warning');return;}const at=state.pages.findIndex(page=>String(page.id)===item.dataset.id);if(at>=0)_editPage(at);};
+        const remove=document.createElement('button');remove.type='button';remove.className='scan-page-remove';remove.textContent='×';
+        remove.onclick=e=>{e.stopPropagation();_removePage(item.dataset.id);};
+        item.append(b,remove);
       }
+      item.querySelector('.scan-page-remove').setAttribute('aria-label',`Remove page ${index+1}`);item.querySelector('.scan-page-remove').title=`Remove page ${index+1}`;
       b.className='scan-page'+(index===state.editingIndex?' active':'');b.setAttribute('aria-label',`Page ${index+1}${p.needsCropReview?', check corners':''}`);b.setAttribute('aria-current',String(index===state.editingIndex));
       b.title=p.sourceName||`Page ${index+1}`;
       b.dataset.autoStatus=p.autoStatus||'ready';
@@ -283,13 +296,67 @@ const ScannerApp = (() => {
       b.querySelector('.scan-page-meta').textContent=`${FILTERS.find(f=>f.id===p.filter)?.name||p.filter} · ${_pageCropLabel(p)}`;
       const warning=b.querySelector('.scan-page-warning');
       if(p.needsCropReview&&!warning){const mark=document.createElement('span');mark.className='scan-page-warning';mark.textContent='!';mark.title='Check suggested corners';b.append(mark);}else if(!p.needsCropReview&&warning)warning.remove();
-      if(list.children[index]!==b)list.insertBefore(b,list.children[index]||null);
+      if(list.children[index]!==item)list.insertBefore(item,list.children[index]||null);
     });
     for(const [id,b] of existing)if(!ids.has(id))b.remove();
-    if(typeof Sortable!=='undefined'&&!sortable)sortable=Sortable.create(list,{animation:120,ghostClass:'sortable-ghost',onStart:()=>{pageDragging=true;},onMove:()=>!busy&&state.screen!=='crop',onEnd:e=>{
+    if(typeof Sortable!=='undefined'&&!sortable)sortable=Sortable.create(list,{animation:120,ghostClass:'sortable-ghost',filter:'.scan-page-remove',preventOnFilter:false,delayOnTouchOnly:true,delay:150,onStart:()=>{pageDragging=true;},onMove:()=>!busy&&state.screen!=='crop',onEnd:e=>{
       pageDragging=false;_saveCurrent();const selected=state.pages[state.editingIndex]?.id;const [p]=state.pages.splice(e.oldIndex,1);state.pages.splice(e.newIndex,0,p);state.editingIndex=state.pages.findIndex(p=>p.id===selected);_renderPages();_syncControls();
     }});
     $('scanFooterInfo').textContent=state.pages.length?`${Math.max(0,state.editingIndex)+1} / ${state.pages.length}`:'';
+  }
+  // Remove one page from anywhere in the rail. Running auto-crop/thumbnail
+  // jobs own their page object, so they simply drop the removed page.
+  function _removePage(id){
+    if(busy||importing){toast('Please wait for the current images to finish.','warning');return;}
+    if(state.screen==='crop'){toast('Apply or cancel your crop before removing pages.','warning');return;}
+    const at=state.pages.findIndex(p=>String(p.id)===String(id));if(at<0)return;
+    _saveCurrent();
+    const selectedId=state.pages[state.editingIndex]?.id;
+    const [removed]=state.pages.splice(at,1);thumbnailJobs.delete(removed.id);
+    _finalizeRemoval();lastRemoved={items:[{page:removed,at}],timer:setTimeout(_finalizeRemoval,7000)};
+    if(!state.pages.length){state.editingIndex=-1;state._currentCropped=null;_renderPages();_updateAutoStatus();_closeEditor();showScreen('upload');}
+    else if(removed.id===selectedId){state.editingIndex=-1;_editPage(Math.min(at,state.pages.length-1));}
+    else{state.editingIndex=state.pages.findIndex(p=>p.id===selectedId);_renderPages();_syncControls();if(state.screen==='export')_renderExportPreview();}
+    _updateAutoStatus();
+    _undoToast(state.pages.length?`Page ${at+1} removed.`:'All pages removed.');
+  }
+  // A removed page can be restored for a few seconds (a mis-tap on a phone
+  // should never cost a scan). PDF sources are released only after that.
+  let lastRemoved=null;
+  function _finalizeRemoval(){if(!lastRemoved)return;clearTimeout(lastRemoved.timer);for(const {page} of lastRemoved.items)if(page.pdfSource)ScanPdf.release(page);lastRemoved=null;}
+  function _undoRemove(){
+    if(!lastRemoved||busy||importing||state.screen==='crop')return;
+    clearTimeout(lastRemoved.timer);const items=lastRemoved.items.slice().sort((a,b)=>a.at-b.at);lastRemoved=null;
+    for(const {page,at} of items){
+      // A crop job that was running when the page left must run again.
+      if(page.autoStatus==='processing')page.autoStatus='pending';
+      state.pages.splice(Math.min(at,state.pages.length),0,page);
+    }
+    state.editingIndex=-1;_editPage(state.pages.indexOf(items[0].page));_queueAutoCrops();_updateAutoStatus();
+    if(state.screen==='export')_renderExportPreview();
+    toast(items.length>1?`${items.length} pages restored ✓`:'Page restored ✓','success');
+  }
+  // The editor's × closes the scan and discards every imported page, so the
+  // next upload always starts clean. Undo is offered for a few seconds.
+  function _discardAll(){
+    if(busy){toast('Please wait for the current step to finish.','warning');return;}
+    if(importing){toast('Please let these images finish loading first.','warning');return;}
+    const count=state.pages.length;
+    if(count){
+      _saveCurrent();_finalizeRemoval();
+      lastRemoved={items:state.pages.map((page,at)=>({page,at})),timer:setTimeout(_finalizeRemoval,7000)};
+      state.pages=[];thumbnailJobs.clear();
+    }
+    state.editingIndex=-1;state._currentCropped=null;previewRevision++;
+    _renderPages();_updateAutoStatus();
+    $('scanEditor').hidden=true;$('scanBackdrop').hidden=true;document.body.classList.remove('scan-editor-open');$('resumeEditor').hidden=true;
+    showScreen('upload');focusBeforeEditor?.focus();
+    if(count)_undoToast(count>1?`Scan closed. ${count} pages discarded.`:'Scan closed. Page discarded.');
+  }
+  function _undoToast(message){
+    if(typeof toast!=='function')return;toast(message,'info',6500);
+    const el=$('toast');if(!el)return;const undo=document.createElement('button');undo.type='button';undo.className='toast-undo';undo.textContent='Undo';
+    undo.onclick=()=>{el.classList.remove('show');_undoRemove();};el.append(' ',undo);
   }
   function _fitCrop(){
     if(state.screen!=='crop')return;const viewport=$('screen-crop');cropEditor._maxW=Math.max(80,viewport.clientWidth-8);cropEditor._maxH=Math.max(80,viewport.clientHeight-8);cropEditor.draw();
@@ -328,19 +395,19 @@ const ScannerApp = (() => {
   }
   function _bindWorkspace(){
     $('scanWorkstage').append($('scanCropOptions'));
-    $('scanClose').onclick=_closeEditor;$('scanAddImages').onclick=()=>{if(!busy&&state.screen!=='crop')$('fileInputScanner').click();};
+    $('scanClose').onclick=_discardAll;$('scanAddImages').onclick=()=>{if(!busy&&state.screen!=='crop')$('fileInputScanner').click();};
     $('scanCropToggle').onclick=()=>state.screen==='crop'?_cancelCrop():_enterCrop();$('scanCancelCrop').onclick=_cancelCrop;
     $('scanConfirm').onclick=()=>{if(busy)return;if(state.screen==='crop')_commitCrop();else if(state.screen==='export')_editPage(state.editingIndex);else{_saveCurrent();showScreen('export');_renderExportPreview();}};
     $('scanOriginalImages').onclick=()=>{if(busy)return;for(const p of state.applyToAll?state.pages:[state.pages[state.editingIndex]]){_invalidateAuto(p);p.croppedImg=p.sourceImg;p.cropCorners=_fullCorners(p.sourceImg);p.filter='original';p.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};p.needsCropReview=false;}state.currentFilter='original';state.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};_editPage(state.editingIndex);};
     $('btnResetCrop').onclick=async()=>{if(busy)return;_invalidateAuto(state.pages[state.editingIndex]);showProcessing('Detecting document edges…');try{if(window.ScanProcessor?.available){const source=cropEditor._getRotatedImg(),result=await ScanProcessor.detect(source,{crop:false});cropEditor.img=source;cropEditor.rotation=0;cropEditor.corners=copy(result.corners);cropEditor.legacyCorners=copy(result.previousCorners||result.corners);cropEditor.detectionNeedsReview=result.needsReview;}else await cropEditor.resetCorners();_fitCrop();}catch(error){toast('Detection failed. Please adjust corners manually.','error');}finally{hideProcessing();}};
     $('btnFitCrop').onclick=()=>{cropEditor.fitFull();_fitCrop();};$('btnPreviousDetection').onclick=()=>{cropEditor.useOriginalDetection();_fitCrop();};
     for(const kind of ['left','right','horizontal','vertical'])$('scanTransform-'+kind).onclick=()=>_transform(kind);
-    $('scanDeletePage').onclick=()=>{if(busy)return;const removed=state.pages.splice(state.editingIndex,1)[0];if(removed?.pdfSource)ScanPdf.release(removed);state.editingIndex=-1;if(state.pages.length)_editPage(0);else{_renderPages();_closeEditor();}};
+    $('scanDeletePage').onclick=()=>{const p=state.pages[state.editingIndex];if(p)_removePage(p.id);};
     $('applyToAll').onchange=e=>{state.applyToAll=e.target.checked;if(state.applyToAll)_applySettings();};
     for(const key of ['brightness','contrast','sharpness','saturation'])$('sl_'+key).oninput=e=>{if(busy)return;state.adjustments[key]=Number(e.target.value);$('sv_'+key).textContent=e.target.value;_applySettings();_reprocess();};
     $('scanZoomIn').onclick=()=>{zoom=Math.min(3,zoom+.25);_applyZoom();};$('scanZoomOut').onclick=()=>{zoom=Math.max(1,zoom-.25);_applyZoom();};
     $('scanEditor').addEventListener('keydown',e=>{
-      if(e.key==='Escape'){e.preventDefault();if(state.screen==='crop')_cancelCrop();else _closeEditor();}
+      if(e.key==='Escape'){e.preventDefault();if(state.screen==='crop')_cancelCrop();else _discardAll();}
       if(e.key==='Tab'){const elements=[...$('scanEditor').querySelectorAll('button:not(:disabled),input,select,summary,[tabindex="0"]')].filter(el=>el.getClientRects().length);const first=elements[0],last=elements.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
     });
     _buildFilters();
@@ -360,12 +427,15 @@ const ScannerApp = (() => {
 
     if (btnDownloadPDF) btnDownloadPDF.onclick = exportAsPDF;
     if (btnDownloadJPG) btnDownloadJPG.onclick = () => exportAsImages('jpeg');
-    if (btnDownloadZIP) btnDownloadZIP.onclick = exportAsZIP;
+    if (btnDownloadZIP) btnDownloadZIP.onclick = () => exportAsZIP();
     if (btnBackPages)   btnBackPages.onclick   = () => { showScreen('pages'); _renderPages(); };
   }
 
   async function exportAsPDF() {
+    if (busy) return;
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
+    const base = await _askFileName(_defaultBaseName(), 'pdf');
+    if (base === null) return;
     showProcessing('Creating PDF…');
 
     const { jsPDF } = window.jspdf;
@@ -375,7 +445,7 @@ const ScannerApp = (() => {
     let writer;
     try {
       if(typeof Worker!=='undefined'){
-        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261104_autocrop',document.baseURI));let id=0;
+        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261105_fixes',document.baseURI));let id=0;
         const request=(method,fields={},transfer=[])=>new Promise((resolve,reject)=>{const own=++id,timer=setTimeout(()=>reject(new Error('PDF processing timed out')),120000);worker.onmessage=({data})=>{if(data.id!==own)return;clearTimeout(timer);data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.postMessage({id:own,method,...fields},transfer);});
         writer={request,dispose:()=>worker.terminate()};await request('start',{orientation,pageSize});
       }else{
@@ -390,7 +460,7 @@ const ScannerApp = (() => {
         await writer.request('page',{bytes,width:c.width,height:c.height},[bytes]);
         await new Promise(resolve=>requestAnimationFrame(resolve));
       }
-      const result=await writer.request('finish');saveAs(new Blob([result.bytes],{type:'application/pdf'}),`PDFdukan.com_${Date.now()}.pdf`);
+      const result=await writer.request('finish');_downloadBlob(new Blob([result.bytes],{type:'application/pdf'}),`${base}.pdf`);
       hideProcessing();
       toast('PDF downloaded! ✓', 'success');
     } catch (e) {
@@ -416,86 +486,52 @@ const ScannerApp = (() => {
     return cleaned || fallback;
   }
 
-  // Export pages as images. Browsers block multiple automatic downloads, so a
-  // single page downloads directly while multiple pages are bundled into ONE ZIP
-  // (named "<base>.zip") with files auto-numbered "<base>_01.jpg", "<base>_02.jpg"…
-  // — this is the only reliable way to get every page in a single download.
-  async function exportAsImages(format) {
+  // Ask for a file name with the site's own Save As dialog (it sits above the
+  // editor). Returns a clean base name without extension, or null if cancelled.
+  async function _askFileName(fallback, ext) {
+    let chosen;
+    if (window.CMFilename) chosen = await CMFilename.prompt(`${fallback}.${ext}`);
+    else chosen = window.prompt('File name:', fallback);
+    if (chosen === null || chosen === undefined) return null;
+    return _sanitizeBaseName(String(chosen).replace(new RegExp('\\.' + ext + '$', 'i'), ''), fallback);
+  }
+  function _defaultBaseName() { return 'PDFdukan.com_' + new Date().toISOString().slice(0, 10); }
+  function _downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    // data-cmf: the name was already chosen, so the global Save As hook skips it.
+    a.href = url; a.download = filename; a.dataset.cmf = '1'; a.rel = 'noopener';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
+  // Images: one page downloads as a single image; several pages go into ONE
+  // ZIP ("<name>_01.jpg", "<name>_02.jpg"…), because browsers block a burst of
+  // separate automatic downloads.
+  async function exportAsImages(format = 'jpeg', forceZip = false) {
+    if (busy) return;
     if (!state.pages.length) { toast('No pages to export', 'error'); return; }
     const ext = format === 'jpeg' ? 'jpg' : format;
-    const multi = state.pages.length > 1;
-    const fallback = 'PDFdukan.com_' + new Date().toISOString().slice(0, 10);
-
-    // Ask for a file name; the rest are auto-numbered in the same pattern.
-    const promptMsg = multi
-      ? `Enter a file name for your ${state.pages.length} images.\n\n` +
-        `They will be saved together in one ZIP as:\n` +
-        `"<name>_01.${ext}", "<name>_02.${ext}", …`
-      : `Enter a file name for your image:`;
-    const input = prompt(promptMsg, fallback);
-    if (input === null) return; // user cancelled
-    const base = _sanitizeBaseName(input, fallback);
-
-    showProcessing(multi ? `Packaging ${state.pages.length} ${ext.toUpperCase()} images…` : 'Preparing download…');
+    const zipped = forceZip || state.pages.length > 1;
+    const base = await _askFileName(_defaultBaseName(), zipped ? 'zip' : ext);
+    if (base === null) return;
+    showProcessing(zipped ? `Packaging ${state.pages.length} ${ext.toUpperCase()} image${state.pages.length > 1 ? 's' : ''}…` : 'Preparing download…');
     try {
-      if (!multi) {
-        const blob = await _pageToBlob(state.pages[0], format);
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `${base}.${ext}`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
-        hideProcessing();
-        toast('Image downloaded! ✓', 'success');
-        return;
+      if (!zipped) {
+        _downloadBlob(await _pageToBlob(state.pages[0], format), `${base}.${ext}`);
+        hideProcessing(); toast('Image downloaded ✓', 'success'); return;
       }
-
-      // Multiple pages → one ZIP so they all download together, every page named
-      // in the same pattern. padStart width grows with page count (01.. / 001..).
-      const zip = new JSZip();
-      const pad = Math.max(2, String(state.pages.length).length);
+      const zip = new JSZip(), pad = Math.max(2, String(state.pages.length).length);
       for (let i = 0; i < state.pages.length; i++) {
-        const blob = await _pageToBlob(state.pages[i], format);
-        zip.file(`${base}_${String(i + 1).padStart(pad, '0')}.${ext}`, blob);
+        $('scanBusyText').textContent = `Preparing image ${i + 1} / ${state.pages.length}`;
+        zip.file(`${base}_${String(i + 1).padStart(pad, '0')}.${ext}`, await _pageToBlob(state.pages[i], format));
       }
-      const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `${base}.zip`);
-      hideProcessing();
-      toast(`${state.pages.length} ${ext.toUpperCase()} images downloaded as ${base}.zip ✓`, 'success');
+      _downloadBlob(await zip.generateAsync({ type: 'blob' }), `${base}.zip`);
+      hideProcessing(); toast(`${state.pages.length} image${state.pages.length > 1 ? 's' : ''} downloaded as ${base}.zip ✓`, 'success');
     } catch (e) {
-      hideProcessing();
-      console.error('Image export error:', e);
-      toast('Image export failed', 'error');
+      hideProcessing(); console.error('Image export error:', e); toast('Image export failed. Please try again.', 'error');
     }
   }
-
-  async function exportAsZIP(format = 'jpeg') {
-    if (!state.pages.length) { toast('No pages to export', 'error'); return; }
-    showProcessing('Creating ZIP…');
-
-    try {
-      const zip = new JSZip();
-      const folder = zip.folder('CamMaster');
-
-      for (let i = 0; i < state.pages.length; i++) {
-        const page = state.pages[i];
-        const c = await _renderExportPage(page);
-
-        const blob = await new Promise(r => c.toBlob(r, 'image/' + format, format === 'jpeg' ? 0.92 : 1.0));
-        const ext = format === 'jpeg' ? 'jpg' : format;
-        folder.file(`page_${String(i + 1).padStart(3, '0')}.${ext}`, blob);
-      }
-
-      const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, `PDFdukan.com_${Date.now()}.zip`);
-      hideProcessing();
-      toast('ZIP downloaded! ✓', 'success');
-    } catch (e) {
-      hideProcessing();
-      console.error('ZIP export error:', e);
-      toast('ZIP export failed', 'error');
-    }
-  }
+  function exportAsZIP() { return exportAsImages('jpeg', true); }
 
 
   function showProcessing(message){

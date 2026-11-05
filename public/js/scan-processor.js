@@ -1,7 +1,7 @@
 /* Heavy detector/warp work owns an isolated worker. Jobs use IDs, never indexes. */
 window.ScanProcessor=(()=>{
- const url=new URL('scan-crop-worker.js?v=20261104_autocrop',document.currentScript.src),available=typeof Worker!=='undefined'&&typeof createImageBitmap==='function'&&typeof OffscreenCanvas!=='undefined';
- let worker,sequence=0,running=false;const jobs=[];
+ const url=new URL('scan-crop-worker.js?v=20261105_fixes',document.currentScript.src),available=typeof Worker!=='undefined'&&typeof createImageBitmap==='function'&&typeof OffscreenCanvas!=='undefined';
+ let worker,sequence=0,running=false,modelsRequested=false;const jobs=[];
  function start(){if(worker)return;worker=new Worker(url);}
  async function drain(){
   if(running||!jobs.length)return;running=true;const job=jobs.shift();
@@ -17,5 +17,5 @@ window.ScanProcessor=(()=>{
   finally{running=false;drain();}
  }
  function run(method,image,options={},current=()=>true){return new Promise((resolve,reject)=>{const job={id:++sequence,method,image,options,current,resolve,reject};if(method==='warp')jobs.unshift(job);else jobs.push(job);drain();});}
- return {available,detect:(image,options,current)=>run('detect',image,options,current),warp:(image,corners,options={})=>run('warp',image,{...options,corners}),warmup:()=>available?run('warmup',null):Promise.resolve()};
+ return {available,detect:(image,options,current)=>run('detect',image,options,current),warp:(image,corners,options={})=>run('warp',image,{...options,corners}),warmup:()=>available?run('warmup',null):Promise.resolve(),preloadModels:()=>{if(!available||modelsRequested)return;modelsRequested=true;run('warmup',null,{models:true}).catch(error=>console.warn('Model preload:',error));}};
 })();

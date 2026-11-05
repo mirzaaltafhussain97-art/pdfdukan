@@ -109,9 +109,12 @@ const MLDetector = (() => {
         ort.env.wasm.wasmPaths  = WASM_PATHS;
         ort.env.wasm.numThreads = 1;       // single-thread → no worker dependency
         // Two complementary heatmap models; each one alone misses some photos.
-        for (const url of HEATMAP_MODELS) {
-          try { _heat.push(await ort.InferenceSession.create(url, { executionProviders: ['wasm'] })); } catch (_) {}
-        }
+        // Inside the document worker the heavier model loads on a helper
+        // thread (in parallel with the light one) so both can run at once.
+        const helper = inWorker ? startHelper(HEATMAP_MODELS[1]) : null;
+        try { _heat.push({ session: await ort.InferenceSession.create(HEATMAP_MODELS[0], { executionProviders: ['wasm'] }) }); } catch (_) {}
+        if (helper && await helper.ready) _heat.push({ remote: helper });
+        else { try { _heat.push({ session: await ort.InferenceSession.create(HEATMAP_MODELS[1], { executionProviders: ['wasm'] }) }); } catch (_) {} }
         if (_heat.length) { _session = _heat[0]; _kind = 'heatmap'; }
         else { _session = await ort.InferenceSession.create(POINT_MODEL, { executionProviders: ['wasm'] }); _kind = 'point'; }
         console.log('✓ DocAligner ML model loaded ('+_kind+')');
@@ -123,6 +126,41 @@ const MLDetector = (() => {
       }
     })();
     return _loading;
+  }
+
+  /* Helper thread for the second heatmap model. Any failure resolves to
+     `failed`, and the caller then runs that inference locally instead. */
+  function startHelper(modelUrl) {
+    let worker;
+    try { worker = new Worker(new URL('scan-model-worker.js?v=20261105_fixes', self.location.href)); }
+    catch (_) { return null; }
+    const jobs = new Map(); let sequence = 0, broken = false, resolveReady;
+    const ready = new Promise(resolve => { resolveReady = resolve; });
+    const timer = setTimeout(() => { broken = true; resolveReady(false); }, 60000);
+    const failAll = () => { broken = true; resolveReady(false); for (const job of jobs.values()) job.slots.forEach(s => s.resolve({ failed: true })); jobs.clear(); };
+    worker.onerror = event => { event.preventDefault?.(); failAll(); };
+    worker.onmessage = ({ data }) => {
+      if (data.type === 'loaded') { clearTimeout(timer); if (data.error) { broken = true; worker.terminate(); } resolveReady(!data.error); return; }
+      const job = jobs.get(data.id); if (!job) return;
+      if (data.type === 'done') { job.slots.forEach(s => s.resolve({ failed: true })); jobs.delete(data.id); return; }
+      job.slots[data.i].resolve(data.empty ? { empty: true } : { heat: { dims: data.dims, data: data.data } });
+    };
+    worker.postMessage({ type: 'load', ort: 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js', wasm: WASM_PATHS, model: modelUrl });
+    function run(inputs, side) {
+      const id = ++sequence, slots = inputs.map(() => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; });
+      if (broken) { slots.forEach(s => s.resolve({ failed: true })); return { get: i => slots[i].promise, cancel() {} }; }
+      jobs.set(id, { slots });
+      const copies = inputs.map(f => f.slice());
+      worker.postMessage({ type: 'run', id, inputs: copies, side }, copies.map(f => f.buffer));
+      // A slot that already resolved keeps its value; `done` only fills the rest.
+      return { get: i => slots[i].promise, cancel() { if (jobs.delete(id)) worker.postMessage({ type: 'cancel', id }); } };
+    }
+    return { ready, run };
+  }
+  let _localFallback = null;
+  async function localSession(url) {
+    if (!_localFallback) _localFallback = ort.InferenceSession.create(url, { executionProviders: ['wasm'] }).catch(() => null);
+    return _localFallback;
   }
 
   /* Returns ordered corners {tl,tr,br,bl} in ORIGINAL image pixels, or null. */
@@ -263,11 +301,26 @@ const MLDetector = (() => {
         if (b && borders[b] === 0) bad++; }
       return bad >= 2; };
     const touchesFrame = q => q.filter(p => p.x < tol || p.y < tol || p.x > W - tol || p.y > H - tol).length >= 2;
-    for (const session of _heat) {
-      for (const margin of MARGINS) {
+    // The helper model starts on its own thread right away; its answers are
+    // read in exactly the same order the sequential loop used to produce them.
+    const remotes = _heat.map(runner => runner.remote ? runner.remote.run(MARGINS.map(m => tensorFor(m).tensor.data), S) : null);
+    try {
+    for (let r_i = 0; r_i < _heat.length; r_i++) {
+      const runner = _heat[r_i], remote = remotes[r_i];
+      for (let m_i = 0; m_i < MARGINS.length; m_i++) {
+        const margin = MARGINS[m_i];
         const { tensor, side, ox, oy } = tensorFor(margin);
-        let out; try { out = await session.run({ img: tensor }); } catch (_) { continue; }
-        const r = out.heatmap ? decodeHeatmap(out.heatmap, side) : null;
+        let heat = null;
+        const answer = remote ? await remote.get(m_i) : null;
+        if (answer && answer.empty) continue;
+        if (answer && answer.heat) heat = answer.heat;
+        else {
+          const session = runner.session || await localSession(HEATMAP_MODELS[1]);
+          if (!session) continue;
+          let out; try { out = await session.run({ img: tensor }); } catch (_) { continue; }
+          heat = out.heatmap;
+        }
+        const r = heat ? decodeHeatmap(heat, side) : null;
         if (!r || r.conf < 0.35) continue;
         const run = { conf: r.conf, q: r.pts.map(p => ({ x: p.x - ox, y: p.y - oy })) };
         // Early exit: two confident, agreeing answers settle the page (most cards
@@ -279,6 +332,7 @@ const MLDetector = (() => {
       }
       if (settled) break;
     }
+    } finally { remotes.forEach(remote => remote && remote.cancel()); }
     if (!runs.length) return null;
     const diag = Math.hypot(W, H), dist = (a, b) => a.q.reduce((acc, p, i) => acc + Math.hypot(p.x - b.q[i].x, p.y - b.q[i].y), 0) / 4;
     const clusters = [];
