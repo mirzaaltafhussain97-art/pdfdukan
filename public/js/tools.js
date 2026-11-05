@@ -1700,7 +1700,7 @@ const SplitPDF = (() => {
 
       const statParts = document.getElementById('statParts');
       const statPages = document.getElementById('statPages');
-      if (statParts) statParts.textContent = splits.length + ' parts';
+      if (statParts) statParts.textContent = splits.length + (splits.length === 1 ? ' part' : ' parts');
       if (statPages) statPages.textContent = totalPages + ' pages';
       _renderPartsList();
       _showResult();

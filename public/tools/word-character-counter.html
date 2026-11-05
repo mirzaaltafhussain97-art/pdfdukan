@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Free Word &amp; Character Counter Online | PDFdukan</title>
+<meta name="description" content="Free word &amp; character counter online: count words, characters, sentences and paragraphs as you type, check limits and reading time. No sign-up.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/word-character-counter.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/word-character-counter.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/word-character-counter.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/word-character-counter.html">
+<meta property="og:title" content="Free Word &amp; Character Counter Online | PDFdukan">
+<meta property="og:description" content="Free word &amp; character counter online: count words, characters, sentences and paragraphs as you type, check limits and reading time. No sign-up.">
+<meta property="og:image" content="https://pdfdukan.com/images/word-counter.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Free Word &amp; Character Counter Online | PDFdukan">
+<meta name="twitter:description" content="Free word &amp; character counter online: count words, characters, sentences and paragraphs as you type, check limits and reading time. No sign-up.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/word-counter.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+/* ── Word & Character Counter ── */
+.tool-hero.wc-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.wc-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.wc-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.wc-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.wc-tool-hero .tool-feature-visual{max-height:180px}}
+.wc-limits,.wc-top li{text-align:left}
+.wc-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.wc-head h3{margin:0}
+.wc-head h3 label{cursor:text}
+.wc-actions{display:flex;gap:6px;flex-wrap:wrap}
+.wc-btn{background:var(--card-2);border:1px solid var(--border);color:var(--text-2);padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;transition:var(--t) var(--ease)}
+.wc-btn:hover,.wc-btn:focus-visible{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.wc-undo{border-color:var(--primary);color:var(--primary)}
+#wcText{width:100%;box-sizing:border-box;min-height:240px;resize:vertical;background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:14px 16px;font:inherit;font-size:15px;line-height:1.6}
+#wcText:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
+.wc-selection{min-height:18px;margin-top:8px;font-size:12px;color:var(--text-3)}
+.wc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.wc-stat{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;min-width:0}
+.wc-val{font-size:22px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.2;overflow-wrap:anywhere}
+.wc-main .wc-val{font-size:28px;color:var(--primary)}
+.wc-lab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text-3);margin-top:4px}
+.wc-limits{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.wc-limit label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:6px}
+.wc-limit input{width:100%;box-sizing:border-box;background:var(--card-2);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--radius-sm);font-size:14px}
+.wc-limit input:focus{outline:none;border-color:var(--primary)}
+.wc-bar{height:8px;border-radius:4px;background:var(--card-3,var(--card-2));border:1px solid var(--border);margin-top:10px;overflow:hidden}
+.wc-fill{height:100%;width:0;background:var(--primary);transition:width .15s ease}
+.wc-fill.over{background:var(--error,#e53935)}
+.wc-limit-msg{font-size:12px;color:var(--text-3);margin-top:6px}
+.wc-limit-msg.over{color:var(--error,#e53935);font-weight:700}
+.wc-check{font-size:13px;color:var(--text-2);display:flex;align-items:center;gap:6px;cursor:pointer}
+.wc-top{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;counter-reset:wct}
+.wc-top li{counter-increment:wct;display:flex;align-items:center;gap:10px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:14px;min-width:0}
+.wc-top li::before{content:counter(wct);font-size:11px;font-weight:800;color:var(--primary);min-width:16px}
+.wc-top .w{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:var(--text)}
+.wc-top .n{font-variant-numeric:tabular-nums;color:var(--text-3);font-size:12px}
+.wc-top li.wc-empty{grid-column:1/-1;color:var(--text-3);justify-content:center}
+.wc-top li.wc-empty::before{content:none}
+@media(max-width:520px){.wc-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.wc-stat{padding:10px 12px}.wc-main .wc-val{font-size:24px}}
+@media (prefers-reduced-motion:reduce){.wc-fill{transition:none}}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table th{background:var(--card-2);font-weight:700;width:34%}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Word Counter", "item": "https://pdfdukan.com/tools/word-character-counter.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is the word counter free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, the counter is free with no sign-up and no length cap."}}, {"@type": "Question", "name": "Do spaces count as characters?", "acceptedAnswer": {"@type": "Answer", "text": "Yes in Characters, no in Characters (no spaces)."}}, {"@type": "Question", "name": "Why does another site show a different count?", "acceptedAnswer": {"@type": "Answer", "text": "Counters treat emoji, links and hyphens differently. Always check the count where you post."}}, {"@type": "Question", "name": "Can I count only part of my text?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Select part of it to see that part's words and characters."}}, {"@type": "Question", "name": "Does it count Chinese or Japanese words?", "acceptedAnswer": {"@type": "Answer", "text": "Characters, yes. Word counts are not accurate, because those languages don't put spaces between words."}}, {"@type": "Question", "name": "Does it show keyword density?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Top Words lists your 10 most-used words with each one's share."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Word & Character Counter", "url": "https://pdfdukan.com/tools/word-character-counter.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Free word & character counter online: count words, characters, sentences and paragraphs as you type, check limits and reading time. No sign-up.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script><meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-25T00:00:00+05:00">
+</head>
+<body data-tool="word-counter">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/img-to-pdf.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/split-pdf.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/compress.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/img-to-pdf.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/split-pdf.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/compress.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/inheritance-calc-advanced.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Word Counter</span>
+  </nav>
+
+  <div class="tool-hero wc-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#ff6333,#ff9055)">🔢</div>
+      <h1>Free Word &amp; Character Counter Online</h1>
+      <p>Count words, characters, sentences and paragraphs as you type. Check a word or character limit and see reading time and your most-used words.</p>
+      <p class="i2p-trust">Free · No sign-up · Your text stays in your browser</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/word-counter.svg?v=20261105" alt="Text editor beside live counts for words, characters, sentences and reading time" width="500" height="300">
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <!-- Text input -->
+  <div class="tool-card">
+    <div class="wc-head">
+      <h3><span class="tc-icon">✍️</span> <label for="wcText">Your Text</label></h3>
+      <div class="wc-actions">
+        <button type="button" class="wc-btn" id="wcCopy">Copy text</button>
+        <button type="button" class="wc-btn" id="wcClear">Clear text</button>
+        <button type="button" class="wc-btn wc-undo" id="wcUndo" hidden>Undo clear</button>
+      </div>
+    </div>
+    <textarea id="wcText" rows="12" spellcheck="true" placeholder="Type or paste your text here. Counts update as you type."></textarea>
+    <div class="wc-selection" id="wcSelection" aria-live="polite"></div>
+  </div>
+
+  <!-- Live counts -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">📊</span> Counts</h3>
+    <div class="wc-stats" aria-live="polite">
+      <div class="wc-stat wc-main"><div class="wc-val" id="stWords">0</div><div class="wc-lab">Words</div></div>
+      <div class="wc-stat wc-main"><div class="wc-val" id="stChars">0</div><div class="wc-lab">Characters</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stCharsNs">0</div><div class="wc-lab">Characters (no spaces)</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stSent">0</div><div class="wc-lab">Sentences</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stPara">0</div><div class="wc-lab">Paragraphs</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stUniq">0</div><div class="wc-lab">Unique words</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stRead">0 sec</div><div class="wc-lab">Reading time</div></div>
+      <div class="wc-stat"><div class="wc-val" id="stSpeak">0 sec</div><div class="wc-lab">Speaking time</div></div>
+    </div>
+  </div>
+
+  <!-- Limits -->
+  <div class="tool-card">
+    <h3><span class="tc-icon">🎯</span> Limit Check</h3>
+    <div class="wc-limits">
+      <div class="wc-limit">
+        <label for="wcWordLimit">Word limit</label>
+        <input type="number" id="wcWordLimit" min="1" inputmode="numeric" placeholder="e.g. 650">
+        <div class="wc-bar"><div class="wc-fill" id="wcWordFill"></div></div>
+        <div class="wc-limit-msg" id="wcWordMsg">Enter a number to track it.</div>
+      </div>
+      <div class="wc-limit">
+        <label for="wcCharLimit">Character limit</label>
+        <input type="number" id="wcCharLimit" min="1" inputmode="numeric" placeholder="e.g. 160">
+        <div class="wc-bar"><div class="wc-fill" id="wcCharFill"></div></div>
+        <div class="wc-limit-msg" id="wcCharMsg">Enter a number to track it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top words -->
+  <div class="tool-card">
+    <div class="wc-head">
+      <h3><span class="tc-icon">🔑</span> Top Words</h3>
+      <label class="wc-check"><input type="checkbox" id="wcSkipCommon" checked> Skip common words</label>
+    </div>
+    <ol class="wc-top" id="wcTop"><li class="wc-empty">Your 10 most-used words will appear here.</li></ol>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <section class="seo-section i2p-copy">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Counts checked against hand-counted samples</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+
+    <h2>What Does the Word &amp; Character Counter Do?</h2>
+    <p class="lead">PDFdukan's free word &amp; character counter online counts words, characters with and without spaces, sentences and paragraphs while you type or paste. It also estimates reading and speaking time, tracks a word or character limit, and lists your most-used words. Your text never leaves your browser.</p>
+
+    <h3>How Do I Count Words and Characters?</h3>
+    <p>Counting takes three steps:</p>
+    <ol>
+      <li><span><strong>Add your text.</strong> Type or paste into Your Text. Every count updates as you go.</span></li>
+      <li><span><strong>Set a limit.</strong> Enter a Word limit or Character limit to see how much room is left.</span></li>
+      <li><span><strong>Review and copy.</strong> Check Top Words for repeats, then tap Copy text.</span></li>
+    </ol>
+
+    <h3>How Does the Counter Count?</h3>
+    <p>What each number includes:</p>
+    <div style="overflow-x:auto"><table class="i2p-table">
+      <tbody>
+        <tr><th scope="row">Words</th><td>"Don't", "e-mail" and "1,000" each count as one word</td></tr>
+        <tr><th scope="row">Characters</th><td>Letters, numbers, spaces and line breaks; an emoji counts as one</td></tr>
+        <tr><th scope="row">Sentences</th><td>End at . ! or ?; common abbreviations like "Dr." are skipped</td></tr>
+        <tr><th scope="row">Paragraphs</th><td>Every line that has text</td></tr>
+        <tr><th scope="row">Reading time</th><td>238 words per minute, from a 2019 reading study</td></tr>
+        <tr><th scope="row">Speaking time</th><td>183 words per minute, the same study's read-aloud rate</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>When Do People Check a Count?</h3>
+    <p>Common reasons to check a count:</p>
+    <ul>
+      <li>A college application essay with a word limit.</li>
+      <li>A meta description or social post with a character cap.</li>
+      <li>A cover letter that must fit one page.</li>
+    </ul>
+
+    <h3>Is My Text Saved or Uploaded?</h3>
+    <p>No. The counter runs in your browser and keeps nothing, so refreshing the page clears your text.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is the word counter free?</button></h3><div class="faq-a"><p>Yes, the counter is free with no sign-up and no length cap.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do spaces count as characters?</button></h3><div class="faq-a"><p>Yes in Characters, no in Characters (no spaces).</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why does another site show a different count?</button></h3><div class="faq-a"><p>Counters treat emoji, links and hyphens differently. Always check the count where you post.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I count only part of my text?</button></h3><div class="faq-a"><p>Yes. Select part of it to see that part's words and characters.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it count Chinese or Japanese words?</button></h3><div class="faq-a"><p>Characters, yes. Word counts are not accurate, because those languages don't put spaces between words.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it show keyword density?</button></h3><div class="faq-a"><p>Yes. Top Words lists your 10 most-used words with each one's share.</p></div></div>
+  </section>
+
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20260825i"></script>
+<script src="../js/tools.js?v=20260825i"></script>
+<script src="../js/word-counter.js?v=20261105"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+
+<!-- Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="pdf-text-extractor.html" class="related-tool-card"><span class="rtc-icon">📄</span>PDF Text Extractor</a>
+      <a href="ocr.html" class="related-tool-card"><span class="rtc-icon">🔍</span>OCR Text</a>
+      <a href="pdf-to-word.html" class="related-tool-card"><span class="rtc-icon">📝</span>PDF to Word</a>
+      <a href="word-to-pdf.html" class="related-tool-card"><span class="rtc-icon">📃</span>Word to PDF</a>
+  </div>
+</section>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/img-to-pdf.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/split-pdf.html">Split PDF</a>
+        <a href="../tools/compress-pdf.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word.html">PDF to Word</a>
+        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>
