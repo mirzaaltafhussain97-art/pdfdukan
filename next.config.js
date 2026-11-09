@@ -70,8 +70,8 @@ const nextConfig = {
       { source: '/tools/word-to-pdf.html', destination: '/tools/word-to-pdf-converter.html', permanent: true },
       { source: '/pdf-to-excel', destination: '/tools/pdf-to-excel.html', permanent: true },
       { source: '/pdf-to-ppt', destination: '/tools/pdf-to-ppt.html', permanent: true },
-      { source: '/rotate-pdf', destination: '/tools/pdf-organizer.html', permanent: true },
-      { source: '/reorder-pdf', destination: '/tools/pdf-organizer.html', permanent: true },
+      { source: '/rotate-pdf', destination: '/tools/organize-pdf-pages-online.html', permanent: true },
+      { source: '/reorder-pdf', destination: '/tools/organize-pdf-pages-online.html', permanent: true },
       { source: '/unlock-pdf', destination: '/tools/unlock-pdf.html', permanent: true },
       { source: '/smart-scan', destination: '/scanner.html', permanent: true },
       { source: '/tools/img-to-pdf.html', destination: '/tools/image-to-pdf-converter.html', permanent: true },
@@ -81,6 +81,7 @@ const nextConfig = {
       { source: '/crop-pdf', destination: '/tools/crop-pdf-online.html', permanent: true },
       { source: '/tools/pdf-to-img.html', destination: '/tools/pdf-to-image-converter.html', permanent: true },
       { source: '/tools/compress-pdf.html', destination: '/tools/compress-pdf-reduce-file-size.html', permanent: true },
+      { source: '/tools/pdf-organizer.html', destination: '/tools/organize-pdf-pages-online.html', permanent: true },
       { source: '/pdf-to-image', destination: '/tools/pdf-to-image-converter.html', permanent: true },
       { source: '/image-compressor', destination: '/tools/image-compress-resize.html', permanent: true },
       { source: '/searchable-pdf', destination: '/tools/searchable-pdf.html', permanent: true },
@@ -126,7 +127,7 @@ const nextConfig = {
       // Closely overlapping page-management tools now live in one organizer.
       ...['rotate-pdf', 'reorder-pdf', 'delete-pages'].map(t => ({
         source: `/tools/${t}.html`,
-        destination: '/tools/pdf-organizer.html',
+        destination: '/tools/organize-pdf-pages-online.html',
         permanent: true,
       })),
       // Keep the more complete faraid implementation as the single calculator.

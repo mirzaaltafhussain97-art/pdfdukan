@@ -73,8 +73,8 @@ Redirect 301 /tools/pdf-to-word.html /tools/pdf-to-word-converter.html
 Redirect 301 /word-to-pdf /tools/word-to-pdf-converter.html
 Redirect 301 /pdf-to-excel /tools/pdf-to-excel.html
 Redirect 301 /pdf-to-ppt /tools/pdf-to-ppt.html
-Redirect 301 /rotate-pdf /tools/pdf-organizer.html
-Redirect 301 /reorder-pdf /tools/pdf-organizer.html
+Redirect 301 /rotate-pdf /tools/organize-pdf-pages-online.html
+Redirect 301 /reorder-pdf /tools/organize-pdf-pages-online.html
 Redirect 301 /unlock-pdf /tools/unlock-pdf.html
 Redirect 301 /smart-scan /scanner.html
 Redirect 301 /image-compressor /tools/compress.html
@@ -108,6 +108,7 @@ Redirect 301 /tools/crop-pdf.html /tools/crop-pdf-online.html
 Redirect 301 /crop-pdf /tools/crop-pdf-online.html
 Redirect 301 /tools/pdf-to-img.html /tools/pdf-to-image-converter.html
 Redirect 301 /tools/compress-pdf.html /tools/compress-pdf-reduce-file-size.html
+Redirect 301 /tools/pdf-organizer.html /tools/organize-pdf-pages-online.html
 Redirect 301 /pdf-to-image /tools/pdf-to-image-converter.html
 Redirect 301 /tools/word-to-pdf.html /tools/word-to-pdf-converter.html
 
