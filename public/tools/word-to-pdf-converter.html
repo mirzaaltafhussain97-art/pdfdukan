@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Word to PDF Converter – Free Online DOCX to PDF | PDFdukan</title>
+<meta name="description" content="Free Word to PDF converter online: turn DOCX into a PDF in seconds that keeps your layout, fonts and page numbers. No upload, no sign-up, no watermark.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/word-to-pdf-converter.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/word-to-pdf-converter.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/word-to-pdf-converter.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/word-to-pdf-converter.html">
+<meta property="og:title" content="Word to PDF Converter – Free Online DOCX to PDF | PDFdukan">
+<meta property="og:description" content="Free Word to PDF converter online: turn DOCX into a PDF in seconds that keeps your layout, fonts and page numbers. No upload, no sign-up, no watermark.">
+<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Word to PDF Converter – Free Online DOCX to PDF | PDFdukan">
+<meta name="twitter:description" content="Free Word to PDF converter online: turn DOCX into a PDF in seconds that keeps your layout, fonts and page numbers. No upload, no sign-up, no watermark.">
+<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<!-- JSZip reads DOCX metadata locally; pdf-lib normalises fitted pages back to the source paper size. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<style>
+[hidden]{display:none!important}
+.tool-hero.w2p-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.w2p-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.w2p-hero .tool-feature-visual{display:block;width:100%;height:auto;max-height:200px;object-fit:contain;border-radius:12px;position:relative;z-index:1}
+@media(min-width:721px){.tool-hero.w2p-hero .tool-hero-icon{margin:0 0 14px}}
+@media(max-width:720px){.tool-hero.w2p-hero{grid-template-columns:1fr;text-align:center}.tool-hero.w2p-hero .tool-feature-visual{max-height:160px}}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.drop-zone.w2p-has{padding:16px}.drop-zone.w2p-has .dz-icon{display:none}
+.w2p-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.w2p-file{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.w2p-ext{font-size:11px;font-weight:800;color:#fff;background:#1565c0;border-radius:6px;padding:4px 6px;min-width:38px;text-align:center}
+.w2p-ext.w2p-pdf{background:#d32f2f}
+.w2p-info{flex:1;min-width:0}.w2p-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.w2p-meta{font-size:12px;color:var(--text-3)}
+.w2p-x{background:none;border:1px solid var(--border);color:var(--text-2);border-radius:6px;padding:4px 9px;cursor:pointer}
+.p2w-checks{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:12px;font-size:14px;color:var(--text-2)}.p2w-checks label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.p2w-run-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.w2p-engine{margin:12px 0 0;font-size:12px;color:var(--text-3)}
+.w2p-why{font-size:14px;color:var(--text-2);line-height:1.6;margin:0 0 12px}
+.w2p-preview{width:100%;height:520px;border:1px solid var(--border);border-radius:10px;margin-top:14px;background:#fff}
+@media(max-width:600px){.w2p-preview{height:380px}}
+.cz-warn{margin:12px 0 0;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5}
+.w2p-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.w2p-big{font-size:16px;padding:14px 26px;min-height:52px}
+.pd-loader-cancel{margin-top:6px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);border-radius:8px;padding:6px 14px;cursor:pointer}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Word to PDF Converter", "item": "https://pdfdukan.com/tools/word-to-pdf-converter.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Word to PDF Converter", "url": "https://pdfdukan.com/tools/word-to-pdf-converter.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Free Word to PDF converter online: turn DOCX into a PDF in seconds that keeps your layout, fonts and page numbers. No upload, no sign-up, no watermark.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this Word to PDF converter free online for DOCX to PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan converts DOCX to PDF free, with no sign-up, no watermark and no daily cap."}}, {"@type": "Question", "name": "Can I convert an old .doc file?", "acceptedAnswer": {"@type": "Answer", "text": "Not directly. Open it in Word, choose File > Save As > Word Document (.docx), then add the new file here."}}, {"@type": "Question", "name": "Does it work with Urdu Word files?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Urdu and Arabic paragraphs stay right to left, and Jameel Noori Nastaleeq text keeps a Nastaleeq look."}}, {"@type": "Question", "name": "Can I merge several Word files into one PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Add up to 10 files, then click Combine into one PDF; the files join in the order shown."}}, {"@type": "Question", "name": "Why do the fonts look different in my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Your device doesn't have that font, so a close match with the same size is used and lines can move slightly."}}, {"@type": "Question", "name": "How do I edit the PDF later?", "acceptedAnswer": {"@type": "Answer", "text": "Edit the Word file and convert again. To turn a PDF into Word, use PDF to Word."}}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-07T00:00:00+05:00">
+</head>
+<body data-tool="word-to-pdf-converter">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/inheritance-calc-advanced.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Word to PDF Converter</span>
+  </nav>
+
+  <div class="tool-hero w2p-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📄</div>
+      <h1>Word to PDF Converter – Free Online DOCX to PDF</h1>
+      <p>Turn DOCX or TXT files into PDFs in seconds, with your page size, fonts, headers and page numbers. Everything runs in your browser, so files stay with you.</p>
+      <p class="i2p-trust">Free · No sign-up · No upload · No watermark</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/word-to-pdf.svg" alt="A Word DOCX page turning into a PDF page" width="720" height="420" loading="eager">
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <div class="tool-card" id="w2pUpload">
+    <h3><span class="tc-icon">📂</span> Add Word files</h3>
+    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-controls="fileInput" aria-label="Choose Word files to convert to PDF">
+      <div class="dz-icon">📝</div>
+      <div class="dz-title">Drop Word files here, or click to browse</div>
+      <div class="dz-hint">DOCX or TXT · up to 10 files · 50 MB each · converts right away</div>
+      <span class="dz-btn">Choose Files</span>
+      <input type="file" id="fileInput" multiple accept=".docx,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+    </div>
+  </div>
+
+  <div class="tool-card" id="resultSection" style="display:none">
+    <h3><span class="tc-icon">✅</span> Your PDF is ready</h3>
+    <div class="w2p-actions">
+      <button class="btn btn-primary w2p-big" id="w2pDownloadMain" type="button">⬇️ Download PDF</button>
+      <button class="btn btn-secondary" id="w2pCombine" type="button" hidden>Combine into one PDF</button>
+      <button class="btn btn-secondary" id="w2pSmaller" type="button" hidden>Make the file smaller</button>
+      <button class="btn btn-secondary" id="w2pAgain" type="button">Convert another file</button>
+    </div>
+    <div class="w2p-list" id="w2pResults"></div>
+    <p class="cz-warn" id="w2pResultNote" hidden></p>
+    <iframe class="w2p-preview" id="pdfPreview" title="Preview of the converted PDF"></iframe>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+
+
+  <div style="max-width:800px;margin:0 auto 18px;padding:12px 18px;border:1px solid var(--border);border-radius:10px;background:var(--card);font-size:14px">📖 <strong>Related guide:</strong> <a href="../blog/pdf-vs-word.html" style="color:var(--primary);font-weight:600">PDF vs Word: Which Format Should You Use? →</a></div>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 6 Word files</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Does This Word to PDF Converter Do?</h2>
+    <p class="lead">PDFdukan's Word to PDF converter turns DOCX and TXT files into PDFs for free, in a few seconds. It reads your Word file inside the browser and lays each page out with the file's own page size, margins, fonts, line spacing, headers, footers and page numbers.</p>
+    <p>You check the PDF in a preview before downloading, and nothing is uploaded to a server or saved by us.</p>
+
+    <h3>How Do I Convert DOCX to PDF Online?</h3>
+    <p>Three steps take a Word file to a PDF you can send:</p>
+    <ol>
+      <li><span><strong>Add files.</strong> Click Choose Files or drop up to 10 Word files; conversion starts at once.</span></li>
+      <li><span><strong>Wait a moment.</strong> Most files are ready in 2 to 5 seconds; long reports take a little longer.</span></li>
+      <li><span><strong>Download.</strong> Check the preview, then click Download PDF, Download all (ZIP) or Combine into one PDF.</span></li>
+    </ol>
+
+    <h3>What Does the Converter Keep From Your Word File?</h3>
+    <p>Each page follows the settings saved in your Word file:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Page setup</h4><p>Letter, A4, Legal or custom sizes, landscape pages and margins match the document settings.</p></div>
+      <div class="i2p-card"><h4>Text and fonts</h4><p>Bold, colors, headings, bullets and Urdu or Arabic right-to-left text stay; missing fonts get a close match.</p></div>
+      <div class="i2p-card"><h4>Tables and images</h4><p>Table borders, shaded cells, pictures and logos stay in place, and pages never cut through a picture.</p></div>
+      <div class="i2p-card"><h4>Headers and page numbers</h4><p>Header and footer text and page numbers print on every page, as set in the file.</p></div>
+    </div>
+
+    <h3>Which Files and Limits Does It Support?</h3>
+    <p>These limits apply to each conversion run:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>DOCX (Word 2007 and later) or TXT</td></tr>
+        <tr><th scope="row">Files</th><td>Up to 10 per run, 50 MB each</td></tr>
+        <tr><th scope="row">Output</th><td>One PDF per file, a ZIP, or one combined PDF</td></tr>
+        <tr><th scope="row">Devices</th><td>Chrome, Edge, Firefox or Safari, on computers and phones</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Who Uses a Free DOCX to PDF Converter?</h3>
+    <p>Common jobs include:</p>
+    <ul>
+      <li>Job seekers sending a resume and cover letter as one PDF</li>
+      <li>Students uploading an assignment to a school portal that only takes PDF</li>
+      <li>Landlords turning a lease template into a file tenants can't edit</li>
+    </ul>
+
+    <h3>How Do You Get a PDF That Matches Word?</h3>
+    <p>Use common fonts like Calibri, Arial or Times New Roman; a rare font missing on your device is swapped and lines can move. Check page breaks in the preview, and click Make the file smaller before emailing a long PDF.</p>
+
+    <h3>Is My Word File Uploaded During Conversion?</h3>
+    <p>No. PDFdukan converts the file inside your browser. Only open-source helper scripts such as <a href="https://github.com/VolodymyrBaydalka/docxjs" target="_blank" rel="noopener">docx-preview</a> and <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a>, plus fonts, load from a public CDN; your document never leaves your device.</p>
+
+    <h3>What Can't This Word to PDF Tool Do?</h3>
+    <p>PDFdukan can't open old .doc, ODT or RTF files, password-protected files or macros; save them as DOCX in Word first. Text boxes, charts and Word table styles can look slightly different. Text in the PDF can be searched, but pages are stored as images. To shrink the PDF, use <a href="compress-pdf-reduce-file-size.html">Compress PDF</a>.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this Word to PDF converter free online for DOCX to PDF?</button></h3><div class="faq-a"><p>Yes. PDFdukan converts DOCX to PDF free, with no sign-up, no watermark and no daily cap.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert an old .doc file?</button></h3><div class="faq-a"><p>Not directly. Open it in Word, choose File &gt; Save As &gt; Word Document (.docx), then add the new file here.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work with Urdu Word files?</button></h3><div class="faq-a"><p>Yes. Urdu and Arabic paragraphs stay right to left, and Jameel Noori Nastaleeq text keeps a Nastaleeq look.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I merge several Word files into one PDF?</button></h3><div class="faq-a"><p>Yes. Add up to 10 files, then click Combine into one PDF; the files join in the order shown.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why do the fonts look different in my PDF?</button></h3><div class="faq-a"><p>Your device doesn't have that font, so a close match with the same size is used and lines can move slightly.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I edit the PDF later?</button></h3><div class="faq-a"><p>Edit the Word file and convert again. To turn a PDF into Word, use <a href="pdf-to-word-converter.html">PDF to Word</a>.</p></div></div>
+</section>
+
+<nav class="mobile-nav">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+  </div>
+</nav>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js?v=20260825i"></script>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/word-to-pdf.js?v=20261109b"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>

@@ -97,7 +97,9 @@
   <a href="/" class="mnd-link">🏠 Home</a>
   <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
   <a href="/" class="mnd-link active">📝 Blog</a>
-  <a href="../tools/ocr.html" class="mnd-link">🔤 OCR Tool</a>
+  <a href="../tools/ocr-image-to-text.html" class="mnd-link">🔤 OCR Tool</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
   <a href="../scanner.html" class="mnd-link">📷 Scanner</a>
 </div>
 
@@ -121,7 +123,7 @@
     <span class="am-date">By PDFdukan Team</span>
   </div>
 
-  <p>Optical Character Recognition — OCR — converts text visible in images into machine-readable characters. Results vary widely with the language model, typeface, handwriting, resolution, contrast, skew and page layout. Understanding the pipeline helps you improve inputs and recognize when manual correction is necessary. This guide explains practical factors for using <a href="../tools/ocr.html" style="color:var(--primary)">PDFdukan's browser OCR tool</a>.</p>
+  <p>Optical Character Recognition — OCR — converts text visible in images into machine-readable characters. Results vary widely with the language model, typeface, handwriting, resolution, contrast, skew and page layout. Understanding the pipeline helps you improve inputs and recognize when manual correction is necessary. This guide explains practical factors for using <a href="../tools/ocr-image-to-text.html" style="color:var(--primary)">PDFdukan's browser OCR tool</a>.</p>
 
   <h2>1. A Brief History of OCR</h2>
 
@@ -178,7 +180,7 @@
 
   <p>Many OCR services upload a document for server processing. Tesseract.js instead wraps the Tesseract engine for JavaScript and WebAssembly so recognition can run inside a browser worker. Browser-based processing avoids intentionally sending the selected image to PDFdukan's server, but it can use substantial device memory and CPU.</p>
 
-  <p>When you use the <a href="../tools/ocr.html" style="color:var(--primary)">PDFdukan OCR tool</a>, the browser downloads Tesseract.js code and the selected language data from configured third-party CDNs. Recognition then runs locally in a worker. The workflow does not intentionally upload the selected image pixels, but CDN providers still receive ordinary network request data such as an IP address. Review the <a href="../privacy.html" style="color:var(--primary)">privacy policy</a> and avoid processing material you are not authorised to handle.</p>
+  <p>When you use the <a href="../tools/ocr-image-to-text.html" style="color:var(--primary)">PDFdukan OCR tool</a>, the browser downloads Tesseract.js code and the selected language data from configured third-party CDNs. Recognition then runs locally in a worker. The workflow does not intentionally upload the selected image pixels, but CDN providers still receive ordinary network request data such as an IP address. Review the <a href="../privacy.html" style="color:var(--primary)">privacy policy</a> and avoid processing material you are not authorised to handle.</p>
 
   <div class="tip-box">
     <strong>💡 Language Selection:</strong> Always choose the correct language before running OCR. The LSTM model uses language-specific character frequency data and common word patterns to resolve ambiguous characters. Selecting "English" for an Arabic document will produce garbage output — the engine will attempt to interpret Arabic glyphs as Latin characters.
@@ -235,7 +237,7 @@
   <p>An off-angle camera photo may recognise poorly. Use <a href="../scanner.html" style="color:var(--primary)">CamMaster's document scanner</a> to correct the page boundary, choose a suitable filter and export a high-quality image. Then try that JPG or PNG in OCR. Compare the result with the raw image because aggressive contrast can remove faint characters.</p>
 
   <div class="tip-box">
-    <strong>💡 Two-Step Workflow:</strong> (1) Correct the photographed page in CamMaster and export it as JPG or lossless PNG. (2) Upload that image to the <a href="../tools/ocr.html" style="color:var(--primary)">OCR tool</a>, choose the language/layout, and compare Original pixels with Document contrast. The better result depends on the source.
+    <strong>💡 Two-Step Workflow:</strong> (1) Correct the photographed page in CamMaster and export it as JPG or lossless PNG. (2) Upload that image to the <a href="../tools/ocr-image-to-text.html" style="color:var(--primary)">OCR tool</a>, choose the language/layout, and compare Original pixels with Document contrast. The better result depends on the source.
   </div>
 
   <h3>Resolution vs. File Size Trade-off</h3>
@@ -265,7 +267,7 @@
   <div class="article-cta">
     <h3>🔤 Try Free OCR Image to Text</h3>
     <p>Extract editable text from one JPG, PNG or WEBP image. Choose from 15 single-language models or the listed English/Urdu and English/Arabic mixed modes, then edit, copy or download the result.</p>
-    <a href="https://pdfdukan.com/tools/ocr.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Try Free OCR Tool →</a>
+    <a href="https://pdfdukan.com/tools/ocr-image-to-text.html" style="display:inline-block;margin-top:12px;background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:700;text-decoration:none">Try Free OCR Tool →</a>
   </div>
 
   <div class="tip-box">
@@ -329,16 +331,16 @@
       <div class="footer-col">
         <h4>Scanner</h4>
         <a href="../scanner.html">CamMaster Scanner</a>
-        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
         <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="../tools/merge-pdf.html">Merge PDF</a>
         <a href="../tools/extract-pdf-pages.html">Split PDF</a>
-        <a href="../tools/compress-pdf.html">Compress PDF</a>
-        <a href="../tools/pdf-to-word.html">PDF to Word</a>
-        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
       </div>
       <div class="footer-col">
         <h4>Company</h4>

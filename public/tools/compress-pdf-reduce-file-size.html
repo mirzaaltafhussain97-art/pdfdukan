@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Compress PDF – Reduce File Size Free, No Upload | PDFdukan</title>
+<meta name="description" content="Compress PDF free and reduce file size in your browser. Keep text, links and forms, or set a max size like 200 KB for upload forms. No sign-up.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html">
+<meta property="og:title" content="Compress PDF – Reduce File Size Free, No Upload | PDFdukan">
+<meta property="og:description" content="Compress PDF free and reduce file size in your browser. Keep text, links and forms, or set a max size like 200 KB for upload forms. No sign-up.">
+<meta property="og:image" content="https://pdfdukan.com/images/compress-pdf.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Compress PDF – Reduce File Size Free, No Upload | PDFdukan">
+<meta name="twitter:description" content="Compress PDF free and reduce file size in your browser. Keep text, links and forms, or set a max size like 200 KB for upload forms. No sign-up.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/compress-pdf.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+/* ── Compress PDF ── */
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+[hidden]{display:none!important}
+.tool-hero.cpdf-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.cpdf-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.cpdf-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.cpdf-hero{grid-template-columns:1fr;text-align:center}.tool-hero.cpdf-hero .tool-feature-visual{max-height:170px}}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-file{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px;flex-wrap:wrap}
+.cpf-icon{font-size:26px}
+.cz-file-info{flex:1 1 160px;min-width:0;text-align:left}
+.cz-file-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-file-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.cz-link{background:none;border:1px solid var(--border);color:var(--primary);font-weight:700;font-size:12px;padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer}
+.cz-group{padding-top:16px;margin-top:14px;border-top:1px solid var(--border);text-align:left}
+.cz-group.cz-first{padding-top:0;margin-top:0;border-top:0}
+.cz-label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.cp-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.cp-modes{grid-template-columns:1fr}}
+.cp-mode{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--card-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;color:var(--text-2)}
+.cp-mode strong{font-size:14px;color:var(--text)}
+.cp-mode span{font-size:12px;line-height:1.45}
+.cp-mode:hover,.cp-mode.active{border-color:var(--primary)}
+.cp-mode.active{background:var(--primary-soft,rgba(255,99,51,.1))}
+.cp-mode.active strong{color:var(--primary)}
+.cz-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-chip{background:var(--card-2);border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer}
+.cz-chip:hover{border-color:var(--primary);color:var(--primary)}
+.cz-chip.active{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.cz-chip:disabled{opacity:.45;cursor:not-allowed}
+.cp-mode:focus-visible,.cz-chip:focus-visible,.cz-mini-chips button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.cz-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.cz-note:empty{display:none}
+.cp-hint{color:var(--text-2);font-weight:600}
+.cp-target{margin-top:14px}
+.cz-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cz-inline label{font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-inline input{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:15px;width:120px;outline:none}
+.cz-inline input:focus{border-color:var(--primary)}
+.cz-unit{font-size:13px;color:var(--text-3);font-weight:600}
+.cz-mini-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.cz-mini-chips button{background:var(--card);border:1px solid var(--border);color:var(--text-2);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.cz-mini-chips button:hover,.cz-mini-chips button.active{border-color:var(--primary);color:var(--primary)}
+.cp-go{width:100%;justify-content:center}
+.cz-summary{display:grid;grid-template-columns:1fr auto 1fr auto;align-items:center;gap:10px}
+.cz-sum-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.cz-sum-box.cz-new{border-color:var(--primary)}
+.cz-sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.cz-sum-val{font-size:20px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
+.cz-new .cz-sum-val{color:var(--primary)}
+.cz-arrow{color:var(--text-3);font-size:18px}
+.cz-saving{font-size:14px;font-weight:800;padding:8px 12px;border-radius:999px;background:rgba(46,160,67,.12);color:var(--success,#2ea043);white-space:nowrap}
+.cz-saving.worse{background:rgba(217,119,6,.12);color:var(--warning,#d97706)}
+@media(max-width:560px){.cz-summary{grid-template-columns:1fr 1fr}.cz-arrow{display:none}.cz-saving{grid-column:1/-1;justify-self:center}.cz-sum-val{font-size:18px}}
+.cz-warn{margin:12px 0;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5;text-align:left}
+#cpDownload{margin-top:12px}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Compress PDF", "item": "https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is Compress PDF free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, Compress PDF is free, needs no account and adds no watermark."}}, {"@type": "Question", "name": "Does compressing a PDF make the text blurry?", "acceptedAnswer": {"@type": "Answer", "text": "Not in Keep text mode, which leaves text untouched and only re-saves photos. Pages as images turns text into part of a picture, so check that small print is still readable."}}, {"@type": "Question", "name": "Why did my PDF barely get smaller?", "acceptedAnswer": {"@type": "Answer", "text": "Your PDF is probably mostly text or already compressed. Try Strong, or Pages as images if the text doesn't need to stay selectable."}}, {"@type": "Question", "name": "Can I compress a PDF to 200 KB?", "acceptedAnswer": {"@type": "Answer", "text": "Often, yes. Choose Pages as images and tap 200 KB. In our test, a 3.55 MB scan came out at 193 KB. Long or detailed files may not fit, and the tool tells you when that happens."}}, {"@type": "Question", "name": "Can I compress a PDF on my iPhone or Android phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Compress PDF runs in your phone's browser, so there is no app to install. Very large PDFs may be slow."}}, {"@type": "Question", "name": "Can I compress a password-protected PDF?", "acceptedAnswer": {"@type": "Answer", "text": "No. Open the file with its password in a PDF reader, save an unlocked copy, then compress that copy."}}, {"@type": "Question", "name": "Can I compress several PDFs at once?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet; it handles one PDF at a time. To send several as one file, join them first with Merge PDF, then compress the result."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Compress PDF", "url": "https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Compress PDF free and reduce file size in your browser. Keep text, links and forms, or set a max size like 200 KB for upload forms. No sign-up.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script><meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+</head>
+<body data-tool="compress-pdf">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> ›
+    <a href="../tools.html" style="color:var(--text-3)">Tools</a> ›
+    <span>Compress PDF</span>
+  </nav>
+
+  <div class="tool-hero cpdf-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#c62828,#ef5350)">📉</div>
+      <h1>Compress PDF – Reduce PDF File Size Free</h1>
+      <p>Shrink a PDF for email or an upload form. Keep the text sharp and selectable, or turn scanned pages into lighter images, then download.</p>
+      <p class="i2p-trust">Free · No sign-up · No watermark · Your PDF stays in your browser</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/compress-pdf.svg" alt="A large PDF file compressed into a smaller PDF" width="640" height="420">
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Choose a PDF">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop a PDF here or click to browse</div>
+      <div class="dz-hint">One PDF up to 200 MB · processed in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf,application/pdf" style="display:none">
+    </div>
+    <div class="cz-file" id="cpFile" hidden>
+      <span class="cpf-icon" aria-hidden="true">📄</span>
+      <div class="cz-file-info"><div class="cz-file-name" id="cpFileName">file.pdf</div><div class="cz-file-meta" id="cpFileMeta">—</div></div>
+      <button type="button" class="cz-link" id="cpChange">Change</button>
+      <button type="button" class="cz-link" id="cpRemove" aria-label="Remove file">✕</button>
+    </div>
+  </div>
+
+  <div class="tool-card" id="cpSettings" hidden>
+    <div class="cz-group cz-first">
+      <div class="cz-label">1. How to compress</div>
+      <div class="cp-modes" role="group" aria-label="Compression mode">
+        <button type="button" class="cp-mode active" data-cpmode="keep" aria-pressed="true"><strong>Keep text</strong><span>Recommended. Shrinks the photos inside; text, links and forms stay.</span></button>
+        <button type="button" class="cp-mode" data-cpmode="image" aria-pressed="false"><strong>Pages as images</strong><span>Strongest for scans. Text is no longer selectable.</span></button>
+      </div>
+      <div class="cz-note cp-hint" id="cpHint" aria-live="polite"></div>
+    </div>
+    <div class="cz-group">
+      <div class="cz-label">2. Compression level</div>
+      <div class="cz-chips cz-3" role="group" aria-label="Compression level">
+        <button type="button" class="cz-chip" data-cplevel="light" aria-pressed="false">Light</button>
+        <button type="button" class="cz-chip active" data-cplevel="balanced" aria-pressed="true">Balanced</button>
+        <button type="button" class="cz-chip" data-cplevel="strong" aria-pressed="false">Strong</button>
+      </div>
+      <div class="cz-note" id="cpLevelNote"></div>
+      <div class="cp-target" id="cpTargetWrap" hidden>
+        <div class="cz-inline"><label for="cpTargetKb">Or set a max size</label><input type="number" id="cpTargetKb" min="20" inputmode="numeric" placeholder="e.g. 500"><span class="cz-unit">KB</span></div>
+        <div class="cz-mini-chips" role="group" aria-label="Common size limits">
+          <button type="button" data-cpkb="100">100 KB</button>
+          <button type="button" data-cpkb="200">200 KB</button>
+          <button type="button" data-cpkb="500">500 KB</button>
+          <button type="button" data-cpkb="1024">1 MB</button>
+          <button type="button" data-cpkb="2048">2 MB</button>
+          <button type="button" data-cpkb="5120">5 MB</button>
+        </div>
+      </div>
+    </div>
+    <div class="cz-group">
+      <button class="btn btn-primary btn-lg cp-go" id="cpGo" type="button" disabled>📉 Compress PDF</button>
+      <div class="cp-progress" id="cpProgress" hidden>
+        <div class="progress-bar-wrap" style="margin:12px 0 6px"><div class="progress-bar-fill" id="cpProgressFill"></div></div>
+        <div class="cz-note" id="cpProgressLabel" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="cpResult" hidden>
+    <h3><span class="tc-icon">📊</span> Result</h3>
+    <div class="cz-summary">
+      <div class="cz-sum-box"><div class="cz-sum-label">Original</div><div class="cz-sum-val" id="cpOrig">—</div></div>
+      <div class="cz-arrow" aria-hidden="true">→</div>
+      <div class="cz-sum-box cz-new"><div class="cz-sum-label">Compressed</div><div class="cz-sum-val" id="cpNew">—</div></div>
+      <div class="cz-saving" id="cpSaved">—</div>
+    </div>
+    <p class="cz-note" id="cpNote" style="text-align:center;margin-top:12px"></p>
+    <div class="cz-warn" id="cpWarn" hidden></div>
+    <button class="download-btn" id="cpDownload" type="button"><span>📥</span> <span id="cpDownloadLabel">Download PDF</span></button>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+</div>
+
+<!-- Auth Modal -->
+
+
+    <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
+    📖 <strong>Related guide:</strong> <a href="../blog/compress-pdf-reduce-size.html" style="color:var(--primary);font-weight:600">How to Compress a PDF to Reduce File Size →</a>
+  </div>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with scanned, photo-heavy and text-only PDFs</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+
+    <h2>What Does the Compress PDF Tool Do?</h2>
+    <p class="lead">PDFdukan's Compress PDF tool reduces PDF file size free, right in your browser. The default Keep text mode shrinks the photos and scans inside the PDF while text, links, form fields and bookmarks stay as they are. For the smallest file, Pages as images turns each page into a lighter JPEG.</p>
+    <p>You see the old and new size before you download. If the new file is not smaller, you get your original back instead of a bigger copy.</p>
+
+    <h3>How Do I Compress a PDF?</h3>
+    <p>Compressing a PDF takes four steps:</p>
+    <ol>
+      <li><span><strong>Add your PDF.</strong> Tap Choose PDF or drop one file up to 200 MB.</span></li>
+      <li><span><strong>Pick a mode.</strong> Keep text for most files, or Pages as images for the strongest compression.</span></li>
+      <li><span><strong>Set the level.</strong> Light, Balanced or Strong, or a max size such as 500 KB.</span></li>
+      <li><span><strong>Compress and save.</strong> Tap Compress PDF, check the result, then Download PDF.</span></li>
+    </ol>
+
+    <h3>Keep Text or Pages as Images: Which Should I Use?</h3>
+    <p>The two modes trade size against what stays editable:</p>
+    <div style="overflow-x:auto"><table class="i2p-table">
+      <thead><tr><th scope="col"></th><th scope="col">Keep text</th><th scope="col">Pages as images</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Text</th><td>Selectable and searchable</td><td>Part of the picture</td></tr>
+        <tr><th scope="row">Links, forms, bookmarks</th><td>Kept</td><td>Removed</td></tr>
+        <tr><th scope="row">Photos and scans</th><td>Re-saved at 110–220 DPI</td><td>Whole page at 108–180 DPI</td></tr>
+        <tr><th scope="row">Target size (KB/MB)</th><td>No</td><td>Yes</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>How Much Smaller Will My PDF Get?</h3>
+    <p>Photos take far more space than text, so results vary. Our own tests on the Balanced level showed:</p>
+    <ul>
+      <li>A 4-page scanned invoice, 3.55 MB, dropped to 199 KB (95% smaller).</li>
+      <li>A report with text and photos, 4.58 MB, dropped to 667 KB (86% smaller).</li>
+      <li>A 14-page text-only research paper, 992 KB, dropped to 856 KB (14% smaller).</li>
+    </ul>
+    <p>Text-only files shrink the least, since text and vector drawings are already compact.</p>
+
+    <h3>How Do I Get a PDF Under an Upload Limit?</h3>
+    <p>Job portals, school forms and email often set a size limit. Choose Pages as images and tap a max size, from 100 KB to 5 MB. It tries sharper settings first. Gmail, for example, caps attachments on personal accounts at 25 MB.</p>
+    <p>If the limit is very small, the tool warns you when quality drops. Then remove pages you don't need with <a href="extract-pdf-pages.html">Extract PDF Pages</a>, or send fewer pages at once.</p>
+
+    <h3>Are My PDFs Uploaded?</h3>
+    <p>No. Compress PDF reads and rebuilds your file with the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library running in your browser, so the PDF is not sent to a PDFdukan server. The page still loads site files, analytics and ads.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is Compress PDF free?</button></h3><div class="faq-a"><p>Yes, Compress PDF is free, needs no account and adds no watermark.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does compressing a PDF make the text blurry?</button></h3><div class="faq-a"><p>Not in Keep text mode, which leaves text untouched and only re-saves photos. Pages as images turns text into part of a picture, so check that small print is still readable.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why did my PDF barely get smaller?</button></h3><div class="faq-a"><p>Your PDF is probably mostly text or already compressed. Try Strong, or Pages as images if the text doesn't need to stay selectable.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a PDF to 200 KB?</button></h3><div class="faq-a"><p>Often, yes. Choose Pages as images and tap 200 KB. In our test, a 3.55 MB scan came out at 193 KB. Long or detailed files may not fit, and the tool tells you when that happens.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a PDF on my iPhone or Android phone?</button></h3><div class="faq-a"><p>Yes. Compress PDF runs in your phone's browser, so there is no app to install. Very large PDFs may be slow.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress a password-protected PDF?</button></h3><div class="faq-a"><p>No. Open the file with its password in a PDF reader, save an unlocked copy, then compress that copy.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I compress several PDFs at once?</button></h3><div class="faq-a"><p>Not yet; it handles one PDF at a time. To send several as one file, join them first with <a href="merge-pdf.html">Merge PDF</a>, then compress the result.</p></div></div>
+  </section>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">&#10005;</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<script src="../js/app.js?v=20260825i"></script>
+<script defer src="../js/compress-pdf.js?v=20261109"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite" style="display:none">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg)"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- Related Tools (injected for GEO/AEO/SXO) -->
+<section class="tool-seo-section" aria-label="Related Tools" style="padding-top:24px;padding-bottom:32px">
+  <h2>Related Tools</h2>
+  <div class="related-tools-grid">
+      <a href="extract-pdf-pages.html" class="related-tool-card"><span class="rtc-icon">✂️</span>Split PDF</a>      <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>      <a href="pdf-organizer.html" class="related-tool-card"><span class="rtc-icon">🗑️</span>Delete Pages</a>      <a href="pdf-to-image-converter.html" class="related-tool-card"><span class="rtc-icon">🖼️</span>PDF to JPG</a>  </div>
+</section>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Convert PDF to Image Online Free – JPG, PNG, WebP | PDFdukan</title>
+<meta name="description" content="Convert PDF to image online free. Save pages as JPG, PNG or WebP up to 600 DPI, or pull out the photos inside. Opens locked PDFs too. No sign-up.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/pdf-to-image-converter.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-to-image-converter.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-to-image-converter.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/pdf-to-image-converter.html">
+<meta property="og:title" content="Convert PDF to Image Online Free – JPG, PNG, WebP | PDFdukan">
+<meta property="og:description" content="Convert PDF to image online free. Save pages as JPG, PNG or WebP up to 600 DPI, or pull out the photos inside. Opens locked PDFs too. No sign-up.">
+<meta property="og:image" content="https://pdfdukan.com/images/pdf-to-jpg.svg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Convert PDF to Image Online Free – JPG, PNG, WebP | PDFdukan">
+<meta name="twitter:description" content="Convert PDF to image online free. Save pages as JPG, PNG or WebP up to 600 DPI, or pull out the photos inside. Opens locked PDFs too. No sign-up.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-to-jpg.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+/* ── PDF to Image ── */
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.tool-hero.pdf-image-tool-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);text-align:left;align-items:center;gap:22px}
+.tool-hero.pdf-image-tool-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.pdf-image-tool-hero .tool-feature-visual{display:block;width:100%;max-height:220px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.pdf-image-tool-hero{grid-template-columns:1fr;text-align:center}.tool-hero.pdf-image-tool-hero .tool-feature-visual{max-height:180px}}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-file{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px;flex-wrap:wrap}
+.cpf-icon{font-size:26px}
+.cz-file-info{flex:1 1 160px;min-width:0;text-align:left}
+.cz-file-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-file-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.cz-link{background:none;border:1px solid var(--border);color:var(--primary);font-weight:700;font-size:12px;padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer}
+.cz-link:hover{border-color:var(--primary)}
+.cz-group{padding-top:16px;margin-top:14px;border-top:1px solid var(--border);text-align:left}
+.cz-group.cz-first{padding-top:0;margin-top:0;border-top:0}
+.cz-label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.cp-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.cp-modes{grid-template-columns:1fr}}
+.cp-mode{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--card-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;color:var(--text-2)}
+.cp-mode strong{font-size:14px;color:var(--text)}
+.cp-mode span{font-size:12px;line-height:1.45}
+.cp-mode:hover,.cp-mode.active{border-color:var(--primary)}
+.cp-mode.active{background:var(--primary-soft,rgba(255,99,51,.1))}
+.cp-mode.active strong{color:var(--primary)}
+.cz-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-chip{background:var(--card-2);border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer}
+.cz-chip:hover{border-color:var(--primary);color:var(--primary)}
+.cz-chip.active{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.cp-mode:focus-visible,.cz-chip:focus-visible,.cz-link:focus-visible,.p2-pick:focus-visible,.p2-save:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.cz-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.cz-note:empty{display:none}
+.cz-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cz-inline label{font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-inline input{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:15px;width:170px;max-width:100%;outline:none}
+.cz-inline input:focus{border-color:var(--primary)}
+.cp-go{width:100%;justify-content:center}
+.p2-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:560px){.p2-row{grid-template-columns:1fr}}
+.p2-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.p2-field label,.p2-flabel{font-size:13px;font-weight:600;color:var(--text-2)}
+.p2-field select{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:14px;width:100%}
+.p2-field input[type=range]{width:100%;accent-color:var(--primary)}
+#p2BgWrap{flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}
+.p2-radio{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer;margin-top:12px}
+#p2BgWrap .p2-radio{margin-top:0}
+.p2-pass{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-2);text-align:left}
+.p2-pass p{margin:0 0 8px;font-size:14px;color:var(--text-2)}
+.p2-pass p.p2-bad{color:var(--danger,#d32f2f);font-weight:600}
+.p2-selbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.p2-selcount{font-size:13px;font-weight:700;color:var(--text-2);margin-right:auto}
+.p2-rangebox{margin-bottom:4px}
+.p2-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin-top:10px;max-height:460px;overflow-y:auto;padding:4px 2px}
+.p2-thumb{background:var(--card-2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.p2-thumb.sel{border-color:var(--primary);box-shadow:0 0 0 2px rgba(255,99,51,.25)}
+.p2-pick{position:relative;display:block;background:#fff;border:0;padding:6px;cursor:pointer;min-height:150px}
+.p2-canvas{display:flex;align-items:center;justify-content:center;min-height:140px}
+.p2-canvas canvas{max-width:100%;height:auto;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.p2-check{position:absolute;top:6px;right:6px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:#fff;border:2px solid #cfcfcf;color:transparent;z-index:1}
+.p2-thumb.sel .p2-check{background:var(--primary);border-color:var(--primary);color:#fff}
+.p2-thumb:not(.sel) .p2-canvas{opacity:.55}
+.p2-thumb-foot{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 8px;font-size:12px;font-weight:700;color:var(--text-2)}
+.p2-save{background:none;border:1px solid var(--primary);color:var(--primary);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer}
+.p2-save:hover{background:var(--primary);color:#fff}
+.p2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.p2-stats{grid-template-columns:1fr 1fr}.p2-stats .cz-sum-box:last-child{grid-column:1/-1}}
+.cz-sum-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.cz-sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.cz-sum-val{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cz-warn{margin:12px 0;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5;text-align:left}
+#p2Download{margin-top:12px}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan PDF to Image Converter", "url": "https://pdfdukan.com/tools/pdf-to-image-converter.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Convert PDF to image online free. Save pages as JPG, PNG or WebP up to 600 DPI, or pull out the photos inside. Opens locked PDFs too. No sign-up.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF to Image Converter","item":"https://pdfdukan.com/tools/pdf-to-image-converter.html"}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-07T00:00:00+05:00">
+</head>
+<body data-tool="pdf-to-image">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
+          <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/watermark.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/pdf-organizer.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128295; Calculators</span>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to Image</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/pdf-organizer.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">Calculators</div>
+  <a href="../tools/inheritance-calc-advanced.html" class="mnd-link">&#9770;&#65039; Islamic Inheritance</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>PDF to Image</span>
+  </nav>
+
+  <div class="tool-hero pdf-image-tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#e53935,#ef5350)">🖼️</div>
+      <h1>Convert PDF to Image Online Free – Save as JPG or PNG</h1>
+      <p>Turn PDF pages into JPG, PNG or WebP images at the DPI you choose, or save the photos inside. Download one image or a ZIP.</p>
+      <p class="i2p-trust">Free · No sign-up · No watermark · Your PDF stays in your browser</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/pdf-to-jpg.svg?v=20260825" width="720" height="420" alt="PDF pages turned into separate numbered JPG and PNG image files">
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <div class="tool-card">
+    <h3><span class="tc-icon">📂</span> Upload PDF</h3>
+    <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Choose a PDF">
+      <div class="dz-icon">📄</div>
+      <div class="dz-title">Drop a PDF here or click to browse</div>
+      <div class="dz-hint">One PDF up to 300 MB · locked PDFs open with their password</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="fileInput" accept=".pdf,application/pdf" style="display:none">
+    </div>
+    <div class="cz-file" id="p2File" hidden>
+      <span class="cpf-icon" aria-hidden="true">📄</span>
+      <div class="cz-file-info"><div class="cz-file-name" id="p2FileName">file.pdf</div><div class="cz-file-meta" id="p2FileMeta">—</div></div>
+      <button type="button" class="cz-link" id="p2Change">Change</button>
+      <button type="button" class="cz-link" id="p2Remove" aria-label="Remove file">✕</button>
+    </div>
+    <div class="p2-pass" id="p2Pass" hidden>
+      <p id="p2PassMsg">This PDF is password-protected. Enter its password to open it.</p>
+      <div class="cz-inline">
+        <label for="p2PassInput" class="sr-only">PDF password</label>
+        <input type="password" id="p2PassInput" autocomplete="off" placeholder="PDF password">
+        <button type="button" class="btn btn-primary btn-sm" id="p2PassOk">Open PDF</button>
+        <button type="button" class="cz-link" id="p2PassCancel">Cancel</button>
+      </div>
+      <p class="cz-note">The password is used only in this tab to unlock the file. It is not saved or sent anywhere.</p>
+    </div>
+  </div>
+
+  <div class="tool-card" id="p2Pages" hidden>
+    <h3><span class="tc-icon">📑</span> Pick pages</h3>
+    <div class="p2-selbar">
+      <span id="p2SelCount" class="p2-selcount">—</span>
+      <button type="button" class="cz-link" id="p2All">Select all</button>
+      <button type="button" class="cz-link" id="p2None">Clear</button>
+    </div>
+    <div class="cz-inline p2-rangebox">
+      <label for="p2Range">Pages</label>
+      <input type="text" id="p2Range" inputmode="numeric" placeholder="e.g. 1-3, 8">
+      <button type="button" class="cz-link" id="p2RangeGo">Select these</button>
+    </div>
+    <p class="cz-note">Tap a page to add or remove it. Save turns just that page into an image.</p>
+    <div class="p2-grid" id="p2Grid"></div>
+  </div>
+
+  <div class="tool-card" id="p2Settings" hidden>
+    <div class="cz-group cz-first">
+      <div class="cz-label">1. What to save</div>
+      <div class="cp-modes" role="group" aria-label="What to save">
+        <button type="button" class="cp-mode active" data-p2mode="pages" aria-pressed="true"><strong>Whole pages</strong><span>Each page becomes one image, text and all.</span></button>
+        <button type="button" class="cp-mode" data-p2mode="embedded" aria-pressed="false"><strong>Images inside the PDF</strong><span>Saves the photos, logos and scans on the pages at their own size.</span></button>
+      </div>
+    </div>
+    <div class="cz-group">
+      <div class="cz-label">2. Image format</div>
+      <div class="cz-chips" role="group" aria-label="Image format">
+        <button type="button" class="cz-chip active" data-p2fmt="jpg" aria-pressed="true">JPG</button>
+        <button type="button" class="cz-chip" data-p2fmt="png" aria-pressed="false">PNG</button>
+        <button type="button" class="cz-chip" data-p2fmt="webp" aria-pressed="false">WebP</button>
+      </div>
+      <div class="p2-row">
+        <div class="p2-field" id="p2DpiGroup">
+          <label for="p2Dpi">Resolution</label>
+          <select id="p2Dpi">
+            <option value="72">72 DPI · screen preview</option>
+            <option value="150">150 DPI · email and web</option>
+            <option value="200" selected>200 DPI · clear text (default)</option>
+            <option value="300">300 DPI · print</option>
+            <option value="400">400 DPI · fine detail</option>
+            <option value="600">600 DPI · maximum</option>
+          </select>
+        </div>
+        <div class="p2-field" id="p2QualityWrap">
+          <label for="p2Quality">Quality: <span id="p2QualityVal">90%</span></label>
+          <input type="range" id="p2Quality" min="50" max="100" step="1" value="90">
+        </div>
+      </div>
+      <div class="p2-field" id="p2BgWrap" hidden>
+        <span class="p2-flabel">Background</span>
+        <label class="p2-radio"><input type="radio" name="p2bg" value="white" checked> White</label>
+        <label class="p2-radio"><input type="radio" name="p2bg" value="transparent"> Transparent</label>
+      </div>
+      <label class="p2-radio" id="p2SmallWrap" hidden><input type="checkbox" id="p2Small" checked> Skip small images (icons, bullets, lines)</label>
+      <div class="cz-note" id="p2DpiNote" aria-live="polite"></div>
+    </div>
+    <div class="cz-group">
+      <button class="btn btn-primary btn-lg cp-go" id="p2Go" type="button" disabled>🖼️ Convert to JPG (0)</button>
+      <div class="cp-progress" id="p2Progress" hidden>
+        <div class="progress-bar-wrap" style="margin:12px 0 6px"><div class="progress-bar-fill" id="p2ProgressFill"></div></div>
+        <div class="cz-note" id="p2ProgressLabel" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="p2Result" hidden>
+    <h3><span class="tc-icon">✅</span> Images ready</h3>
+    <div class="p2-stats">
+      <div class="cz-sum-box"><div class="cz-sum-label">Images</div><div class="cz-sum-val" id="p2Count">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">Total size</div><div class="cz-sum-val" id="p2Total">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">First image</div><div class="cz-sum-val" id="p2Dims">—</div></div>
+    </div>
+    <div class="cz-warn" id="p2Warn" hidden></div>
+    <button class="download-btn" id="p2Download" type="button"><span>📥</span> <span id="p2DownloadLabel">Download</span></button>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+
+    <div style="max-width:760px;margin:26px auto 0;padding:14px 18px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius)">
+    📖 <strong>Related guide:</strong> <a href="../blog/pdf-to-jpg-guide.html" style="color:var(--primary);font-weight:600">How to Convert PDF to JPG →</a>
+  </div>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with a 14-page paper, a photo PDF, a poster page and a locked PDF</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
+
+    <h2>What Does the PDF to Image Converter Do?</h2>
+    <p class="lead">PDFdukan's PDF to Image Converter lets you convert PDF to image online free. It turns each page into a JPG, PNG or WebP file at 72 to 600 DPI, right in your browser. It can also save the photos stored inside a PDF, and locked files open with their password.</p>
+    <p>Before you convert, the tool shows the exact pixel size of the first page. You pick only the pages you need, then download one image or a ZIP of numbered files, such as report-page-01.jpg.</p>
+
+    <h3>How Do I Convert PDF to Image Online Free?</h3>
+    <p>Converting a PDF to images takes five steps:</p>
+    <ol>
+      <li><span><strong>Add your PDF.</strong> Drop one file or tap Choose PDF. Locked? Type its password and tap Open PDF.</span></li>
+      <li><span><strong>Select your pages.</strong> All pages start selected. Tap a page to skip it, or type a range like 1-3, 8.</span></li>
+      <li><span><strong>Choose what to save.</strong> Whole pages makes one image per page. Images inside the PDF saves the photos and logos on those pages.</span></li>
+      <li><span><strong>Set format and size.</strong> Pick JPG, PNG or WebP and a resolution from 72 to 600 DPI. Set Quality for JPG or WebP.</span></li>
+      <li><span><strong>Convert and download.</strong> Tap the Convert button, check the count and size, then tap Download. Several images come as one ZIP.</span></li>
+    </ol>
+
+    <h3>What Can You Do With This Tool?</h3>
+    <p>These four features cover most PDF to image jobs:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Save whole pages</h4><p>Each selected page becomes one image with its text and charts, ready for slides, posts or upload forms.</p></div>
+      <div class="i2p-card"><h4>Pull out the pictures</h4><p>Images inside the PDF extracts each photo, logo or scan at its stored size, without the text around it.</p></div>
+      <div class="i2p-card"><h4>Open locked PDFs</h4><p>Type the password once and a password-protected PDF opens in this tab. It is not saved or sent anywhere.</p></div>
+      <div class="i2p-card"><h4>See the size first</h4><p>The tool shows the pixel size before you convert and warns when a huge page must be drawn smaller.</p></div>
+    </div>
+
+    <h3>Which Formats and Settings Are Supported?</h3>
+    <p>Here is what each setting does and when to use it:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Setting</th><th scope="col">Options</th><th scope="col">Best for</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">JPG</th><td>Smallest files, quality 50–100%</td><td>Photos, email, upload forms</td></tr>
+        <tr><th scope="row">PNG</th><td>Lossless, white or transparent background</td><td>Text, charts, logos, print</td></tr>
+        <tr><th scope="row">WebP</th><td>Small files, quality 50–100%</td><td>Websites and online stores</td></tr>
+        <tr><th scope="row">Resolution</th><td>72, 150, 200, 300, 400 or 600 DPI</td><td>200 DPI for clear text</td></tr>
+        <tr><th scope="row">Input</th><td>One PDF up to 300 MB</td><td>Locked PDFs need the password</td></tr>
+        <tr><th scope="row">Output</th><td>One image, or a ZIP of numbered files</td><td>Any page range you select</td></tr>
+      </tbody>
+    </table></div>
+    <p>Huge pages, such as posters or maps, are drawn smaller to fit browser limits, which are tighter on iPhone and iPad. The tool shows the DPI it really used.</p>
+
+    <h3>When Should You Turn a PDF Into an Image?</h3>
+    <p>Common reasons to save a PDF page as a picture:</p>
+    <ul>
+      <li>Upload a signed form or ID page to a job or college portal that only accepts JPG.</li>
+      <li>Post a flyer on Instagram or Facebook, which won’t show a PDF.</li>
+      <li>Drop one slide from a report into PowerPoint or Google Slides.</li>
+      <li>Show a menu, price list or certificate on your website as a light WebP image.</li>
+      <li>Save product photos or charts from a catalog with Images inside the PDF.</li>
+    </ul>
+
+    <h3>How Do I Get Sharp, High-Quality Images From a PDF?</h3>
+    <p>Match the DPI to the job: 150 for email and web pages, 200 for crisp small text, and 300 for printing.</p>
+    <p>Choose PNG for fine text or line charts, since JPG compression can blur sharp edges. Use JPG at 85–90% quality for photos or a smaller file size.</p>
+    <p>When we tested a 14-page research paper at 200 DPI, each page came out 1700 × 2200 px and the 14 JPGs totaled 11 MB. Need only part of a big page or map? Cut it out first with <a href="crop-pdf-online.html">Crop PDF</a>.</p>
+
+    <h3>Is My PDF Uploaded to a Server?</h3>
+    <p>No. The converter draws your PDF with <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">Mozilla's pdf.js</a> code in your browser tab, so the file never goes to a PDFdukan server. The page still loads site files, analytics and ads.</p>
+    <p>Because the work happens on your device, you can convert a bank statement or contract without handing it to a third party.</p>
+
+    <h3>What This PDF to Image Tool Doesn’t Do</h3>
+    <p>Text in a page image can’t be selected or edited, so keep the original PDF. The tool makes JPG, PNG and WebP only, not TIFF, and it converts one PDF at a time.</p>
+    <p>Images inside the PDF finds real pictures only, so use Whole pages for text, tables and vector charts. To share fewer pages as a PDF, use <a href="extract-pdf-pages.html">Extract PDF Pages</a>.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert PDF to image online free?</button></h3><div class="faq-a"><p>Yes. PDFdukan’s converter is free, needs no account and adds no watermark. Add your PDF, pick a format, tap the Convert button and download.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a PDF to JPG on my iPhone or Android phone?</button></h3><div class="faq-a"><p>Yes. The converter runs in Safari or Chrome, with no app to install. iPhones and iPads cap image size, so huge pages at high DPI come out smaller.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert just one page of a PDF?</button></h3><div class="faq-a"><p>Yes. Tap Save under any page preview to turn only that page into an image. For a few pages, type a range such as 2-4 and tap Select these.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Should I choose JPG or PNG?</button></h3><div class="faq-a"><p>Choose JPG for photos and smaller files. Choose PNG when text and lines must stay sharp, or when you need a transparent background. WebP gives small files for websites.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why does my PDF image look blurry?</button></h3><div class="faq-a"><p>The resolution was probably too low. Convert again at 200 or 300 DPI, or switch to PNG. Zooming far into any image will still show pixels.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why can’t I convert my PDF to JPG?</button></h3><div class="faq-a"><p>The file may be damaged, locked with a password you don’t have, or not a real PDF. Huge poster pages still convert, just smaller, and the tool says so.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert a password-protected PDF to images?</button></h3><div class="faq-a"><p>Yes, if you know the password. Type it when asked and tap Open PDF. The file is unlocked only inside your browser tab.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I get the pictures out of a PDF?</button></h3><div class="faq-a"><p>Choose Images inside the PDF and tap Find images. Each photo or logo is saved at its own size; tiny icons are skipped unless you untick Skip small images.</p></div></div>
+    <p class="i2p-related">Need it the other way round? Turn images back into a PDF with <a href="image-to-pdf-converter.html">Image to PDF</a>, or shrink a big PDF with <a href="compress-pdf-reduce-file-size.html">Compress PDF</a>.</p>
+</section>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I convert PDF to image online free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan’s converter is free, needs no account and adds no watermark. Add your PDF, pick a format, tap the Convert button and download."}}, {"@type": "Question", "name": "Can I convert a PDF to JPG on my iPhone or Android phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The converter runs in Safari or Chrome, with no app to install. iPhones and iPads cap image size, so huge pages at high DPI come out smaller."}}, {"@type": "Question", "name": "Can I convert just one page of a PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Tap Save under any page preview to turn only that page into an image. For a few pages, type a range such as 2-4 and tap Select these."}}, {"@type": "Question", "name": "Should I choose JPG or PNG?", "acceptedAnswer": {"@type": "Answer", "text": "Choose JPG for photos and smaller files. Choose PNG when text and lines must stay sharp, or when you need a transparent background. WebP gives small files for websites."}}, {"@type": "Question", "name": "Why does my PDF image look blurry?", "acceptedAnswer": {"@type": "Answer", "text": "The resolution was probably too low. Convert again at 200 or 300 DPI, or switch to PNG. Zooming far into any image will still show pixels."}}, {"@type": "Question", "name": "Why can’t I convert my PDF to JPG?", "acceptedAnswer": {"@type": "Answer", "text": "The file may be damaged, locked with a password you don’t have, or not a real PDF. Huge poster pages still convert, just smaller, and the tool says so."}}, {"@type": "Question", "name": "Can I convert a password-protected PDF to images?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, if you know the password. Type it when asked and tap Open PDF. The file is unlocked only inside your browser tab."}}, {"@type": "Question", "name": "How do I get the pictures out of a PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Choose Images inside the PDF and tap Find images. Each photo or logo is saved at its own size; tiny icons are skipped unless you untick Skip small images."}}]}</script>
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20260825i"></script>
+<script defer src="../js/pdf-to-image.js?v=20261107"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>

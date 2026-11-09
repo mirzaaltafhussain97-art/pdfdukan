@@ -650,7 +650,7 @@ const PDFCrop = (() => {
     }
   }
 
-  async function loadPDF(files) {
+  async function loadPDF(files, password) {
     const file = files.find(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
     if (!file) { toast('Please upload a PDF file', 'error'); return; }
     if (!file.size) { toast('This PDF file is empty', 'error'); return; }
@@ -661,7 +661,7 @@ const PDFCrop = (() => {
     _showProgress(20, 'Loading PDF…');
     try {
       const ab = await file.arrayBuffer();
-      pdf = await pdfjsLib.getDocument({ data: ab }).promise;
+      pdf = await pdfjsLib.getDocument(password ? { data: ab, password } : { data: ab }).promise;
       numPages = pdf.numPages;
       pageNum = 1;
       _showProgress(100, 'Ready');

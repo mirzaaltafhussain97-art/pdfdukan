@@ -9,7 +9,7 @@
 [
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Image to PDF Converter","url":"https://pdfdukan.com/tools/image-to-pdf-converter.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free PDF Merge Tool","url":"https://pdfdukan.com/tools/merge-pdf.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
-  {"@context":"https://schema.org","@type":"WebApplication","name":"Image to Text (OCR)","url":"https://pdfdukan.com/tools/ocr.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+  {"@context":"https://schema.org","@type":"WebApplication","name":"Image to Text (OCR)","url":"https://pdfdukan.com/tools/ocr-image-to-text.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Image Compressor","url":"https://pdfdukan.com/tools/image-compress-resize.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
   {"@context":"https://schema.org","@type":"WebApplication","name":"Free Online Document Scanner","url":"https://pdfdukan.com/scanner.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 ]
@@ -136,19 +136,22 @@
         <div class="nd-col">
           <span class="nd-section-head">📄 PDF Converters</span>
           <a href="tools/image-to-pdf-converter.html" class="nd-link"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div></div></a>
-          <a href="tools/pdf-to-img.html" class="nd-link"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div></div></a>
-          <a href="tools/crop-pdf.html"   class="nd-link"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div></div></a>
+          <a href="tools/pdf-to-image-converter.html" class="nd-link"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div></div></a>
+          <a href="tools/crop-pdf-online.html"   class="nd-link"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div></div></a>
           <a href="tools/merge-pdf.html"  class="nd-link"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div></div></a>
           <a href="tools/extract-pdf-pages.html"      class="nd-link"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div></div></a>
           <a href="tools/pdf-organizer.html"  class="nd-link"><span class="nd-link-icon">🔀</span><div class="nd-link-body"><div class="nd-link-name">PDF Organizer</div></div></a>
-          <a href="tools/pdf-to-word.html"    class="nd-link"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div></div></a>
-          <a href="tools/word-to-pdf.html" class="nd-link"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div></div></a>
+          <a href="tools/pdf-to-word-converter.html"    class="nd-link"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div></div></a>
+          <a href="tools/word-to-pdf-converter.html" class="nd-link"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div></div></a>
         </div>
         <div class="nd-col">
           <span class="nd-section-head">🖼️ Image &amp; Scan</span>
           <a href="scanner.html"        class="nd-link"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div></div></a>
           <a href="tools/image-compress-resize.html" class="nd-link"><span class="nd-link-icon">🗜️</span><div class="nd-link-body"><div class="nd-link-name">Compress</div></div></a>
-          <a href="tools/ocr.html"      class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+          <a href="tools/ocr-image-to-text.html"      class="nd-link"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">☪️ Specialized Tool</span>
           <a href="tools/inheritance-calc-advanced.html" class="nd-link"><span class="nd-link-icon">☪️</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div></div></a>
@@ -188,17 +191,19 @@
   <a href="/"           class="mnd-link">🏠 Home</a>
   <div class="mnd-section">PDF Tools</div>
   <a href="tools/image-to-pdf-converter.html"  class="mnd-link">📑 Image to PDF</a>
-  <a href="tools/pdf-to-img.html"  class="mnd-link">🖼️ PDF to JPG</a>
-  <a href="tools/crop-pdf.html"    class="mnd-link">✂️ Crop PDF</a>
+  <a href="tools/pdf-to-image-converter.html"  class="mnd-link">🖼️ PDF to JPG</a>
+  <a href="tools/crop-pdf-online.html"    class="mnd-link">✂️ Crop PDF</a>
   <a href="tools/merge-pdf.html"   class="mnd-link">🔗 Merge PDF</a>
   <a href="tools/extract-pdf-pages.html"      class="mnd-link">✂️ Split PDF</a>
   <a href="tools/pdf-organizer.html"  class="mnd-link">🔀 PDF Organizer</a>
-  <a href="tools/pdf-to-word.html"    class="mnd-link">📝 PDF to Word</a>
-  <a href="tools/word-to-pdf.html" class="mnd-link">📄 Word to PDF</a>
+  <a href="tools/pdf-to-word-converter.html"    class="mnd-link">📝 PDF to Word</a>
+  <a href="tools/word-to-pdf-converter.html" class="mnd-link">📄 Word to PDF</a>
   <div class="mnd-section">Image &amp; Scan</div>
   <a href="scanner.html"           class="mnd-link">📷 Smart Scan</a>
   <a href="tools/image-compress-resize.html"    class="mnd-link">🗜️ Compress</a>
-  <a href="tools/ocr.html"         class="mnd-link">🔤 OCR Text</a>
+  <a href="tools/ocr-image-to-text.html"         class="mnd-link">🔤 OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="tools/word-character-counter.html" class="mnd-link">Word Counter</a>
   <div class="mnd-section">Specialized Tool</div>
   <a href="tools/inheritance-calc-advanced.html" class="mnd-link">☪️ Islamic Inheritance</a>
 </div>
@@ -250,16 +255,16 @@
         </div>
         <span class="btc-arrow">→</span>
       </a>
-      <a href="tools/pdf-to-img.html" class="big-tool-card">
+      <a href="tools/pdf-to-image-converter.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#e53935,#ef5350)">🖼️</div>
         <div class="btc-body">
           <div class="btc-name">PDF to JPG</div>
-          <div class="btc-desc">Extract every page from a PDF as a high-quality JPG image. Download individually or as ZIP.</div>
+          <div class="btc-desc">Turn PDF pages into JPG, PNG or WebP images up to 600 DPI, or save the photos inside. Download one or a ZIP.</div>
           <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">PDF→JPG</span></div>
         </div>
         <span class="btc-arrow">→</span>
       </a>
-      <a href="tools/crop-pdf.html" class="big-tool-card">
+      <a href="tools/crop-pdf-online.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">✂️</div>
         <div class="btc-body">
           <div class="btc-name">Crop PDF</div>
@@ -295,20 +300,20 @@
         </div>
         <span class="btc-arrow">→</span>
       </a>
-      <a href="tools/pdf-to-word.html" class="big-tool-card">
+      <a href="tools/pdf-to-word-converter.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#1565c0,#42a5f5)">📝</div>
         <div class="btc-body">
           <div class="btc-name">PDF to Word</div>
-          <div class="btc-desc">Extract text from PDF and download as an editable .doc Word document. Runs in your browser.</div>
+          <div class="btc-desc">Turn digital or scanned PDFs into an editable .docx Word file, with OCR. Runs in your browser.</div>
           <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">PDF→DOC</span></div>
         </div>
         <span class="btc-arrow">→</span>
       </a>
-      <a href="tools/word-to-pdf.html" class="big-tool-card">
+      <a href="tools/word-to-pdf-converter.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#283593,#5c6bc0)">📄</div>
         <div class="btc-body">
           <div class="btc-name">Word to PDF</div>
-          <div class="btc-desc">Convert DOCX Word documents to PDF. Supports A4, Letter, Legal page sizes. No upload needed.</div>
+          <div class="btc-desc">Convert DOCX, DOC, ODT or RTF to PDF with your page layout kept. Runs in your browser, no upload.</div>
           <div class="btc-tags"><span class="btc-tag free">FREE</span><span class="btc-tag">DOCX→PDF</span></div>
         </div>
         <span class="btc-arrow">→</span>
@@ -329,7 +334,7 @@
         </div>
         <span class="btc-arrow">→</span>
       </a>
-      <a href="tools/ocr.html" class="big-tool-card">
+      <a href="tools/ocr-image-to-text.html" class="big-tool-card">
         <div class="btc-icon" style="background:linear-gradient(135deg,#f57f17,#ffca28)">🔤</div>
         <div class="btc-body">
           <div class="btc-name">Image to Text (OCR)</div>
@@ -495,13 +500,13 @@
         <a href="scanner.html">CamMaster Scanner</a>
         <a href="scanner.html">Import Images</a>
         <a href="scanner.html">Import PDF</a>
-        <a href="tools/ocr.html">OCR Text</a>
+        <a href="tools/ocr-image-to-text.html">OCR Text</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="tools/image-to-pdf-converter.html">Image to PDF</a>
-        <a href="tools/pdf-to-img.html">PDF to JPG</a>
-        <a href="tools/crop-pdf.html">Crop PDF</a>
+        <a href="tools/pdf-to-image-converter.html">PDF to JPG</a>
+        <a href="tools/crop-pdf-online.html">Crop PDF</a>
         <a href="tools/merge-pdf.html">Merge PDF</a>
         <a href="tools/extract-pdf-pages.html">Split PDF</a>
         <a href="tools/image-compress-resize.html">Compress Image</a>

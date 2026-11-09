@@ -5,8 +5,8 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css?v=20260825i">
-<title>Edit, Annotate &amp; Sign PDF Online Free | PDFdukan</title>
-<meta name="description" content="Add text, images, links, shapes, signatures, highlights and drawings to a PDF in your browser. Output is flattened rather than structurally rewritten.">
+<title>Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan</title>
+<meta name="description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -14,8 +14,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-editor.html">
-<meta property="og:title" content="Edit, Annotate &amp; Sign PDF Online Free | PDFdukan">
-<meta property="og:description" content="Visually replace selectable text lines and add annotations, signatures, links and drawings to a PDF privately in your browser.">
+<meta property="og:title" content="Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan">
+<meta property="og:description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -23,11 +23,12 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Edit, Annotate &amp; Sign PDF Online Free | PDFdukan">
-<meta name="twitter:description" content="Visually replace selectable text lines and add annotations, signatures, links and drawings to a PDF privately in your browser.">
+<meta name="twitter:title" content="Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan">
+<meta name="twitter:description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script defer src="../js/pdf-edit-core.js?v=20261109c"></script>
 <style>
 /* ── RESET & BASE ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -94,6 +95,15 @@ body{overflow-y:auto}
 /* Thumbnail strip */
 #pe-thumbs-col{width:var(--thumb-w);flex-shrink:0;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:8px;padding:10px 6px}
 #pe-thumbs-col:empty{display:none}
+.pe-pagebar{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:14px auto 4px;font-size:12px;color:var(--text2,#555)}
+.pe-pagebar .pb-label{font-weight:600;margin-right:6px}
+.pe-pagebar button{border:1px solid var(--border2,#ccc);background:var(--surface,#fff);color:inherit;border-radius:6px;padding:3px 8px;font-size:12px;cursor:pointer;line-height:1.2}
+.pe-pagebar button:hover{border-color:var(--accent,#ff6333);color:var(--accent,#ff6333)}
+.pe-pagebar.pb-deleted .pb-label{color:#c62828}
+.page-wrapper.pe-page-deleted{opacity:.35;filter:grayscale(1)}
+.page-wrapper.pe-page-deleted::after{content:'This page will be removed';position:absolute;top:12px;left:50%;transform:translateX(-50%);background:#c62828;color:#fff;padding:4px 10px;border-radius:6px;font-size:13px;z-index:20}
+.pe-blankpage{width:300px;max-width:90%;height:120px;margin:14px auto;border:2px dashed var(--border2,#ccc);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2,#666);font-size:13px;background:var(--surface,#fff)}
+.pe-blankpage button{border:1px solid var(--border2,#ccc);background:transparent;border-radius:6px;padding:3px 10px;cursor:pointer;color:inherit}
 #pe-thumbs-col::-webkit-scrollbar{width:4px}
 #pe-thumbs-col::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .thumb-item{position:relative;cursor:pointer;border-radius:6px;overflow:hidden;border:2px solid transparent;transition:border-color .15s}
@@ -109,6 +119,13 @@ body{overflow-y:auto}
 
 /* Drop zone */
 #pe-drop-zone{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:560px;max-width:92vw;min-height:250px;border:2px dashed var(--border2);border-radius:14px;background:var(--surface2);cursor:pointer;transition:all .2s;text-align:center;padding:28px}
+/* before a PDF is open the page stays simple: only the drop area, no editor bars */
+#pe-shell.pe-empty{height:auto;overflow:visible;min-height:0}
+#pe-shell.pe-empty #pe-header,#pe-shell.pe-empty #pe-toolbar,#pe-shell.pe-empty #pe-sub-toolbar,#pe-shell.pe-empty #pe-thumbs-col{display:none}
+#pe-shell.pe-empty #pe-workspace{overflow:visible}
+#pe-shell.pe-empty #pe-canvas-col{overflow:visible;padding:28px 16px;width:100%;min-width:0;box-sizing:border-box}
+#pe-shell.pe-empty #pe-drop-zone{width:100%;max-width:560px;box-sizing:border-box}
+#pe-shell.pe-empty #pe-drop-zone img{max-width:100%;height:auto}
 #pe-drop-zone:hover,#pe-drop-zone.drag-over{border-color:var(--accent);background:rgba(255,99,51,.06)}
 .dz-icon{font-size:48px}
 .dz-title{font-size:22px;font-weight:750;color:var(--text);line-height:1.2}
@@ -189,6 +206,9 @@ body{overflow-y:auto}
 .sig-box{background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:18px;width:440px;max-width:95vw}
 .sig-box h3{font-size:15px;margin-bottom:12px;color:var(--text)}
 #sig-canvas{border:1px solid var(--border2);border-radius:6px;cursor:crosshair;background:#fff;width:100%;height:160px;display:block}
+.sig-tabs{display:flex;gap:6px;margin:0 0 10px}.sig-tab{flex:1;border:1px solid var(--border2,#ccc);background:transparent;color:inherit;border-radius:8px;padding:6px 8px;cursor:pointer;font-size:13px}.sig-tab.active{background:var(--accent,#ff6333);border-color:var(--accent,#ff6333);color:#fff}
+.sig-typerow,.sig-uprow{display:flex;gap:8px;align-items:center;margin-bottom:8px}.sig-typerow[hidden],.sig-uprow[hidden]{display:none}.sig-typerow input{flex:1;padding:7px 10px;border:1px solid var(--border2,#ccc);border-radius:8px;font-size:14px;background:var(--surface,#fff);color:inherit}.sig-typerow select{padding:7px;border-radius:8px;border:1px solid var(--border2,#ccc);background:var(--surface,#fff);color:inherit}.sig-hint{font-size:12px;opacity:.75}
+.sig-inks{display:flex;gap:8px;margin:8px 0 0}.sig-ink{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}.sig-ink.active{outline:2px solid var(--accent,#ff6333);outline-offset:2px}
 .sig-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
 .sig-btn{padding:6px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);cursor:pointer;font-size:13px}
 .sig-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -256,11 +276,11 @@ body{overflow-y:auto}
 .pe-native-text:hover{border-color:rgba(255,99,51,.3);background:rgba(255,99,51,.04)}
 /* --native-bg is sampled from the original page around each line. This avoids
    a white patch when text is replaced over a coloured CV header. */
-.pe-native-text.active,.pe-native-text:focus{color:var(--native-color,#000);background:var(--native-bg,#fff);border-color:var(--accent);box-shadow:0 0 0 6px var(--native-bg,#fff),0 0 0 7px rgba(255,99,51,.28);z-index:20}
+.pe-native-text.active,.pe-native-text:focus{color:var(--native-color,#000);background:var(--native-bg,#fff);border-color:var(--accent);box-shadow:0 0 0 1px rgba(255,99,51,.28);z-index:20}
 /* nt-edited: permanently covers the original canvas text once edited */
-.pe-native-text.nt-edited{color:var(--native-color,#000);background:var(--native-bg,#fff);box-shadow:0 0 0 6px var(--native-bg,#fff);z-index:16}
+.pe-native-text.nt-edited{color:var(--native-color,#000);background:transparent;box-shadow:none;z-index:16}
 /* nt-deleted: show an opaque sampled-background rectangle */
-.pe-native-text.nt-deleted{background:var(--native-bg,#fff);box-shadow:0 0 0 6px var(--native-bg,#fff);color:transparent;pointer-events:none;z-index:16}
+.pe-native-text.nt-deleted{background:transparent;box-shadow:none;color:transparent;pointer-events:none;z-index:16}
 
 /* ── FLOATING INLINE TOOLBAR ─────────────────────────────── */
 #pe-float-toolbar{position:fixed;z-index:850;display:none;align-items:center;gap:3px;padding:5px 7px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.6);white-space:nowrap}
@@ -276,6 +296,7 @@ body{overflow-y:auto}
 .ft-sep{width:1px;height:20px;background:var(--border);margin:0 2px}
 .ft-size{width:44px;height:28px;padding:0 4px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);border-radius:5px;font-size:11px;text-align:center;-moz-appearance:textfield}
 .ft-size::-webkit-inner-spin-button{-webkit-appearance:none}
+.ft-font{height:28px;max-width:118px;padding:0 4px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);border-radius:5px;font-size:11px;margin-right:4px}
 .ft-color{width:28px;height:28px;padding:2px;border:1px solid var(--border2);border-radius:5px;cursor:pointer;background:var(--surface3)}
 
 /* ── FIND & REPLACE PANEL ────────────────────────────────── */
@@ -340,9 +361,25 @@ body{overflow-y:auto}
 }
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"pdf-editor","item":"https://pdfdukan.com/tools/pdf-editor.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Online PDF Editor","item":"https://pdfdukan.com/tools/pdf-editor.html"}]}</script>
 <meta name="author" content="PDFdukan Product Team">
 <meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<style>
+.dz-trust{margin:2px 0 0;font-size:12.5px;font-weight:600;color:var(--text2)}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-copy ol li{margin:6px 0}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+@media(max-width:640px){.i2p-cards{grid-template-columns:1fr}.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+</style>
 </head>
 <body data-tool="pdf-editor">
 <header class="header" role="banner">
@@ -377,13 +414,13 @@ body{overflow-y:auto}
         <div class="nd-col">
           <span class="nd-section-head">&#128196; PDF Converters</span>
           <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
-          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
-          <a href="../tools/crop-pdf.html"     class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Cut a region to image</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/crop-pdf-online.html"     class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Trim margins, keep text</div></div></a>
           <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
           <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
-          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
-          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
-          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
         </div>
         <div class="nd-col">
           <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
@@ -396,7 +433,10 @@ body{overflow-y:auto}
           <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
           <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
           <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
-          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
         </div>
       </div>
     </div>
@@ -426,17 +466,19 @@ body{overflow-y:auto}
   <div class="mnd-section">PDF Tools</div>
   <a href="../tools/pdf-editor.html"   class="mnd-link">PDF Editor</a>
   <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
-  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
-  <a href="../tools/crop-pdf.html"     class="mnd-link">Crop PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/crop-pdf-online.html"     class="mnd-link">Crop PDF</a>
   <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
   <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
   <div class="mnd-section">More</div>
   <a href="../scanner.html"            class="mnd-link">Smart Scanner</a>
-  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
   <a href="../blog/index.html"         class="mnd-link">Blog</a>
 </div>
 
-<div id="pe-shell">
+<div id="pe-shell" class="pe-empty">
 
   <!-- HEADER BAR -->
   <div id="pe-header">
@@ -520,14 +562,16 @@ body{overflow-y:auto}
     <div id="pe-canvas-col">
       <div id="pe-drop-zone">
         <div class="dz-icon">&#128196;</div>
-        <h1 class="dz-title">Edit, Annotate and Sign a PDF</h1>
-        <div class="dz-sub">Open or drop a PDF, visually replace selectable text lines, or add text boxes, images, links, signatures, notes, shapes and drawings.</div>
+        <h1 class="dz-title">Online PDF Editor Free – No Sign Up, No Watermark</h1>
+        <div class="dz-sub">Click any line to retype it, add text, images, links and signatures, fill forms, then download a clean PDF that stays sharp and searchable.</div>
+        <p class="dz-trust">Free · No sign-up · No watermark · Files stay in your browser</p>
+        <span class="dz-btn">Choose PDF</span>
   <figure class="page-feature-figure" data-page-feature>
-    <img src="../images/pdf-editor.svg" width="720" height="420" loading="lazy" decoding="async" alt="PDF page with an editable text box, annotation control and drawing tool">
-    <figcaption>Add visible annotations and replacement overlays, then inspect the flattened PDF output.</figcaption>
+    <img src="../images/pdf-editor.svg" width="720" height="420" loading="lazy" decoding="async" alt="PDF page with a retyped text line, a signature and a link box in the PDFdukan online editor">
+    <figcaption>Retype text, sign, fill fields and add links, then download a real PDF.</figcaption>
   </figure>
 
-        <div class="dz-limit"><strong>Important:</strong> text replacement covers the visible original line and draws the replacement. The downloaded PDF is flattened; its underlying text objects are not structurally rewritten.</div>
+        <div class="dz-limit">Scanned pages are pictures: you can add text, signatures and images on them, but their words can't be retyped.</div>
       </div>
     </div>
   </div>
@@ -542,8 +586,16 @@ body{overflow-y:auto}
 <!-- SIGNATURE MODAL -->
 <div id="sig-modal">
   <div class="sig-box">
-    <h3>&#9997;&#65039; Draw Your Signature</h3>
+    <h3>&#9997;&#65039; Add Your Signature</h3>
+    <div class="sig-tabs" role="tablist">
+      <button type="button" class="sig-tab active" data-sigmode="draw" role="tab">Draw</button>
+      <button type="button" class="sig-tab" data-sigmode="type" role="tab">Type</button>
+      <button type="button" class="sig-tab" data-sigmode="upload" role="tab">Upload photo</button>
+    </div>
+    <div class="sig-typerow" hidden><input type="text" id="sig-type-input" placeholder="Type your name" maxlength="40"><select id="sig-type-font" aria-label="Signature style"><option value="PD GreatVibes">Style 1</option><option value="PD Dancing">Style 2</option></select></div>
+    <div class="sig-uprow" hidden><button type="button" class="sig-btn" id="sig-upload-btn">Choose a photo of your signature</button><span class="sig-hint">White paper turns see-through</span><input type="file" id="sig-upload-input" accept="image/*" hidden></div>
     <canvas id="sig-canvas" width="400" height="160"></canvas>
+    <div class="sig-inks" aria-label="Ink colour"><button type="button" class="sig-ink active" data-ink="#111111" title="Black" style="background:#111"></button><button type="button" class="sig-ink" data-ink="#1a3fa6" title="Blue" style="background:#1a3fa6"></button><button type="button" class="sig-ink" data-ink="#b3261e" title="Red" style="background:#b3261e"></button></div>
     <div class="sig-actions">
       <button class="sig-btn" id="sig-clear">Clear</button>
       <button class="sig-btn" id="sig-cancel">Cancel</button>
@@ -614,6 +666,7 @@ body{overflow-y:auto}
   <button class="ft-btn" id="ft-bold" title="Bold"><b>B</b></button>
   <button class="ft-btn" id="ft-italic" title="Italic"><i>I</i></button>
   <div class="ft-sep"></div>
+  <select class="ft-font" id="ft-font" title="Font"></select>
   <input type="number" class="ft-size" id="ft-size" min="6" max="120" value="14" title="Font Size">
   <input type="color" class="ft-color" id="ft-color" value="#000000" title="Text Color">
   <div class="ft-sep"></div>
@@ -658,11 +711,11 @@ body{overflow-y:auto}
           <div class="ss-card-icon" style="background:rgba(123,97,255,.15);color:#7b61ff">&#128279;</div>
           <div class="ss-card-label">Merge PDFs</div>
         </a>
-        <a class="ss-card" href="compress-pdf.html">
+        <a class="ss-card" href="compress-pdf-reduce-file-size.html">
           <div class="ss-card-icon" style="background:rgba(251,140,0,.15);color:#fb8c00">&#128230;</div>
           <div class="ss-card-label">Compress PDF</div>
         </a>
-        <a class="ss-card" href="pdf-to-word.html">
+        <a class="ss-card" href="pdf-to-word-converter.html">
           <div class="ss-card-icon" style="background:rgba(67,160,71,.15);color:#43a047">&#128196;</div>
           <div class="ss-card-label">Convert to Word</div>
         </a>
@@ -820,11 +873,16 @@ function loadPDFFile(file){
       PE_STATE.numPages = doc.numPages;
       PE_STATE.objects = {};
       PE_STATE.nativeTextEdits = {};
+      PE_STATE.formValues = {}; PE_STATE._formToast = false;
+      PE_STATE.pageOps = {order:[], rot:{}, del:{}, blanks:0};
+      for(var _q = 1; _q <= doc.numPages; _q++) PE_STATE.pageOps.order.push(_q);
+      Array.prototype.forEach.call(col.querySelectorAll('.pe-pagebar,.pe-blankpage'), function(n){ n.remove(); });
       PE_STATE.history = [];
       PE_STATE.historyIdx = -1;
       PE_STATE.currentPage = 1;
       document.getElementById('pe-filename').textContent = file.name;
       document.getElementById('btn-export-pdf').disabled = false;
+      document.getElementById('pe-shell').classList.remove('pe-empty');
 
       var dz = document.getElementById('pe-drop-zone');
       if(dz) dz.remove();
@@ -877,6 +935,7 @@ function loadPDFFile(file){
 function renderPage(pageNum){
   return PE_STATE.pdfDoc.getPage(pageNum).then(function(page){
     var vp = page.getViewport({scale: PE_STATE.scale});
+    (PE_STATE.viewports = PE_STATE.viewports || {})[pageNum] = vp;
 
     var wrapper = PE_STATE.pageWrappers[pageNum];
     if(!wrapper){
@@ -885,6 +944,7 @@ function renderPage(pageNum){
       wrapper.dataset.page = pageNum;
       col.appendChild(wrapper);
       PE_STATE.pageWrappers[pageNum] = wrapper;
+      _addPageBar(pageNum, wrapper);
     }
     wrapper.style.width = vp.width + 'px';
     wrapper.style.height = vp.height + 'px';
@@ -920,7 +980,7 @@ function renderPage(pageNum){
         attachLayerEvents(layer, pageNum);
       }
       renderObjects(pageNum);
-      return renderThumb(pageNum, page).then(function(){ return extractNativeText(pageNum, page, vp); });
+      return renderThumb(pageNum, page).then(function(){ return extractNativeText(pageNum, page, vp); }).then(function(){ return _renderFormWidgets(pageNum, page, vp); });
     });
   });
 }
@@ -1115,7 +1175,7 @@ function buildObjElement(obj){
 
 function buildFormField(inner, obj){
   if(obj.formType === 'checkbox'){
-    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.style.cssText = 'width:18px;height:18px;cursor:pointer'; inner.appendChild(cb);
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.style.cssText = 'width:18px;height:18px;cursor:pointer'; cb.checked = !!obj.checked; cb.onchange = function(){ obj.checked = cb.checked; }; inner.appendChild(cb);
   } else if(obj.formType === 'radio'){
     var rb = document.createElement('input'); rb.type = 'radio'; rb.style.cssText = 'width:18px;height:18px;cursor:pointer'; inner.appendChild(rb);
   } else if(obj.formType === 'select'){
@@ -1123,9 +1183,9 @@ function buildFormField(inner, obj){
     ['Option 1','Option 2','Option 3'].forEach(function(v){ var o=document.createElement('option'); o.textContent=v; sel.appendChild(o); });
     inner.appendChild(sel);
   } else if(obj.formType === 'textarea'){
-    var ta = document.createElement('textarea'); ta.style.cssText = 'width:100%;height:100%;resize:none;border:1px solid #999;font-size:12px;padding:4px'; inner.appendChild(ta);
+    var ta = document.createElement('textarea'); ta.style.cssText = 'width:100%;height:100%;resize:none;border:1px solid #999;font-size:12px;padding:4px'; ta.value = obj.value || ''; ta.oninput = function(){ obj.value = ta.value; }; inner.appendChild(ta);
   } else {
-    var inp = document.createElement('input'); inp.type = 'text'; inp.placeholder = 'Text field';
+    var inp = document.createElement('input'); inp.type = 'text'; inp.placeholder = 'Text field'; inp.value = obj.value || ''; inp.oninput = function(){ obj.value = inp.value; };
     inp.style.cssText = 'width:100%;height:100%;border:1px solid #ff6333;padding:0 4px;font-size:12px;background:#fff;color:#000'; inner.appendChild(inp);
   }
 }
@@ -1452,10 +1512,11 @@ function buildTextCtxRows(frag, obj, pageNum){
   r2.appendChild(szi);
   var ffl=mk('span','ctx-label'); ffl.textContent='Font:'; r2.appendChild(ffl);
   var ffs=mk('select','ctx-select');
-  ['Arial','Times New Roman','Courier New','Georgia','Verdana','Tahoma','Impact'].forEach(function(f){
-    var o=mk('option'); o.value=f; o.textContent=f; if(f===obj.fontFamily) o.selected=true; ffs.appendChild(o);
+  var _curKey = obj.fontKey || (window.PDEditCore ? PDEditCore.familyFor({name:obj.fontFamily||'Arial'}) : 'sans');
+  (window.PDEditCore ? PDEditCore.CHOICES : [['sans','Arial']]).forEach(function(c){
+    var o=mk('option'); o.value=c[0]; o.textContent=c[1]; if(c[0]===_curKey) o.selected=true; ffs.appendChild(o);
   });
-  ffs.onchange=function(){ obj.fontFamily=ffs.value; applyTextStyle(obj,pageNum); pushHistory(); };
+  ffs.onchange=function(){ _setObjFont(obj, ffs.value); applyTextStyle(obj,pageNum); pushHistory(); };
   r2.appendChild(ffs);
   frag.appendChild(r2);
 
@@ -1482,6 +1543,7 @@ function applyTextStyle(obj, pageNum){
   if(!el) return;
   el.style.fontSize = (obj.fontSize||14)+'px';
   el.style.fontFamily = obj.fontFamily||'Arial';
+  if(obj.fontKey && window.PDEditCore) PDEditCore.cssFace(obj.fontKey, !!obj.bold, !!obj.italic);
   el.style.color = obj.color||'#000';
   el.style.fontWeight = obj.bold?'bold':'normal';
   el.style.fontStyle = obj.italic?'italic':'normal';
@@ -1679,17 +1741,18 @@ function updateCoverage(pageNum){
   Object.keys(edits).forEach(function(idxKey){
     var e = edits[idxKey];
     if(!e || !_nativeEditChanged(e)) return;
-    var xs = (e.origX !== undefined ? e.origX : e.x) * PE_STATE.scale;
-    var ys = vpH - ((e.origY !== undefined ? e.origY : e.y) * PE_STATE.scale);
+    var _v = PE_STATE.viewports && PE_STATE.viewports[pageNum];
+    var _p = _v ? _v.convertToViewportPoint(e.origX !== undefined ? e.origX : e.x, e.origY !== undefined ? e.origY : e.y) : [(e.origX||e.x) * PE_STATE.scale, vpH - (e.origY||e.y) * PE_STATE.scale];
+    var xs = _p[0], ys = _p[1];
     var fs = (e.origFontSize || 12) * PE_STATE.scale;
-    var w  = Math.max((e.origWidth || e.width || e.origFontSize * (e.origText||'').length * 0.65) * PE_STATE.scale, fs * 1.5);
+    var w  = Math.max((e.origWidth || e.width || e.origFontSize * (e.origText||'').length * 0.6) * PE_STATE.scale, fs * 0.6);
     ctx.fillStyle = e.backgroundColor || '#ffffff';
-    ctx.fillRect(xs - 3, ys - fs * 1.12 - 3, w + 6, fs * 1.42 + 6);
+    ctx.fillRect(xs - 1, ys - fs * 0.8, w + 2, fs * 1.07);
   });
 }
 
 function _nativeEditChanged(e){
-  return !!(e && (e.deleted || e.newText !== e.origText ||
+  return !!(e && (e.deleted || e.newText !== e.origText || !!e.fontChoice ||
     !!e.bold !== !!e.origBold || !!e.italic !== !!e.origItalic ||
     (e.color || e.origColor || '#000000') !== (e.origColor || '#000000') ||
     Math.abs((e.fontSize || e.origFontSize) - e.origFontSize) > 0.01 ||
@@ -1698,7 +1761,7 @@ function _nativeEditChanged(e){
 }
 
 function _nativeEditSignature(e){
-  return JSON.stringify({text:e.newText,bold:!!e.bold,italic:!!e.italic,color:e.color,
+  return JSON.stringify({text:e.newText,font:e.fontChoice||'',bold:!!e.bold,italic:!!e.italic,color:e.color,
     size:e.fontSize,x:e.x,y:e.y,deleted:!!e.deleted});
 }
 
@@ -1757,7 +1820,8 @@ function _buildNativeTextRuns(textContent){
       if(segment.length){
         var prev=segment[segment.length-1];
         var gap=atom.x-(prev.x+prev.width);
-        if(gap > Math.max(30, Math.max(prev.fontSize,atom.fontSize)*3)){
+        /* a wide gap means a new column or table cell: keep it as its own line */
+        if(gap > Math.max(6, Math.max(prev.fontSize,atom.fontSize)*1.5)){
           flushSegment(segment); segment=[];
         }
       }
@@ -1771,8 +1835,10 @@ function _buildNativeTextRuns(textContent){
 function _sampleNativeBackground(pageNum, rec){
   var canvas=PE_STATE.pageCanvases[pageNum];
   if(!canvas) return '#ffffff';
-  var ctx=canvas.getContext('2d'),s=PE_STATE.scale;
-  var left=Math.round(rec.origX*s),base=Math.round(canvas.height-rec.origY*s);
+  var ctx=canvas.getContext('2d'),s=PE_STATE.scale,_v=PE_STATE.viewports&&PE_STATE.viewports[pageNum];
+  var _pt=_v?_v.convertToViewportPoint(rec.origX,rec.origY):[rec.origX*s,canvas.height-rec.origY*s];
+  var _k=canvas.width/((_v&&_v.width)||canvas.width)||1;
+  var left=Math.round(_pt[0]*_k),base=Math.round(_pt[1]*_k); s*=_k;
   var top=Math.round(base-rec.origFontSize*s*1.12),right=Math.round(left+rec.origWidth*s);
   var bottom=Math.round(base+rec.origFontSize*s*0.24),pixels=[];
   function take(x,y){
@@ -1784,8 +1850,11 @@ function _sampleNativeBackground(pageNum, rec){
     var py=top+(bottom-top)*(i/12); take(left-3,py); take(right+3,py);
   }
   if(!pixels.length) return '#ffffff';
-  function median(ch){var vals=pixels.map(function(p){return p[ch];}).sort(function(a,b){return a-b;});return vals[Math.floor(vals.length/2)];}
-  return 'rgb('+median(0)+','+median(1)+','+median(2)+')';
+  /* the colour seen most often around the line (lines and borders nearby do not win) */
+  var counts={},best=null,bestN=0;
+  pixels.forEach(function(p){var k=(p[0]>>3)+','+(p[1]>>3)+','+(p[2]>>3);(counts[k]=counts[k]||[]).push(p);if(counts[k].length>bestN){bestN=counts[k].length;best=k;}});
+  var grp=counts[best],r=0,g=0,b=0;grp.forEach(function(p){r+=p[0];g+=p[1];b+=p[2];});
+  return 'rgb('+Math.round(r/grp.length)+','+Math.round(g/grp.length)+','+Math.round(b/grp.length)+')';
 }
 
 /* ============================================================
@@ -1813,8 +1882,14 @@ function extractNativeText(pageNum, page, vp){
       var w = run.width * PE_STATE.scale;
       var styleInfo = textContent.styles && textContent.styles[run.fontName] || {};
       var fontLabel = (run.fontName+' '+(styleInfo.fontFamily||''));
-      var inferredBold = /bold|black|heavy|semibold|demi/i.test(fontLabel);
-      var inferredItalic = /italic|oblique/i.test(fontLabel);
+      var fi = null;
+      try { if(page.commonObjs.has(run.fontName)){ var fo = page.commonObjs.get(run.fontName); fi = {name:String(fo.name||''), bold:!!(fo.bold||fo.black), italic:!!fo.italic, serif:!!fo.isSerifFont, mono:!!fo.isMonospace}; } } catch(err){}
+      var realName = fi ? fi.name.replace(/^[A-Z]{6}\+/, '') : '';
+      var inferredBold = (fi && fi.bold) || /bold|black|heavy|semibold|demi/i.test(fontLabel + ' ' + realName);
+      var inferredItalic = (fi && fi.italic) || /italic|oblique/i.test(fontLabel + ' ' + realName);
+      var guessSerif = fi && fi.serif;
+      if(!realName && run.origText.length > 4){ var perChar = run.width / (fontSize * run.origText.replace(/\s/g,'').length || 1); guessSerif = perChar < (inferredBold ? 0.53 : 0.49); }
+      var matchFam = window.PDEditCore ? PDEditCore.familyFor({name:realName, family:realName ? styleInfo.fontFamily : (guessSerif ? 'serif' : 'sans'), serif:guessSerif, mono:fi&&fi.mono}) : 'sans';
 
       /* Restore previous edit record if exists */
       var prev = prevEdits[idx];
@@ -1829,7 +1904,8 @@ function extractNativeText(pageNum, page, vp){
         y: prev && prev.y !== undefined ? prev.y : run.y,
         fontSize: (prev && prev.fontSize !== undefined) ? prev.fontSize : fontSize,
         fontName: run.fontName,
-        fontFamily: (styleInfo.fontFamily || 'Arial, sans-serif'),
+        fontFamily: window.PDEditCore ? PDEditCore.cssStack(matchFam) : (styleInfo.fontFamily || 'Arial, sans-serif'),
+        fontRealName: realName, fontSerif: !!(fi && fi.serif), fontMono: !!(fi && fi.mono), matchFam: matchFam, dir: run.dir,
         width: run.width,
         origBold: inferredBold,
         origItalic: inferredItalic,
@@ -1838,11 +1914,17 @@ function extractNativeText(pageNum, page, vp){
         origColor: prev ? (prev.origColor || '#000000') : '#000000',
         color: prev ? (prev.color || prev.origColor || '#000000') : '#000000',
         backgroundColor: prev ? (prev.backgroundColor || '#ffffff') : '#ffffff',
+        fontChoice: prev ? prev.fontChoice : undefined,
         deleted: prev ? !!prev.deleted : false
       };
       var rec = PE_STATE.nativeTextEdits[pageNum][idx];
       if(!prev){
         rec.backgroundColor = _sampleNativeBackground(pageNum, rec);
+        if(window.PDEditCore){
+          var _cv = PE_STATE.pageCanvases[pageNum], _tp = vp.convertToViewportPoint(rec.origX, rec.origY);
+          var _tc = PDEditCore.sampleTextColor(_cv, _tp[0], _tp[1] - fontSize*PE_STATE.scale*0.8, Math.max(2, run.width*PE_STATE.scale), fontSize*PE_STATE.scale*0.9, rec.backgroundColor);
+          if(_tc){ rec.origColor = _tc; rec.color = _tc; }
+        }
         var rgb=(rec.backgroundColor.match(/\d+/g)||[]).map(Number);
         if(rgb.length===3 && (rgb[0]*0.299+rgb[1]*0.587+rgb[2]*0.114)<115){
           rec.origColor='#ffffff'; rec.color='#ffffff';
@@ -1864,15 +1946,17 @@ function extractNativeText(pageNum, page, vp){
       overlay.dataset.page = pageNum;
 
       var currentFs = rec.fontSize * PE_STATE.scale;
-      var currentX = rec.x * PE_STATE.scale;
-      var currentY = vp.height - rec.y * PE_STATE.scale;
-      overlay.style.left   = Math.round(currentX) + 'px';
+      var _vpPt = vp.convertToViewportPoint(rec.x, rec.y);
+      var currentX = _vpPt[0];
+      var currentY = _vpPt[1];
+      overlay.style.left   = Math.round(currentX - 2) + 'px';
       overlay.style.top    = Math.round(currentY - currentFs) + 'px';
       overlay.style.fontSize   = Math.round(currentFs) + 'px';
       overlay.style.lineHeight = Math.round(currentFs + 2) + 'px';
       overlay.style.height     = Math.round(currentFs + 4) + 'px';
       overlay.style.minWidth   = Math.round(w + 6) + 'px';
       overlay.style.fontFamily = rec.fontFamily;
+      _ntApplyFont(rec, overlay);
       overlay.style.setProperty('--native-bg', rec.backgroundColor || '#ffffff');
       overlay.style.setProperty('--native-color', rec.color || rec.origColor || '#000000');
       if(rec.bold)   overlay.style.fontWeight = 'bold';
@@ -1937,6 +2021,7 @@ function showFloatToolbar(el, pageNum, ntIdx){
     document.getElementById('ft-italic').classList.toggle('active', !!(rec && rec.italic));
     document.getElementById('ft-size').value = Math.round(parseFloat(el.style.fontSize) || 14);
     document.getElementById('ft-color').value = (rec && (rec.color || rec.origColor)) || '#000000';
+    _ftFillFonts(rec ? (rec.fontChoice || '') : '', true);
   } else {
     _ftType = 'object'; _ftIdx = -1;
     var peObj = el.closest ? el.closest('.pe-obj') : el.parentElement;
@@ -1947,12 +2032,30 @@ function showFloatToolbar(el, pageNum, ntIdx){
       document.getElementById('ft-italic').classList.toggle('active', !!obj.italic);
       document.getElementById('ft-size').value = obj.fontSize || 14;
       document.getElementById('ft-color').value = obj.color || '#000000';
+      _ftFillFonts(obj.fontKey || '', false);
     }
   }
   _positionFT(el);
   ft.classList.add('visible');
 }
 
+function _setObjFont(obj, key){
+  obj.fontKey = key;
+  if(window.PDEditCore){ obj.fontFamily = PDEditCore.cssStack(key); PDEditCore.cssFace(key, !!obj.bold, !!obj.italic).then(function(){}); }
+}
+function _ftFillFonts(cur, native){
+  var sel = document.getElementById('ft-font'); if(!sel || !window.PDEditCore) return;
+  var html = native ? '<option value="">Same as PDF</option>' : '';
+  PDEditCore.CHOICES.forEach(function(c){ html += '<option value="'+c[0]+'">'+c[1]+'</option>'; });
+  sel.innerHTML = html; sel.value = cur || (native ? '' : 'sans');
+}
+/* screen font for an edited PDF line: the chosen font, or the look-alike of the original */
+function _ntApplyFont(rec, el){
+  if(!rec || !el || !window.PDEditCore) return;
+  var fam = rec.fontChoice || rec.matchFam || 'sans';
+  el.style.fontFamily = PDEditCore.cssStack(fam);
+  PDEditCore.cssFace(fam, !!rec.bold, !!rec.italic);
+}
 function _positionFT(el){
   var ft = document.getElementById('pe-float-toolbar');
   var rect = el.getBoundingClientRect();
@@ -1990,7 +2093,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec){ rec.bold = !rec.bold; if(_ftTarget) _ftTarget.style.fontWeight = rec.bold ? 'bold' : 'normal'; updateCoverage(_ftPage); }
+      if(rec){ rec.bold = !rec.bold; if(_ftTarget){ _ftTarget.style.fontWeight = rec.bold ? 'bold' : 'normal'; _ntApplyFont(rec, _ftTarget); _ftTarget.classList.toggle('nt-edited', _nativeEditChanged(rec)); } updateCoverage(_ftPage); pushHistory(); }
       this.classList.toggle('active');
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
@@ -2003,7 +2106,7 @@ function hideFloatToolbar(){
     e.preventDefault();
     if(_ftType === 'native'){
       var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
-      if(rec){ rec.italic = !rec.italic; if(_ftTarget) _ftTarget.style.fontStyle = rec.italic ? 'italic' : 'normal'; updateCoverage(_ftPage); }
+      if(rec){ rec.italic = !rec.italic; if(_ftTarget){ _ftTarget.style.fontStyle = rec.italic ? 'italic' : 'normal'; _ntApplyFont(rec, _ftTarget); _ftTarget.classList.toggle('nt-edited', _nativeEditChanged(rec)); } updateCoverage(_ftPage); pushHistory(); }
       this.classList.toggle('active');
     } else if(_ftType === 'object'){
       var obj = findObj(_ftPage, _ftObjId);
@@ -2032,6 +2135,22 @@ function hideFloatToolbar(){
       var obj = findObj(_ftPage, _ftObjId);
       if(obj){ obj.fontSize = val; applyTextStyle(obj, _ftPage); pushHistory(); }
     }
+  });
+
+  var ftFont = document.getElementById('ft-font');
+  ftFont.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+  ftFont.addEventListener('change', function(){
+    var key = this.value;
+    if(_ftType === 'native'){
+      var rec = PE_STATE.nativeTextEdits[_ftPage] && PE_STATE.nativeTextEdits[_ftPage][_ftIdx];
+      if(rec){ rec.fontChoice = key || undefined; _ntApplyFont(rec, _ftTarget);
+        if(_ftTarget) _ftTarget.classList.toggle('nt-edited', _nativeEditChanged(rec));
+        updateCoverage(_ftPage); pushHistory(); }
+    } else if(_ftType === 'object'){
+      var obj = findObj(_ftPage, _ftObjId);
+      if(obj){ _setObjFont(obj, key || 'sans'); applyTextStyle(obj, _ftPage); pushHistory(); }
+    }
+    if(_ftTarget && _ftTarget.focus) _ftTarget.focus();
   });
 
   ftColor.addEventListener('mousedown', function(e){ e.stopPropagation(); });
@@ -2080,9 +2199,14 @@ function hideFloatToolbar(){
             var layerRect = layer.getBoundingClientRect();
             var newLeft = parseInt(el.style.left) || 0;
             var newTop  = parseInt(el.style.top)  || 0;
-            rec.x = newLeft / PE_STATE.scale;
-            var pageHeight = (PE_STATE.pageWrappers[_ftPage] ? parseFloat(PE_STATE.pageWrappers[_ftPage].style.height) : 0) / PE_STATE.scale;
-            rec.y = pageHeight - newTop / PE_STATE.scale - rec.fontSize;
+            /* back to PDF points the same way the line was placed (left-2, top-size) */
+            var _vw = PE_STATE.viewports && PE_STATE.viewports[_ftPage], _fpx = rec.fontSize * PE_STATE.scale;
+            if(_vw){ var _pp = _vw.convertToPdfPoint(newLeft + 2, newTop + _fpx); rec.x = _pp[0]; rec.y = _pp[1]; }
+            else {
+              rec.x = (newLeft + 2) / PE_STATE.scale;
+              var pageHeight = (PE_STATE.pageWrappers[_ftPage] ? parseFloat(PE_STATE.pageWrappers[_ftPage].style.height) : 0) / PE_STATE.scale;
+              rec.y = pageHeight - newTop / PE_STATE.scale - rec.fontSize;
+            }
             el.classList.toggle('nt-edited', _nativeEditChanged(rec));
             updateCoverage(_ftPage);
             pushHistory();
@@ -2212,7 +2336,7 @@ document.getElementById('ss-close').addEventListener('click', function(){
 var _sigPendingPage=0, _sigPendingX=0, _sigPendingY=0, _sigDrawing=false;
 var sigCanvas = document.getElementById('sig-canvas');
 var sigCtx = sigCanvas.getContext('2d');
-sigCtx.strokeStyle = '#1a1aff'; sigCtx.lineWidth = 2.5; sigCtx.lineCap = 'round'; sigCtx.lineJoin = 'round';
+sigCtx.strokeStyle = '#111111'; sigCtx.lineWidth = 2.5; sigCtx.lineCap = 'round'; sigCtx.lineJoin = 'round';
 
 function openSignatureModal(pg,x,y){
   _sigPendingPage=pg; _sigPendingX=x; _sigPendingY=y;
@@ -2229,9 +2353,70 @@ sigCanvas.addEventListener('touchend', function(){ _sigDrawing=false; });
 
 document.getElementById('sig-clear').addEventListener('click', function(){ sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height); });
 document.getElementById('sig-cancel').addEventListener('click', function(){ document.getElementById('sig-modal').classList.remove('open'); });
+/* signature: draw, type (handwriting fonts) or a photo with the paper removed */
+var _sigMode = 'draw', _sigInk = '#111111', _sigFontsReady = null, _sigPhoto = null;
+function _sigLoadFonts(){
+  if(_sigFontsReady) return _sigFontsReady;
+  var fcdn = window.PD_FONT_CDN || 'https://cdn.jsdelivr.net/npm/', list = [['PD GreatVibes', fcdn + '@expo-google-fonts/great-vibes@0.4.1/400Regular/GreatVibes_400Regular.ttf'],['PD Dancing', fcdn + '@expo-google-fonts/dancing-script@0.4.2/600SemiBold/DancingScript_600SemiBold.ttf']];
+  _sigFontsReady = Promise.all(list.map(function(f){ var ff = new FontFace(f[0], 'url(' + f[1] + ')'); return ff.load().then(function(x){ document.fonts.add(x); }).catch(function(){}); }));
+  return _sigFontsReady;
+}
+function _sigRedraw(){
+  if(_sigMode === 'type'){
+    sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+    var t = document.getElementById('sig-type-input').value.trim(); if(!t) return;
+    var fam = document.getElementById('sig-type-font').value, size = 64;
+    sigCtx.save(); sigCtx.fillStyle = _sigInk; sigCtx.textBaseline = 'middle'; sigCtx.textAlign = 'center';
+    do { sigCtx.font = size + "px '" + fam + "', cursive"; size -= 2; } while(sigCtx.measureText(t).width > sigCanvas.width - 30 && size > 16);
+    sigCtx.fillText(t, sigCanvas.width/2, sigCanvas.height/2); sigCtx.restore();
+  } else if(_sigMode === 'upload' && _sigPhoto){
+    var im = _sigPhoto, sc = Math.min((sigCanvas.width-20)/im.width, (sigCanvas.height-20)/im.height);
+    var w = im.width*sc, h = im.height*sc, x = (sigCanvas.width-w)/2, y = (sigCanvas.height-h)/2;
+    sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height); sigCtx.drawImage(im, x, y, w, h);
+    var d = sigCtx.getImageData(0,0,sigCanvas.width,sigCanvas.height), px = d.data, ink = _sigInk.match(/\w\w/g).map(function(h){ return parseInt(h,16); });
+    var sum = 0, n = 0; for(var i = 0; i < px.length; i += 4){ if(px[i+3]){ sum += px[i]*.3+px[i+1]*.59+px[i+2]*.11; n++; } }
+    var paper = n ? sum/n : 255, cut = Math.min(paper - 35, 200);
+    for(var j = 0; j < px.length; j += 4){ var l = px[j]*.3+px[j+1]*.59+px[j+2]*.11;
+      if(!px[j+3] || l > cut){ px[j+3] = 0; } else { var a = Math.min(255, Math.round((cut - l) / Math.max(20, cut*0.55) * 255)); px[j] = ink[0]; px[j+1] = ink[1]; px[j+2] = ink[2]; px[j+3] = a; } }
+    sigCtx.putImageData(d, 0, 0);
+  }
+}
+Array.prototype.forEach.call(document.querySelectorAll('.sig-tab'), function(b){ b.addEventListener('click', function(){
+  _sigMode = b.dataset.sigmode;
+  Array.prototype.forEach.call(document.querySelectorAll('.sig-tab'), function(x){ x.classList.toggle('active', x === b); });
+  document.querySelector('.sig-typerow').hidden = _sigMode !== 'type';
+  document.querySelector('.sig-uprow').hidden = _sigMode !== 'upload';
+  sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+  if(_sigMode === 'type'){ _sigLoadFonts().then(_sigRedraw); document.getElementById('sig-type-input').focus(); }
+  if(_sigMode === 'upload') _sigRedraw();
+}); });
+document.getElementById('sig-type-input').addEventListener('input', _sigRedraw);
+document.getElementById('sig-type-font').addEventListener('change', _sigRedraw);
+document.getElementById('sig-upload-btn').addEventListener('click', function(){ document.getElementById('sig-upload-input').click(); });
+document.getElementById('sig-upload-input').addEventListener('change', function(e){
+  var f = e.target.files[0]; if(!f) return; var u = URL.createObjectURL(f), im = new Image();
+  im.onload = function(){ _sigPhoto = im; _sigRedraw(); }; im.src = u; e.target.value = '';
+});
+Array.prototype.forEach.call(document.querySelectorAll('.sig-ink'), function(b){ b.addEventListener('click', function(){
+  _sigInk = b.dataset.ink; sigCtx.strokeStyle = _sigInk;
+  Array.prototype.forEach.call(document.querySelectorAll('.sig-ink'), function(x){ x.classList.toggle('active', x === b); });
+  if(_sigMode !== 'draw') _sigRedraw();
+}); });
+/* cut the empty space around the signature so it sits where you click */
+function _sigTrimmed(){
+  var d = sigCtx.getImageData(0,0,sigCanvas.width,sigCanvas.height).data, W = sigCanvas.width, H = sigCanvas.height, x0 = W, y0 = H, x1 = -1, y1 = -1;
+  for(var y = 0; y < H; y++) for(var x = 0; x < W; x++) if(d[(y*W + x)*4 + 3] > 8){ if(x < x0) x0 = x; if(x > x1) x1 = x; if(y < y0) y0 = y; if(y > y1) y1 = y; }
+  if(x1 < 0) return null;
+  x0 = Math.max(0, x0-4); y0 = Math.max(0, y0-4); x1 = Math.min(W-1, x1+4); y1 = Math.min(H-1, y1+4);
+  var c = document.createElement('canvas'); c.width = x1-x0+1; c.height = y1-y0+1; c.getContext('2d').drawImage(sigCanvas, x0, y0, c.width, c.height, 0, 0, c.width, c.height);
+  return {url:c.toDataURL('image/png'), w:c.width, h:c.height};
+}
 document.getElementById('sig-apply').addEventListener('click', function(){
-  var dataUrl = sigCanvas.toDataURL('image/png');
-  var obj = { id:uid(), type:'signature', x:_sigPendingX, y:_sigPendingY, w:200, h:80, src:dataUrl };
+  var trimmed = _sigTrimmed();
+  if(!trimmed){ toast(_sigMode === 'type' ? 'Type your name first' : _sigMode === 'upload' ? 'Choose a photo of your signature first' : 'Draw your signature first'); return; }
+  var dataUrl = trimmed.url, sw = Math.min(200, trimmed.w), sh = Math.round(sw * trimmed.h / trimmed.w);
+  if(sh > 90){ sh = 90; sw = Math.round(sh * trimmed.w / trimmed.h); }
+  var obj = { id:uid(), type:'signature', x:_sigPendingX, y:_sigPendingY, w:sw, h:sh, src:dataUrl };
   getPageObjects(_sigPendingPage).push(obj);
   pushHistory(); renderObjects(_sigPendingPage);
   document.getElementById('sig-modal').classList.remove('open');
@@ -2448,38 +2633,189 @@ function setZoom(z){
 ============================================================ */
 document.getElementById('btn-export-pdf').addEventListener('click', exportPDF);
 
+/* ============================================================
+   PAGE TOOLS: rotate, delete, move, add a blank page (applied when you download)
+============================================================ */
+function _addPageBar(pageNum, wrapper){
+  var bar = document.createElement('div');
+  bar.className = 'pe-pagebar'; bar.dataset.page = pageNum;
+  bar.innerHTML = '<span class="pb-label">Page ' + pageNum + '</span>' +
+    '<button type="button" data-op="left" title="Rotate left" aria-label="Rotate page ' + pageNum + ' left">&#8634;</button>' +
+    '<button type="button" data-op="right" title="Rotate right" aria-label="Rotate page ' + pageNum + ' right">&#8635;</button>' +
+    '<button type="button" data-op="up" title="Move up" aria-label="Move page ' + pageNum + ' up">&#9650;</button>' +
+    '<button type="button" data-op="down" title="Move down" aria-label="Move page ' + pageNum + ' down">&#9660;</button>' +
+    '<button type="button" data-op="blank" title="Add a blank page after this one" aria-label="Add a blank page after page ' + pageNum + '">+ Blank</button>' +
+    '<button type="button" data-op="del" class="pb-del" title="Delete page" aria-label="Delete page ' + pageNum + '">Delete</button>';
+  wrapper.parentNode.insertBefore(bar, wrapper);
+  bar.addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) _pageOp(pageNum, b.dataset.op); });
+}
+function _pageOp(pg, op){
+  var o = PE_STATE.pageOps; if(!o) return;
+  if(op === 'left' || op === 'right'){ o.rot[pg] = (((o.rot[pg] || 0) + (op === 'left' ? -90 : 90)) % 360 + 360) % 360; }
+  else if(op === 'del'){ o.del[pg] = !o.del[pg]; if(!o.del[pg]) {} }
+  else if(op === 'up' || op === 'down'){
+    var i = o.order.indexOf(pg), j = op === 'up' ? i - 1 : i + 1;
+    while(j >= 0 && j < o.order.length && typeof o.order[j] !== 'number') j += op === 'up' ? -1 : 1;
+    if(i < 0 || j < 0 || j >= o.order.length) return;
+    o.order.splice(i, 1); o.order.splice(op === 'up' ? j : j, 0, pg);
+  }
+  else if(op === 'blank'){ o.blanks++; o.order.splice(o.order.indexOf(pg) + 1, 0, 'b' + o.blanks); }
+  _renderPageOps();
+}
+function _renderPageOps(){
+  var o = PE_STATE.pageOps; if(!o) return;
+  o.order.forEach(function(item){
+    if(typeof item === 'number'){
+      var w = PE_STATE.pageWrappers[item], bar = col.querySelector('.pe-pagebar[data-page="' + item + '"]'); if(!w || !bar) return;
+      col.appendChild(bar); col.appendChild(w);
+      var rot = o.rot[item] || 0, del = !!o.del[item];
+      w.classList.toggle('pe-page-deleted', del);
+      bar.classList.toggle('pb-deleted', del);
+      bar.querySelector('.pb-del').textContent = del ? 'Undo delete' : 'Delete';
+      var lbl = 'Page ' + item + (rot ? ' · turns ' + rot + '° on download' : '') + (del ? ' · will be removed' : '');
+      bar.querySelector('.pb-label').textContent = lbl;
+      var th = document.querySelector('.thumb-item[data-page="' + item + '"]');
+      if(th){ th.style.opacity = del ? .35 : 1; var tc = th.querySelector('canvas'); if(tc) tc.style.transform = rot ? 'rotate(' + rot + 'deg)' : ''; document.getElementById('pe-thumbs-col').appendChild(th); }
+    } else {
+      var bl = col.querySelector('.pe-blankpage[data-id="' + item + '"]');
+      if(!bl){ bl = document.createElement('div'); bl.className = 'pe-blankpage'; bl.dataset.id = item;
+        bl.innerHTML = '<span>Blank page (added when you download)</span><button type="button">Remove</button>';
+        bl.querySelector('button').addEventListener('click', function(){ o.order.splice(o.order.indexOf(item), 1); bl.remove(); _renderPageOps(); }); }
+      col.appendChild(bl);
+    }
+  });
+}
+function _applyPageOps(doc){
+  var o = PE_STATE.pageOps; if(!o) return;
+  var changed = o.blanks || Object.keys(o.del).some(function(k){ return o.del[k]; }) || o.order.some(function(v, i){ return v !== i + 1; }) || Object.keys(o.rot).some(function(k){ return o.rot[k]; });
+  if(!changed) return;
+  var pages = doc.getPages(), refs = [], last = pages[0];
+  o.order.forEach(function(item){
+    if(typeof item === 'number'){
+      var pg = pages[item - 1]; if(!pg) return; last = pg;
+      if(o.rot[item]) pg.setRotation(PDFLib.degrees(((pg.getRotation().angle || 0) + o.rot[item]) % 360));
+      if(!o.del[item]) refs.push(pg.ref);
+    } else {
+      var sz = last.getSize(), np = doc.addPage([sz.width, sz.height]); refs.push(np.ref);
+    }
+  });
+  if(!refs.length) throw new Error('Every page is marked for deletion. Keep at least one page.');
+  var pagesRef = doc.catalog.get(PDFLib.PDFName.of('Pages')), pagesDict = doc.catalog.Pages();
+  refs.forEach(function(r){ doc.context.lookup(r).set(PDFLib.PDFName.of('Parent'), pagesRef); });
+  pagesDict.set(PDFLib.PDFName.of('Kids'), doc.context.obj(refs));
+  pagesDict.set(PDFLib.PDFName.of('Count'), PDFLib.PDFNumber.of(refs.length));
+}
+
+/* ============================================================
+   FILL THE PDF'S OWN FORM FIELDS (forms made in Word, Acrobat, government forms)
+============================================================ */
+function _renderFormWidgets(pageNum, page, vp){
+  return page.getAnnotations({intent:'display'}).then(function(annots){
+    var layer = PE_STATE.objLayers[pageNum]; if(!layer) return;
+    Array.prototype.forEach.call(layer.querySelectorAll('.pe-fill'), function(n){ n.remove(); });
+    PE_STATE.formValues = PE_STATE.formValues || {};
+    annots.forEach(function(a){
+      if(a.subtype !== 'Widget' || !a.fieldName || a.hidden) return;
+      var r = vp.convertToViewportRectangle(a.rect), L = Math.min(r[0], r[2]), T = Math.min(r[1], r[3]), W = Math.abs(r[2]-r[0]), H = Math.abs(r[3]-r[1]);
+      var name = a.fieldName, st = PE_STATE.formValues, el;
+      if(a.fieldType === 'Tx'){
+        el = document.createElement(a.multiLine ? 'textarea' : 'input');
+        if(!a.multiLine) el.type = 'text';
+        el.value = st[name] !== undefined ? st[name].v : (a.fieldValue || '');
+        if(a.maxLen) el.maxLength = a.maxLen;
+        el.addEventListener('input', function(){ st[name] = {t:'text', v:el.value}; _syncSameField(name, el); });
+      } else if(a.fieldType === 'Btn' && (a.checkBox || a.radioButton)){
+        el = document.createElement('input'); el.type = a.checkBox ? 'checkbox' : 'radio';
+        el.name = 'pdf-' + name; el.dataset.export = a.buttonValue || a.exportValue || 'Yes';
+        var cur = st[name] !== undefined ? st[name].v : a.fieldValue;
+        el.checked = a.checkBox ? !!(cur && cur !== 'Off') : (cur === el.dataset.export);
+        el.addEventListener('change', function(){ st[name] = a.checkBox ? {t:'check', v:el.checked ? el.dataset.export : 'Off'} : {t:'radio', v:el.dataset.export}; });
+      } else if(a.fieldType === 'Ch'){
+        el = document.createElement('select');
+        (a.options || []).forEach(function(o){ var op = document.createElement('option'); op.value = o.exportValue; op.textContent = o.displayValue; el.appendChild(op); });
+        var cv = st[name] !== undefined ? st[name].v : (Array.isArray(a.fieldValue) ? a.fieldValue[0] : a.fieldValue);
+        if(cv) el.value = cv;
+        el.addEventListener('change', function(){ st[name] = {t:'choice', v:el.value}; });
+      } else return;
+      if(a.readOnly) el.disabled = true;
+      el.className = 'pe-fill';
+      el.dataset.field = name;
+      el.title = name;
+      el.style.cssText = 'position:absolute;left:'+L+'px;top:'+T+'px;width:'+W+'px;height:'+H+'px;z-index:6;box-sizing:border-box;margin:0;'+
+        (el.type === 'checkbox' || el.type === 'radio' ? 'accent-color:#ff6333;' : 'padding:0 3px;border:1px solid rgba(255,99,51,.55);background:rgba(255,236,224,.55);color:#000;font:'+Math.max(9, Math.min(H*0.62, 16))+'px Arial,sans-serif;');
+      el.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+      layer.appendChild(el);
+    });
+    if(annots.some(function(a){ return a.subtype === 'Widget' && a.fieldName; }) && !PE_STATE._formToast){ PE_STATE._formToast = true; toast('This PDF has form fields: click a field to fill it in.', 3500); }
+  }).catch(function(){});
+}
+function _syncSameField(name, src){ Array.prototype.forEach.call(document.querySelectorAll('.pe-fill[data-field="'+(window.CSS&&CSS.escape?CSS.escape(name):name)+'"]'), function(n){ if(n !== src && 'value' in n && n.type !== 'checkbox' && n.type !== 'radio') n.value = src.value; }); }
+async function _applyFormValues(doc){
+  var vals = PE_STATE.formValues || {}, names = Object.keys(vals); if(!names.length) return;
+  var form; try { form = doc.getForm(); } catch(e){ return; }
+  var needFont = null;
+  for(const name of names){
+    var v = vals[name], f; try { f = form.getField(name); } catch(e){ continue; }
+    try {
+      if(v.t === 'text' && f.setText){ f.setText(v.v);
+        try { if(f.isMultiline && f.isMultiline()){ var hh = f.acroField.getWidgets()[0].getRectangle().height; f.setFontSize(Math.max(8, Math.min(12, hh / 4))); } } catch(e){}
+        if(/[^\x00-\xFF]/.test(v.v) && window.PDEditCore){ needFont = needFont || await PDEditCore.embedFor(doc, v.v, {family:'sans'}); f.updateAppearances(needFont); } }
+      else if(v.t === 'check' && f.check){ if(v.v && v.v !== 'Off') f.check(); else f.uncheck(); }
+      else if(v.t === 'radio' && f.select){ var ro = f.getOptions ? f.getOptions() : [], rv = v.v; if(ro.indexOf(rv) < 0 && /^\d+$/.test(rv) && ro[+rv] !== undefined) rv = ro[+rv]; f.select(rv); }
+      else if(v.t === 'choice' && f.select){ f.select(v.v); }
+    } catch(err){ console.warn('form value', name, err); }
+  }
+}
+
 function exportPDF(){
   if(!PE_STATE.pdfDoc) return;
   showProgress('Generating PDF...');
-
-  var PDFDocument = PDFLib.PDFDocument;
-  var srcBytes = new Uint8Array(PE_STATE.pdfBytes);
-  PDFDocument.load(srcBytes, {ignoreEncryption:true}).then(function(srcDoc){
-    return PDFDocument.create().then(function(outDoc){
-      var chain = Promise.resolve();
-      for(var pg=1; pg<=PE_STATE.numPages; pg++){
-        (function(pageNum){
-          chain = chain.then(function(){
-            setProgress(Math.round(pageNum/PE_STATE.numPages*70));
-            return exportPage(outDoc, srcDoc, pageNum);
+  var PL = PDFLib, core = window.PDEditCore, srcBytes = new Uint8Array(PE_STATE.pdfBytes);
+  (async function(){
+    var doc = await PL.PDFDocument.load(srcBytes, {ignoreEncryption:true});
+    var cover = {}, withEdits = [];
+    /* 1) take the replaced words out of the page itself, so search and copy show only the new text */
+    for(var pg = 1; pg <= PE_STATE.numPages; pg++){
+      var edits = PE_STATE.nativeTextEdits[pg] || {}, boxes = [];
+      Object.keys(edits).forEach(function(k){
+        var e = edits[k]; if(!e || !_nativeEditChanged(e)) return;
+        var fs = e.origFontSize || 12;
+        boxes.push({x0:e.origX, x1:e.origX + Math.max(e.origWidth || fs, 1), y0:e.origY - fs*0.3, y1:e.origY + fs*0.85, key:k});
+      });
+      if(!boxes.length) continue;
+      try { if(core) core.removeText(PL, doc, doc.getPage(pg-1), boxes); } catch(err){ console.warn('text removal', err); }
+      withEdits.push({pg:pg, boxes:boxes});
+    }
+    setProgress(15);
+    /* 2) check the result: any old word still there is covered with a patch of the paper colour */
+    if(withEdits.length){
+      try {
+        var check = await pdfjsLib.getDocument({data: await doc.save({useObjectStreams:false})}).promise;
+        for(var i = 0; i < withEdits.length; i++){
+          var tc = await (await check.getPage(withEdits[i].pg)).getTextContent();
+          withEdits[i].boxes.forEach(function(b){
+            var left = tc.items.some(function(it){ if(!it.str || !it.str.trim()) return false; var x = it.transform[4], y = it.transform[5], x2 = x + (it.width || 0);
+              return y >= b.y0 && y <= b.y1 && x2 > b.x0 + 0.5 && x < b.x1 - 0.5; });
+            if(left) (cover[withEdits[i].pg] = cover[withEdits[i].pg] || {})[b.key] = true;
           });
-        })(pg);
-      }
-      return chain.then(function(){ return {outDoc:outDoc, srcDoc:srcDoc}; });
-    });
-  }).then(function(docs){
+        }
+        check.destroy();
+      } catch(err){ withEdits.forEach(function(w){ w.boxes.forEach(function(b){ (cover[w.pg] = cover[w.pg] || {})[b.key] = true; }); }); }
+    }
+    /* 3) draw the new text and every added object on the original pages (vector, nothing is flattened) */
+    for(var p2 = 1; p2 <= PE_STATE.numPages; p2++){
+      setProgress(15 + Math.round(p2 / PE_STATE.numPages * 75));
+      await exportPage(doc, p2, cover[p2] || {});
+    }
+    await _applyFormValues(doc);
+    _applyPageOps(doc);
     setProgress(95);
-    return docs.outDoc.save();
-  }).then(function(finalBytes){
+    var finalBytes = await doc.save();
     var blob = new Blob([finalBytes], {type:'application/pdf'});
-    var blobUrl = URL.createObjectURL(blob);
     var outName = document.getElementById('pe-filename').textContent.replace(/\.pdf$/i,'') + '-edited.pdf';
     setProgress(100);
-    setTimeout(function(){
-      hideProgress();
-      showSuccessScreen(blobUrl, outName, blob.size, PE_STATE.numPages);
-    }, 300);
-  }).catch(function(err){
+    setTimeout(function(){ hideProgress(); showSuccessScreen(URL.createObjectURL(blob), outName, blob.size, PE_STATE.numPages); }, 300);
+  })().catch(function(err){
     hideProgress();
     toast('Export failed: ' + err.message, 5000);
     console.error('Export error:', err);
@@ -2490,47 +2826,125 @@ function _pdfEditColor(value,fallback){
   var rgb=PDFLib.rgb,v=String(value||fallback||'#000000').trim();
   var m=v.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
   if(m){var h=m[1];if(h.length===3)h=h.split('').map(function(c){return c+c}).join('');return rgb(parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255)}
-  var r=v.match(/rgba?\(\s*(\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)/i);
+  var r=v.match(/rgba?\(\s*(\d+)[, ]+\s*(\d+)[, ]+\s*(\d+)(?:[, ]+\s*([\d.]+))?/i);
   return r?rgb(+r[1]/255,+r[2]/255,+r[3]/255):_pdfEditColor(fallback||'#000000','#000000');
 }
-function _pdfEditFont(outDoc,obj){
-  var family=String(obj&&obj.fontFamily||'').toLowerCase(),bold=!!(obj&&obj.bold),italic=!!(obj&&obj.italic);
-  var base=family.indexOf('times')>=0?'TimesRoman':family.indexOf('courier')>=0?'Courier':'Helvetica';
-  var key=base+(bold&&italic?'BoldOblique':bold?'Bold':italic?'Oblique':'');
-  return outDoc.embedFont(PDFLib.StandardFonts[key]||PDFLib.StandardFonts.Helvetica);
-}
+function _pdfEditAlpha(value){ var r=String(value||'').match(/rgba\([^)]*,\s*([\d.]+)\s*\)/i); return r?Math.max(0,Math.min(1,+r[1])):1; }
 function _pdfEditImageBytes(src){return fetch(src).then(function(r){return r.arrayBuffer()}).then(function(ab){return new Uint8Array(ab)})}
+/* one line of text in a font that matches (any language): Latin/symbols as real text, right-to-left as a sharp image */
+async function _pdfDrawLine(doc, page, text, o){
+  if(!text) return 0;
+  var core = window.PDEditCore;
+  if(core && core.RTL.test(text)){
+    var fam = core.familyFor(o.info||{}) === 'nastaliq' ? 'nastaliq' : 'naskh';
+    /* plain Urdu/Arabic (no English letters, Naskh style): real, searchable text */
+    if(fam === 'naskh' && !/[A-Za-z]/.test(text)){
+      try {
+        var nf = await core.embedFor(doc, text, {name:'naskh', family:'naskh', bold:o.info&&o.info.bold});
+        var tw = nf.widthOfTextAtSize(text, o.size);
+        page.drawText(text, {x:(o.alignRight !== undefined ? o.alignRight - tw : o.x), y:o.y, size:o.size, font:nf, color:o.color, opacity:o.opacity});
+        return tw;
+      } catch(err){ console.warn('urdu text', err); }
+    }
+    await core.cssFace(fam, !!(o.info&&o.info.bold), false);
+    var im = core.textImage(text, {size:o.size, fam:fam, color:o.colorCss||'#000', bold:o.info&&o.info.bold});
+    var png = await doc.embedPng(im.url);
+    var x = o.alignRight !== undefined ? o.alignRight - im.w : o.x;
+    page.drawImage(png, {x:x, y:o.y - (im.h - im.base), width:im.w, height:im.h});
+    return im.w;
+  }
+  var font = core ? await core.embedFor(doc, text, o.info||{}) : await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+  page.drawText(text, {x:o.x, y:o.y, size:o.size, font:font, color:o.color, opacity:o.opacity});
+  return font.widthOfTextAtSize(text, o.size);
+}
 
-function exportPage(outDoc,srcDoc,pageNum){
-  /* Copy the original PDF page so its text, lines and images remain sharp.
-     The previous JPEG-flattening exporter visibly degraded edited documents. */
-  return outDoc.copyPages(srcDoc,[pageNum-1]).then(function(copied){
-    var page=copied[0];outDoc.addPage(page);
-    var pageH=page.getHeight(),ratio=1/PE_STATE.scale,chain=Promise.resolve();
-    var edits=PE_STATE.nativeTextEdits[pageNum]||{};
-    Object.keys(edits).forEach(function(key){var edit=edits[key];if(!edit||!_nativeEditChanged(edit))return;
-      chain=chain.then(function(){var x=edit.origX!==undefined?edit.origX:edit.x,baseline=edit.origY!==undefined?edit.origY:edit.y,fs=edit.origFontSize||12;
-        var width=Math.max(edit.origWidth||edit.width||fs*String(edit.origText||'').length*.6,fs*1.5);
-        page.drawRectangle({x:x-2,y:baseline-fs*.28-2,width:width+4,height:fs*1.28+4,color:_pdfEditColor(edit.backgroundColor,'#ffffff')});
-        if(edit.deleted)return;
-        return _pdfEditFont(outDoc,edit).then(function(font){page.drawText(String(edit.newText!==undefined?edit.newText:edit.origText),{x:edit.x,y:edit.y-(edit.fontSize||fs)*.18,size:edit.fontSize||fs,font:font,color:_pdfEditColor(edit.color||edit.origColor,'#000000')})});
-      });
-    });
-    getPageObjects(pageNum).forEach(function(obj){chain=chain.then(function(){
-      var x=obj.x*ratio,w=obj.w*ratio,h=obj.h*ratio,y=pageH-(obj.y+obj.h)*ratio;
-      if(obj.type==='whiteout'){page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.color,'#ffffff')});return}
-      if(obj.type==='text'){var fs=(obj.fontSize||14)*ratio,lh=fs*(+(obj.lineHeight)||1.4);if(obj.highlight&&obj.highlight!=='transparent')page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.highlight,'#fff59d')});return _pdfEditFont(outDoc,obj).then(function(font){String(obj.text||'').split('\n').forEach(function(line,i){var ly=y+h-fs-i*lh;page.drawText(line,{x:x+6*ratio,y:ly,size:fs,font:font,color:_pdfEditColor(obj.color,'#000000')});if(obj.underline)page.drawLine({start:{x:x+6*ratio,y:ly-1},end:{x:x+6*ratio+font.widthOfTextAtSize(line,fs),y:ly-1},thickness:Math.max(.5,ratio),color:_pdfEditColor(obj.color,'#000000')})})})}
-      if(obj.type==='annotate'){page.drawRectangle({x:x,y:y,width:w,height:h,color:_pdfEditColor(obj.bgColor,'#fff176'),opacity:.75});return _pdfEditFont(outDoc,obj).then(function(font){String(obj.text||'').split('\n').forEach(function(line,i){page.drawText(line,{x:x+5*ratio,y:y+h-12*ratio-i*16*ratio,size:12*ratio,font:font,color:_pdfEditColor('#333333')})})})}
-      if(obj.type==='image'||obj.type==='signature'||obj.type==='draw'){if(!obj.src)return;return _pdfEditImageBytes(obj.src).then(function(bytes){return (/^data:image\/png/i.test(obj.src)?outDoc.embedPng(bytes):outDoc.embedJpg(bytes)).then(function(img){page.drawImage(img,{x:x,y:y,width:w,height:h})})})}
-      if(obj.type==='shape'){var color=_pdfEditColor(obj.stroke||obj.color||obj.strokeColor,'#ff6333'),th=Math.max(.7,(obj.strokeWidth||2)*ratio),shape=obj.shapeType||obj.shape||'rect';
-        if(shape==='line'||shape==='arrow'){page.drawLine({start:{x:x,y:y+h},end:{x:x+w,y:y},thickness:th,color:color});if(shape==='arrow'){page.drawLine({start:{x:x+w,y:y},end:{x:x+w-Math.min(w*.22,14),y:y+Math.min(h*.28,10)},thickness:th,color:color});page.drawLine({start:{x:x+w,y:y},end:{x:x+w-Math.min(w*.22,14),y:y-Math.min(h*.18,7)},thickness:th,color:color})}}
-        else if(shape==='circle'||shape==='ellipse')page.drawEllipse({x:x+w/2,y:y+h/2,xScale:w/2,yScale:h/2,borderColor:color,borderWidth:th});
-        else if(shape==='triangle'){page.drawLine({start:{x:x+w/2,y:y+h},end:{x:x,y:y},thickness:th,color:color});page.drawLine({start:{x:x,y:y},end:{x:x+w,y:y},thickness:th,color:color});page.drawLine({start:{x:x+w,y:y},end:{x:x+w/2,y:y+h},thickness:th,color:color})}
-        else page.drawRectangle({x:x,y:y,width:w,height:h,borderColor:color,borderWidth:th});return}
-      if(obj.type==='link')page.drawRectangle({x:x,y:y,width:w,height:h,borderColor:_pdfEditColor('#ff6333'),borderWidth:Math.max(.5,ratio),opacity:.12});
-    })});
-    return chain;
-  });
+function exportPage(doc, pageNum, cover){
+  return (async function(){
+    var page = doc.getPage(pageNum-1), cb = page.getCropBox(), ratio = 1/PE_STATE.scale;
+    var edits = PE_STATE.nativeTextEdits[pageNum] || {};
+    for(const key of Object.keys(edits)){
+      var e = edits[key]; if(!e || !_nativeEditChanged(e)) continue;
+      var fs = e.origFontSize || 12;
+      if(cover[key]){
+        var w = Math.max(e.origWidth || fs, fs*0.6);
+        page.drawRectangle({x:e.origX - 0.5, y:e.origY - fs*0.23, width:w + 1, height:fs*1.02, color:_pdfEditColor(e.backgroundColor,'#ffffff')});
+      }
+      if(e.deleted) continue;
+      var txt = String(e.newText !== undefined ? e.newText : e.origText);
+      var info = {choice:e.fontChoice, name:e.fontRealName||'', family:e.matchFam, serif:e.fontSerif, mono:e.fontMono, bold:!!e.bold, italic:!!e.italic};
+      await _pdfDrawLine(doc, page, txt, {x:e.x, y:e.y, size:e.fontSize||fs, info:info, color:_pdfEditColor(e.color||e.origColor,'#000000'), colorCss:e.color||e.origColor,
+        alignRight: e.dir === 'rtl' ? e.origX + (e.origWidth||0) : undefined});
+    }
+    var objs = getPageObjects(pageNum);
+    for(const obj of objs){
+      var x = cb.x + obj.x*ratio, w2 = obj.w*ratio, h = obj.h*ratio, y = cb.y + cb.height - (obj.y + obj.h)*ratio;
+      if(obj.type === 'whiteout'){ page.drawRectangle({x:x, y:y, width:w2, height:h, color:_pdfEditColor(obj.color,'#ffffff')}); continue; }
+      if(obj.type === 'text'){
+        var tfs = (obj.fontSize||14)*ratio, lh = tfs*(+(obj.lineHeight)||1.4);
+        if(obj.highlight && obj.highlight !== 'transparent') page.drawRectangle({x:x, y:y, width:w2, height:h, color:_pdfEditColor(obj.highlight,'#fff59d'), opacity:_pdfEditAlpha(obj.highlight)});
+        var tinfo = {choice:obj.fontKey, family:obj.fontFamily, name:obj.fontFamily, bold:!!obj.bold, italic:!!obj.italic};
+        var lines = String(obj.text||'').split('\n');
+        for(var li = 0; li < lines.length; li++){
+          var ly = y + h - tfs - 4*ratio - li*lh, line = lines[li];
+          var rtl = window.PDEditCore && PDEditCore.RTL.test(line);
+          var lw = await _pdfDrawLine(doc, page, line, {x:x + 6*ratio, y:ly, size:tfs, info:tinfo, color:_pdfEditColor(obj.color,'#000000'), colorCss:obj.color, alignRight: (rtl || obj.align === 'right') ? x + w2 - 6*ratio : undefined});
+          if(obj.underline && lw) page.drawLine({start:{x:x+6*ratio, y:ly-1.5*ratio}, end:{x:x+6*ratio+lw, y:ly-1.5*ratio}, thickness:Math.max(.5, ratio), color:_pdfEditColor(obj.color,'#000000')});
+        }
+        continue;
+      }
+      if(obj.type === 'annotate'){
+        page.drawRectangle({x:x, y:y, width:w2, height:h, color:_pdfEditColor(obj.bgColor,'#fff176'), opacity:Math.min(.85, _pdfEditAlpha(obj.bgColor))});
+        var alines = String(obj.text||'').split('\n');
+        for(var ai = 0; ai < alines.length; ai++) await _pdfDrawLine(doc, page, alines[ai], {x:x + 5*ratio, y:y + h - 12*ratio - ai*16*ratio, size:12*ratio, info:{}, color:_pdfEditColor('#333333'), colorCss:'#333333'});
+        continue;
+      }
+      if(obj.type === 'image' || obj.type === 'signature' || obj.type === 'draw'){
+        if(!obj.src) continue;
+        var bytes = await _pdfEditImageBytes(obj.src), isPng = bytes[0] === 0x89 && bytes[1] === 0x50, isJpg = bytes[0] === 0xFF && bytes[1] === 0xD8;
+        if(!isPng && !isJpg){ /* WebP, GIF, BMP…: turn into PNG first */
+          var im0 = await new Promise(function(res, rej){ var i0 = new Image(); i0.onload = function(){ res(i0); }; i0.onerror = rej; i0.src = obj.src; });
+          var c0 = document.createElement('canvas'); c0.width = im0.naturalWidth; c0.height = im0.naturalHeight; c0.getContext('2d').drawImage(im0, 0, 0);
+          bytes = await _pdfEditImageBytes(c0.toDataURL('image/png')); isPng = true;
+        }
+        var img = isPng ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
+        page.drawImage(img, {x:x, y:y, width:w2, height:h, opacity:obj.opacity !== undefined ? +obj.opacity : 1});
+        continue;
+      }
+      if(obj.type === 'shape'){
+        var color = _pdfEditColor(obj.stroke||obj.color||obj.strokeColor,'#ff6333'), th = Math.max(.7,(obj.strokeWidth||2)*ratio), shape = obj.shapeType||obj.shape||'rect';
+        var fill = obj.fill && obj.fill !== 'transparent' ? _pdfEditColor(obj.fill,'#ffffff') : undefined;
+        if(shape === 'line' || shape === 'arrow'){
+          page.drawLine({start:{x:x, y:y+h}, end:{x:x+w2, y:y}, thickness:th, color:color});
+          if(shape === 'arrow'){ var ang = Math.atan2(-h, w2), al = Math.max(8*ratio, th*4);
+            page.drawLine({start:{x:x+w2, y:y}, end:{x:x+w2 - al*Math.cos(ang - 0.45), y:y - al*Math.sin(ang - 0.45)}, thickness:th, color:color});
+            page.drawLine({start:{x:x+w2, y:y}, end:{x:x+w2 - al*Math.cos(ang + 0.45), y:y - al*Math.sin(ang + 0.45)}, thickness:th, color:color}); }
+        }
+        else if(shape === 'circle' || shape === 'ellipse') page.drawEllipse({x:x+w2/2, y:y+h/2, xScale:w2/2, yScale:h/2, borderColor:color, borderWidth:th, color:fill});
+        else if(shape === 'triangle') page.drawSvgPath('M ' + (w2/2) + ' 0 L ' + w2 + ' ' + h + ' L 0 ' + h + ' Z', {x:x, y:y+h, borderColor:color, borderWidth:th, color:fill});
+        else page.drawRectangle({x:x, y:y, width:w2, height:h, borderColor:color, borderWidth:th, color:fill});
+        continue;
+      }
+      if(obj.type === 'link' && obj.url){
+        /* a real clickable link (opens the web address or e-mail in any PDF reader) */
+        var href = /^(https?:|mailto:|tel:)/i.test(obj.url) ? obj.url : (/@/.test(obj.url) && !/\//.test(obj.url) ? 'mailto:' + obj.url : 'https://' + obj.url);
+        var annot = doc.context.obj({Type:'Annot', Subtype:'Link', Rect:[x, y, x+w2, y+h], Border:[0,0,0],
+          A:{Type:'Action', S:'URI', URI:PDFLib.PDFString.of(href)}});
+        var aref = doc.context.register(annot), annots = page.node.lookup(PDFLib.PDFName.of('Annots'));
+        if(annots instanceof PDFLib.PDFArray) annots.push(aref); else page.node.set(PDFLib.PDFName.of('Annots'), doc.context.obj([aref]));
+        continue;
+      }
+      if(obj.type === 'form'){
+        /* real fillable form fields that any PDF reader can type into */
+        var form = doc.getForm(), base = (obj.formType || 'text') + '_' + pageNum + '_' + obj.id, rect = {x:x, y:y, width:w2, height:h, borderWidth:1, borderColor:PDFLib.rgb(0.6,0.6,0.6)};
+        try {
+          if(obj.formType === 'checkbox'){ var cbx = form.createCheckBox(base); cbx.addToPage(page, rect); if(obj.checked) cbx.check(); }
+          else if(obj.formType === 'radio'){ var rg = form.createRadioGroup(base); rg.addOptionToPage('Yes', page, rect); }
+          else if(obj.formType === 'select'){ var dd = form.createDropdown(base); dd.addOptions(obj.options || ['Option 1','Option 2','Option 3']); dd.addToPage(page, rect); }
+          else { var tf = form.createTextField(base); if(obj.formType === 'textarea') tf.enableMultiline(); if(obj.value) tf.setText(String(obj.value)); tf.addToPage(page, rect); }
+        } catch(err){ console.warn('form field', err); }
+      }
+    }
+  })();
 }
 
 function exportPageRaster(outDoc, srcDoc, pageNum){
@@ -2799,9 +3213,89 @@ updateUndoRedo();
 </script>
 <script src="../js/app.js?v=20260825i"></script>
 <script src="../js/header.js?v=20260825i"></script>
-<div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Visually replace selectable PDF text lines, then add text boxes, images, links, shapes, signatures, highlights or drawings. Replacement is flattened into the downloaded PDF; the original text objects are not structurally rewritten.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside><h2>What is the PDF Editor?</h2><p>This browser-based PDF editor can visually replace selectable text lines and add text boxes, highlights, images, signatures, links, shapes and drawings. Processing stays on your device.</p><h2>Who needs this tool?</h2><p>People correcting a name, contact line or short sentence in a selectable PDF, reviewers marking documents, teachers annotating work, and anyone adding signatures or notes.</p><h2>What problem does it solve?</h2><p>It handles quick visible corrections and annotations without uploading the file. The downloaded page is flattened, so this is visual replacement rather than structural editing of the PDF text objects.</p><h2>How to Use</h2><ol><li>Upload a PDF.</li><li>Click a selectable text line and type the replacement, or choose an annotation tool.</li><li>Adjust size, colour or position if needed.</li><li>Export and download the flattened PDF.</li></ol><h2>Frequently Asked Questions</h2><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What is a PDF Editor?</button><div class="faq-a">This tool visually replaces selectable text lines and adds text boxes, highlights, images, signatures, links, shapes and drawings in the browser.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Who needs a PDF Editor?</button><div class="faq-a">It is useful for short visible corrections in selectable PDFs, document review, signatures, notes and classroom markup.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">What problem does the PDF Editor solve?</button><div class="faq-a">It lets you make quick visible corrections and annotations without uploading the PDF to a server.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text inside the PDF?</button><div class="faq-a">Selectable text lines can be visually replaced: PDFdukan covers the original line and draws your replacement in the same area. The output is flattened and does not structurally rewrite the underlying PDF text objects. Scanned or image-only text needs OCR or a manual whiteout and text box.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will my annotations be saved if I close the browser?</button><div class="faq-a">Download your edited PDF before closing the tab. Browser tabs do not save changes automatically.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add multiple text boxes on one page?</button><div class="faq-a">Yes. You can add as many text boxes, drawings, or highlights as you need on any page.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this tool completely free?</button><div class="faq-a">Yes. PDFdukan is free to use with no subscription or credit card required.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do I need to create an account?</button><div class="faq-a">No account is needed to use this browser-based tool.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my files uploaded to a server?</button><div class="faq-a">No. Processing happens inside your browser using JavaScript, so the file stays on your device.</div></div><div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile and tablets?</button><div class="faq-a">Basic annotation works in modern mobile browsers, but precise text replacement and positioning are easier on a desktop browser.</div></div></section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"This tool visually replaces selectable text lines and adds text boxes, highlights, images, signatures, links, shapes and drawings in the browser."}},{"@type":"Question","name":"Who needs a PDF Editor?","acceptedAnswer":{"@type":"Answer","text":"It is useful for short visible corrections in selectable PDFs, document review, signatures, notes and classroom markup."}},{"@type":"Question","name":"What problem does the PDF Editor solve?","acceptedAnswer":{"@type":"Answer","text":"It lets you make quick visible corrections and annotations without uploading the PDF to a server."}},{"@type":"Question","name":"Can I edit the existing text inside the PDF?","acceptedAnswer":{"@type":"Answer","text":"Selectable text lines can be visually replaced: PDFdukan covers the original line and draws your replacement in the same area. The output is flattened and does not structurally rewrite the underlying PDF text objects. Scanned or image-only text needs OCR or a manual whiteout and text box."}},{"@type":"Question","name":"Will my annotations be saved if I close the browser?","acceptedAnswer":{"@type":"Answer","text":"Download your edited PDF before closing the tab. Browser tabs do not save changes automatically."}},{"@type":"Question","name":"Can I add multiple text boxes on one page?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can add as many text boxes, drawings, or highlights as you need on any page."}},{"@type":"Question","name":"Is this tool completely free?","acceptedAnswer":{"@type":"Answer","text":"Yes. PDFdukan is free to use with no subscription or credit card required."}},{"@type":"Question","name":"Do I need to create an account?","acceptedAnswer":{"@type":"Answer","text":"No account is needed to use this browser-based tool."}},{"@type":"Question","name":"Are my files uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. Processing happens inside your browser using JavaScript, so the file stays on your device."}},{"@type":"Question","name":"Does it work on mobile and tablets?","acceptedAnswer":{"@type":"Answer","text":"Basic annotation works in modern mobile browsers, but precise text replacement and positioning are easier on a desktop browser."}}]}</script>
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 12 PDFs</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Is This Online PDF Editor?</h2>
+    <p class="lead">PDFdukan is an online PDF editor, free with no sign up and without a watermark. You click a line of text and type over it, add text boxes, images, signatures, links and shapes, fill form fields, then download a PDF that keeps its original text sharp and searchable.</p>
+    <p>When you replace a line, PDFdukan removes the old words from the page itself and writes the new ones in a look-alike font of the same size, weight and color. Copy, search and screen readers then find only your new text, not a hidden copy under a white box.</p>
+    <p>Everything runs in your browser tab, with no account and no daily task limit.</p>
+
+    <h3>How Do I Edit a PDF Online Without Signing Up?</h3>
+    <p>Six steps take a PDF from opening to a finished download:</p>
+    <ol>
+      <li><span><strong>Open the PDF.</strong> Click Open PDF or drop the file on the page; every page appears with its text ready to edit.</span></li>
+      <li><span><strong>Change existing text.</strong> Click any line, type the new words, then press Enter; the floating bar sets bold, italic, size and color.</span></li>
+      <li><span><strong>Add new content.</strong> Pick Text, Images, Links, Shapes, Draw or Annotate, then click the spot on the page where it belongs.</span></li>
+      <li><span><strong>Sign or fill.</strong> Choose Sign to draw, type or upload a signature, or click a form field and type your answer.</span></li>
+      <li><span><strong>Arrange pages.</strong> Above each page, rotate, move, delete or add a blank page after it.</span></li>
+      <li><span><strong>Download.</strong> Click Export PDF, name the file and save it; nothing is added to your pages.</span></li>
+    </ol>
+
+    <h3>What Can You Change in a PDF Here?</h3>
+    <p>Each tool in the toolbar writes real PDF content, not a flat picture of the page:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Edit existing text</h4><p>Retype names, dates or prices. Old words leave the file; new ones match the original font style.</p></div>
+      <div class="i2p-card"><h4>Find and replace</h4><p>Press Ctrl+F to find a word across all pages and replace one match or every match at once.</p></div>
+      <div class="i2p-card"><h4>Signatures three ways</h4><p>Draw with a mouse or finger, type your name in a script style, or upload a photo with the paper removed.</p></div>
+      <div class="i2p-card"><h4>Fillable form fields</h4><p>Fill a PDF's own fields, or add text, multi-line, checkbox, radio and dropdown fields that others can fill.</p></div>
+      <div class="i2p-card"><h4>Clickable links</h4><p>Enter a web address or email, then size the link box over your text; it opens in any PDF reader.</p></div>
+      <div class="i2p-card"><h4>Images, shapes and notes</h4><p>Place a logo or photo, draw rectangles, circles, lines and arrows, sketch freehand or pin a sticky note.</p></div>
+      <div class="i2p-card"><h4>Urdu, Arabic and symbols</h4><p>Type right-to-left text or symbols like ≥ and ✓; Urdu in Naskh style stays searchable text.</p></div>
+      <div class="i2p-card"><h4>Page tools</h4><p>Rotate pages left or right, change their order, delete pages or insert blank ones for extra notes.</p></div>
+    </div>
+
+    <h3>Which Files and Limits Does the Editor Support?</h3>
+    <p>These details apply to every editing session:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>One PDF at a time, digital or scanned</td></tr>
+        <tr><th scope="row">Output</th><td>PDF with real text, fields and links</td></tr>
+        <tr><th scope="row">Images you add</th><td>JPG, PNG, WebP or GIF</td></tr>
+        <tr><th scope="row">Cost and account</th><td>Free, no sign-up, no watermark, no task limit</td></tr>
+        <tr><th scope="row">Devices</th><td>Chrome, Edge, Firefox or Safari, desktop or phone</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Who Uses a Free PDF Editor With No Watermark?</h3>
+    <p>People reach for an editor like this when a small change can't wait for desktop software:</p>
+    <ul>
+      <li>Renters correcting a move-in date on a lease before both sides sign</li>
+      <li>Freelancers fixing an invoice total and adding a payment link</li>
+      <li>Job seekers updating a phone number on a resume saved only as PDF</li>
+      <li>Parents filling and signing a school permission slip on a phone</li>
+      <li>Office staff completing a W-9 form and adding a typed signature</li>
+    </ul>
+
+    <h3>How Do You Keep Edited Text Looking Like the Original?</h3>
+    <p>PDFdukan reads each line's font name, size, weight and color, then writes the new words in an open font with the same widths. Times New Roman, Arial, Courier, Calibri and Cambria get close look-alikes, so a replaced line keeps its length and spacing.</p>
+    <p>Edit one line at a time and keep about the same number of letters, so the new words don't run into the next column. If a line belongs to a table cell, check the cell edge in the preview before you click Export PDF.</p>
+    <p>A logo font or handwriting font has no look-alike, so PDFdukan uses the nearest regular style. For a heading in such a font, place a text box instead and pick its size and color yourself.</p>
+
+    <h3>Is My PDF Uploaded When I Edit It?</h3>
+    <p>No. PDFdukan opens, edits and saves the PDF inside your browser, so the file never travels to our server and nothing is stored after you close the tab. Only the open-source PDF engines, <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">Mozilla's pdf.js</a> and <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a>, and the fonts load from public CDNs.</p>
+    <p>Cover works differently from text editing. Cover hides an area with a solid box, but words under that box can still be copied from the file. To take a word out for real, click the line and delete it, which removes it from the page.</p>
+
+    <h3>What Can't This PDF Editor Do?</h3>
+    <p>Scanned pages are pictures, so their words can't be retyped; run <a href="searchable-pdf.html">Searchable PDF</a> first, or add a text box over the scan. Password-locked PDFs need <a href="unlock-pdf.html">Unlock PDF</a> before they open here.</p>
+    <p>PDFdukan edits one line at a time, so whole paragraphs don't reflow like a word processor. For long rewrites, turn the file into a document with <a href="pdf-to-word-converter.html">PDF to Word</a>, edit it, then save it as PDF again.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this online PDF editor free with no sign up and without watermark?</button></h3><div class="faq-a"><p>Yes. PDFdukan's PDF editor is free, with no account, no email and no daily limit. The downloaded file carries no watermark, logo or extra page.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text in my PDF?</button></h3><div class="faq-a"><p>Yes, in digital PDFs. Click a line, type the new words and press Enter. The old words are removed from the page, and the new ones use a matching font.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why does the new text use a slightly different font?</button></h3><div class="faq-a"><p>Most PDFs carry only the letters they used, so new letters need a look-alike font. PDFdukan picks one with the same widths, so lines keep their length.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I fill out a PDF form and sign it?</button></h3><div class="faq-a"><p>Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to draw, type or upload your signature.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does the PDF editor work on a phone?</button></h3><div class="faq-a"><p>Yes. The editor works in mobile Chrome and Safari, and the Sign pad accepts a finger. A larger screen makes small lines easier to tap.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I delete or rotate pages while editing?</button></h3><div class="faq-a"><p>Yes. Use the bar above each page to rotate it, move it up or down, delete it or add a blank page. Changes apply when you download.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit a scanned PDF?</button></h3><div class="faq-a"><p>Not its words, because a scan is a picture. You can still add text boxes, signatures and images, or make it searchable with Searchable PDF first.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the edited PDF get bigger?</button></h3><div class="faq-a"><p>Only a little. PDFdukan keeps the original pages and adds just the letters of each new font. To shrink a heavy file, use <a href="compress-pdf-reduce-file-size.html">Compress PDF</a>.</p></div></div>
+</section>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this online PDF editor free with no sign up and without watermark?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan's PDF editor is free, with no account, no email and no daily limit. The downloaded file carries no watermark, logo or extra page."}}, {"@type": "Question", "name": "Can I edit the existing text in my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, in digital PDFs. Click a line, type the new words and press Enter. The old words are removed from the page, and the new ones use a matching font."}}, {"@type": "Question", "name": "Why does the new text use a slightly different font?", "acceptedAnswer": {"@type": "Answer", "text": "Most PDFs carry only the letters they used, so new letters need a look-alike font. PDFdukan picks one with the same widths, so lines keep their length."}}, {"@type": "Question", "name": "Can I fill out a PDF form and sign it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to draw, type or upload your signature."}}, {"@type": "Question", "name": "Does the PDF editor work on a phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The editor works in mobile Chrome and Safari, and the Sign pad accepts a finger. A larger screen makes small lines easier to tap."}}, {"@type": "Question", "name": "Can I delete or rotate pages while editing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Use the bar above each page to rotate it, move it up or down, delete it or add a blank page. Changes apply when you download."}}, {"@type": "Question", "name": "Can I edit a scanned PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Not its words, because a scan is a picture. You can still add text boxes, signatures and images, or make it searchable with Searchable PDF first."}}, {"@type": "Question", "name": "Will the edited PDF get bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Only a little. PDFdukan keeps the original pages and adds just the letters of each new font. To shrink a heavy file, use Compress PDF."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Online PDF Editor", "url": "https://pdfdukan.com/tools/pdf-editor.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "featureList": ["Edit existing PDF text", "Find and replace", "Draw, type or upload a signature", "Fill and add form fields", "Clickable links", "Images, shapes and notes", "Rotate, move, delete and add pages"]}</script>
+
+
+
 
 <!-- FOOTER -->
 <footer class="footer" role="contentinfo">
@@ -2814,16 +3308,16 @@ updateUndoRedo();
       <div class="footer-col">
         <h4>Scanner</h4>
         <a href="../scanner.html">CamMaster Scanner</a>
-        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
         <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="../tools/merge-pdf.html">Merge PDF</a>
         <a href="../tools/extract-pdf-pages.html">Split PDF</a>
-        <a href="../tools/compress-pdf.html">Compress PDF</a>
-        <a href="../tools/pdf-to-word.html">PDF to Word</a>
-        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
       </div>
       <div class="footer-col">
         <h4>Company</h4>

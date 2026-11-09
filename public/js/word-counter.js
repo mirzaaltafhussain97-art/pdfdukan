@@ -25,11 +25,14 @@
   function words(s) { return s.match(WORD_RE) || []; }
   function stats(s) {
     var w = words(s);
+    // a word is any run of text between spaces or line breaks (the usual word-processor rule)
+    var tokens = s.split(/\s+/).filter(function (x) { return x.length; });
     var sentences = (noAbbr(s).match(SENT_RE) || []).filter(function (x) { return /[\p{L}\p{N}]/u.test(x); }).length;
     var paragraphs = s.split(/\n/).filter(function (l) { return l.trim(); }).length;
     return {
-      words: w.length,
-      chars: graphemes(s),
+      words: tokens.length,
+      // line breaks are not characters you can see, so they are left out
+      chars: graphemes(s.replace(/[\r\n]+/g, '')),
       charsNs: graphemes(s.replace(/\s+/g, '')),
       sentences: sentences,
       paragraphs: paragraphs,

@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Crop PDF to Image — Any Region, High Quality | PDFdukan</title>
-<meta name="description" content="Select one or more regions on a PDF page and export JPG, PNG or WebP images. Rotate, zoom, compare output dimensions and review browser limits.">
+<title>Crop PDF Online Free – Remove White Margins | PDFdukan</title>
+<meta name="description" content="Crop PDF online free. Remove white margins in one click or draw a crop box, on all pages or a few. Text stays sharp. Works in your browser.">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="PK">
 <meta name="geo.placename" content="Pakistan">
 <meta name="geo.position" content="30.3753;69.3451">
 <meta name="ICBM" content="30.3753, 69.3451">
-<link rel="canonical" href="https://pdfdukan.com/tools/crop-pdf.html">
-<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/crop-pdf.html">
-<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/crop-pdf.html">
+<link rel="canonical" href="https://pdfdukan.com/tools/crop-pdf-online.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/crop-pdf-online.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/crop-pdf-online.html">
 <!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
-<meta property="og:url" content="https://pdfdukan.com/tools/crop-pdf.html">
-<meta property="og:title" content="Crop PDF to Image — Any Region, High Quality | PDFdukan">
-<meta property="og:description" content="Crop any region of a PDF page and save it as a high-quality JPG, PNG or WebP image. Perfect for large maps, plans and scans — full resolution, no upload.">
+<meta property="og:url" content="https://pdfdukan.com/tools/crop-pdf-online.html">
+<meta property="og:title" content="Crop PDF Online Free – Remove White Margins | PDFdukan">
+<meta property="og:description" content="Crop PDF online free. Remove white margins in one click or draw a crop box, on all pages or a few. Text stays sharp. Works in your browser.">
 <meta property="og:image" content="https://pdfdukan.com/images/crop-pdf.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -27,14 +27,15 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Crop PDF to Image — Any Region, High Quality | PDFdukan">
-<meta name="twitter:description" content="Crop any region of a PDF page and save it as a high-quality JPG, PNG or WebP image. Perfect for large maps, plans and scans — full resolution, no upload.">
+<meta name="twitter:title" content="Crop PDF Online Free – Remove White Margins | PDFdukan">
+<meta name="twitter:description" content="Crop PDF online free. Remove white margins in one click or draw a crop box, on all pages or a few. Text stays sharp. Works in your browser.">
 <meta name="twitter:image" content="https://pdfdukan.com/images/crop-pdf.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <link rel="stylesheet" href="../css/style.css?v=20260825i">
 <style>
@@ -53,11 +54,95 @@
 .ct-btn:hover{border-color:var(--primary);color:var(--primary)}
 .ct-angle{padding:7px 12px;border-radius:8px;background:var(--card-2);border:1px solid var(--border);font-weight:700;font-size:13px;color:var(--primary);min-width:56px;text-align:center}
 .crop-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,340px);gap:22px;align-items:center;max-width:800px;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.crop-feature img{display:block;width:100%;height:auto}.crop-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.crop-feature{grid-template-columns:1fr}.crop-feature img{max-width:320px;margin:auto}}
+
+/* ── PDF to Image ── */
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-file{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px;flex-wrap:wrap}
+.cpf-icon{font-size:26px}
+.cz-file-info{flex:1 1 160px;min-width:0;text-align:left}
+.cz-file-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-file-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.cz-link{background:none;border:1px solid var(--border);color:var(--primary);font-weight:700;font-size:12px;padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer}
+.cz-link:hover{border-color:var(--primary)}
+.cz-group{padding-top:16px;margin-top:14px;border-top:1px solid var(--border);text-align:left}
+.cz-group.cz-first{padding-top:0;margin-top:0;border-top:0}
+.cz-label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.cp-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.cp-modes{grid-template-columns:1fr}}
+.cp-mode{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--card-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;color:var(--text-2)}
+.cp-mode strong{font-size:14px;color:var(--text)}
+.cp-mode span{font-size:12px;line-height:1.45}
+.cp-mode:hover,.cp-mode.active{border-color:var(--primary)}
+.cp-mode.active{background:var(--primary-soft,rgba(255,99,51,.1))}
+.cp-mode.active strong{color:var(--primary)}
+.cz-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-chip{background:var(--card-2);border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer}
+.cz-chip:hover{border-color:var(--primary);color:var(--primary)}
+.cz-chip.active{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.cz-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.cz-note:empty{display:none}
+.cz-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cz-inline label{font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-inline input{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:15px;width:170px;max-width:100%;outline:none}
+.cz-inline input:focus{border-color:var(--primary)}
+.cp-go{width:100%;justify-content:center}
+.p2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.p2-stats{grid-template-columns:1fr 1fr}.p2-stats .cz-sum-box:last-child{grid-column:1/-1}}
+.cz-sum-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.cz-sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.cz-sum-val{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cz-warn{margin:12px 0;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5;text-align:left}
+
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
+.cr-pass{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-2);text-align:left}
+.cr-pass p{margin:0 0 8px;font-size:14px;color:var(--text-2)}
+.cr-pass p.cr-bad{color:var(--danger,#d32f2f);font-weight:600}
+#crModes{margin-top:16px}
+.cr-opts{margin-top:14px}
+.cr-flabel{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:8px}
+.cr-check{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer;margin:12px 14px 0 0}
+.cr-apply{display:flex;flex-wrap:wrap;align-items:center}
+.cr-apply .cr-check{margin-top:0;margin-bottom:6px}
+.cr-range{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:14px;width:150px;max-width:100%}
+.cr-range:disabled{opacity:.5}
+.cr-cuts{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.cr-cuts label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--text-2)}
+.cr-cuts input{width:84px;background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px;font-size:14px}
+.cr-pagenav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;font-weight:700;font-size:14px;color:var(--text)}
+.cr-stage-wrap{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px;overflow:auto;text-align:center}
+.cr-stage{display:inline-block;line-height:0;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+#crCanvas{display:block;max-width:100%;touch-action:none}
+.cr-stage.cr-drawing #crCanvas{cursor:crosshair}
+.cr-info{text-align:center;font-weight:600;color:var(--text-2)}
+.p2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.p2-stats{grid-template-columns:1fr 1fr}.p2-stats .cz-sum-box:last-child{grid-column:1/-1}}
+#crDownload{margin-top:12px}
+#crImageMode .tool-card{margin-top:0}
+
 </style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Crop PDF to Image","item":"https://pdfdukan.com/tools/crop-pdf.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Crop PDF", "url": "https://pdfdukan.com/tools/crop-pdf-online.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Crop PDF online free. Remove white margins in one click or draw a crop box, on all pages or a few. Text stays sharp. Works in your browser.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Crop PDF","item":"https://pdfdukan.com/tools/crop-pdf-online.html"}]}</script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-11-07T00:00:00+05:00">
 </head>
 <body data-tool="crop-pdf">
 <header class="header" role="banner">
@@ -92,13 +177,13 @@
         <div class="nd-col">
           <span class="nd-section-head">&#128196; PDF Converters</span>
           <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
-          <a href="../tools/pdf-to-img.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
-          <a href="../tools/crop-pdf.html"     class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Cut a region to image</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/crop-pdf-online.html"     class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Trim margins, keep text</div></div></a>
           <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
           <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
-          <a href="../tools/compress-pdf.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
-          <a href="../tools/pdf-to-word.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
-          <a href="../tools/word-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
           <a href="../tools/pdf-to-ppt.html"   class="nd-link"><span class="nd-link-icon">&#128202;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; PowerPoint</div><div class="nd-link-desc">Slides to PPTX</div></div></a>
           <a href="../tools/pdf-to-excel.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Excel</div><div class="nd-link-desc">Tables to XLSX</div></div></a>
           <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
@@ -114,7 +199,10 @@
           <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
           <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
           <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
-          <a href="../tools/ocr.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
           <div class="nd-divider"></div>
           <span class="nd-section-head">&#128295; Calculators</span>
         </div>
@@ -147,13 +235,13 @@
   <a href="/"              class="mnd-link">Home</a>
   <div class="mnd-section">PDF Tools</div>
   <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
-  <a href="../tools/pdf-to-img.html"   class="mnd-link">PDF to JPG</a>
-  <a href="../tools/crop-pdf.html"     class="mnd-link">Crop PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/crop-pdf-online.html"     class="mnd-link">Crop PDF</a>
   <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
   <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
-  <a href="../tools/compress-pdf.html" class="mnd-link">Compress PDF</a>
-  <a href="../tools/pdf-to-word.html"  class="mnd-link">PDF to Word</a>
-  <a href="../tools/word-to-pdf.html"  class="mnd-link">Word to PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
   <div class="mnd-section">Edit &amp; Sign</div>
   <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
   <a href="../tools/watermark.html"    class="mnd-link">Watermark</a>
@@ -162,7 +250,9 @@
   <div class="mnd-section">Image &amp; Scan</div>
   <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
   <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
-  <a href="../tools/ocr.html"          class="mnd-link">OCR Text</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
   <div class="mnd-section">More</div>
   <a href="../blog/index.html" class="mnd-link">Blog</a>
   <a href="../about.html"      class="mnd-link">About</a>
@@ -174,30 +264,120 @@
     <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Crop PDF</span>
   </nav>
 
-  <div class="tool-hero">
-    <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">✂️</div>
-    <h1>Crop PDF to Image</h1>
-    <p>Select one or more regions on a PDF page, rotate or reshape the selection, and export raster JPG, PNG or WebP images. The displayed dimensions and DPI reflect any browser-safe output cap.</p>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">✂️</div>
+      <h1>Crop PDF Online for Free</h1>
+      <p>Trim white margins automatically or draw your own crop box, on every page or just a few. You get a new PDF with sharp text.</p>
+      <p class="i2p-trust">Free · No sign-up · No watermark · Your PDF stays in your browser</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/crop-pdf.svg" alt="A crop box drawn on a PDF page, with the area inside it kept as a smaller page" width="640" height="420">
   </div>
-  <section class="crop-feature" aria-labelledby="cropFeatureTitle">
-    <div><h2 id="cropFeatureTitle" style="font-size:20px;margin:0">Select a region, then export only that area</h2><p>The page remains a preview until download. Exporting creates a new raster image, so inspect fine lines and text at the intended use size.</p></div>
-    <img src="../images/crop-pdf.svg" alt="Illustration of a selected rectangular region being cropped from a PDF page" width="640" height="420">
-  </section>
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <!-- Upload -->
   <div class="tool-card">
     <h3><span class="tc-icon">📂</span> Upload PDF</h3>
-    <div class="drop-zone" id="dropZone">
+    <div class="drop-zone" id="crDrop" tabindex="0" role="button" aria-label="Choose a PDF">
       <div class="dz-icon">📄</div>
       <div class="dz-title">Drop a PDF here or click to browse</div>
-      <div class="dz-hint">One unencrypted .pdf file up to 200 MB; practical limits depend on device memory</div>
+      <div class="dz-hint">One PDF up to 200 MB · processed in your browser</div>
       <span class="dz-btn">Choose PDF</span>
-      <input type="file" id="fileInput" accept=".pdf,application/pdf">
+      <input type="file" id="crFileInput" accept=".pdf,application/pdf" style="display:none">
+    </div>
+    <div class="cz-file" id="crFile" hidden>
+      <span class="cpf-icon" aria-hidden="true">📄</span>
+      <div class="cz-file-info"><div class="cz-file-name" id="crFileName">file.pdf</div><div class="cz-file-meta" id="crFileMeta">—</div></div>
+      <button type="button" class="cz-link" id="crChange">Change</button>
+      <button type="button" class="cz-link" id="crRemove" aria-label="Remove file">✕</button>
+    </div>
+    <div class="cr-pass" id="crPass" hidden>
+      <p id="crPassMsg">This PDF is password-protected. Enter its password to open it.</p>
+      <div class="cz-inline">
+        <label for="crPassInput" class="sr-only">PDF password</label>
+        <input type="password" id="crPassInput" autocomplete="off" placeholder="PDF password">
+        <button type="button" class="btn btn-primary btn-sm" id="crPassOk">Open PDF</button>
+        <button type="button" class="cz-link" id="crPassCancel">Cancel</button>
+      </div>
+      <p class="cz-note">The password is used only in this tab. It is not saved or sent anywhere.</p>
+    </div>
+    <div class="cz-group" id="crModes" hidden>
+      <div class="cz-label">What do you want?</div>
+      <div class="cp-modes" role="group" aria-label="Crop mode">
+        <button type="button" class="cp-mode active" data-crmode="pages" aria-pressed="true"><strong>Crop PDF pages</strong><span>Get a new PDF. Text stays sharp and selectable.</span></button>
+        <button type="button" class="cp-mode" data-crmode="image" aria-pressed="false"><strong>Crop an area to image</strong><span>Save one part of a page, like a map or chart, as JPG, PNG or WebP.</span></button>
+      </div>
+      <div class="cz-warn" id="crLockNote" hidden>This PDF is locked against changes, so it can’t be saved as a cropped PDF here. Unlock it first with <a href="unlock-pdf.html">Unlock PDF</a>, or crop an area to an image.</div>
     </div>
   </div>
 
+  <div class="tool-card" id="crPagesCard" hidden>
+    <div class="cz-group cz-first">
+      <div class="cz-label">1. How to crop</div>
+      <div class="cp-modes" role="group" aria-label="Crop method">
+        <button type="button" class="cp-mode active" data-crmethod="auto" aria-pressed="true"><strong>Remove white margins</strong><span>Finds the white space around your content and cuts it off.</span></button>
+        <button type="button" class="cp-mode" data-crmethod="draw" aria-pressed="false"><strong>Draw crop box</strong><span>Drag the box, or type how much to cut from each edge.</span></button>
+      </div>
+      <div class="cr-opts" id="crAutoOpts">
+        <span class="cr-flabel">Space to keep around content</span>
+        <div class="cz-chips" role="group" aria-label="Space to keep">
+          <button type="button" class="cz-chip" data-crpad="none" aria-pressed="false">None</button>
+          <button type="button" class="cz-chip active" data-crpad="small" aria-pressed="true">Small</button>
+          <button type="button" class="cz-chip" data-crpad="medium" aria-pressed="false">Medium</button>
+        </div>
+        <label class="cr-check"><input type="checkbox" id="crSame" checked> Keep all pages the same size</label>
+      </div>
+      <div class="cr-opts" id="crDrawOpts" hidden>
+        <span class="cr-flabel">Cut from each edge (inches)</span>
+        <div class="cr-cuts">
+          <label>Top <input type="number" id="crCutT" min="0" step="0.05" inputmode="decimal"></label>
+          <label>Right <input type="number" id="crCutR" min="0" step="0.05" inputmode="decimal"></label>
+          <label>Bottom <input type="number" id="crCutB" min="0" step="0.05" inputmode="decimal"></label>
+          <label>Left <input type="number" id="crCutL" min="0" step="0.05" inputmode="decimal"></label>
+          <button type="button" class="cz-link" id="crReset">Reset box</button>
+        </div>
+      </div>
+    </div>
+    <div class="cz-group">
+      <div class="cz-label">2. Pages to crop</div>
+      <div class="cr-apply" role="radiogroup" aria-label="Pages to crop">
+        <label class="cr-check"><input type="radio" name="crApply" value="all" checked> All pages</label>
+        <label class="cr-check"><input type="radio" name="crApply" value="current"> This page only</label>
+        <label class="cr-check"><input type="radio" name="crApply" value="range"> Pages:</label>
+        <input type="text" id="crRange" class="cr-range" placeholder="e.g. 1-3, 8" inputmode="numeric" disabled aria-label="Page numbers to crop">
+      </div>
+    </div>
+    <div class="cz-group">
+      <div class="cr-pagenav" id="crPageNav" hidden>
+        <button type="button" class="cz-link" id="crPrev">← Prev</button>
+        <span id="crPageLabel">Page 1</span>
+        <button type="button" class="cz-link" id="crNext">Next →</button>
+      </div>
+      <div class="cr-stage-wrap"><div class="cr-stage" id="crStage"><canvas id="crCanvas" aria-label="Page preview with crop box"></canvas></div></div>
+      <div class="cz-note cr-info" id="crInfo" aria-live="polite"></div>
+    </div>
+    <div class="cz-group">
+      <button class="btn btn-primary btn-lg cp-go" id="crGo" type="button" disabled>✂️ Crop PDF</button>
+      <div class="cp-progress" id="crProgress" hidden>
+        <div class="progress-bar-wrap" style="margin:12px 0 6px"><div class="progress-bar-fill" id="crProgressFill"></div></div>
+        <div class="cz-note" id="crProgressLabel" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="crResult" hidden>
+    <h3><span class="tc-icon">✅</span> Cropped PDF ready</h3>
+    <div class="p2-stats">
+      <div class="cz-sum-box"><div class="cz-sum-label">Cropped</div><div class="cz-sum-val" id="crCount">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">New page size</div><div class="cz-sum-val" id="crNewSize">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">File size</div><div class="cz-sum-val" id="crFileSize">—</div></div>
+    </div>
+    <p class="cz-note" id="crNote"></p>
+    <p class="cz-note">The parts outside the box are hidden, not deleted. Don’t use cropping to hide private details.</p>
+    <button class="download-btn" id="crDownload" type="button"><span>📥</span> Download PDF</button>
+  </div>
+
+  <div id="crImageMode" hidden>
   <!-- Progress -->
   <div class="tool-card" id="progressCard" style="display:none">
     <h3><span class="tc-icon">⏳</span> Working…</h3>
@@ -279,51 +459,72 @@
     </div>
   </div>
 
+  
+  </div>
+
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> Select one or more regions on the current PDF page, straighten them if needed, then export JPG, PNG or WebP. Output resolution can be reduced automatically to stay within browser canvas limits.</div>
-<section class="seo-section" style="max-width:800px;margin:24px auto;padding:0 20px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and output behavior tested 25 August 2026</span><span>Current-page crops · Raster image output · Browser limits stated</span></aside>
-<h2>Crop a PDF Region to a High-Quality Image — Free &amp; Private</h2>
-<p>PDFdukan's Crop PDF tool lets you draw a box over part of the current PDF page and export that region as a JPG, PNG or WebP image. Instead of converting a whole page, you can keep one map area, stamp, plan detail or figure. Processing uses client-side PDF.js; the page can still request ordinary site assets, analytics and third-party libraries.</p>
-<p>Cropping a smaller region can allow more output pixels than rendering an entire oversized page, but it cannot recover detail that is absent from the source. The tool automatically lowers the requested scale if an output would exceed its 8,000-pixel or 64-megapixel safety limits.</p>
 
-<h2>Why Use PDFdukan Crop PDF?</h2>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔍 Measured Raster Output</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The selected region is rendered from the PDF at the chosen scale, subject to the displayed browser-safe output cap.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🗺️ Made for Big Maps</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Pull one area out of a huge GIS map or site plan that's otherwise too large to convert in full quality.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖼️ JPG, PNG or WebP</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">PNG uses lossless image encoding; JPG and WebP use the selected quality. File size varies by content.</p></div>
-  <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 Client-Side File Processing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The selected PDF is opened and rendered locally with PDF.js rather than uploaded for server processing.</p></div>
-</div>
+  <section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with 10 PDFs: papers, scans, rotated, mixed-size, form and locked files</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
 
-<h2>How to Crop a PDF in 3 Steps</h2>
-<ol>
-<li><strong>Upload your PDF</strong> — Drag and drop or click to browse. The first page appears as a preview you can select on.</li>
-<li><strong>Select, rotate &amp; add more</strong> — Drag a box over the area, fine-tune it with the corner &amp; edge handles, and rotate it to any angle with the top handle. Click “Add crop” to mark several regions, or “Fit page” to grab the whole page.</li>
-<li><strong>Pick quality and download</strong> — Choose format and resolution, then Download crop (or Download all as ZIP) to save your regions as high-quality images.</li>
-</ol>
+    <h2>What Does the Crop PDF Tool Do?</h2>
+    <p class="lead">PDFdukan's Crop PDF tool lets you crop PDF online free in your browser. It removes white margins automatically or uses a box you draw, then saves a new PDF. Pages are not redrawn, so you crop PDF without losing quality.</p>
+    <p>Text stays selectable, and links, form fields and bookmarks stay in place.</p>
 
-<h2>Common Uses</h2>
-<ul>
-<li><strong>Maps &amp; GIS:</strong> Extract a town, mauza, block or sector from a large map at full detail.</li>
-<li><strong>Engineering &amp; architecture:</strong> Crop a single detail, elevation or title block from a big plan sheet.</li>
-<li><strong>Certificates &amp; IDs:</strong> Save just a seal, signature or photo from a scanned document.</li>
-<li><strong>Reports &amp; books:</strong> Pull one chart, table or figure out of a page to reuse elsewhere.</li>
-<li><strong>Social &amp; messaging:</strong> Share a clear, cropped portion instead of a whole low-resolution page.</li>
-</ul>
+    <h3>How Do I Crop PDF Online Free?</h3>
+    <p>To crop PDF pages online, follow four steps:</p>
+    <ol>
+      <li><span><strong>Add your PDF.</strong> Tap Choose PDF or drop a file.</span></li>
+      <li><span><strong>Pick a method.</strong> Remove white margins, or Draw crop box to drag or type inches.</span></li>
+      <li><span><strong>Choose pages.</strong> All pages, This page only, or a range like 2-5.</span></li>
+      <li><span><strong>Crop and save.</strong> Tap Crop PDF, then Download PDF.</span></li>
+    </ol>
 
-<h2>Frequently Asked Questions</h2>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I choose output quality?</button><div class="faq-a"><p>Start with PNG and a moderate resolution for text or line art, then inspect the pixel dimensions and detail. A smaller region may allow a higher render scale, but output is capped for browser stability and cannot restore detail missing from the PDF.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why crop instead of converting the whole page?</button><div class="faq-a"><p>Very large pages (like 96×96 inch maps) are too big to render at high DPI in one go — browsers cap how large a canvas can be, so the full page is limited to a safe size. Cropping renders only your selected region, so that part can be captured at a much higher resolution and far more detail.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I rotate the crop to straighten a tilted map or scan?</button><div class="faq-a"><p>Yes. Each crop box has a rotation handle (the dot above the top edge) — drag it to rotate to any angle, or use the 90° buttons for quick quarter-turns. The exported image is rotated to the angle you selected; inspect the preview and fine-tune the handle when exact alignment matters.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop multiple areas from one page at once?</button><div class="faq-a"><p>Yes. Click <strong>➕ Add crop</strong> to place additional boxes on the same page, position each one independently, then use <strong>Download all (ZIP)</strong> to get every region as a separate high-quality image in one ZIP file.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I zoom in to select a small area on a big map?</button><div class="faq-a"><p>Yes. Use the 🔍 zoom buttons to enlarge the page — it re-renders sharp at higher resolution (not a blurry stretch), so you can place the crop box precisely on fine map detail. Your selections stay in place as you zoom in and out.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is my PDF uploaded for cropping?</button><div class="faq-a"><p>The selected PDF is opened and rendered by client-side PDF.js rather than sent to PDFdukan for crop processing. The page can still load normal site assets, analytics and third-party libraries.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Which format should I choose?</button><div class="faq-a"><p>PNG uses lossless image encoding and supports transparency; JPG uses lossy compression and a white background; WebP supports transparency and uses the selected quality in this tool. No format is always smallest, so compare output bytes and visible detail.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop a password-protected PDF?</button><div class="faq-a"><p>No. This tool does not request or bypass passwords. Use software authorized to open the file and save an unprotected copy first. PDFdukan's Restriction Check is only a compatibility re-save for supported unencrypted PDFs.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on mobile?</button><div class="faq-a"><p>The interface is responsive and pointer controls support touch. Large pages and high-resolution crops may exceed a phone's available memory, so use a smaller selection or lower resolution if processing fails.</p></div></div>
-<div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do you want the whole page instead?</button><div class="faq-a"><p>Use the <a href="pdf-to-img.html">PDF to JPG converter</a> to turn every page into an image and download them all as a ZIP.</p></div></div>
+    <h3>What Else Can You Do?</h3>
+    <p>Three extras:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Trim off-white scans</h4><p>Gray paper or a thin dark scanner edge still gets trimmed.</p></div>
+      <div class="i2p-card"><h4>Match page sizes</h4><p>Keep all pages the same size gives same-size pages one shared box.</p></div>
+      <div class="i2p-card"><h4>Crop an area to image</h4><p>Save part of a page, like a map, as an image. For whole pages, use <a href="pdf-to-image-converter.html">PDF to Image Converter</a>.</p></div>
+    </div>
+
+    <h3>What Goes In and What Comes Out?</h3>
+    <p>Both modes at a glance:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Crop PDF pages</th><th scope="col">Crop an area to image</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>One PDF up to 200 MB</td><td>Same</td></tr>
+        <tr><th scope="row">Output</th><td>PDF with text kept</td><td>JPG, PNG, WebP or ZIP</td></tr>
+        <tr><th scope="row">Pages</th><td>All, one or a range</td><td>One page at a time</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>When Is Cropping a PDF Useful?</h3>
+    <p>For example:</p>
+    <ul>
+      <li>Make a paper or ebook easier to read on a phone.</li>
+      <li>Cut the scanner border off a W-2 before you email it.</li>
+    </ul>
+
+    <h3>How Do I Get a Clean Crop?</h3>
+    <p>Check pages with Prev and Next. If a footer gets cut, pick Medium.</p>
+
+    <h3>Is My PDF Uploaded?</h3>
+    <p>No. Crop PDF works in your browser tab with the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library; the file never reaches a PDFdukan server. The page still loads analytics and ads.</p>
+
+    <h3>What Cropping Doesn’t Do</h3>
+    <p>Cropping hides the outside area; it doesn’t delete it. Password-locked PDFs need <a href="unlock-pdf.html">Unlock PDF</a> before saving a crop.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop PDF online free without signing up?</button></h3><div class="faq-a"><p>Yes. PDFdukan’s Crop PDF tool is free, with no account and no watermark.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I remove white margins from a PDF?</button></h3><div class="faq-a"><p>Choose Remove white margins, then tap Crop PDF.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will cropping lower my PDF’s quality?</button></h3><div class="faq-a"><p>No. Only the page box changes; text and images are not redrawn.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop just one page?</button></h3><div class="faq-a"><p>Yes. Pick This page only.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop a PDF on my phone?</button></h3><div class="faq-a"><p>Yes. Crop PDF works in Safari or Chrome on iPhone and Android.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is the cropped part deleted?</button></h3><div class="faq-a"><p>No. It is hidden, so don’t use cropping to hide private details.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I choose output quality?","acceptedAnswer":{"@type":"Answer","text":"Start with PNG and a moderate resolution for text or line art, then inspect the pixel dimensions and detail. A smaller region may allow a higher render scale, but output is capped for browser stability and cannot restore detail missing from the PDF."}},{"@type":"Question","name":"Why crop instead of converting the whole page?","acceptedAnswer":{"@type":"Answer","text":"Very large pages (like 96×96 inch maps) are too big to render at high DPI in one go — browsers cap how large a canvas can be, so the full page is limited to a safe size. Cropping renders only your selected region, so that part can be captured at a much higher resolution and far more detail."}},{"@type":"Question","name":"Can I rotate the crop to straighten a tilted map or scan?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each crop box has a rotation handle (the dot above the top edge) — drag it to rotate to any angle, or use the 90° buttons for quick quarter-turns. The exported image is rotated to the angle you selected; inspect the preview and fine-tune the handle when exact alignment matters."}},{"@type":"Question","name":"Can I crop multiple areas from one page at once?","acceptedAnswer":{"@type":"Answer","text":"Yes. Click ➕ Add crop to place additional boxes on the same page, position each one independently, then use Download all (ZIP) to get every region as a separate high-quality image in one ZIP file."}},{"@type":"Question","name":"Can I zoom in to select a small area on a big map?","acceptedAnswer":{"@type":"Answer","text":"Yes. Use the 🔍 zoom buttons to enlarge the page — it re-renders sharp at higher resolution (not a blurry stretch), so you can place the crop box precisely on fine map detail. Your selections stay in place as you zoom in and out."}},{"@type":"Question","name":"Is my PDF uploaded for cropping?","acceptedAnswer":{"@type":"Answer","text":"The selected PDF is opened and rendered by client-side PDF.js rather than sent to PDFdukan for crop processing. The page can still load normal site assets, analytics and third-party libraries."}},{"@type":"Question","name":"Which format should I choose?","acceptedAnswer":{"@type":"Answer","text":"PNG uses lossless image encoding and supports transparency; JPG uses lossy compression and a white background; WebP supports transparency and uses the selected quality in this tool. No format is always smallest, so compare output bytes and visible detail."}},{"@type":"Question","name":"Can I crop a password-protected PDF?","acceptedAnswer":{"@type":"Answer","text":"No. This tool does not request or bypass passwords. Use software authorized to open the file and save an unprotected copy first. PDFdukan's Restriction Check is only a compatibility re-save for supported unencrypted PDFs."}},{"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"The interface is responsive and pointer controls support touch. Large pages and high-resolution crops may exceed a phone's available memory, so use a smaller selection or lower resolution if processing fails."}},{"@type":"Question","name":"Do you want the whole page instead?","acceptedAnswer":{"@type":"Answer","text":"Use the PDF to JPG converter to turn every page into an image and download them all as a ZIP."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I crop PDF online free without signing up?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan’s Crop PDF tool is free, with no account and no watermark."}}, {"@type": "Question", "name": "How do I remove white margins from a PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Choose Remove white margins, then tap Crop PDF."}}, {"@type": "Question", "name": "Will cropping lower my PDF’s quality?", "acceptedAnswer": {"@type": "Answer", "text": "No. Only the page box changes; text and images are not redrawn."}}, {"@type": "Question", "name": "Can I crop just one page?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pick This page only."}}, {"@type": "Question", "name": "Can I crop a PDF on my phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crop PDF works in Safari or Chrome on iPhone and Android."}}, {"@type": "Question", "name": "Is the cropped part deleted?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is hidden, so don’t use cropping to hide private details."}}]}</script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
@@ -374,7 +575,8 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script src="../js/app.js?v=20260825i"></script>
-<script src="../js/tools.js?v=20260825i"></script>
+<script src="../js/tools.js?v=20261107"></script>
+<script defer src="../js/crop-pdf.js?v=20261107"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
@@ -407,16 +609,16 @@
       <div class="footer-col">
         <h4>Scanner</h4>
         <a href="../scanner.html">CamMaster Scanner</a>
-        <a href="../tools/ocr.html">OCR Text</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
         <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
       </div>
       <div class="footer-col">
         <h4>PDF Tools</h4>
         <a href="../tools/merge-pdf.html">Merge PDF</a>
         <a href="../tools/extract-pdf-pages.html">Split PDF</a>
-        <a href="../tools/compress-pdf.html">Compress PDF</a>
-        <a href="../tools/pdf-to-img.html">PDF to JPG</a>
-        <a href="../tools/crop-pdf.html">Crop PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+        <a href="../tools/crop-pdf-online.html">Crop PDF</a>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
