@@ -4,130 +4,108 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PDF Restriction Compatibility Check | PDFdukan</title>
-<meta name="description" content="Check whether a PDF can be re-saved by the browser library. Encrypted PDFs are unsupported; this tool does not decrypt or crack passwords.">
+<title>PDF Restriction Compatibility Check – Free | PDFdukan</title>
+<meta name="description" content="PDF restriction compatibility check: see if a PDF needs a password, which actions are blocked, its encryption, signatures and PDF/A issues. No upload.">
 <meta name="robots" content="index, follow">
-<meta name="geo.region" content="PK">
-<meta name="geo.placename" content="Pakistan">
-<meta name="geo.position" content="30.3753;69.3451">
-<meta name="ICBM" content="30.3753, 69.3451">
-<link rel="canonical" href="https://pdfdukan.com/tools/unlock-pdf.html">
-<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/unlock-pdf.html">
-<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/unlock-pdf.html">
-<!-- Open Graph -->
+<link rel="canonical" href="https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
-<meta property="og:url" content="https://pdfdukan.com/tools/unlock-pdf.html">
-<meta property="og:title" content="PDF Restriction Compatibility Check | PDFdukan">
-<meta property="og:description" content="Check whether an unencrypted PDF can be safely re-saved in your browser. No password cracking, decryption, or guaranteed permission removal.">
-<meta property="og:image" content="https://pdfdukan.com/images/pdf-restriction-check.svg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html">
+<meta property="og:title" content="PDF Restriction Compatibility Check – Free | PDFdukan">
+<meta property="og:description" content="PDF restriction compatibility check: see if a PDF needs a password, which actions are blocked, its encryption, signatures and PDF/A issues. No upload.">
+<meta property="og:image" content="https://pdfdukan.c../images/pdf-restriction-compatibility-check.svg">
 <meta property="og:locale" content="en_US">
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="PDF Restriction Compatibility Check | PDFdukan">
-<meta name="twitter:description" content="Check whether an unencrypted PDF can be safely re-saved in your browser. No password cracking, decryption, or guaranteed permission removal.">
-<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-restriction-check.svg">
+<meta name="twitter:title" content="PDF Restriction Compatibility Check – Free | PDFdukan">
+<meta name="twitter:description" content="PDF restriction compatibility check: see if a PDF needs a password, which actions are blocked, its encryption, signatures and PDF/A issues. No upload.">
+<meta name="twitter:image" content="https://pdfdukan.c../images/pdf-restriction-compatibility-check.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <link rel="stylesheet" href="../css/style.css?v=20260825i">
 <style>
-/* ── PDF File Card ─────────────────────────────────────────── */
-.pdf-file-card {
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
-  overflow: hidden;
-  transition: border-color var(--t) var(--ease);
-}
-.pdf-file-card:hover { border-color: var(--border-strong); }
-.pdf-file-card.sortable-ghost { opacity: 0.4; }
+/* ── PDF restriction check ── */
+[hidden]{display:none!important}
+.rc-result{padding:16px;text-align:left}
+.rc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:-16px -16px 14px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--card);border-radius:var(--radius) var(--radius) 0 0}
+.rc-file{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 240px;font-size:24px}
+.rc-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52vw}
+.rc-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.rc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.rc-btn{min-height:40px;padding:9px 14px;font-size:13px}
+.rc-verdict{border-radius:12px;padding:14px 16px;border:1px solid;margin-bottom:6px}
+.rc-verdict strong{font-size:17px;display:block}
+.rc-verdict p{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--text-2)}
+.rc-verdict.rc-ok{background:rgba(22,163,74,.08);border-color:rgba(22,163,74,.45)}.rc-verdict.rc-ok strong{color:#15803d}
+.rc-verdict.rc-warn{background:rgba(217,119,6,.09);border-color:rgba(217,119,6,.5)}.rc-verdict.rc-warn strong{color:#b45309}
+.rc-verdict.rc-bad{background:rgba(220,38,38,.08);border-color:rgba(220,38,38,.45)}.rc-verdict.rc-bad strong{color:#b91c1c}
+.rc-pw{margin:12px 0 4px;padding:12px 14px;border:1px dashed var(--border);border-radius:10px;background:var(--card-2)}
+.rc-pw label{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:8px}
+.rc-pw div{display:flex;gap:8px;flex-wrap:wrap}
+.rc-pw input{flex:1 1 200px;min-height:42px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:15px}
+.rc-pwmsg{margin:8px 0 0;font-size:13px;color:#b91c1c;min-height:1em}.rc-pwmsg.rc-good{color:#15803d}
+.rc-h{font-size:15px;margin:18px 0 10px;color:var(--text)}
+.rc-perms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.rc-perm{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card)}
+.rc-perm div{flex:1;min-width:0}
+.rc-perm b{display:block;font-size:14px;color:var(--text)}
+.rc-perm div span{display:block;font-size:12px;color:var(--text-3);margin-top:1px}
+.rc-perm em{font-style:normal;font-size:12px;font-weight:800;white-space:nowrap}
+.rc-ic{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:#fff;flex-shrink:0}
+.rc-perm.rc-yes .rc-ic{background:#16a34a}.rc-perm.rc-yes em{color:#15803d}
+.rc-perm.rc-no .rc-ic{background:#dc2626}.rc-perm.rc-no em{color:#b91c1c}.rc-perm.rc-no{border-color:rgba(220,38,38,.4)}
+.rc-perm.rc-low .rc-ic{background:#d97706}.rc-perm.rc-low em{color:#b45309}.rc-perm.rc-low{border-color:rgba(217,119,6,.45)}
+.rc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:4px}
+.rc-box{border:1px solid var(--border);border-radius:12px;padding:0 14px 12px;background:var(--card);min-width:0}
+.rc-box .rc-h{margin:14px 0 8px}
+.rc-t{width:100%;border-collapse:collapse;font-size:13.5px}
+.rc-t th,.rc-t td{padding:7px 4px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.rc-t th{font-weight:600;color:var(--text-2);width:46%}
+.rc-t tr:last-child th,.rc-t tr:last-child td{border-bottom:0}
+.rc-red{color:#b91c1c}.rc-amb{color:#b45309}
+.rc-tag{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:#d97706;border-radius:5px;padding:1px 6px;margin-left:4px}
+.rc-list{list-style:none;margin:0;padding:0;font-size:13.5px}
+.rc-list li{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);line-height:1.45;word-break:break-word}
+.rc-list li:last-child{border-bottom:0}
+.rc-list li span{font-weight:900;flex-shrink:0}
+.rc-list .rc-ok span{color:#16a34a}.rc-list .rc-no span{color:#dc2626}
+.rc-note{font-size:12px;color:var(--text-3);margin:8px 0 0;line-height:1.5}
+.rc-note a{color:var(--primary);font-weight:600}
+@media(max-width:700px){.rc-perms,.rc-grid{grid-template-columns:1fr}.rc-actions{width:100%}.rc-actions .rc-btn{flex:1}.rc-name{max-width:72vw}}
 
-.pfc-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; background: var(--card-3);
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-.pfc-drag {
-  font-size: 18px; color: var(--text-muted); cursor: grab;
-  padding: 2px 4px; border-radius: 4px; line-height: 1;
-  flex-shrink: 0;
-}
-.pfc-drag:hover { color: var(--text-3); }
-.pfc-doc-icon { font-size: 22px; flex-shrink: 0; }
-.pfc-info { flex: 1; min-width: 0; }
-.pfc-name {
-  font-size: 13px; font-weight: 600; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; color: var(--text);
-}
-.pfc-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.pfc-controls { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; align-items: center; }
-.pfc-btn {
-  background: var(--card); border: 1px solid var(--border);
-  color: var(--text-2); padding: 4px 9px; border-radius: var(--radius-sm);
-  font-size: 11px; font-weight: 600; cursor: pointer;
-  transition: var(--t) var(--ease);
-}
-.pfc-btn:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-.pfc-del {
-  background: none; border: 1px solid transparent;
-  color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm);
-  font-size: 13px; cursor: pointer; transition: var(--t) var(--ease);
-}
-.pfc-del:hover { background: rgba(239,68,68,0.12); border-color: var(--error); color: var(--error); }
-
-/* ── Page checkboxes ───────────────────────────────────────── */
-.pfc-pages {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 12px 14px 4px;
-  max-height: 180px; overflow-y: auto;
-}
-.pfc-page {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  border: 1.5px solid var(--primary); border-radius: 6px;
-  background: var(--primary-soft); cursor: pointer;
-  transition: var(--t) var(--ease); position: relative;
-}
-.pfc-page input[type=checkbox] {
-  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
-}
-.pfc-page.unchecked {
-  border-color: var(--border); background: transparent;
-}
-.pfc-page.unchecked .pp-num { color: var(--text-muted); }
-.pfc-page:hover { transform: scale(1.1); }
-.pp-num { font-size: 11px; font-weight: 700; color: var(--primary); pointer-events: none; }
-.pfc-page.unchecked:hover { border-color: var(--text-3); }
-
-/* ── Summary bar ───────────────────────────────────────────── */
-.pfc-summary {
-  padding: 7px 14px 10px;
-  font-size: 11px; color: var(--text-3); font-weight: 500;
-}
-
-/* ── Merge hint ────────────────────────────────────────────── */
-.merge-hint {
-  background: var(--card-2); border-radius: var(--radius-sm);
-  padding: 10px 14px; font-size: 12px; color: var(--text-3);
-  display: flex; align-items: center; gap: 6px; margin-top: 10px;
-}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
 </style>
-<style>.restriction-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.restriction-feature img{display:block;width:100%;height:auto}.restriction-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.restriction-feature{grid-template-columns:1fr}.restriction-feature img{max-width:300px;margin:auto}}</style>
 <meta name="theme-color" content="#ff6333">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"PDF Restriction Compatibility Check","url":"https://pdfdukan.com/tools/unlock-pdf.html","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","description":"Checks whether the browser PDF library can load and re-save a PDF. It does not decrypt encrypted PDFs or bypass unknown passwords."}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Restriction Check","item":"https://pdfdukan.com/tools/unlock-pdf.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "PDF Restriction Check", "item": "https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan PDF Restriction Compatibility Check", "url": "https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "PDF restriction compatibility check: see if a PDF needs a password, which actions are blocked, its encryption, signatures and PDF/A issues. No upload.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is the PDF restriction compatibility check free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It is free, needs no account and works on files up to 200 MB."}}, {"@type": "Question", "name": "Why can't I print or copy from my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "The author set a permissions password. The check shows exactly which actions it blocks."}}, {"@type": "Question", "name": "Can I see permissions without the open password?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Permission flags are stored unencrypted, so they show even when the file needs a password to open."}}, {"@type": "Question", "name": "Does it tell me if a PDF is PDF/A?", "acceptedAnswer": {"@type": "Answer", "text": "It shows the declared PDF/A level and common failures. For full ISO validation, use veraPDF."}}, {"@type": "Question", "name": "Will checking change my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "No. The file is only read; nothing is saved or rewritten."}}]}</script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-11-10T00:00:00+05:00">
 </head>
-<body data-tool="unlock-pdf">
+<body data-tool="pdf-restriction-check">
 <header class="header" role="banner">
   <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
     <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
@@ -243,100 +221,75 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>PDF Restriction Check</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">&#128275;</div><h1>PDF Restriction Compatibility Check</h1><p>Check whether the current browser PDF library can re-save your file. It cannot decrypt encrypted PDFs, remove an unknown password, or guarantee removal of permission restrictions.</p></div>
-  <div class="tool-card">
-    <div style="background:#fff8e1;border:1px solid #ffcc02;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#5d4037">&#9888;&#65039; <strong>Limitation:</strong> Encrypted and password-protected PDFs are not supported. A successful re-save is not proof that every permission restriction was removed.</div>
-    <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
-    <div class="drop-zone" id="dropZone" role="button" tabindex="0"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div></div><input type="file" id="fileInput" accept="application/pdf" style="display:none"></div>
-    <p id="ulInfo" role="status" aria-live="polite" style="font-size:13px;color:var(--text-3);margin-top:12px"></p>
-    <div id="ulResult" hidden style="margin-top:14px;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--card-2)">
-      <strong id="ulResultTitle">Compatibility copy ready</strong>
-      <p id="ulResultMeta" style="font-size:13px;color:var(--text-2);margin:6px 0 12px"></p>
-      <button class="btn btn-primary" id="ulDownload" type="button">Download Re-saved PDF</button>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#2e7d32,#66bb6a)">&#128269;</div>
+      <h1>PDF Restriction Compatibility Check – Free, No Upload</h1>
+      <p>See if a PDF needs a password, what it blocks, how it's encrypted, and whether it's signed or PDF/A, all in seconds.</p>
+      <p class="i2p-trust">Free · No sign-up · Read-only · Your PDF stays in your browser</p>
     </div>
+    <img class="tool-feature-visual" src="../images/pdf-restriction-compatibility-check.svg" alt="A PDF file with a checklist showing print allowed, copy blocked and AES 256-bit encryption" width="640" height="420">
   </div>
-  <section class="restriction-feature" aria-labelledby="restrictionFeatureTitle"><div><h2 id="restrictionFeatureTitle" style="font-size:20px;margin:0">A readable re-save is a compatibility result</h2><p>The original stays separate. The generated copy is reopened in the browser and its page count is checked, but permissions and complex interactive features still require manual verification.</p></div><img src="../images/pdf-restriction-check.svg" alt="Illustration of an unencrypted PDF producing a separately verified compatibility copy" width="640" height="420"></section>
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> The current PDF-lib engine does not support decrypting encrypted PDFs. This page can only attempt a compatibility re-save of PDFs the library can safely load; it is not a password cracker or guaranteed restriction remover.</div>
-<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Page and feature claims reviewed 14 August 2026</span><span>Free to use · No fake ratings · Limitations are stated on this page</span></aside>
-    <h2>What the Compatibility Check Does</h2>
-    <p>This page uses PDF-lib to test whether a PDF can be loaded and written again in the browser. PDF-lib's official documentation states that encrypted documents are not supported. Re-saving an ordinary unencrypted PDF is not the same as decrypting it or reliably removing its permission controls.</p>
-    <p>If a PDF asks for a password, reports encryption, contains a digital signature, or has permissions you must preserve, use the document owner's password and a PDF application that explicitly supports that encryption method. Do not rely on a compatibility re-save for legal, signed or archival records.</p>
-    <p><strong>Important:</strong> only process documents you own or are authorised to modify. This tool does not bypass unknown passwords and now fails closed on encrypted input instead of using PDF-lib's discouraged <code>ignoreEncryption</code> option.</p>
-
-    <h2>What a Re-save Can and Cannot Tell You</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:16px 0">
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🖨️ Printing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">A successful re-save does not guarantee that every viewer's printing permission will change.</p></div>
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>📋 Copying</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Text selection depends on the PDF content and viewer, not only a permission flag.</p></div>
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>✏️ Editing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">Forms, signatures and annotations can change when a PDF is rewritten; verify them independently.</p></div>
-      <div style="background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:16px"><strong>🔒 Browser processing</strong><p style="margin:6px 0 0;font-size:13px;color:var(--text-2)">The selected file is processed in this browser tab. Closing the tab clears the working copy held by this page.</p></div>
+  <div class="tool-card" id="rcUpload">
+    <div class="drop-zone" id="rcDrop" tabindex="0" role="button" aria-label="Choose a PDF to check">
+      <div class="dz-icon">🔍</div>
+      <div class="dz-title">Drop a PDF here or click to browse</div>
+      <div class="dz-hint">Checks start right away · up to 200 MB · the file stays in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="rcFileInput" accept=".pdf,application/pdf" style="display:none">
     </div>
+    <p id="rcInfo" role="status" aria-live="polite" style="font-size:13px;color:var(--text-3);margin:10px 0 0;text-align:center"></p>
+  </div>
+  <div class="tool-card rc-result" id="rcResult" hidden></div>
 
-    <h2>How to Check a PDF in 3 Steps</h2>
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 12 PDFs, including RC4 and AES-256 files</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Does a PDF Restriction Compatibility Check Show?</h2>
+    <p class="lead">A PDF restriction compatibility check reads a PDF's security settings and shows whether it needs a password to open, which of eight actions are blocked (print, copy, edit, page changes, comments, forms, signing, screen readers) and how it is encrypted.</p>
+    <p>It also lists digital signatures, form fields, PDF/A problems and basic accessibility gaps, so you know whether a portal or reader will accept the file.</p>
+
+    <h3>How Do I Run a PDF Restriction Compatibility Check?</h3>
     <ol>
-      <li><strong>Select an unencrypted PDF</strong> — use a file you own or are authorised to modify.</li>
-      <li><strong>Wait for validation</strong> — the tool loads, re-saves, and opens the new bytes again to confirm they form a readable PDF.</li>
-      <li><strong>Download and compare</strong> — keep the original, then verify pages, forms, links, annotations, signatures and required permissions in your normal PDF reader.</li>
+      <li><span><strong>Add the PDF.</strong> Tap Choose PDF or drop the file; the check starts at once.</span></li>
+      <li><span><strong>Read the result.</strong> The colored box says if it opens freely and how many actions are blocked.</span></li>
+      <li><span><strong>Test a password.</strong> If one is needed, type it in Check password to confirm it works.</span></li>
+      <li><span><strong>Keep a record.</strong> Use Copy report or Download report to share the findings.</span></li>
     </ol>
 
-    <h2>When a Compatibility Copy May Help</h2>
-    <ul>
-      <li><strong>Your own exported files:</strong> test whether a fresh structural rewrite opens in a viewer that rejected the original.</li>
-      <li><strong>Non-archival copies:</strong> create a separate working copy of an ordinary unencrypted PDF while retaining the source.</li>
-      <li><strong>Viewer troubleshooting:</strong> determine whether the browser library can parse and write the document at all.</li>
-    </ul>
+    <h3>What Do the Results Mean?</h3>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Open password</h4><p>Nobody can view the pages without it. Permission flags are still shown.</p></div>
+      <div class="i2p-card"><h4>Permissions password</h4><p>The file opens, but Acrobat and most readers block the actions marked Blocked.</p></div>
+      <div class="i2p-card"><h4>Signatures</h4><p>Shows signer, date, and whether the file changed after signing.</p></div>
+      <div class="i2p-card"><h4>Weak encryption</h4><p>RC4 is flagged as weak; AES-256 is the current standard.</p></div>
+    </div>
 
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does this tool guarantee removal of restrictions?</button><div class="faq-a"><p>No. It only attempts a structural re-save of an unencrypted PDF. A successful output does not prove that printing, copying, editing, or annotation permissions changed in every viewer.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can it open a password-locked PDF I can't view?</button><div class="faq-a"><p>No. This tool cannot decrypt or bypass a password. It only attempts a compatibility re-save when PDF-lib can load the unencrypted input, and that re-save does not guarantee a change to usage restrictions.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">May I re-save any PDF?</button><div class="faq-a"><p>Only process a document you own or are authorised to modify. Copyright, contracts and access rules vary by document and jurisdiction, so this page does not make a legal determination for you.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are my files uploaded to a server?</button><div class="faq-a"><p>The compatibility operation runs with client-side PDF-lib rather than sending the selected PDF to PDFdukan for processing. The page can still request normal site assets, analytics and third-party libraries.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can re-saving change the PDF?</button><div class="faq-a"><p>Yes. Rewriting a PDF can change metadata or affect complex forms, annotations, signatures, links and unsupported structures even when visible pages appear similar. Keep the original and verify the result.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is this tool free?</button><div class="faq-a"><p>Yes. The compatibility check requires no account and adds no watermark. Your browser and device memory still determine the practical file size it can process.</p></div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on mobile phones?</button><div class="faq-a"><p>The interface is responsive, but large or complex PDFs may exceed a phone browser's available memory. For important files, compare the result in a full PDF reader.</p></div></div>
-    <h2>Related Tools</h2>
+    <h3>Is My PDF Uploaded?</h3>
+    <p>No. The check runs in your browser tab with <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">pdf.js</a> and <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a>. Passwords you test never leave the page.</p>
+
+    <h3>What Doesn't This Checker Do?</h3>
+    <p>It doesn't remove passwords or restrictions, and it doesn't verify a signer's certificate. The PDF/A check catches common failures only. To edit an unrestricted file, use our <a href="pdf-editor.html">PDF editor</a>.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is the PDF restriction compatibility check free?</button></h3><div class="faq-a"><p>Yes. It is free, needs no account and works on files up to 200 MB.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why can't I print or copy from my PDF?</button></h3><div class="faq-a"><p>The author set a permissions password. The check shows exactly which actions it blocks.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I see permissions without the open password?</button></h3><div class="faq-a"><p>Yes. Permission flags are stored unencrypted, so they show even when the file needs a password to open.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it tell me if a PDF is PDF/A?</button></h3><div class="faq-a"><p>It shows the declared PDF/A level and common failures. For full ISO validation, use <a href="https://verapdf.org/" target="_blank" rel="noopener">veraPDF</a>.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will checking change my PDF?</button></h3><div class="faq-a"><p>No. The file is only read; nothing is saved or rewritten.</p></div></div>
+
+    <h3>Related Tools</h3>
     <div class="related-tools-grid">
+    <a href="pdf-editor.html" class="related-tool-card"><span class="rtc-icon">✏️</span>PDF Editor</a>
     <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
     <a href="compress-pdf-reduce-file-size.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>
+    <a href="organize-pdf-pages-online.html" class="related-tool-card"><span class="rtc-icon">🔀</span>Organize PDF Pages</a>
     </div>
-  </section>
+</section>
+
 </div>
-<script>
-(function(){
-  var outputUrl='', outputName='document_resaved.pdf', busy=false;
-  function resetResult(){ if(outputUrl){URL.revokeObjectURL(outputUrl); outputUrl='';} document.getElementById('ulResult').hidden=true; }
-  function validPdf(f){ return !!f && /\.pdf$/i.test(f.name) && (!f.type || f.type==='application/pdf'); }
-  function sizeLabel(n){ return n>=1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'; }
-  function onFile(f){
-    if(busy) return; resetResult();
-    if(!validPdf(f)){ document.getElementById('ulInfo').textContent='Select a .pdf file.'; if(window.toast) toast('Please upload a PDF','error'); return; }
-    if(!f.size){ document.getElementById('ulInfo').textContent='The selected PDF is empty.'; if(window.toast) toast('Empty PDF cannot be processed','error'); return; }
-    if(f.size>100*1024*1024){ document.getElementById('ulInfo').textContent='This browser tool accepts PDFs up to 100 MB.'; if(window.toast) toast('PDF is larger than 100 MB','error'); return; }
-    busy=true; outputName=(f.name.replace(/\.pdf$/i,'')||'document')+'_resaved.pdf'; document.getElementById('ulInfo').textContent='Checking '+f.name+'…';
-    var r=new FileReader();
-    r.onload=async function(e){
-      try{
-        var d=await PDFLib.PDFDocument.load(e.target.result);
-        var pageCount=d.getPageCount();
-        var out=await d.save();
-        var verified=await PDFLib.PDFDocument.load(out);
-        if(verified.getPageCount()!==pageCount) throw new Error('Page count changed during validation.');
-        var blob=new Blob([out],{type:'application/pdf'}); outputUrl=URL.createObjectURL(blob);
-        document.getElementById('ulResultMeta').textContent=pageCount+' page'+(pageCount===1?'':'s')+' · '+sizeLabel(f.size)+' original · '+sizeLabel(blob.size)+' re-saved. This confirms readable output, not permission removal.';
-        document.getElementById('ulResult').hidden=false;
-        document.getElementById('ulInfo').textContent='Readable compatibility copy created. Download it only after reviewing the limitations below.';
-        if(window.toast) toast('Compatibility copy is ready to review.','success');
-        if(window.trackToolUse) trackToolUse('pdf-compatibility-resave');
-      }catch(err){
-        resetResult(); document.getElementById('ulInfo').textContent='Encrypted, password-protected, damaged, or unsupported PDF — no output was created.';
-        if(window.toast) toast('This PDF cannot be safely re-saved here.','error'); console.error(err);
-      }finally{ busy=false; }
-    };
-    r.onerror=function(){ busy=false; resetResult(); document.getElementById('ulInfo').textContent='The file could not be read.'; if(window.toast) toast('Could not read this PDF','error'); };
-    r.readAsArrayBuffer(f);
-  }
-  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){if(!busy)inp.click();}; dz.onkeydown=function(e){if((e.key==='Enter'||e.key===' ')&&!busy){e.preventDefault();inp.click();}}; inp.onchange=function(e){onFile(e.target.files[0]);}; document.getElementById('ulDownload').onclick=function(){if(!outputUrl)return;var a=document.createElement('a');a.href=outputUrl;a.download=outputName;document.body.appendChild(a);a.click();a.remove();}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); window.addEventListener('beforeunload',resetResult); });
-})();
-</script>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/pdf-restriction-check.js?v=20261110"></script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>

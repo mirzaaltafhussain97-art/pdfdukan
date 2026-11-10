@@ -307,7 +307,7 @@
         <button type="button" class="cp-mode active" data-crmode="pages" aria-pressed="true"><strong>Crop PDF pages</strong><span>Get a new PDF. Text stays sharp and selectable.</span></button>
         <button type="button" class="cp-mode" data-crmode="image" aria-pressed="false"><strong>Crop an area to image</strong><span>Save one part of a page, like a map or chart, as JPG, PNG or WebP.</span></button>
       </div>
-      <div class="cz-warn" id="crLockNote" hidden>This PDF is locked against changes, so it can’t be saved as a cropped PDF here. Unlock it first with <a href="unlock-pdf.html">Unlock PDF</a>, or crop an area to an image.</div>
+      <div class="cz-warn" id="crLockNote" hidden>This PDF is locked against changes, so it can’t be saved as a cropped PDF here. Ask the owner for an unrestricted copy (<a href="pdf-restriction-compatibility-check.html">check its restrictions</a>), or crop an area to an image.</div>
     </div>
   </div>
 
@@ -514,7 +514,7 @@
     <p>No. Crop PDF works in your browser tab with the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library; the file never reaches a PDFdukan server. The page still loads analytics and ads.</p>
 
     <h3>What Cropping Doesn’t Do</h3>
-    <p>Cropping hides the outside area; it doesn’t delete it. Password-locked PDFs need <a href="unlock-pdf.html">Unlock PDF</a> before saving a crop.</p>
+    <p>Cropping hides the outside area; it doesn’t delete it. Password-locked PDFs can’t be saved as a crop; a <a href="pdf-restriction-compatibility-check.html">PDF restriction check</a> shows what a file blocks.</p>
 
     <h3>Frequently Asked Questions</h3>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop PDF online free without signing up?</button></h3><div class="faq-a"><p>Yes. PDFdukan’s Crop PDF tool is free, with no account and no watermark.</p></div></div>

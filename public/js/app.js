@@ -1521,7 +1521,7 @@ const TOOL_PAGES = {
   /* ── PDF utilities & generators (Part 5) ── */
   'rotate-pdf':         'tools/organize-pdf-pages-online.html',
   'reorder-pdf':        'tools/organize-pdf-pages-online.html',
-  'unlock-pdf':         'tools/unlock-pdf.html',
+  'unlock-pdf':         'tools/pdf-restriction-compatibility-check.html',
   'pdf-metadata':       'tools/pdf-metadata.html',
   'pdf-text-extractor': 'tools/pdf-text-extractor.html',
   'searchable-pdf':     'tools/searchable-pdf.html',
@@ -2045,7 +2045,8 @@ function _initSearchTrustSignals() {
     'pdf-to-word':['Digital and scanned PDFs, OCR in 37 languages','Columns, paragraphs, headings, tables, images and links','Password-protected PDFs open in your browser'],
     'searchable-pdf':['JPG or PNG input with a searchable OCR text layer','Selectable OCR language','Manual review before downloading the generated PDF'],
     'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
-    'unlock-pdf':['Unencrypted PDF compatibility re-save','Encrypted and password-protected input is rejected','No decryption or guaranteed permission removal'],
+    'unlock-pdf':['Open password, 8 permission flags and encryption type','Signatures, form fields, PDF/A and accessibility basics','Read-only: does not remove passwords or restrictions'],
+    'pdf-restriction-check':['Open password, 8 permission flags and encryption type','Signatures, form fields, PDF/A and accessibility basics','Read-only: does not remove passwords or restrictions'],
     'watermark':['Custom text watermark','Opacity, angle and position controls','Apply across PDF pages'],
     'word-to-pdf':['DOCX, DOC, ODT, RTF and TXT input','LibreOffice office engine in the browser, no upload','Up to 10 files, ZIP or one combined PDF']
   };
