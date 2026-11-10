@@ -2499,24 +2499,69 @@ var PD_CLOUD = {
 
   var GD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0066da" d="M3.3 18.4l1 1.7c.2.4.5.6.8.8l3.6-6.2H1.5c0 .4.1.8.3 1.1z"/><path fill="#00ac47" d="M12 8.6L8.4 2.4c-.3.2-.6.5-.8.8L1.8 13.6c-.2.3-.3.7-.3 1.1h7.2z"/><path fill="#ea4335" d="M19.8 20.9c.3-.2.6-.5.8-.8l.4-.7 2-3.4c.2-.3.3-.7.3-1.1h-7.2l1.5 3z"/><path fill="#00832d" d="M12 8.6l3.6-6.2c-.4-.2-.8-.3-1.2-.3H9.6c-.4 0-.8.1-1.2.3z"/><path fill="#2684fc" d="M15.6 14.7H8.4l-3.6 6.2c.4.2.8.3 1.2.3h12.6c.4 0 .8-.1 1.2-.3z"/><path fill="#ffba00" d="M19.8 9l-3.3-5.8c-.2-.4-.5-.6-.8-.8L12 8.6l3.6 6.1h7.2c0-.4-.1-.8-.3-1.1z"/></svg>';
   var DB = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0061ff" d="M6 2.5L0 6.3l6 3.9 6-3.9zm12 0l-6 3.8 6 3.9 6-3.9zM0 14l6 3.9 6-3.9-6-3.8zm18-3.8L12 14l6 3.9 6-3.9zM6 19.2l6 3.9 6-3.9-6-3.9z"/></svg>';
+  var SHIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3.2v6c0 4.7-3.4 8.3-8 9.8-4.6-1.5-8-5.1-8-9.8v-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.3 12.2l2.5 2.5 4.9-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var STAR5 = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
+  var RKEY = 'pd-rated-v1';
+  function myVote(tool) { try { return (JSON.parse(localStorage.getItem(RKEY) || '{}'))[tool] || 0; } catch (e) { return 0; } }
+  function saveVote(tool, v) { try { var o = JSON.parse(localStorage.getItem(RKEY) || '{}'); o[tool] = v; localStorage.setItem(RKEY, JSON.stringify(o)); } catch (e) {} }
+  function ratingWidget(tool) {
+    var w = document.createElement('div'); w.className = 'pdz-rate';
+    w.innerHTML = '<span class="pdz-stars" role="radiogroup" aria-label="Rate this tool">' +
+      [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" class="pdz-star" data-v="' + n + '" role="radio" aria-label="' + n + ' star' + (n > 1 ? 's' : '') + '">' + STAR5 + '</button>'; }).join('') +
+      '</span><span class="pdz-rate-txt">Rate this tool</span>';
+    var stars = w.querySelectorAll('.pdz-star'), txt = w.querySelector('.pdz-rate-txt'), data = { avg: 0, count: 0 };
+    function paint(n) { stars.forEach(function (b, i) { b.classList.toggle('on', i < n); b.setAttribute('aria-checked', String(i + 1 === myVote(tool))); }); }
+    function show() {
+      var mine = myVote(tool);
+      paint(mine || Math.round(data.avg));
+      txt.innerHTML = data.count ? '<b>' + data.avg.toFixed(1) + '</b> (' + data.count.toLocaleString() + ' vote' + (data.count > 1 ? 's' : '') + ')' + (mine ? ' · you gave ' + mine : '') : (mine ? 'You gave ' + mine + ' stars' : 'Be the first to rate');
+    }
+    w.addEventListener('mouseover', function (e) { var b = e.target.closest('.pdz-star'); if (b) paint(+b.dataset.v); });
+    w.addEventListener('mouseleave', show);
+    w.addEventListener('click', async function (e) {
+      e.stopPropagation(); e.preventDefault();
+      var b = e.target.closest('.pdz-star'); if (!b) return;
+      var v = +b.dataset.v;
+      try {
+        var r = await fetch('/api/rating.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool: tool, score: v }) });
+        if (!r.ok) throw new Error(r.status);
+        data = await r.json(); saveVote(tool, v); show(); say('Thanks for rating! ⭐', 'success');
+      } catch (err) { say('Rating could not be saved right now. Please try again later.', 'error'); show(); }
+    });
+    fetch('/api/rating.php?tool=' + encodeURIComponent(tool), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && typeof j.count === 'number') data = j; show(); }).catch(show);
+    show();
+    return w;
+  }
+  var EXTRA = { '/tools/html-to-pdf-converter-online.html': 'hpFileInput' };
   function init() {
-    var id = INPUTS[location.pathname]; if (!id) return;
+    var path = location.pathname, id = INPUTS[path] || EXTRA[path]; if (!id) return;
     var input = document.getElementById(id); if (!input) return;
-    var g = !!(PD_CLOUD.googleApiKey && PD_CLOUD.googleAppId), d = !!PD_CLOUD.dropboxAppKey;
-    if (!g && !d) return;
-    var after = location.pathname === '/tools/pdf-editor.html' ? document.querySelector('.dz-btn') : null;
-    var zone = after ? null : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
+    var tool = path.split('/').pop().replace(/\.html$/, '');
+    var after = path === '/tools/pdf-editor.html' ? document.querySelector('.dz-btn') : null;
+    var zone = after ? after.parentNode : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
+    if (zone.querySelector('.pdz-safe')) return;
+    zone.classList.add('pd-zone');
+    var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span>';
+    safe.title = 'Files are processed in your browser and not uploaded';
+    zone.insertBefore(safe, zone.firstChild);
+    var terms = document.createElement('p'); terms.className = 'pdz-terms';
+    terms.innerHTML = 'By using this tool, you accept our <a href="/terms.html">terms of use</a>';
+    terms.addEventListener('click', function (e) { e.stopPropagation(); });
+    var foot = document.createElement('div'); foot.className = 'pdz-foot';
+    foot.appendChild(ratingWidget(tool));
+    var g = !!(INPUTS[path] && PD_CLOUD.googleApiKey && PD_CLOUD.googleAppId), d = !!(INPUTS[path] && PD_CLOUD.dropboxAppKey);
     var row = document.createElement('div'); row.className = 'cloud-pick';
-    row.innerHTML = '<span class="cloud-pick-label">or open from</span>' +
-      (g ? '<button type="button" class="cloud-btn" data-src="drive" data-tip="Google Drive" aria-label="Open a file from Google Drive">' + GD + '</button>' : '') +
+    row.innerHTML = (g ? '<button type="button" class="cloud-btn" data-src="drive" data-tip="Google Drive" aria-label="Open a file from Google Drive">' + GD + '</button>' : '') +
       (d ? '<button type="button" class="cloud-btn" data-src="dropbox" data-tip="Dropbox" aria-label="Open a file from Dropbox">' + DB + '</button>' : '');
     row.addEventListener('click', function (e) {
       e.stopPropagation(); e.preventDefault();
       var b = e.target.closest('.cloud-btn'); if (!b) return;
       if (b.dataset.src === 'drive') fromDrive(input); else fromDropbox(input);
     });
-    ['keydown', 'dragover', 'drop'].forEach(function (t) { row.addEventListener(t, function (e) { if (t === 'keydown') e.stopPropagation(); }); });
-    if (after) after.insertAdjacentElement('afterend', row); else zone.appendChild(row);
+    if (g || d) foot.appendChild(row);
+    foot.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    zone.appendChild(terms); zone.appendChild(foot);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   window.PDCloud = { init: init, exts: exts };
