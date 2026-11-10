@@ -2416,7 +2416,7 @@ var PD_CLOUD = {
     '/tools/pdf-to-word-converter.html': 'fileInput', '/tools/pdf-to-image-converter.html': 'fileInput',
     '/tools/image-to-pdf-converter.html': 'fileInput', '/tools/word-to-pdf-converter.html': 'fileInput',
     '/tools/ocr-image-to-text.html': 'fileInput', '/tools/pdf-text-extractor.html': 'txFileInput',
-    '/tools/searchable-pdf.html': 'fileInput', '/tools/image-compress-resize.html': 'fileInput'
+    '/tools/searchable-pdf.html': 'fileInput', '/tools/image-compress-resize.html': 'fileInput', '/scanner.html': 'fileInputScanner'
   };
   var MIME = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain' };
