@@ -2401,7 +2401,7 @@ document.addEventListener('DOMContentLoaded', () => {
    downloaded straight into the browser and handed to the tool's own file
    input, so processing stays on the device. */
 var PD_CLOUD = {
-  googleApiKey: '',            /* Google Cloud API key with "Google Picker API" enabled */
+  googleApiKey: 'AIzaSyAfVK7JDeUfwOPlZCu7RX0yglImUn4rxPU',            /* Google Cloud API key with "Google Picker API" enabled */
   googleAppId: '233358066910', /* Google Cloud project number (Firebase messagingSenderId) */
   dropboxAppKey: ''            /* Dropbox app key (Chooser, domain pdfdukan.com) */
 };
