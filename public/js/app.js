@@ -2539,7 +2539,7 @@ var PD_CLOUD = {
     var input = document.getElementById(id); if (!input) return;
     var tool = path.split('/').pop().replace(/\.html$/, '');
     var after = path === '/tools/pdf-editor.html' ? document.querySelector('.dz-btn') : null;
-    var zone = after ? after.parentNode : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
+    var zone = after ? after.parentNode : path === '/scanner.html' ? document.getElementById('uploadZone') : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
     if (zone.querySelector('.pdz-safe')) return;
     zone.classList.add('pd-zone');
     var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span>';
