@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Searchable PDF Converter – OCR Online Free | PDFdukan</title>
+<meta name="description" content="Searchable PDF converter with free online OCR: make scanned PDFs and photos searchable and copyable in 37 languages. Runs in your browser, no sign-up.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/searchable-pdf-converter-online.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/searchable-pdf-converter-online.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/searchable-pdf-converter-online.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/searchable-pdf-converter-online.html">
+<meta property="og:title" content="Searchable PDF Converter – OCR Online Free | PDFdukan">
+<meta property="og:description" content="Searchable PDF converter with free online OCR: make scanned PDFs and photos searchable and copyable in 37 languages. Runs in your browser, no sign-up.">
+<meta property="og:image" content="https://pdfdukan.com/images/searchable-pdf-converter-online.svg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Searchable PDF Converter – OCR Online Free | PDFdukan">
+<meta name="twitter:description" content="Searchable PDF converter with free online OCR: make scanned PDFs and photos searchable and copyable in 37 languages. Runs in your browser, no sign-up.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/searchable-pdf-converter-online.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+[hidden]{display:none!important}
+/* ── Searchable PDF ── */
+.sp-editor{padding:16px;text-align:left}
+.sp-cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
+.sp-l{display:block;font-size:12.5px;font-weight:700;color:var(--text-2);margin:6px 0 4px}
+.sp-count{font-weight:500;color:var(--text-3)}
+.sp-files{display:flex;flex-direction:column;gap:6px;max-height:420px;overflow:auto}
+.sp-file{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:var(--card)}
+.sp-file.done{border-color:rgba(22,163,74,.5)}.sp-file.fail{border-color:rgba(220,38,38,.5)}.sp-file.pw{border-color:rgba(217,119,6,.6)}
+.sp-file.run{border-color:var(--primary)}
+.sp-thumb{width:40px;height:52px;flex:0 0 40px;border-radius:4px;background:var(--card-2);border:1px solid var(--border);object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--text-3)}
+.sp-fmeta{flex:1;min-width:0}
+.sp-fmeta b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.sp-fmeta span{display:block;font-size:12px;color:var(--text-3)}
+.sp-file.fail .sp-fmeta span{color:#b91c1c}.sp-file.done .sp-fmeta span{color:#15803d}
+.sp-mv,.sp-x{border:0;background:none;color:var(--text-3);cursor:pointer;font-size:14px;padding:6px;min-width:28px}
+.sp-mv:disabled{opacity:.3;cursor:default}
+.sp-pw{display:flex;gap:6px;margin-top:6px}
+.sp-pw input{width:140px;min-height:34px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)}
+.sp-pw .btn{min-height:34px;padding:4px 10px;font-size:12.5px}
+.sp-fbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sp-fbar .btn{min-height:38px;padding:8px 14px;font-size:13px}
+.sp-right{display:flex;flex-direction:column;gap:4px}
+.sp-in{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:14px;box-sizing:border-box}
+.sp-chk{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--text-2);margin-top:8px;cursor:pointer}
+.sp-chk input{accent-color:var(--primary);width:16px;height:16px}
+.sp-apply{margin-top:14px;min-height:46px;font-size:15px;font-weight:800}
+.sp-prog{margin-top:12px}
+.sp-bar{height:8px;border-radius:6px;background:var(--card-2);overflow:hidden;border:1px solid var(--border)}
+.sp-fill{height:100%;width:0;background:var(--primary);transition:width .25s}
+.sp-plbl{font-size:12.5px;color:var(--text-2);margin-top:6px}
+.sp-cancel{margin-top:6px;border:0;background:none;color:var(--text-3);text-decoration:underline;cursor:pointer;font-size:12.5px;padding:0}
+.sp-result{text-align:left;padding:18px}
+.sp-rhead{display:flex;gap:12px;align-items:flex-start}
+.sp-ok{width:34px;height:34px;flex:0 0 34px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+.sp-rhead b{font-size:16px;color:var(--text)}.sp-rhead p{margin:4px 0 0;font-size:13px;color:var(--text-2);line-height:1.55}
+.sp-rbtns{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 8px}
+.sp-rbtns .btn{min-height:42px}
+.sp-text{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--card-2);color:var(--text);font:13px/1.5 ui-monospace,Consolas,monospace;resize:vertical}
+.sp-text[dir=rtl]{font-family:inherit}
+.sp-tip{font-size:12.5px;color:var(--text-3);margin:8px 0 0}
+.sp-info{font-size:13px;color:var(--text-3);margin:10px 0 0;text-align:center}
+@media(max-width:820px){.sp-cols{grid-template-columns:1fr}.sp-rbtns .btn{flex:1 1 100%}}
+
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Searchable PDF Converter", "item": "https://pdfdukan.com/tools/searchable-pdf-converter-online.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Searchable PDF Converter", "url": "https://pdfdukan.com/tools/searchable-pdf-converter-online.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Searchable PDF converter with free online OCR: make scanned PDFs and photos searchable and copyable in 37 languages. Runs in your browser, no sign-up.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this searchable PDF converter free online?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan’s searchable PDF converter is free, needs no sign-up and adds no watermark. Jobs can hold up to 200 pages."}}, {"@type": "Question", "name": "How do I know if my PDF needs OCR?", "acceptedAnswer": {"@type": "Answer", "text": "Try to select a word. If the whole page highlights like a picture, or Ctrl+F finds nothing, the PDF is a scan and needs OCR."}}, {"@type": "Question", "name": "Will OCR change how my PDF looks?", "acceptedAnswer": {"@type": "Answer", "text": "No. The text layer is invisible, so pages print and display as before. Only the file size grows a little."}}, {"@type": "Question", "name": "How accurate is the OCR?", "acceptedAnswer": {"@type": "Answer", "text": "Accuracy depends on the scan. In our test on clean printed invoices, every word was correct, while faint, tilted or handwritten pages give more mistakes. Always check names and numbers."}}, {"@type": "Question", "name": "Can I convert photos into a searchable PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Add JPG, PNG or WebP photos and PDFdukan places each one on an A4-sized page with a text layer, joined into one PDF."}}, {"@type": "Question", "name": "Why is the first run slower?", "acceptedAnswer": {"@type": "Answer", "text": "The browser downloads the OCR engine and language data once. After that, each page takes a few seconds, depending on your device."}}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-10T00:00:00+05:00">
+</head>
+<body data-tool="searchable-pdf">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/html-to-pdf-converter-online.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/add-watermark-to-pdf-online.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/add-page-numbers-to-pdf-online.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/organize-pdf-pages-online.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/add-watermark-to-pdf-online.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/add-page-numbers-to-pdf-online.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/organize-pdf-pages-online.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Searchable PDF Converter</span></nav>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#0277bd,#29b6f6)">🔍</div>
+      <h1>Searchable PDF Converter – OCR Online Free</h1>
+      <p>Add an invisible OCR text layer to scanned PDFs and photos so search, copy and screen readers work. The scan itself stays exactly as it was.</p>
+      <p class="i2p-trust">Free · No sign-up · No watermark · OCR runs on your device</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/searchable-pdf-converter-online.svg" alt="A scanned page turned into a searchable PDF, with highlighted OCR words found by a search box" width="640" height="420">
+  </div>
+  <div class="tool-card" id="spUpload">
+    <div class="drop-zone" id="spDrop" tabindex="0" role="button" aria-label="Choose scanned PDFs or images to make searchable">
+      <div class="dz-icon">🔍</div>
+      <div class="dz-title">Drop scanned PDFs or images here</div>
+      <div class="dz-hint">PDF, JPG, PNG, WebP, BMP or GIF · up to 200 pages per job · OCR runs in your browser</div>
+      <span class="dz-btn">Choose files</span>
+      <input type="file" id="spFileInput" accept=".pdf,application/pdf,.jpg,.jpeg,.png,.webp,.bmp,.gif,image/jpeg,image/png,image/webp,image/bmp,image/gif" multiple style="display:none">
+    </div>
+  </div>
+  <div class="tool-card sp-editor" id="spEditor" hidden>
+    <div class="sp-cols">
+      <div class="sp-left">
+        <div class="sp-l">Files <span id="spCount" class="sp-count"></span></div>
+        <div id="spFiles" class="sp-files"></div>
+        <div class="sp-fbar"><button class="btn btn-secondary" id="spMore" type="button">Add files</button><button class="btn btn-secondary" id="spReset" type="button">Start over</button></div>
+        <input type="file" id="spMoreInput" accept=".pdf,application/pdf,.jpg,.jpeg,.png,.webp,.bmp,.gif,image/jpeg,image/png,image/webp,image/bmp,image/gif" multiple style="display:none">
+      </div>
+      <div class="sp-right">
+        <label class="sp-l" for="spLang">Document language</label>
+        <select class="sp-in" id="spLang"><option value="eng">English</option><option value="ara">Arabic</option><option value="ben">Bengali</option><option value="chi_sim">Chinese (Simplified)</option><option value="chi_tra">Chinese (Traditional)</option><option value="ces">Czech</option><option value="nld">Dutch</option><option value="fra">French</option><option value="deu">German</option><option value="ell">Greek</option><option value="guj">Gujarati</option><option value="heb">Hebrew</option><option value="hin">Hindi</option><option value="hun">Hungarian</option><option value="ind">Indonesian</option><option value="ita">Italian</option><option value="jpn">Japanese</option><option value="kor">Korean</option><option value="msa">Malay</option><option value="mar">Marathi</option><option value="nep">Nepali</option><option value="fas">Persian</option><option value="pol">Polish</option><option value="por">Portuguese</option><option value="pan">Punjabi (Gurmukhi)</option><option value="ron">Romanian</option><option value="rus">Russian</option><option value="spa">Spanish</option><option value="swe">Swedish</option><option value="tgl">Tagalog</option><option value="tam">Tamil</option><option value="tel">Telugu</option><option value="tha">Thai</option><option value="tur">Turkish</option><option value="ukr">Ukrainian</option><option value="urd">Urdu</option><option value="vie">Vietnamese</option></select>
+        <label class="sp-l" for="spLang2">Second language (optional)</label>
+        <select class="sp-in" id="spLang2"><option value="">None</option><option value="eng">English</option><option value="ara">Arabic</option><option value="ben">Bengali</option><option value="chi_sim">Chinese (Simplified)</option><option value="chi_tra">Chinese (Traditional)</option><option value="ces">Czech</option><option value="nld">Dutch</option><option value="fra">French</option><option value="deu">German</option><option value="ell">Greek</option><option value="guj">Gujarati</option><option value="heb">Hebrew</option><option value="hin">Hindi</option><option value="hun">Hungarian</option><option value="ind">Indonesian</option><option value="ita">Italian</option><option value="jpn">Japanese</option><option value="kor">Korean</option><option value="msa">Malay</option><option value="mar">Marathi</option><option value="nep">Nepali</option><option value="fas">Persian</option><option value="pol">Polish</option><option value="por">Portuguese</option><option value="pan">Punjabi (Gurmukhi)</option><option value="ron">Romanian</option><option value="rus">Russian</option><option value="spa">Spanish</option><option value="swe">Swedish</option><option value="tgl">Tagalog</option><option value="tam">Tamil</option><option value="tel">Telugu</option><option value="tha">Thai</option><option value="tur">Turkish</option><option value="ukr">Ukrainian</option><option value="urd">Urdu</option><option value="vie">Vietnamese</option></select>
+        <label class="sp-l" for="spQuality">OCR quality</label>
+        <select class="sp-in" id="spQuality"><option value="300">High – 300 DPI (recommended)</option><option value="200">Fast – 200 DPI</option></select>
+        <label class="sp-chk"><input type="checkbox" id="spSkip" checked> Skip pages that already have text</label>
+        <label class="sp-chk" id="spJoinRow" hidden><input type="checkbox" id="spJoin" checked> Join all files into one PDF</label>
+        <button class="btn btn-primary sp-apply" id="spApply" type="button">Make PDF searchable</button>
+        <div class="sp-prog" id="spProg" hidden><div class="sp-bar"><div class="sp-fill" id="spFill"></div></div><div class="sp-plbl" id="spPLbl"></div><button class="sp-cancel" id="spCancel" type="button">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="tool-card sp-result" id="spResult" hidden>
+    <div class="sp-rhead"><span class="sp-ok">✓</span><div><b id="spRTitle">Your searchable PDF is ready</b><p id="spRInfo"></p></div></div>
+    <div class="sp-rbtns"><button class="btn btn-primary" id="spDl" type="button">Download PDF</button><button class="btn btn-secondary" id="spTxt" type="button">Download text (.txt)</button><button class="btn btn-secondary" id="spCopy" type="button">Copy text</button></div>
+    <label class="sp-l" for="spText">Recognized text (check names and numbers)</label>
+    <textarea id="spText" class="sp-text" readonly rows="8"></textarea>
+    <p class="sp-tip">Open the PDF and press Ctrl+F (Cmd+F on Mac) to test search. The scan looks the same; the words sit in an invisible layer.</p>
+  </div>
+  <p id="spInfo" role="status" aria-live="polite" class="sp-info"></p>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on scanned invoices and leases, a 15-page mixed PDF, rotated and cropped pages, restricted and password files</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Is a Searchable PDF Converter?</h2>
+    <p class="lead">A searchable PDF converter runs OCR (optical character recognition) on a scanned PDF or photo and adds an invisible text layer behind each page. PDFdukan does this free, online and inside your browser, so Ctrl+F, copy and screen readers work while the scan looks exactly the same.</p>
+    <p>For PDF files, PDFdukan keeps the original page content and lays the recognized words over it, so the scan is not compressed a second time.</p>
+
+    <h3>How Do I Make a Scanned PDF Searchable?</h3>
+    <ol>
+      <li><span><strong>Add files.</strong> Tap Choose files and pick scanned PDFs or images.</span></li>
+      <li><span><strong>Set the language.</strong> Pick the document language and, if needed, a second one.</span></li>
+      <li><span><strong>Start OCR.</strong> Tap Make PDF searchable and watch the page counter.</span></li>
+      <li><span><strong>Save the result.</strong> Tap Download PDF, then test it with Ctrl+F.</span></li>
+    </ol>
+
+    <h3>What Does This OCR Tool Do?</h3>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>37 OCR languages</h4><p>English, Urdu, Arabic, Hindi, Spanish, Chinese and more, plus a second language for mixed pages.</p></div>
+      <div class="i2p-card"><h4>Mixed PDFs handled</h4><p>Skip pages that already have text keeps digital pages as they are and runs OCR only on scans.</p></div>
+      <div class="i2p-card"><h4>Text you can check</h4><p>Read the recognized text, copy it or save a .txt file, and see the average OCR confidence.</p></div>
+      <div class="i2p-card"><h4>Many files at once</h4><p>Join photos and PDFs into one searchable PDF, or get separate files in a ZIP.</p></div>
+    </div>
+
+    <h3>Which Files and Limits Apply?</h3>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>PDF, JPG, PNG, WebP, BMP, GIF</td></tr>
+        <tr><th scope="row">Output</th><td>Searchable PDF, ZIP, plain text (.txt)</td></tr>
+        <tr><th scope="row">Size</th><td>200 pages per job, 200 MB per file</td></tr>
+        <tr><th scope="row">Quality</th><td>High (300 DPI) or Fast (200 DPI)</td></tr>
+        <tr><th scope="row">Locked PDFs</th><td>Restricted files work; password files need it</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Tips for Better OCR Results</h3>
+    <p>Choose the language printed on the page; Latin-script settings cannot read Urdu or Arabic letters. Keep High quality for small print, receipts and faded copies.</p>
+    <p>Pages must be upright, so rotate sideways scans first with <a href="organize-pdf-pages-online.html">Organize PDF</a>. A sharp, evenly lit photo from the <a href="../scanner.html">document scanner</a> reads better than a tilted one.</p>
+
+    <h3>Are My Files Uploaded During OCR?</h3>
+    <p>No. PDFdukan runs <a href="https://github.com/tesseract-ocr/tesseract" target="_blank" rel="noopener">Tesseract OCR</a> in your browser tab. The OCR engine and language data download once from a public CDN; your PDF never leaves your device.</p>
+
+    <h3>What This Searchable PDF Tool Doesn’t Do</h3>
+    <p>PDFdukan does not straighten tilted pages, read handwriting reliably or save PDF/A. OCR makes text searchable, not editable; for an editable file, use <a href="pdf-to-word-converter.html">PDF to Word</a>.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this searchable PDF converter free online?</button></h3><div class="faq-a"><p>Yes. PDFdukan’s searchable PDF converter is free, needs no sign-up and adds no watermark. Jobs can hold up to 200 pages.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I know if my PDF needs OCR?</button></h3><div class="faq-a"><p>Try to select a word. If the whole page highlights like a picture, or Ctrl+F finds nothing, the PDF is a scan and needs OCR.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will OCR change how my PDF looks?</button></h3><div class="faq-a"><p>No. The text layer is invisible, so pages print and display as before. Only the file size grows a little.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How accurate is the OCR?</button></h3><div class="faq-a"><p>Accuracy depends on the scan. In our test on clean printed invoices, every word was correct, while faint, tilted or handwritten pages give more mistakes. Always check names and numbers.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I convert photos into a searchable PDF?</button></h3><div class="faq-a"><p>Yes. Add JPG, PNG or WebP photos and PDFdukan places each one on an A4-sized page with a text layer, joined into one PDF.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is the first run slower?</button></h3><div class="faq-a"><p>The browser downloads the OCR engine and language data once. After that, each page takes a few seconds, depending on your device.</p></div></div>
+
+    <h3>Related Tools</h3>
+    <div class="related-tools-grid">
+    <a href="ocr-image-to-text.html" class="related-tool-card"><span class="rtc-icon">🔤</span>Image to Text (OCR)</a>
+    <a href="pdf-text-extractor.html" class="related-tool-card"><span class="rtc-icon">📃</span>PDF Text Extractor</a>
+    <a href="image-to-pdf-converter.html" class="related-tool-card"><span class="rtc-icon">📑</span>Image to PDF</a>
+    <a href="pdf-to-word-converter.html" class="related-tool-card"><span class="rtc-icon">📝</span>PDF to Word</a>
+    </div>
+</section>
+
+</div>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/searchable-pdf.js?v=20261110"></script>
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20261110i"></script>
+<script src="../js/tools.js?v=20260825i"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>

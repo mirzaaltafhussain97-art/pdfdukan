@@ -1533,7 +1533,7 @@ const TOOL_PAGES = {
   'pdf-restriction-check': 'tools/pdf-restriction-compatibility-check.html',
   'pdf-metadata':       'tools/pdf-metadata.html',
   'pdf-text-extractor': 'tools/pdf-text-extractor.html',
-  'searchable-pdf':     'tools/searchable-pdf.html',
+  'searchable-pdf':     'tools/searchable-pdf-converter-online.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');
@@ -2046,7 +2046,7 @@ function _initSearchTrustSignals() {
     'pdf-text-extractor':['Text in reading order, columns and right-to-left lines','Scanned pages read with OCR in 13 languages','Copy, UTF-8 TXT or Word .docx'],
     'pdf-to-img':['Pages to JPG, PNG or WebP at 72–600 DPI','Save the photos inside a PDF','Opens password-protected PDFs in your browser'],
     'pdf-to-word':['Digital and scanned PDFs, OCR in 37 languages','Columns, paragraphs, headings, tables, images and links','Password-protected PDFs open in your browser'],
-    'searchable-pdf':['JPG or PNG input with a searchable OCR text layer','Selectable OCR language','Manual review before downloading the generated PDF'],
+    'searchable-pdf':['Scanned PDF and image input with an invisible OCR text layer','37 OCR languages, two at a time','Skips pages that already have text'],
     'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
     'unlock-pdf':['Removes print, copy and edit restrictions without a password','Removes the open password when you enter it','Up to 20 PDFs, 100 MB each, in the browser'],
     'pdf-restriction-check':['Open password, 8 permission flags and encryption type','Signatures, form fields, PDF/A and accessibility basics','Read-only: does not remove passwords or restrictions'],
@@ -2281,7 +2281,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '/tools/add-watermark-to-pdf-online.html': 'watermark', '/tools/add-page-numbers-to-pdf-online.html': 'page-numbers',
     '/tools/unlock-pdf-without-password.html': 'unlock', '/tools/pdf-restriction-compatibility-check.html': 'restriction',
     '/tools/pdf-metadata.html': 'metadata', '/scanner.html': 'scan', '/tools/ocr-image-to-text.html': 'ocr',
-    '/tools/pdf-text-extractor.html': 'text-extract', '/tools/searchable-pdf.html': 'searchable',
+    '/tools/pdf-text-extractor.html': 'text-extract', '/tools/searchable-pdf-converter-online.html': 'searchable',
     '/tools/image-compress-resize.html': 'img-compress', '/tools/word-character-counter.html': 'word-counter'
   };
   /* A page with folded corner; the tool glyph sits on an orange badge. */
@@ -2312,7 +2312,7 @@ document.addEventListener('DOMContentLoaded', () => {
    Saved in this browser only (localStorage "pd-favs-v1"). */
 (function _favorites() {
   var KEY = 'pd-favs-v1';
-  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/fill-sign.html": ["Fill & Sign", "🖊️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
+  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/fill-sign.html": ["Fill & Sign", "🖊️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf-converter-online.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
   var STAR = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a.filter(function (p) { return TOOLS[p]; }) : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
@@ -2416,7 +2416,7 @@ var PD_CLOUD = {
     '/tools/pdf-to-word-converter.html': 'fileInput', '/tools/pdf-to-image-converter.html': 'fileInput',
     '/tools/image-to-pdf-converter.html': 'fileInput', '/tools/word-to-pdf-converter.html': 'fileInput',
     '/tools/ocr-image-to-text.html': 'fileInput', '/tools/pdf-text-extractor.html': 'txFileInput',
-    '/tools/searchable-pdf.html': 'fileInput', '/tools/image-compress-resize.html': 'fileInput', '/scanner.html': 'fileInputScanner'
+    '/tools/searchable-pdf-converter-online.html': 'spFileInput', '/tools/image-compress-resize.html': 'fileInput', '/scanner.html': 'fileInputScanner'
   };
   var MIME = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain' };

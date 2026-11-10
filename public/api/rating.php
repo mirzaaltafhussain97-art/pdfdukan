@@ -11,7 +11,7 @@ header('X-Content-Type-Options: nosniff');
 $TOOLS = ['merge-pdf','extract-pdf-pages','compress-pdf-reduce-file-size','organize-pdf-pages-online','crop-pdf-online',
   'pdf-editor','fill-sign','add-watermark-to-pdf-online','add-page-numbers-to-pdf-online','unlock-pdf-without-password',
   'pdf-restriction-compatibility-check','pdf-metadata','pdf-to-word-converter','pdf-to-image-converter',
-  'image-to-pdf-converter','word-to-pdf-converter','ocr-image-to-text','pdf-text-extractor','searchable-pdf',
+  'image-to-pdf-converter','word-to-pdf-converter','ocr-image-to-text','pdf-text-extractor','searchable-pdf','searchable-pdf-converter-online',
   'image-compress-resize','html-to-pdf-converter-online','word-character-counter','scanner'];
 
 $dir  = __DIR__ . '/data';
