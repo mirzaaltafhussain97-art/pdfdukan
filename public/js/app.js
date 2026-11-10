@@ -2396,3 +2396,128 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   window.PDFavorites = { load: load, toggle: toggle, decorate: decorate };
 })();
+/* ── OPEN FILES FROM GOOGLE DRIVE / DROPBOX ───────────────────────
+   Buttons appear only when the keys below are filled in. Picked files are
+   downloaded straight into the browser and handed to the tool's own file
+   input, so processing stays on the device. */
+var PD_CLOUD = {
+  googleApiKey: '',            /* Google Cloud API key with "Google Picker API" enabled */
+  googleAppId: '233358066910', /* Google Cloud project number (Firebase messagingSenderId) */
+  dropboxAppKey: ''            /* Dropbox app key (Chooser, domain pdfdukan.com) */
+};
+(function _cloudPick() {
+  var INPUTS = {
+    '/tools/merge-pdf.html': 'fileInput', '/tools/extract-pdf-pages.html': 'fileInput',
+    '/tools/compress-pdf-reduce-file-size.html': 'fileInput', '/tools/organize-pdf-pages-online.html': 'orgFileInput',
+    '/tools/crop-pdf-online.html': 'crFileInput', '/tools/pdf-editor.html': 'file-input-hidden',
+    '/tools/fill-sign.html': 'fileInput', '/tools/add-watermark-to-pdf-online.html': 'wmFileInput',
+    '/tools/page-numbers.html': 'fileInput', '/tools/unlock-pdf-without-password.html': 'ulFileInput',
+    '/tools/pdf-restriction-compatibility-check.html': 'rcFileInput', '/tools/pdf-metadata.html': 'fileInput',
+    '/tools/pdf-to-word-converter.html': 'fileInput', '/tools/pdf-to-image-converter.html': 'fileInput',
+    '/tools/image-to-pdf-converter.html': 'fileInput', '/tools/word-to-pdf-converter.html': 'fileInput',
+    '/tools/ocr-image-to-text.html': 'fileInput', '/tools/pdf-text-extractor.html': 'txFileInput',
+    '/tools/searchable-pdf.html': 'fileInput', '/tools/image-compress-resize.html': 'fileInput'
+  };
+  var MIME = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain' };
+  function exts(input) {
+    var a = (input.getAttribute('accept') || '').split(',').map(function (s) { return s.trim().toLowerCase(); }), out = [];
+    a.forEach(function (s) {
+      if (s.charAt(0) === '.') out.push(s.slice(1));
+      else if (s === 'image/*') out.push('jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp');
+      else Object.keys(MIME).forEach(function (k) { if (MIME[k] === s) out.push(k); });
+    });
+    return out.filter(function (v, i) { return out.indexOf(v) === i; });
+  }
+  function loadScript(src, attrs) {
+    return new Promise(function (res, rej) {
+      if (attrs && attrs.id && document.getElementById(attrs.id)) return res();
+      var s = document.createElement('script'); s.src = src; s.async = true;
+      Object.keys(attrs || {}).forEach(function (k) { s.setAttribute(k, attrs[k]); });
+      s.onload = res; s.onerror = function () { rej(new Error('Could not load ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function say(m, t) { if (typeof toast === 'function') toast(m, t || 'info', 3500); }
+  function hand(input, files) {
+    if (!files.length) return;
+    var dt = new DataTransfer(); files.forEach(function (f) { dt.items.add(f); });
+    input.files = dt.files;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  function asFile(blob, name) { var e = (name.split('.').pop() || '').toLowerCase(); return new File([blob], name, { type: blob.type && blob.type !== 'application/octet-stream' ? blob.type : (MIME[e] || '') }); }
+
+  /* Dropbox Chooser */
+  async function fromDropbox(input) {
+    try { await loadScript('https://www.dropbox.com/static/api/2/dropins.js', { id: 'dropboxjs', 'data-app-key': PD_CLOUD.dropboxAppKey }); }
+    catch (e) { say('Dropbox could not load. Check your connection and try again.', 'error'); return; }
+    window.Dropbox.choose({
+      linkType: 'direct', multiselect: !!input.multiple, extensions: exts(input).map(function (e) { return '.' + e; }),
+      success: async function (items) {
+        say('Opening ' + items.length + ' file' + (items.length > 1 ? 's' : '') + ' from Dropbox…');
+        try {
+          var files = [];
+          for (var i = 0; i < items.length; i++) { var r = await fetch(items[i].link); if (!r.ok) throw new Error(r.status); files.push(asFile(await r.blob(), items[i].name)); }
+          hand(input, files);
+        } catch (e) { say('Could not download the file from Dropbox. Please try again.', 'error'); }
+      }
+    });
+  }
+
+  /* Google Drive Picker (drive.file scope: only files the user picks) */
+  async function driveToken() {
+    var t = typeof _gdriveToken === 'function' ? _gdriveToken() : null;
+    if (t) return t;
+    if (typeof signInWithGoogle === 'function') { await signInWithGoogle(); t = _gdriveToken(); }
+    return t;
+  }
+  async function fromDrive(input) {
+    var token = await driveToken();
+    if (!token) { say('Sign in with Google to open files from Drive.', 'error'); return; }
+    try { await loadScript('https://apis.google.com/js/api.js', { id: 'gapijs' }); await new Promise(function (r) { gapi.load('picker', r); }); }
+    catch (e) { say('Google Drive could not load. Check your connection and try again.', 'error'); return; }
+    var P = google.picker, mimes = exts(input).map(function (e) { return MIME[e]; }).filter(Boolean).join(',');
+    var view = new P.DocsView(P.ViewId.DOCS).setMimeTypes(mimes).setIncludeFolders(true).setSelectFolderEnabled(false);
+    var b = new P.PickerBuilder().addView(view).setOAuthToken(token).setDeveloperKey(PD_CLOUD.googleApiKey).setAppId(PD_CLOUD.googleAppId)
+      .setOrigin(location.protocol + '//' + location.host)
+      .setCallback(async function (d) {
+        if (d.action !== P.Action.PICKED) return;
+        say('Opening ' + d.docs.length + ' file' + (d.docs.length > 1 ? 's' : '') + ' from Google Drive…');
+        try {
+          var files = [];
+          for (var i = 0; i < d.docs.length; i++) {
+            var r = await fetch('https://www.googleapis.com/drive/v3/files/' + d.docs[i].id + '?alt=media', { headers: { Authorization: 'Bearer ' + token } });
+            if (!r.ok) throw new Error(r.status);
+            files.push(asFile(await r.blob(), d.docs[i].name));
+          }
+          hand(input, files);
+        } catch (e) { say('Could not download the file from Google Drive. Please try again.', 'error'); }
+      });
+    if (input.multiple) b.enableFeature(P.Feature.MULTISELECT_ENABLED);
+    b.build().setVisible(true);
+  }
+
+  var GD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0066da" d="M3.3 18.4l1 1.7c.2.4.5.6.8.8l3.6-6.2H1.5c0 .4.1.8.3 1.1z"/><path fill="#00ac47" d="M12 8.6L8.4 2.4c-.3.2-.6.5-.8.8L1.8 13.6c-.2.3-.3.7-.3 1.1h7.2z"/><path fill="#ea4335" d="M19.8 20.9c.3-.2.6-.5.8-.8l.4-.7 2-3.4c.2-.3.3-.7.3-1.1h-7.2l1.5 3z"/><path fill="#00832d" d="M12 8.6l3.6-6.2c-.4-.2-.8-.3-1.2-.3H9.6c-.4 0-.8.1-1.2.3z"/><path fill="#2684fc" d="M15.6 14.7H8.4l-3.6 6.2c.4.2.8.3 1.2.3h12.6c.4 0 .8-.1 1.2-.3z"/><path fill="#ffba00" d="M19.8 9l-3.3-5.8c-.2-.4-.5-.6-.8-.8L12 8.6l3.6 6.1h7.2c0-.4-.1-.8-.3-1.1z"/></svg>';
+  var DB = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0061ff" d="M6 2.5L0 6.3l6 3.9 6-3.9zm12 0l-6 3.8 6 3.9 6-3.9zM0 14l6 3.9 6-3.9-6-3.8zm18-3.8L12 14l6 3.9 6-3.9zM6 19.2l6 3.9 6-3.9-6-3.9z"/></svg>';
+  function init() {
+    var id = INPUTS[location.pathname]; if (!id) return;
+    var input = document.getElementById(id); if (!input) return;
+    var g = !!(PD_CLOUD.googleApiKey && PD_CLOUD.googleAppId), d = !!PD_CLOUD.dropboxAppKey;
+    if (!g && !d) return;
+    var after = location.pathname === '/tools/pdf-editor.html' ? document.querySelector('.dz-btn') : null;
+    var zone = after ? null : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
+    var row = document.createElement('div'); row.className = 'cloud-pick';
+    row.innerHTML = '<span class="cloud-pick-label">or open from</span>' +
+      (g ? '<button type="button" class="cloud-btn" data-src="drive" data-tip="Google Drive" aria-label="Open a file from Google Drive">' + GD + '</button>' : '') +
+      (d ? '<button type="button" class="cloud-btn" data-src="dropbox" data-tip="Dropbox" aria-label="Open a file from Dropbox">' + DB + '</button>' : '');
+    row.addEventListener('click', function (e) {
+      e.stopPropagation(); e.preventDefault();
+      var b = e.target.closest('.cloud-btn'); if (!b) return;
+      if (b.dataset.src === 'drive') fromDrive(input); else fromDropbox(input);
+    });
+    ['keydown', 'dragover', 'drop'].forEach(function (t) { row.addEventListener(t, function (e) { if (t === 'keydown') e.stopPropagation(); }); });
+    if (after) after.insertAdjacentElement('afterend', row); else zone.appendChild(row);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.PDCloud = { init: init, exts: exts };
+})();
