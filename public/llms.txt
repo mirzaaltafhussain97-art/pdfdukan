@@ -24,7 +24,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Smart Document Scan](https://pdfdukan.com/scanner.html): ONNX corner detection with OpenCV fallback, manual crop correction, filters and PDF/JPG export
 - [Image Compressor and Resizer](https://pdfdukan.com/tools/compress.html): Resize or re-encode JPG, PNG and WebP; quality and target-size results vary
 - [Searchable PDF from English Scan](https://pdfdukan.com/tools/searchable-pdf.html): Add an approximate invisible OCR word layer to one English JPG or PNG scan
-- [HTML to PDF Print Preview](https://pdfdukan.com/tools/html-to-pdf.html): Prepare one HTML document for the browser Print to PDF workflow; rendering can vary
+- [HTML to PDF Converter](https://pdfdukan.com/tools/html-to-pdf-converter-online.html): Paste HTML or upload an HTML file with its CSS, images and fonts; paginated A4/Letter PDF with smart page breaks and clickable links, in the browser
 - [Word to PDF](https://pdfdukan.com/tools/word-to-pdf-converter.html): Convert DOCX, DOC, ODT, RTF or TXT to PDF with a LibreOffice engine running in the browser (no upload); up to 10 files, ZIP or one combined PDF
 - [PDF to Word](https://pdfdukan.com/tools/pdf-to-word-converter.html): Convert digital or scanned PDFs (OCR in 37 languages) into an editable DOCX in the browser; columns, paragraphs, headings, tables, images and links are rebuilt, exact page design is not
 - [PDF Restriction Compatibility Check](https://pdfdukan.com/tools/unlock-pdf.html): Re-save supported unencrypted PDFs; does not decrypt files or bypass unknown passwords

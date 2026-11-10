@@ -85,7 +85,7 @@ Redirect 301 /unlock-pdf /tools/unlock-pdf-without-password.html
 Redirect 301 /smart-scan /scanner.html
 Redirect 301 /image-compressor /tools/compress.html
 Redirect 301 /searchable-pdf /tools/searchable-pdf.html
-Redirect 301 /html-to-pdf /tools/html-to-pdf.html
+Redirect 301 /html-to-pdf /tools/html-to-pdf-converter-online.html
 Redirect 301 /islamic-inheritance /tools.html
 Redirect 301 /tools/inheritance-calc-advanced.html /tools.html
 Redirect 301 /tools/inheritance-calc.html /tools.html
@@ -120,6 +120,7 @@ Redirect 301 /tools/compress-pdf.html /tools/compress-pdf-reduce-file-size.html
 Redirect 301 /tools/pdf-organizer.html /tools/organize-pdf-pages-online.html
 Redirect 301 /tools/watermark.html /tools/add-watermark-to-pdf-online.html
 Redirect 301 /watermark-pdf /tools/add-watermark-to-pdf-online.html
+Redirect 301 /tools/html-to-pdf.html /tools/html-to-pdf-converter-online.html
 Redirect 301 /tools/unlock-pdf.html /tools/unlock-pdf-without-password.html
 Redirect 301 /pdf-to-image /tools/pdf-to-image-converter.html
 Redirect 301 /tools/word-to-pdf.html /tools/word-to-pdf-converter.html

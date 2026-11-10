@@ -1511,7 +1511,7 @@ const TOOL_PAGES = {
   'watermark':     'tools/add-watermark-to-pdf-online.html',
   'page-numbers':  'tools/page-numbers.html',
   'delete-pages':  'tools/organize-pdf-pages-online.html',
-  'html-to-pdf':   'tools/html-to-pdf.html',
+  'html-to-pdf':   'tools/html-to-pdf-converter-online.html',
   'pdf-editor':    'tools/pdf-editor.html',
   'word-counter':  'tools/word-character-counter.html',
   /* ── PDF utilities & generators (Part 5) ── */
@@ -1570,7 +1570,7 @@ const TOOL_SEARCH_INDEX = [
   { id:'watermark',    name:'Watermark PDF',         desc:'Text or logo watermark, any angle, chosen pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
   { id:'page-numbers', name:'Add Page Numbers',      desc:'Auto-number PDF pages at custom positions',    icon:'🔢', category:'PDF Tools',   keywords:['page numbers','numbering','header','footer','pagination'] },
   { id:'pdf-organizer', name:'PDF Organizer',         desc:'Reorder, rotate, delete or add PDF pages',          icon:'🗂️', category:'PDF Tools',   keywords:['delete','remove','rotate','reorder','organize','pages'] },
-  { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Print pasted HTML or one web page to PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
+  { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Paste HTML or upload a page and get a paginated PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit PDF text, sign, fill forms and add links free',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
   { id:'word-counter', name:'Word & Character Counter', desc:'Count words, characters, sentences and reading time', icon:'🔢', category:'Text Tools', keywords:['word','words','word count','word counter','character','characters','character count','character counter','letter','letters','count','counter','text','essay','sentence','paragraph','reading time','limit'] },
 ];
@@ -2023,7 +2023,7 @@ function _initSearchTrustSignals() {
     'compress':['JPG, PNG and WEBP compression','Quality controls','Client-side image processing'],
     'crop-pdf':['Remove white margins automatically, text stays sharp','Crop all pages, one page or a range','Crop an area to JPG, PNG or WebP'],
     'fill-sign':['Draw, type or upload a signature','Add movable text fields','Export a signed PDF'],
-    'html-to-pdf':['Convert pasted HTML to PDF','Preview before export','Client-side generation'],
+    'html-to-pdf':['Smart page breaks, clickable links','Upload HTML with CSS, images, fonts','A4, Letter, Legal; no sign-up'],
     'img-to-pdf':['JPG, PNG and WEBP input','Page size and orientation controls','Multi-image PDF export'],
     'merge-pdf':['Reorder and combine PDFs','Multiple file support','Client-side merge'],
     'ocr':['JPG, PNG, WebP, GIF, BMP or scanned PDF','Paste a screenshot or add up to 20 images','37 languages, TXT and Word download'],
