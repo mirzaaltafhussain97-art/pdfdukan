@@ -265,9 +265,9 @@
     </div>
     <div id="mailFallback" style="display:none;margin-top:16px;padding:18px;border:1px solid var(--border);border-radius:12px;background:var(--bg-2);text-align:center">
       <p style="font-size:14px;color:var(--text-2);margin-bottom:12px">
-        ⚠️ Automatic sending is temporarily unavailable. Your message is ready — send it directly from your email app instead:
+        ⚠️ Your message could not be sent right now. Your text is still in the form, so please try again in a few minutes.
       </p>
-      <a id="mailFallbackLink" class="btn btn-primary" href="#" style="display:inline-block">📧 Open Email App &amp; Send</a>
+      <button type="button" id="mailFallbackLink" class="btn btn-primary" onclick="document.getElementById('mailFallback').style.display='none';document.getElementById('contactForm').requestSubmit()">🔁 Try Again</button>
     </div>
   </div>
 
@@ -279,8 +279,8 @@
       <div class="ci-row">
         <div class="ci-icon">📧</div>
         <div>
-          <div class="ci-label">Email</div>
-          <div class="ci-val"><a href="#contact-form">Use the contact form</a></div>
+          <div class="ci-label">Messages</div>
+          <div class="ci-val"><a href="#contact-form">Only through the contact form</a></div>
         </div>
       </div>
 
@@ -396,16 +396,10 @@ async function submitContact(e) {
     document.getElementById('successMsg').style.display  = 'block';
     document.getElementById('mailFallback').style.display = 'none';
   } else {
-    // Never dead-end: open a prefilled direct-email path
-    const body = 'Name: ' + name + '\nEmail: ' + email + '\n\n' + message;
-    const link = document.getElementById('mailFallbackLink');
-    link.href  = 'mailto:mirzaaltafhussain97@gmail.com'
-               + '?subject=' + encodeURIComponent('[PDFdukan] ' + subject)
-               + '&body='    + encodeURIComponent(body);
     const box = document.getElementById('mailFallback');
     box.style.display = 'block';
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    toast('Automatic sending failed — use the direct email button below.', 'error', 8000);
+    toast('Message could not be sent. Please try again in a few minutes.', 'error', 8000);
     btn.textContent = '📬 Send Message';
     btn.disabled = false;
   }
