@@ -1522,7 +1522,7 @@ const TOOL_PAGES = {
   'fill-sign':     'tools/fill-sign.html',
   'watermark':     'tools/add-watermark-to-pdf-online.html',
   'page-numbers':  'tools/add-page-numbers-to-pdf-online.html',
-  'delete-pages':  'tools/organize-pdf-pages-online.html',
+  'delete-pages':  'tools/delete-pages-from-pdf.html',
   'html-to-pdf':   'tools/html-to-pdf-converter-online.html',
   'pdf-editor':    'tools/pdf-editor.html',
   'word-counter':  'tools/word-character-counter.html',
@@ -1582,6 +1582,7 @@ const TOOL_SEARCH_INDEX = [
   { id:'watermark',    name:'Watermark PDF',         desc:'Text or logo watermark, any angle, chosen pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
   { id:'page-numbers', name:'Add Page Numbers',      desc:'Number pages: Page 1 of 10, i/ii, skip cover',    icon:'🔢', category:'PDF Tools',   keywords:['page numbers','numbering','header','footer','pagination'] },
   { id:'pdf-organizer', name:'PDF Organizer',         desc:'Reorder, rotate, delete or add PDF pages',          icon:'🗂️', category:'PDF Tools',   keywords:['delete','remove','rotate','reorder','organize','pages'] },
+  { id:'delete-pages', name:'Delete PDF Pages', desc:'Remove pages from a PDF by click or page number', icon:'🗑️', category:'PDF Tools', keywords:['delete','remove','pages','blank'] },
   { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Paste HTML or upload a page and get a paginated PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit PDF text, sign, fill forms and add links free',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
   { id:'word-counter', name:'Word & Character Counter', desc:'Count words, characters, sentences and reading time', icon:'🔢', category:'Text Tools', keywords:['word','words','word count','word counter','character','characters','character count','character counter','letter','letters','count','counter','text','essay','sentence','paragraph','reading time','limit'] },
@@ -2255,6 +2256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'merge':          '<path d="M4.5 4.5L9 9l4.5-4.5M9 9v4.5"/><path d="M6.8 11.5L9 13.7l2.2-2.2"/>',
     'split':          '<path d="M9 4.5v9" stroke-dasharray="1.6 1.6"/><path d="M6.5 7L4 9l2.5 2M11.5 7L14 9l-2.5 2"/>',
     'compress':       '<path d="M9 4v4M7 6l2 2 2-2M9 14v-4M7 12l2-2 2 2M5 9h8"/>',
+    'delete-pages':   '<path d="M5.5 6.5h7M7.5 6.5V5h3v1.5M6.5 6.5l.6 7h3.8l.6-7"/>',
     'organize':       '<path d="M13 8.5A4 4 0 1 0 12 12"/><path d="M13.5 5.5V9H10"/>',
     'crop':           '<path d="M6.5 4v8.5H15M4 6.5h8.5V15"/>',
     'edit':           '<path d="M5 13l.6-2.6 6.2-6.2 2 2-6.2 6.2z"/><path d="M10.6 5.4l2 2"/>',
@@ -2276,7 +2278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     '/tools/pdf-to-word-converter.html': 'pdf-to-word', '/tools/word-to-pdf-converter.html': 'word-to-pdf',
     '/tools/html-to-pdf-converter-online.html': 'html-to-pdf', '/tools/merge-pdf.html': 'merge',
     '/tools/extract-pdf-pages.html': 'split', '/tools/compress-pdf-reduce-file-size.html': 'compress',
-    '/tools/organize-pdf-pages-online.html': 'organize', '/tools/crop-pdf-online.html': 'crop',
+    '/tools/organize-pdf-pages-online.html': 'organize', '/tools/delete-pages-from-pdf.html': 'delete-pages', '/tools/crop-pdf-online.html': 'crop',
     '/tools/pdf-editor.html': 'edit', '/tools/fill-sign.html': 'fill-sign',
     '/tools/add-watermark-to-pdf-online.html': 'watermark', '/tools/add-page-numbers-to-pdf-online.html': 'page-numbers',
     '/tools/unlock-pdf-without-password.html': 'unlock', '/tools/pdf-restriction-compatibility-check.html': 'restriction',
@@ -2312,7 +2314,7 @@ document.addEventListener('DOMContentLoaded', () => {
    Saved in this browser only (localStorage "pd-favs-v1"). */
 (function _favorites() {
   var KEY = 'pd-favs-v1';
-  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/fill-sign.html": ["Fill & Sign", "🖊️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata-editor.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf-converter-online.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
+  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/delete-pages-from-pdf.html": ["Delete PDF Pages", "🗑️"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/fill-sign.html": ["Fill & Sign", "🖊️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata-editor.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf-converter-online.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
   var STAR = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a.filter(function (p) { return TOOLS[p]; }) : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
@@ -2408,7 +2410,7 @@ var PD_CLOUD = {
 (function _cloudPick() {
   var INPUTS = {
     '/tools/merge-pdf.html': 'fileInput', '/tools/extract-pdf-pages.html': 'fileInput',
-    '/tools/compress-pdf-reduce-file-size.html': 'fileInput', '/tools/organize-pdf-pages-online.html': 'orgFileInput',
+    '/tools/compress-pdf-reduce-file-size.html': 'fileInput', '/tools/organize-pdf-pages-online.html': 'orgFileInput', '/tools/delete-pages-from-pdf.html': 'dpFileInput',
     '/tools/crop-pdf-online.html': 'crFileInput', '/tools/pdf-editor.html': 'file-input-hidden',
     '/tools/fill-sign.html': 'fileInput', '/tools/add-watermark-to-pdf-online.html': 'wmFileInput',
     '/tools/add-page-numbers-to-pdf-online.html': 'pnFileInput', '/tools/unlock-pdf-without-password.html': 'ulFileInput',

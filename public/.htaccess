@@ -79,6 +79,8 @@ Redirect 301 /pdf-to-excel /tools.html
 Redirect 301 /tools/pdf-to-excel.html /tools.html
 Redirect 301 /pdf-to-ppt /tools.html
 Redirect 301 /tools/pdf-to-ppt.html /tools.html
+Redirect 301 /delete-pages /tools/delete-pages-from-pdf.html
+Redirect 301 /remove-pdf-pages /tools/delete-pages-from-pdf.html
 Redirect 301 /rotate-pdf /tools/organize-pdf-pages-online.html
 Redirect 301 /reorder-pdf /tools/organize-pdf-pages-online.html
 Redirect 301 /unlock-pdf /tools/unlock-pdf-without-password.html
