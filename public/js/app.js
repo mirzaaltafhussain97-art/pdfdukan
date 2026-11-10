@@ -1489,7 +1489,7 @@ function handleNavClick(nav) {
     tools:     prefix + 'tools.html',
     settings:  prefix + 'settings.html',
     help:      prefix + 'help.html',
-    favorites: prefix + 'tools.html',
+    favorites: prefix + 'tools.html#favorites',
     recent:    function() {
       const grid = document.getElementById('recentGrid');
       if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2243,3 +2243,92 @@ document.addEventListener('DOMContentLoaded', () => {
   initAmbientGlobe();
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });
+
+/* ── FAVORITE TOOLS (star on every tool card + tool page) ─────────
+   Saved in this browser only (localStorage "pd-favs-v1"). */
+(function _favorites() {
+  var KEY = 'pd-favs-v1';
+  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/fill-sign.html": ["Fill & Sign", "🖊️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/page-numbers.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
+  var STAR = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
+  function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a.filter(function (p) { return TOOLS[p]; }) : []; } catch (e) { return []; } }
+  function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }
+  function pathOf(href) { try { var p = new URL(href, location.href).pathname; return p.replace(/\/index\.html$/, '/'); } catch (e) { return ''; } }
+  function isFav(p) { return load().indexOf(p) >= 0; }
+  function makeStar(p, cls) {
+    var b = document.createElement(cls === 'fav-star-hero' ? 'button' : 'span');
+    b.className = 'fav-star ' + (cls || '');
+    if (b.tagName === 'BUTTON') b.type = 'button'; else { b.setAttribute('role', 'button'); b.tabIndex = 0; }
+    b.dataset.favPath = p; b.innerHTML = STAR;
+    paint(b);
+    return b;
+  }
+  function paint(b) {
+    var p = b.dataset.favPath, on = isFav(p), n = TOOLS[p][0];
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+    b.setAttribute('aria-label', (on ? 'Remove ' : 'Add ') + n + (on ? ' from favorites' : ' to favorites'));
+    b.title = on ? 'Remove from favorites' : 'Add to favorites';
+    if (b.classList.contains('fav-star-hero')) b.innerHTML = STAR + '<span>' + (on ? 'Saved to favorites' : 'Add to favorites') + '</span>';
+  }
+  function toggle(p) {
+    var a = load(), i = a.indexOf(p);
+    if (i >= 0) a.splice(i, 1); else a.unshift(p);
+    save(a);
+    document.querySelectorAll('.fav-star').forEach(function (b) { if (b.dataset.favPath === p) paint(b); });
+    renderBox();
+    if (typeof toast === 'function') toast(i >= 0 ? TOOLS[p][0] + ' removed from favorites' : '⭐ ' + TOOLS[p][0] + ' added to favorites', i >= 0 ? '' : 'success', 1800);
+  }
+  function onAct(e) {
+    var b = e.target.closest && e.target.closest('.fav-star'); if (!b) return;
+    if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+    e.preventDefault(); e.stopPropagation();
+    toggle(b.dataset.favPath);
+  }
+  function decorate(root) {
+    (root || document).querySelectorAll('a.tool-card, a.big-tool-card, a.related-tool-card').forEach(function (a) {
+      if (a.querySelector('.fav-star')) return;
+      var p = pathOf(a.getAttribute('href')); if (!TOOLS[p]) return;
+      a.classList.add('has-fav');
+      a.appendChild(makeStar(p, a.classList.contains('related-tool-card') ? 'fav-star-sm' : ''));
+    });
+  }
+  function decorateHero() {
+    var p = pathOf(location.href); if (!TOOLS[p] || document.querySelector('.fav-star-hero')) return;
+    var h1 = document.querySelector('.tool-hero h1, .tool-hero-copy h1, main h1, h1'); if (!h1) return;
+    var b = makeStar(p, 'fav-star-hero');
+    h1.insertAdjacentElement('afterend', b);
+  }
+  function card(p) {
+    var t = TOOLS[p];
+    var a = document.createElement('a'); a.className = 'tool-card'; a.href = p;
+    a.innerHTML = '<div class="tool-icon-wrap">' + t[1] + '</div><div class="tc-name"></div>';
+    a.querySelector('.tc-name').textContent = t[0];
+    return a;
+  }
+  function renderBox() {
+    var anchor = document.getElementById('all-tools') || document.getElementById('cat-scanner');
+    if (!anchor) return;
+    var box = document.getElementById('favorites'), favs = load();
+    var want = favs.length || /#favorites/.test(location.hash);
+    if (!want) { if (box) box.remove(); return; }
+    if (!box) {
+      box = document.createElement('section'); box.id = 'favorites'; box.className = 'fav-box';
+      box.setAttribute('aria-labelledby', 'favHead');
+      anchor.parentNode.insertBefore(box, anchor);
+    }
+    box.innerHTML = '<div class="section-header"><h2 class="section-title" id="favHead"><span class="st-icon">⭐</span> Your Favorite Tools</h2></div>';
+    if (!favs.length) { box.insertAdjacentHTML('beforeend', '<p class="fav-empty">Tap the ☆ star on any tool to keep it here. Favorites are saved in this browser.</p>'); return; }
+    var g = document.createElement('div'); g.className = 'tools-grid fav-grid';
+    favs.forEach(function (p) { g.appendChild(card(p)); });
+    box.appendChild(g); decorate(box);
+  }
+  function init() {
+    decorate(); decorateHero(); renderBox();
+    if (/#favorites/.test(location.hash)) { var b = document.getElementById('favorites'); if (b) setTimeout(function () { b.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200); }
+  }
+  document.addEventListener('click', onAct, true);
+  document.addEventListener('keydown', onAct, true);
+  window.addEventListener('storage', function (e) { if (e.key === KEY) { document.querySelectorAll('.fav-star').forEach(paint); renderBox(); } });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  window.PDFavorites = { load: load, toggle: toggle, decorate: decorate };
+})();

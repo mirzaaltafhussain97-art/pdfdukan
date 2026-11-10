@@ -47,7 +47,7 @@
       /* Hero section */
       'hero.badge':         'AI-Assisted Document Scanner',
       'hero.title':         'Scan & Convert Documents with CamMaster',
-      'hero.subtitle':      'Free online document scanner by PDFdukan. Auto-detect edges, enhance with AI, convert to PDF — all in your browser.',
+      'hero.subtitle':      'Merge, split, compress, convert, unlock and OCR PDFs for free. Every tool runs in your browser, so files stay on your device, with no sign-up and no watermark.',
       'hero.btn.scan':      'Smart Scan',
       'hero.btn.import':    'Import Images',
       'hero.btn.pdf':       'Import PDF',
