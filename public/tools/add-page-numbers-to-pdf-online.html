@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Add Page Numbers to PDF Online – Free, No Sign Up | PDFdukan</title>
+<meta name="description" content="Add page numbers to PDF online free, no sign up: pick position, format like Page 1 of 10 or i, ii, start number and range. Numbered in your browser.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html">
+<meta property="og:title" content="Add Page Numbers to PDF Online – Free, No Sign Up | PDFdukan">
+<meta property="og:description" content="Add page numbers to PDF online free, no sign up: pick position, format like Page 1 of 10 or i, ii, start number and range. Numbered in your browser.">
+<meta property="og:image" content="https://pdfdukan.com/images/add-page-numbers-to-pdf-online.svg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Add Page Numbers to PDF Online – Free, No Sign Up | PDFdukan">
+<meta name="twitter:description" content="Add page numbers to PDF online free, no sign up: pick position, format like Page 1 of 10 or i, ii, start number and range. Numbered in your browser.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/add-page-numbers-to-pdf-online.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+[hidden]{display:none!important}
+/* ── Add page numbers ── */
+.pn-editor{padding:16px;text-align:left}
+.pn-cols{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.pn-stage{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;justify-content:center;min-height:240px}
+.pn-stage canvas{display:block;max-width:100%;box-shadow:0 1px 6px rgba(0,0,0,.18);background:#fff}
+.pn-pnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 12px;font-size:13px;color:var(--text-2)}
+.pn-ib{min-width:36px;height:36px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:16px;cursor:pointer;padding:0 8px}
+.pn-ib:disabled{opacity:.4;cursor:default}
+.pn-ib.on{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.pn-files{display:flex;flex-direction:column;gap:6px}
+.pn-file{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;padding:6px 8px;background:var(--card)}
+.pn-file.on{border-color:var(--primary)}
+.pn-file.done{border-color:rgba(22,163,74,.5)}.pn-file.fail{border-color:rgba(220,38,38,.5)}
+.pn-fsel{flex:1;min-width:0;text-align:left;background:none;border:0;cursor:pointer;padding:2px;color:var(--text)}
+.pn-fsel b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pn-fsel span{display:block;font-size:12px;color:var(--text-3)}
+.pn-file.fail .pn-fsel span{color:#b91c1c}.pn-file.done .pn-fsel span{color:#15803d}
+.pn-dl{min-height:34px;padding:6px 12px;font-size:13px}
+.pn-x{border:0;background:none;color:var(--text-3);cursor:pointer;font-size:14px;padding:6px}
+.pn-fbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pn-fbar .btn{min-height:38px;padding:8px 14px;font-size:13px}
+.pn-right{display:flex;flex-direction:column;gap:8px}
+.pn-l{font-size:12.5px;font-weight:700;color:var(--text-2);margin-top:6px}
+.pn-in{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:14px;box-sizing:border-box}
+.pn-row2{display:flex;gap:6px;margin-top:6px;align-items:center}
+.pn-row2 select{flex:1;min-width:0}
+.pn-color{width:40px;height:40px;border:1px solid var(--border);border-radius:8px;padding:2px;background:var(--card);cursor:pointer}
+.pn-sl{display:grid;grid-template-columns:68px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+.pn-sl input{width:100%;accent-color:var(--primary)}
+.pn-sl span{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+.pn-posrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pn-pos{display:grid;grid-template-columns:repeat(3,26px);gap:4px}
+.pn-pos button{width:26px;height:26px;min-height:0;min-width:0;border:1px solid var(--border);border-radius:6px;background:var(--card);cursor:pointer;padding:0}
+.pn-pos button.on{background:var(--primary);border-color:var(--primary)}
+.pn-pos button:disabled{opacity:.35;cursor:default}
+.pn-apply{margin-top:10px;min-height:46px;font-size:15px;font-weight:800}
+.pn-info{font-size:13px;color:var(--text-3);margin:10px 0 0;text-align:center}
+.pn-info a{color:var(--primary);font-weight:600}
+@media(max-width:820px){.pn-cols{grid-template-columns:1fr}.pn-pos{grid-template-columns:repeat(3,32px)}.pn-pos button{width:32px;height:32px}}
+.pn-presets{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.pn-preset{border:1px solid var(--border);border-radius:8px;background:var(--card);padding:8px 6px;font-size:12.5px;font-weight:600;color:var(--text-2);cursor:pointer;min-height:36px}
+.pn-preset:hover{border-color:var(--primary);color:var(--primary)}
+.pn-pos{display:grid;grid-template-columns:repeat(3,30px);grid-template-rows:30px 30px;gap:4px;padding:6px;border:1px dashed var(--border);border-radius:8px;row-gap:34px}
+.pn-pos button{width:30px;height:30px}
+.pn-pad{flex:0 0 112px !important}
+.pn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.pn-grid label{font-size:12px;font-weight:600;color:var(--text-2);display:flex;flex-direction:column;gap:4px}
+.pn-hint{font-size:12px;color:var(--text-3);margin-top:4px}
+.pn-pw{display:flex;gap:6px;align-items:center}
+.pn-pw input{width:130px;min-height:34px;padding:4px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text)}
+.pn-pw .btn{min-height:34px;padding:4px 10px;font-size:12.5px}
+.pn-file.pw{border-color:rgba(217,119,6,.6)}
+@media(max-width:820px){.pn-pos{grid-template-columns:repeat(3,36px);row-gap:30px}.pn-pos button{width:36px;height:36px}.pn-file{flex-wrap:wrap}}
+
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Add Page Numbers", "item": "https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Add Page Numbers to PDF", "url": "https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Add page numbers to PDF online free, no sign up: pick position, format like Page 1 of 10 or i, ii, start number and range. Numbered in your browser.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I add page numbers to a PDF online with no sign up?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan needs no account, adds no watermark and has no daily limit. Open the page, add your PDF and download the numbered copy."}}, {"@type": "Question", "name": "How do I start numbering from page 2?", "acceptedAnswer": {"@type": "Answer", "text": "Tap Skip cover, or set From page to 2. The cover stays blank and the second page shows 1. Change Start at if it should show another number."}}, {"@type": "Question", "name": "Can I use Roman numerals for front pages?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Set Roman pages first to the number of front pages. Those pages show i, ii, iii and the body starts again at 1."}}, {"@type": "Question", "name": "How do I show “Page 1 of 10”?", "acceptedAnswer": {"@type": "Answer", "text": "Choose Page 1 of 10 in Format. To leave the cover out of the total, set “of 10” counts to Only the numbered pages."}}, {"@type": "Question", "name": "Will the page numbers cover my text?", "acceptedAnswer": {"@type": "Answer", "text": "Only if the margin is too small. Check the preview, then raise the margin or move the number to the top of the page."}}, {"@type": "Question", "name": "Can I number several PDFs at once?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Add up to 20 PDFs. Each gets the same settings and its own count, and you download them together as a ZIP."}}, {"@type": "Question", "name": "Does it work on a locked PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes for PDFs that only block editing; they are unlocked in your browser first. For a PDF that asks for a password to open, type its password."}}, {"@type": "Question", "name": "Do the numbers make the file bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Very little. PDFdukan uses the PDF’s built-in fonts, so a 300-page test file grew from 60 KB to 122 KB."}}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-10T00:00:00+05:00">
+</head>
+<body data-tool="page-numbers">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/html-to-pdf-converter-online.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/add-watermark-to-pdf-online.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/add-page-numbers-to-pdf-online.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/organize-pdf-pages-online.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/add-watermark-to-pdf-online.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/add-page-numbers-to-pdf-online.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/organize-pdf-pages-online.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Add Page Numbers</span></nav>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#4e342e,#6d4c41)">🔢</div>
+      <h1>Add Page Numbers to PDF Online</h1>
+      <p>Number every page, skip the cover or start with i, ii for a thesis. See each page before you download.</p>
+      <p class="i2p-trust">Free · No sign-up · No watermark · Files stay on your device</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/add-page-numbers-to-pdf-online.svg" alt="PDF pages with page numbers in the footer, the cover left unnumbered and front pages in Roman numerals" width="640" height="420">
+  </div>
+  <div class="tool-card" id="pnUpload">
+    <div class="drop-zone" id="pnDrop" tabindex="0" role="button" aria-label="Choose PDFs to add page numbers to">
+      <div class="dz-icon">🔢</div>
+      <div class="dz-title">Drop PDFs here or click to browse</div>
+      <div class="dz-hint">Up to 20 PDFs, 200 MB each · numbered in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="pnFileInput" accept=".pdf,application/pdf" multiple style="display:none">
+    </div>
+  </div>
+  <div class="tool-card pn-editor" id="pnEditor" hidden>
+    <div class="pn-cols">
+      <div class="pn-left">
+        <div class="pn-stage" id="pnStage"><canvas id="pnCanvas" aria-label="Preview of the numbered page"></canvas></div>
+        <div class="pn-pnav"><button class="pn-ib" id="pnPrev" type="button" aria-label="Previous page">‹</button><span id="pnPageInfo">Page 1</span><button class="pn-ib" id="pnNext" type="button" aria-label="Next page">›</button></div>
+        <div id="pnFiles" class="pn-files"></div>
+        <div class="pn-fbar"><button class="btn btn-secondary" id="pnMore" type="button">Add PDF</button><button class="btn btn-secondary" id="pnReset" type="button">Start over</button><button class="btn btn-primary" id="pnZip" type="button" hidden>Download all (ZIP)</button></div>
+        <input type="file" id="pnMoreInput" accept=".pdf,application/pdf" multiple style="display:none">
+      </div>
+      <div class="pn-right">
+        <div class="pn-l">Quick setup</div>
+        <div class="pn-presets"><button type="button" class="pn-preset" data-k="simple">1, 2, 3</button><button type="button" class="pn-preset" data-k="xofy">Page 1 of 10</button><button type="button" class="pn-preset" data-k="cover">Skip cover</button><button type="button" class="pn-preset" data-k="thesis">Thesis (i, ii… 1)</button></div>
+        <div class="pn-l">Position</div>
+        <div class="pn-posrow">
+          <div class="pn-pos" role="group" aria-label="Position on page"><button type="button" data-p="tl" aria-label="Top left"></button><button type="button" data-p="tc" aria-label="Top centre"></button><button type="button" data-p="tr" aria-label="Top right"></button><button type="button" data-p="bl" aria-label="Bottom left"></button><button type="button" data-p="bc" aria-label="Bottom centre"></button><button type="button" data-p="br" aria-label="Bottom right"></button></div>
+          <label class="pn-chk"><input type="checkbox" id="pnMirror"> Mirror on even pages (double-sided)</label>
+        </div>
+        <label class="pn-l" for="pnFmt">Format</label>
+        <div class="pn-row2">
+          <select class="pn-in" id="pnFmt"><option value="n">1</option><option value="page-n">Page 1</option><option value="n-of-t">1 of 10</option><option value="page-n-of-t">Page 1 of 10</option><option value="n/t">1 / 10</option><option value="dash">- 1 -</option><option value="roman">i, ii, iii</option><option value="ROMAN">I, II, III</option><option value="alpha">a, b, c</option><option value="custom">Custom text…</option></select>
+          <select class="pn-in pn-pad" id="pnPad" aria-label="Digits"><option value="0">1, 2, 3</option><option value="2">01, 02</option><option value="3">001, 002</option><option value="4">0001</option><option value="6">000001</option></select>
+        </div>
+        <div id="pnCustomRow" hidden><input class="pn-in" id="pnCustom" type="text" maxlength="80" placeholder="e.g. Report-{n} or Sheet {n} of {total}"><div class="pn-hint">Use {n} for the number and {total} for the page count.</div></div>
+        <div class="pn-grid">
+          <label>Start at <input class="pn-in" id="pnStart" type="number" min="0" max="99999" inputmode="numeric"></label>
+          <label>From page <input class="pn-in" id="pnFrom" type="number" min="1" inputmode="numeric"></label>
+          <label>To page <input class="pn-in" id="pnTo" type="number" min="1" placeholder="Last" inputmode="numeric"></label>
+          <label>Roman pages first <input class="pn-in" id="pnFront" type="number" min="0" max="99" inputmode="numeric"></label>
+        </div>
+        <label class="pn-l" for="pnTotal">“of 10” counts</label>
+        <select class="pn-in" id="pnTotal"><option value="all">All pages in the PDF</option><option value="numbered">Only the numbered pages</option></select>
+        <div class="pn-l">Style</div>
+        <div class="pn-row2">
+          <select class="pn-in" id="pnFont" aria-label="Font"><option value="helv">Helvetica (Arial-like)</option><option value="times">Times New Roman</option><option value="courier">Courier</option></select>
+          <button type="button" class="pn-ib pn-b" id="pnBold" aria-label="Bold"><b>B</b></button>
+          <input type="color" id="pnColor" aria-label="Number color" class="pn-color">
+        </div>
+        <div class="pn-sl"><label for="pnSize">Size</label><input type="range" id="pnSize" min="6" max="36"><span id="pnSizeV"></span></div>
+        <div class="pn-sl"><label for="pnMargin">Margin</label><input type="range" id="pnMargin" min="0" max="40"><span id="pnMarginV"></span></div>
+        <div class="pn-sl"><label for="pnOpacity">Opacity</label><input type="range" id="pnOpacity" min="10" max="100"><span id="pnOpacityV"></span></div>
+        <label class="pn-chk"><input type="checkbox" id="pnBox"> White box behind the number (hides old numbers)</label>
+        <button class="btn btn-primary pn-apply" id="pnApply" type="button">Add page numbers</button>
+      </div>
+    </div>
+  </div>
+  <p id="pnInfo" role="status" aria-live="polite" class="pn-info"></p>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 7 PDFs: rotated and cropped pages, a 14-page thesis, 300 pages, restricted and password-protected files</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>How Do You Add Page Numbers to a PDF Online?</h2>
+    <p class="lead">To add page numbers to a PDF online with no sign up, drop the file into PDFdukan, choose where the number goes and how it reads, then tap Add page numbers. You get a new PDF with real text numbers on every page you picked, made in your browser.</p>
+    <p>The preview shows the exact number each page will carry, so you can check the cover and last page before you download.</p>
+    <p>The numbers are added as normal PDF text, not as an image, so readers can still search the document and the file stays small.</p>
+
+    <h3>How Do I Number My PDF Pages Step by Step?</h3>
+    <ol>
+      <li><span><strong>Add your PDF.</strong> Tap Choose PDF or drop up to 20 files at once.</span></li>
+      <li><span><strong>Pick a quick setup.</strong> Use 1, 2, 3, Page 1 of 10, Skip cover or Thesis.</span></li>
+      <li><span><strong>Set the position.</strong> Choose a top or bottom corner, or the centre.</span></li>
+      <li><span><strong>Check the preview.</strong> Use the arrows to see what each page will show.</span></li>
+      <li><span><strong>Download.</strong> Tap Add page numbers; one file downloads at once, several as a ZIP.</span></li>
+    </ol>
+
+    <h3>What Page Number Options Do You Get?</h3>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Ten number formats</h4><p>Choose 1, Page 1, 1 of 10, 1 / 10, - 1 -, i, I, a, or write your own text with {n} and {total}.</p></div>
+      <div class="i2p-card"><h4>Skip pages and restart</h4><p>Start on any page, stop before the appendix and begin counting at any number, such as 25 for chapter two.</p></div>
+      <div class="i2p-card"><h4>Roman front matter</h4><p>Give the first pages i, ii, iii, then switch to 1 for the body, all in one pass.</p></div>
+      <div class="i2p-card"><h4>Double-sided printing</h4><p>Mirror on even pages moves corner numbers to the outer edge of each printed sheet.</p></div>
+      <div class="i2p-card"><h4>Bates-style labels</h4><p>Add leading zeros and a prefix, like DOC-0001, for evidence bundles and audit files.</p></div>
+      <div class="i2p-card"><h4>Hide old numbers</h4><p>A white box behind the new number covers a wrong or duplicate number underneath.</p></div>
+    </div>
+
+    <h3>Which Files, Fonts and Limits Apply?</h3>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>PDF, up to 200 MB each, 20 files per batch</td></tr>
+        <tr><th scope="row">Output</th><td>Numbered PDF, or a ZIP for several files</td></tr>
+        <tr><th scope="row">Fonts</th><td>Helvetica, Times New Roman, Courier; bold; 6 to 36 pt</td></tr>
+        <tr><th scope="row">Style</th><td>Any color, 10 to 100% opacity, margin 0 to 40 mm</td></tr>
+        <tr><th scope="row">Locked PDFs</th><td>Restricted files work; password files need the password</td></tr>
+        <tr><th scope="row">Text</th><td>Latin letters and digits; other scripts show as ?</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Who Needs Page Numbers on a PDF?</h3>
+    <ul>
+      <li>Students formatting a thesis with a plain cover and Roman front matter</li>
+      <li>Law offices numbering exhibits and court bundles with DOC-0001 labels</li>
+      <li>Teachers combining worksheets into one numbered packet for printing</li>
+      <li>Teams sending contracts where clauses are discussed by page</li>
+    </ul>
+
+    <h3>How Do You Get Page Numbers Right the First Time?</h3>
+    <p>Merge your files first, then add page numbers, so the count runs across the whole document. For a thesis, tap Thesis, set Roman pages first to the number of front pages, and check the first body page shows 1.</p>
+    <p>If a number lands on text or a footer line, raise the margin a few millimetres. For printed books, choose a bottom corner and tick Mirror on even pages so numbers sit on the outer edge.</p>
+    
+    <h3>Does It Handle Rotated or Scanned Pages?</h3>
+    <p>Yes. PDFdukan reads each page’s rotation and visible area, so numbers stay upright and inside the page on landscape, rotated and cropped pages. In our tests, rotated pages in a mixed file kept their numbers at the bottom of the page as you see it. Scanned pages work too; the number is printed on top of the picture.</p>
+
+    <h3>Is My PDF Uploaded to Add Numbers?</h3>
+    <p>No. Your PDF is opened and numbered with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> and <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">pdf.js</a> inside your browser tab. Restricted files are unlocked with the open-source <a href="https://qpdf.readthedocs.io/" target="_blank" rel="noopener">qpdf</a> engine, also on your device. Nothing is sent to a server.</p>
+
+    <h3>What Can’t This Tool Do?</h3>
+    <p>PDFdukan adds page numbers only, not running headers, dates or names on every page; for those, use <a href="add-watermark-to-pdf-online.html">Add Watermark</a> with your text. It can’t open a PDF whose password you don’t know, and numbers in Urdu, Arabic or Hindi digits aren’t supported yet.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add page numbers to a PDF online with no sign up?</button></h3><div class="faq-a"><p>Yes. PDFdukan needs no account, adds no watermark and has no daily limit. Open the page, add your PDF and download the numbered copy.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I start numbering from page 2?</button></h3><div class="faq-a"><p>Tap Skip cover, or set From page to 2. The cover stays blank and the second page shows 1. Change Start at if it should show another number.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I use Roman numerals for front pages?</button></h3><div class="faq-a"><p>Yes. Set Roman pages first to the number of front pages. Those pages show i, ii, iii and the body starts again at 1.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I show “Page 1 of 10”?</button></h3><div class="faq-a"><p>Choose Page 1 of 10 in Format. To leave the cover out of the total, set “of 10” counts to Only the numbered pages.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the page numbers cover my text?</button></h3><div class="faq-a"><p>Only if the margin is too small. Check the preview, then raise the margin or move the number to the top of the page.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I number several PDFs at once?</button></h3><div class="faq-a"><p>Yes. Add up to 20 PDFs. Each gets the same settings and its own count, and you download them together as a ZIP.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work on a locked PDF?</button></h3><div class="faq-a"><p>Yes for PDFs that only block editing; they are unlocked in your browser first. For a PDF that asks for a password to open, type its password.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Do the numbers make the file bigger?</button></h3><div class="faq-a"><p>Very little. PDFdukan uses the PDF’s built-in fonts, so a 300-page test file grew from 60 KB to 122 KB.</p></div></div>
+
+    <h3>Related Tools</h3>
+    <div class="related-tools-grid">
+    <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
+    <a href="organize-pdf-pages-online.html" class="related-tool-card"><span class="rtc-icon">🔄</span>Organize PDF</a>
+    <a href="add-watermark-to-pdf-online.html" class="related-tool-card"><span class="rtc-icon">💧</span>Add Watermark</a>
+    <a href="unlock-pdf-without-password.html" class="related-tool-card"><span class="rtc-icon">🔓</span>Unlock PDF</a>
+    </div>
+</section>
+
+</div>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/page-numbers.js?v=20261110"></script>
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20261110f"></script>
+<script src="../js/tools.js?v=20260825i"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>
