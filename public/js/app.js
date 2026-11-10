@@ -1513,8 +1513,6 @@ const TOOL_PAGES = {
   'delete-pages':  'tools/organize-pdf-pages-online.html',
   'html-to-pdf':   'tools/html-to-pdf.html',
   'pdf-editor':    'tools/pdf-editor.html',
-  'pdf-to-ppt':    'tools/pdf-to-ppt.html',
-  'pdf-to-excel':  'tools/pdf-to-excel.html',
   'word-counter':  'tools/word-character-counter.html',
   /* ── PDF utilities & generators (Part 5) ── */
   'rotate-pdf':         'tools/organize-pdf-pages-online.html',
@@ -1574,8 +1572,6 @@ const TOOL_SEARCH_INDEX = [
   { id:'pdf-organizer', name:'PDF Organizer',         desc:'Reorder, rotate, delete or add PDF pages',          icon:'🗂️', category:'PDF Tools',   keywords:['delete','remove','rotate','reorder','organize','pages'] },
   { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Print pasted HTML or one web page to PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit PDF text, sign, fill forms and add links free',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
-  { id:'pdf-to-ppt',   name:'PDF to PowerPoint',     desc:'Export PDF pages as image-based PPTX slides',   icon:'📊', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation','office'] },
-  { id:'pdf-to-excel', name:'PDF to Excel',          desc:'Extract tables from PDF to XLSX spreadsheet', icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','xls','table','spreadsheet','data'] },
   { id:'word-counter', name:'Word & Character Counter', desc:'Count words, characters, sentences and reading time', icon:'🔢', category:'Text Tools', keywords:['word','words','word count','word counter','character','characters','character count','character counter','letter','letters','count','counter','text','essay','sentence','paragraph','reading time','limit'] },
 ];
 
@@ -2036,9 +2032,7 @@ function _initSearchTrustSignals() {
     'pdf-metadata':['View and edit title, author, subject and keywords','Output bytes are reopened and metadata values checked','PDF rewrite may affect signatures or unsupported interactive structures'],
     'pdf-organizer':['Drag to reorder pages','Rotate, duplicate or delete pages','Add blank pages or another PDF'],
     'pdf-text-extractor':['Extract embedded selectable PDF text without OCR','Page separators and basic line endings','Copy or UTF-8 TXT download'],
-    'pdf-to-excel':['Layout-aware table extraction','One sheet per page or combined output','Scanned PDFs require OCR first'],
     'pdf-to-img':['Pages to JPG, PNG or WebP at 72–600 DPI','Save the photos inside a PDF','Opens password-protected PDFs in your browser'],
-    'pdf-to-ppt':['One PDF page per image-based slide','PPTX export','Slide text is not directly editable'],
     'pdf-to-word':['Digital and scanned PDFs, OCR in 37 languages','Columns, paragraphs, headings, tables, images and links','Password-protected PDFs open in your browser'],
     'searchable-pdf':['JPG or PNG input with a searchable OCR text layer','Selectable OCR language','Manual review before downloading the generated PDF'],
     'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
