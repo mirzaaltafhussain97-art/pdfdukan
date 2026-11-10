@@ -2244,6 +2244,70 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('%c CamMaster by PDFdukan ', 'background:#ff6333;color:#fff;padding:3px 8px;border-radius:4px;font-weight:bold;');
 });
 
+/* ── PDFdukan tool icons (SVG, one style) ───────────────────────── */
+(function _toolIcons() {
+  var G = {
+    'image-to-pdf':   '<rect x="4.5" y="5.5" width="9" height="7" rx="1"/><path d="M5 12l2.5-3 2 2 1.5-1.5 2.5 2.5"/>',
+    'pdf-to-jpg':     '<rect x="4.5" y="5" width="9" height="8" rx="1"/><circle cx="7.5" cy="7.8" r="1"/><path d="M5 12.5l3-3 2 2 1.2-1 2.3 2"/>',
+    'pdf-to-word':    '<path d="M4.5 5.5l1.6 7 2.4-6 2.4 6 1.6-7"/>',
+    'word-to-pdf':    '<path d="M4 9h7M8.5 6l3 3-3 3"/><path d="M13.5 5v8"/>',
+    'html-to-pdf':    '<path d="M7 5.5L4 9l3 3.5M11 5.5L14 9l-3 3.5"/>',
+    'merge':          '<path d="M4.5 4.5L9 9l4.5-4.5M9 9v4.5"/><path d="M6.8 11.5L9 13.7l2.2-2.2"/>',
+    'split':          '<path d="M9 4.5v9" stroke-dasharray="1.6 1.6"/><path d="M6.5 7L4 9l2.5 2M11.5 7L14 9l-2.5 2"/>',
+    'compress':       '<path d="M9 4v4M7 6l2 2 2-2M9 14v-4M7 12l2-2 2 2M5 9h8"/>',
+    'organize':       '<path d="M13 8.5A4 4 0 1 0 12 12"/><path d="M13.5 5.5V9H10"/>',
+    'crop':           '<path d="M6.5 4v8.5H15M4 6.5h8.5V15"/>',
+    'edit':           '<path d="M5 13l.6-2.6 6.2-6.2 2 2-6.2 6.2z"/><path d="M10.6 5.4l2 2"/>',
+    'fill-sign':      '<path d="M4 12c1.5-4 2.5-6 3.5-5s-1.5 5 0 5 2-3 3-3 1 2 2 2 1.5-1 2.5-1"/>',
+    'watermark':      '<path d="M9 4.5c2 2.6 3.5 4.4 3.5 6.1a3.5 3.5 0 0 1-7 0C5.5 8.9 7 7.1 9 4.5z"/>',
+    'page-numbers':   '<path d="M5 6.5l1.5-1v7M10 6.5a1.6 1.6 0 1 1 2.6 1.4L10 12.5h3.4"/>',
+    'unlock':         '<rect x="5" y="8.5" width="8" height="5.5" rx="1.2"/><path d="M7 8.5V7a2.5 2.5 0 0 1 4.8-1"/>',
+    'restriction':    '<path d="M9 4l4.5 1.8v3.4c0 2.6-2 4.3-4.5 5-2.5-.7-4.5-2.4-4.5-5V5.8z"/><path d="M7 9.2l1.5 1.5L11.2 8"/>',
+    'metadata':       '<path d="M4.5 9.5V5h4.5l5 5-4.5 4.5z"/><circle cx="7" cy="7.2" r=".9"/>',
+    'scan':           '<path d="M4 7V5h2M12 5h2v2M14 11v2h-2M6 13H4v-2"/><rect x="6.5" y="7" width="5" height="4" rx=".8"/>',
+    'ocr':            '<path d="M4 6V4.5h1.5M12.5 4.5H14V6M14 12v1.5h-1.5M5.5 13.5H4V12"/><path d="M6.5 7h5M9 7v4.5"/>',
+    'text-extract':   '<path d="M4.5 6h6M4.5 9h6M4.5 12h4"/><path d="M11.5 10.5l2 2 2-2M13.5 7v5.5"/>',
+    'searchable':     '<circle cx="8" cy="8" r="3.2"/><path d="M10.4 10.4L13.5 13.5"/>',
+    'img-compress':   '<rect x="4.5" y="5" width="9" height="8" rx="1"/><path d="M7 7.3l2 1.7 2-1.7M7 10.7l2-1.7 2 1.7"/>',
+    'word-counter':   '<path d="M4.5 6.5l1.4-1v7M8 6.5a1.4 1.4 0 1 1 2.3 1.2L8 12.5h3M12.5 5.5h2l-1.3 2.2a1.6 1.6 0 1 1-1 2.8"/>'
+  };
+  var MAP = {
+    '/tools/image-to-pdf-converter.html': 'image-to-pdf', '/tools/pdf-to-image-converter.html': 'pdf-to-jpg',
+    '/tools/pdf-to-word-converter.html': 'pdf-to-word', '/tools/word-to-pdf-converter.html': 'word-to-pdf',
+    '/tools/html-to-pdf-converter-online.html': 'html-to-pdf', '/tools/merge-pdf.html': 'merge',
+    '/tools/extract-pdf-pages.html': 'split', '/tools/compress-pdf-reduce-file-size.html': 'compress',
+    '/tools/organize-pdf-pages-online.html': 'organize', '/tools/crop-pdf-online.html': 'crop',
+    '/tools/pdf-editor.html': 'edit', '/tools/fill-sign.html': 'fill-sign',
+    '/tools/add-watermark-to-pdf-online.html': 'watermark', '/tools/page-numbers.html': 'page-numbers',
+    '/tools/unlock-pdf-without-password.html': 'unlock', '/tools/pdf-restriction-compatibility-check.html': 'restriction',
+    '/tools/pdf-metadata.html': 'metadata', '/scanner.html': 'scan', '/tools/ocr-image-to-text.html': 'ocr',
+    '/tools/pdf-text-extractor.html': 'text-extract', '/tools/searchable-pdf.html': 'searchable',
+    '/tools/image-compress-resize.html': 'img-compress', '/tools/word-character-counter.html': 'word-counter'
+  };
+  /* A page with folded corner; the tool glyph sits on an orange badge. */
+  function svg(key) {
+    return '<svg class="pd-ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
+      '<path class="pd-ico-page" d="M11 4h17.5L38 13.5V41a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"/>' +
+      '<path class="pd-ico-fold" d="M28.5 4v7a2.5 2.5 0 0 0 2.5 2.5h7"/>' +
+      '<path class="pd-ico-lines" d="M13.5 15h10M13.5 20h13M13.5 25h8"/>' +
+      '<g transform="translate(17 18)"><rect class="pd-ico-badge" width="29" height="29" rx="8"/>' +
+      '<g class="pd-ico-glyph" transform="translate(2.6 2.6) scale(1.33)">' + G[key] + '</g></g></svg>';
+  }
+  function keyOf(href) { try { return MAP[new URL(href, location.href).pathname]; } catch (e) { return null; } }
+  function apply(root) {
+    (root || document).querySelectorAll('a.tool-card, a.big-tool-card, a.related-tool-card').forEach(function (a) {
+      var k = keyOf(a.getAttribute('href')); if (!k) return;
+      var box = a.querySelector('.tool-icon-wrap, .btc-icon, .rtc-icon');
+      if (!box || box.querySelector('.pd-ico')) return;
+      box.innerHTML = svg(k); box.classList.add('has-pd-ico');
+    });
+    var k = MAP[location.pathname], hero = document.querySelector('.tool-hero-icon');
+    if (k && hero && !hero.querySelector('.pd-ico')) { hero.innerHTML = svg(k); hero.classList.add('has-pd-ico'); }
+  }
+  window.PDIcons = { apply: apply, svg: svg, MAP: MAP };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { apply(); }); else apply();
+})();
+
 /* ── FAVORITE TOOLS (star on every tool card + tool page) ─────────
    Saved in this browser only (localStorage "pd-favs-v1"). */
 (function _favorites() {
@@ -2267,7 +2331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     b.classList.toggle('on', on);
     b.setAttribute('aria-pressed', String(on));
     b.setAttribute('aria-label', (on ? 'Remove ' : 'Add ') + n + (on ? ' from favorites' : ' to favorites'));
-    b.title = on ? 'Remove from favorites' : 'Add to favorites';
+    b.removeAttribute('title'); b.dataset.tip = on ? 'Remove from favorites' : 'Add to favorites';
     if (b.classList.contains('fav-star-hero')) b.innerHTML = STAR + '<span>' + (on ? 'Saved to favorites' : 'Add to favorites') + '</span>';
   }
   function toggle(p) {
@@ -2320,7 +2384,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!favs.length) { box.insertAdjacentHTML('beforeend', '<p class="fav-empty">Tap the ☆ star on any tool to keep it here. Favorites are saved in this browser.</p>'); return; }
     var g = document.createElement('div'); g.className = 'tools-grid fav-grid';
     favs.forEach(function (p) { g.appendChild(card(p)); });
-    box.appendChild(g); decorate(box);
+    box.appendChild(g); if (window.PDIcons) PDIcons.apply(box); decorate(box);
   }
   function init() {
     decorate(); decorateHero(); renderBox();

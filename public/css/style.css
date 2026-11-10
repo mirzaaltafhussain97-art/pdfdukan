@@ -2605,3 +2605,35 @@ a.tool-card{color:var(--text)}
 .related-tool-card.has-fav{padding-right:8px}
 @media(max-width:600px){.related-tool-card{gap:8px;padding:11px 10px;font-size:12.5px}.related-tool-card .rtc-icon{width:32px;height:32px;font-size:17px}.related-tool-card .fav-star{width:24px;height:24px}}
 .faq-item h3.help-fq,.faq-item h3.home-fq{margin:0;padding:0;font-size:inherit;font-weight:inherit;line-height:inherit}
+
+/* ── SVG tool icons + PDF24-style favorite star (v2) ── */
+.has-pd-ico{font-size:0 !important}
+.tool-icon-wrap.has-pd-ico,.btc-icon.has-pd-ico{width:64px;height:64px;border-radius:18px}
+.has-pd-ico .pd-ico{width:88%;height:88%;display:block;overflow:visible}
+.pd-ico-page{fill:#fff;stroke:#3a2a22;stroke-width:2.2;stroke-linejoin:round}
+.pd-ico-fold{fill:#ffe1d4;stroke:#3a2a22;stroke-width:2.2;stroke-linejoin:round}
+.pd-ico-lines{fill:none;stroke:#e3cfc6;stroke-width:2.4;stroke-linecap:round}
+.pd-ico-badge{fill:var(--primary);stroke:#3a2a22;stroke-width:2.2}
+.pd-ico-glyph{fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.pd-ico-glyph circle[r="1"],.pd-ico-glyph circle[r=".9"]{fill:#fff;stroke:none}
+.tool-card:hover .pd-ico,.big-tool-card:hover .pd-ico{transform:rotate(-4deg) scale(1.05);transition:transform .2s var(--ease)}
+.tool-hero-icon.has-pd-ico{background:linear-gradient(145deg,#fff3ec,#ffd9c8) !important;box-shadow:inset 0 0 0 1.5px #f4b89f}
+.tool-hero-icon.has-pd-ico .pd-ico{width:78%;height:78%}
+html[data-theme="dark"] .pd-ico-page{stroke:#1a1310}
+html[data-theme="dark"] .pd-ico-fold,html[data-theme="dark"] .pd-ico-badge{stroke:#1a1310}
+html[data-theme="dark"] .tool-icon-wrap.has-pd-ico,html[data-theme="dark"] .btc-icon.has-pd-ico,html[data-theme="dark"] .tool-hero-icon.has-pd-ico{background:linear-gradient(145deg,#3a2a22,#2a1f1a) !important;box-shadow:inset 0 0 0 1.5px #5a3f33 !important}
+.related-tool-card .rtc-icon.has-pd-ico{width:40px;height:40px;background:linear-gradient(145deg,#fff3ec,#ffd9c8);box-shadow:inset 0 0 0 1.5px #f4b89f}
+html[data-theme="dark"] .related-tool-card .rtc-icon.has-pd-ico{background:linear-gradient(145deg,#3a2a22,#2a1f1a);box-shadow:inset 0 0 0 1.5px #5a3f33}
+/* star: top-right like PDF24, FREE badge not needed (every tool is free) */
+.tool-card.has-fav .tc-badge{display:none}
+.fav-star{left:auto;right:6px;top:6px;color:#9aa0a6}
+.fav-star.on{color:var(--primary)}
+.fav-star:hover,.fav-star:focus-visible{color:var(--primary);background:transparent;transform:scale(1.15)}
+.big-tool-card .fav-star{right:8px;top:8px}
+.fav-star[data-tip]:not(.fav-star-hero)::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);right:-4px;white-space:nowrap;
+  background:#2b2b2b;color:#fff;font:600 12px/1 system-ui,sans-serif;padding:7px 10px;border-radius:6px;
+  opacity:0;pointer-events:none;transform:translateY(3px);transition:opacity .15s,transform .15s;z-index:5}
+.fav-star[data-tip]:not(.fav-star-hero):hover::after,.fav-star[data-tip]:not(.fav-star-hero):focus-visible::after{opacity:1;transform:none}
+.tool-card.has-fav,.big-tool-card.has-fav{overflow:visible}
+.fav-star-hero.on{color:var(--primary);border-color:#f4b89f;background:#fff3ec}
