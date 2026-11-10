@@ -118,6 +118,8 @@ Redirect 301 /crop-pdf /tools/crop-pdf-online.html
 Redirect 301 /tools/pdf-to-img.html /tools/pdf-to-image-converter.html
 Redirect 301 /tools/compress-pdf.html /tools/compress-pdf-reduce-file-size.html
 Redirect 301 /tools/pdf-organizer.html /tools/organize-pdf-pages-online.html
+Redirect 301 /tools/watermark.html /tools/add-watermark-to-pdf-online.html
+Redirect 301 /watermark-pdf /tools/add-watermark-to-pdf-online.html
 Redirect 301 /tools/unlock-pdf.html /tools/unlock-pdf-without-password.html
 Redirect 301 /pdf-to-image /tools/pdf-to-image-converter.html
 Redirect 301 /tools/word-to-pdf.html /tools/word-to-pdf-converter.html

@@ -1508,7 +1508,7 @@ const TOOL_PAGES = {
   /* ── New tools ── */
   'compress-pdf':  'tools/compress-pdf-reduce-file-size.html',
   'fill-sign':     'tools/fill-sign.html',
-  'watermark':     'tools/watermark.html',
+  'watermark':     'tools/add-watermark-to-pdf-online.html',
   'page-numbers':  'tools/page-numbers.html',
   'delete-pages':  'tools/organize-pdf-pages-online.html',
   'html-to-pdf':   'tools/html-to-pdf.html',
@@ -1567,7 +1567,7 @@ const TOOL_SEARCH_INDEX = [
   { id:'pdf-to-word',  name:'PDF to Word',           desc:'Digital or scanned PDF to editable .docx',         icon:'📝', category:'PDF Tools',   keywords:['word','doc','docx','convert','editable','text','ocr','scanned','urdu'] },
   { id:'word-to-pdf',  name:'Word to PDF',           desc:'DOCX, DOC, ODT or RTF to PDF',               icon:'📄', category:'PDF Tools',   keywords:['word','docx','doc','convert','microsoft'] },
   { id:'fill-sign',    name:'Fill & Sign PDF',       desc:'Add text blocks and signatures to any PDF',    icon:'✍️', category:'PDF Tools',   keywords:['sign','signature','fill','form','annotate','draw','ink'] },
-  { id:'watermark',    name:'Watermark PDF',         desc:'Stamp text or image watermarks on all pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
+  { id:'watermark',    name:'Watermark PDF',         desc:'Text or logo watermark, any angle, chosen pages',  icon:'💧', category:'PDF Tools',   keywords:['watermark','stamp','brand','overlay','logo','copyright'] },
   { id:'page-numbers', name:'Add Page Numbers',      desc:'Auto-number PDF pages at custom positions',    icon:'🔢', category:'PDF Tools',   keywords:['page numbers','numbering','header','footer','pagination'] },
   { id:'pdf-organizer', name:'PDF Organizer',         desc:'Reorder, rotate, delete or add PDF pages',          icon:'🗂️', category:'PDF Tools',   keywords:['delete','remove','rotate','reorder','organize','pages'] },
   { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Print pasted HTML or one web page to PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
@@ -2038,7 +2038,7 @@ function _initSearchTrustSignals() {
     'split-pdf':['Custom page ranges','Split every page','ZIP download for multiple outputs'],
     'unlock-pdf':['Removes print, copy and edit restrictions without a password','Removes the open password when you enter it','Up to 20 PDFs, 100 MB each, in the browser'],
     'pdf-restriction-check':['Open password, 8 permission flags and encryption type','Signatures, form fields, PDF/A and accessibility basics','Read-only: does not remove passwords or restrictions'],
-    'watermark':['Custom text watermark','Opacity, angle and position controls','Apply across PDF pages'],
+    'watermark':['Text in any script or a logo image','9 positions or tiled, any angle, behind or over content','All, odd, even or chosen pages; up to 20 PDFs at once'],
     'word-to-pdf':['DOCX, DOC, ODT, RTF and TXT input','LibreOffice office engine in the browser, no upload','Up to 10 files, ZIP or one combined PDF']
   };
 

@@ -84,6 +84,8 @@ const nextConfig = {
       { source: '/tools/pdf-to-img.html', destination: '/tools/pdf-to-image-converter.html', permanent: true },
       { source: '/tools/compress-pdf.html', destination: '/tools/compress-pdf-reduce-file-size.html', permanent: true },
       { source: '/tools/pdf-organizer.html', destination: '/tools/organize-pdf-pages-online.html', permanent: true },
+      { source: '/tools/watermark.html', destination: '/tools/add-watermark-to-pdf-online.html', permanent: true },
+      { source: '/watermark-pdf', destination: '/tools/add-watermark-to-pdf-online.html', permanent: true },
       { source: '/tools/unlock-pdf.html', destination: '/tools/unlock-pdf-without-password.html', permanent: true },
       { source: '/pdf-to-image', destination: '/tools/pdf-to-image-converter.html', permanent: true },
       { source: '/image-compressor', destination: '/tools/image-compress-resize.html', permanent: true },

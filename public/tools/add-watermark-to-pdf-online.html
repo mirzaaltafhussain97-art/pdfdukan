@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Add Watermark to PDF Online Free – Text or Logo | PDFdukan</title>
+<meta name="description" content="Add watermark to PDF online free: custom text or logo, any angle, opacity, tile or behind text, chosen pages. Runs in your browser, no extra logo added.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/tools/add-watermark-to-pdf-online.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/add-watermark-to-pdf-online.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/add-watermark-to-pdf-online.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/add-watermark-to-pdf-online.html">
+<meta property="og:title" content="Add Watermark to PDF Online Free – Text or Logo | PDFdukan">
+<meta property="og:description" content="Add watermark to PDF online free: custom text or logo, any angle, opacity, tile or behind text, chosen pages. Runs in your browser, no extra logo added.">
+<meta property="og:image" content="https://pdfdukan.com/images/add-watermark-to-pdf.svg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Add Watermark to PDF Online Free – Text or Logo | PDFdukan">
+<meta name="twitter:description" content="Add watermark to PDF online free: custom text or logo, any angle, opacity, tile or behind text, chosen pages. Runs in your browser, no extra logo added.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/add-watermark-to-pdf.svg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20260825i">
+<style>
+[hidden]{display:none!important}
+/* ── Add watermark ── */
+.wm-editor{padding:16px;text-align:left}
+.wm-cols{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.wm-stage{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:12px;display:flex;justify-content:center;min-height:240px}
+.wm-stage canvas{display:block;max-width:100%;box-shadow:0 1px 6px rgba(0,0,0,.18);background:#fff}
+.wm-pnav{display:flex;align-items:center;justify-content:center;gap:10px;margin:8px 0 12px;font-size:13px;color:var(--text-2)}
+.wm-ib{min-width:36px;height:36px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:16px;cursor:pointer;padding:0 8px}
+.wm-ib:disabled{opacity:.4;cursor:default}
+.wm-ib.on{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.wm-files{display:flex;flex-direction:column;gap:6px}
+.wm-file{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:10px;padding:6px 8px;background:var(--card)}
+.wm-file.on{border-color:var(--primary)}
+.wm-file.done{border-color:rgba(22,163,74,.5)}.wm-file.fail{border-color:rgba(220,38,38,.5)}
+.wm-fsel{flex:1;min-width:0;text-align:left;background:none;border:0;cursor:pointer;padding:2px;color:var(--text)}
+.wm-fsel b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wm-fsel span{display:block;font-size:12px;color:var(--text-3)}
+.wm-file.fail .wm-fsel span{color:#b91c1c}.wm-file.done .wm-fsel span{color:#15803d}
+.wm-dl{min-height:34px;padding:6px 12px;font-size:13px}
+.wm-x{border:0;background:none;color:var(--text-3);cursor:pointer;font-size:14px;padding:6px}
+.wm-fbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.wm-fbar .btn{min-height:38px;padding:8px 14px;font-size:13px}
+.wm-right{display:flex;flex-direction:column;gap:8px}
+.wm-seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.wm-seg button{border:0;background:var(--card);padding:10px;font-weight:700;cursor:pointer;color:var(--text-2)}
+.wm-seg button.on{background:var(--primary);color:#fff}
+.wm-l{font-size:12.5px;font-weight:700;color:var(--text-2);margin-top:6px}
+.wm-in{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:14px;box-sizing:border-box}
+.wm-row2{display:flex;gap:6px;margin-top:6px;align-items:center}
+.wm-row2 select{flex:1;min-width:0}
+.wm-color{width:40px;height:40px;border:1px solid var(--border);border-radius:8px;padding:2px;background:var(--card);cursor:pointer}
+.wm-sl{display:grid;grid-template-columns:68px 1fr 52px;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+.wm-sl input{width:100%;accent-color:var(--primary)}
+.wm-sl span{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+.wm-imgpick{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-3)}
+.wm-imgpick span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wm-posrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.wm-pos{display:grid;grid-template-columns:repeat(3,26px);gap:4px}
+.wm-pos button{width:26px;height:26px;min-height:0;min-width:0;border:1px solid var(--border);border-radius:6px;background:var(--card);cursor:pointer;padding:0}
+.wm-pos button.on{background:var(--primary);border-color:var(--primary)}
+.wm-pos button:disabled{opacity:.35;cursor:default}
+.wm-chk,.wm-radio label{font-size:13px;color:var(--text-2);display:flex;align-items:center;gap:6px;cursor:pointer}
+.wm-radio{display:flex;gap:14px;flex-wrap:wrap}
+.wm-rotq{display:flex;gap:6px}
+.wm-rotq button{flex:1;border:1px solid var(--border);border-radius:8px;background:var(--card);padding:6px 0;font-size:12.5px;cursor:pointer;color:var(--text-2)}
+.wm-rotq button.on{border-color:var(--primary);color:var(--primary);font-weight:700}
+.wm-apply{margin-top:10px;min-height:46px;font-size:15px;font-weight:800}
+.wm-info{font-size:13px;color:var(--text-3);margin:10px 0 0;text-align:center}
+.wm-info a{color:var(--primary);font-weight:600}
+@media(max-width:820px){.wm-cols{grid-template-columns:1fr}.wm-pos{grid-template-columns:repeat(3,32px)}.wm-pos button{width:32px;height:32px}}
+
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "Add Watermark", "item": "https://pdfdukan.com/tools/add-watermark-to-pdf-online.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Add Watermark to PDF", "url": "https://pdfdukan.com/tools/add-watermark-to-pdf-online.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Add watermark to PDF online free: custom text or logo, any angle, opacity, tile or behind text, chosen pages. Runs in your browser, no extra logo added.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I add a watermark to a PDF online free without an account?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan adds text or image watermarks free, with no sign-up, no page cap and no extra logo on your pages."}}, {"@type": "Question", "name": "How do I put a watermark on every page?", "acceptedAnswer": {"@type": "Answer", "text": "Leave Pages set to All pages. The mark goes on each page in the same spot, including landscape pages."}}, {"@type": "Question", "name": "Can I add my logo as a watermark?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Switch to Image, tap Choose image and pick your logo. Set its width as a share of the page, from 5% to 100%."}}, {"@type": "Question", "name": "How do I make the watermark see-through?", "acceptedAnswer": {"@type": "Answer", "text": "Lower the Opacity slider. Around 25% keeps text below the mark easy to read."}}, {"@type": "Question", "name": "Can I watermark only some pages?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Under Pages, pick first page, odd, even or Custom range, then type pages like 2-5, 9."}}, {"@type": "Question", "name": "Does a watermark reduce PDF quality?", "acceptedAnswer": {"@type": "Answer", "text": "No. The original pages are kept as they are; the mark is added on top or underneath."}}, {"@type": "Question", "name": "Can I watermark several PDFs at once?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Add up to 20 PDFs, tap Add watermark, then use Download all (ZIP)."}}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-10T00:00:00+05:00">
+</head>
+<body data-tool="watermark">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu">
+        <div class="nd-col">
+          <span class="nd-section-head">&#128196; PDF Converters</span>
+          <a href="../tools/image-to-pdf-converter.html"   class="nd-link"><span class="nd-link-icon">&#128209;</span><div class="nd-link-body"><div class="nd-link-name">Image &#8594; PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a>
+          <a href="../tools/pdf-to-image-converter.html"   class="nd-link"><span class="nd-link-icon">&#128444;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a>
+          <a href="../tools/merge-pdf.html"    class="nd-link"><span class="nd-link-icon">&#128279;</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a>
+          <a href="../tools/extract-pdf-pages.html"    class="nd-link"><span class="nd-link-icon">&#9986;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a>
+          <a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link"><span class="nd-link-icon">&#128201;</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a>
+          <a href="../tools/pdf-to-word-converter.html"  class="nd-link"><span class="nd-link-icon">&#128221;</span><div class="nd-link-body"><div class="nd-link-name">PDF &#8594; Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a>
+          <a href="../tools/word-to-pdf-converter.html"  class="nd-link"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">Word &#8594; PDF</div><div class="nd-link-desc">DOCX to PDF</div></div></a>
+          <a href="../tools/html-to-pdf.html"  class="nd-link"><span class="nd-link-icon">&#127760;</span><div class="nd-link-body"><div class="nd-link-name">HTML &#8594; PDF</div><div class="nd-link-desc">URL or HTML to PDF</div></div></a>
+        </div>
+        <div class="nd-col">
+          <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
+          <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
+          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/add-watermark-to-pdf-online.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
+          <a href="../tools/page-numbers.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
+          <a href="../tools/organize-pdf-pages-online.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128444;&#65039; Image &amp; Scan</span>
+          <a href="../scanner.html"            class="nd-link"><span class="nd-link-icon">&#128247;</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a>
+          <a href="../tools/image-compress-resize.html"     class="nd-link"><span class="nd-link-icon">&#128284;</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor</div><div class="nd-link-desc">JPG, PNG, WEBP</div></div></a>
+          <a href="../tools/ocr-image-to-text.html"          class="nd-link"><span class="nd-link-icon">&#128292;</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to text</div></div></a>
+          <div class="nd-divider"></div>
+          <span class="nd-section-head">&#128221; Text Tools</span>
+          <a href="../tools/word-character-counter.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>
+        </div>
+      </div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu">
+  <a href="/"              class="mnd-link">Home</a>
+  <div class="mnd-section">PDF Tools</div>
+  <a href="../tools/image-to-pdf-converter.html"   class="mnd-link">Image to PDF</a>
+  <a href="../tools/pdf-to-image-converter.html"   class="mnd-link">PDF to JPG</a>
+  <a href="../tools/merge-pdf.html"    class="mnd-link">Merge PDF</a>
+  <a href="../tools/extract-pdf-pages.html"    class="mnd-link">Split PDF</a>
+  <a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">Compress PDF</a>
+  <a href="../tools/pdf-to-word-converter.html"  class="mnd-link">PDF to Word</a>
+  <a href="../tools/word-to-pdf-converter.html"  class="mnd-link">Word to PDF</a>
+  <div class="mnd-section">Edit &amp; Sign</div>
+  <a href="../tools/fill-sign.html"    class="mnd-link">Fill &amp; Sign</a>
+  <a href="../tools/add-watermark-to-pdf-online.html"    class="mnd-link">Watermark</a>
+  <a href="../tools/page-numbers.html" class="mnd-link">Page Numbers</a>
+  <a href="../tools/organize-pdf-pages-online.html" class="mnd-link">Delete Pages</a>
+  <div class="mnd-section">Image &amp; Scan</div>
+  <a href="../scanner.html"            class="mnd-link">Smart Scan</a>
+  <a href="../tools/image-compress-resize.html"     class="mnd-link">Compress Image</a>
+  <a href="../tools/ocr-image-to-text.html"          class="mnd-link">OCR Text</a>
+  <div class="mnd-section">Text Tools</div>
+  <a href="../tools/word-character-counter.html" class="mnd-link">Word Counter</a>
+  <div class="mnd-section">More</div>
+  <a href="../blog/index.html" class="mnd-link">Blog</a>
+  <a href="../about.html"      class="mnd-link">About</a>
+</div>
+
+<div class="tool-page">
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>Add Watermark</span></nav>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#004d40,#00897b)">💧</div>
+      <h1>Add Watermark to PDF Online Free</h1>
+      <p>Stamp custom text or your logo on every page or chosen pages, with a live preview of the exact result.</p>
+      <p class="i2p-trust">Free · No sign-up · No upload · No extra logo added</p>
+    </div>
+    <img class="tool-feature-visual" src="../images/add-watermark-to-pdf.svg" alt="A PDF page with a diagonal CONFIDENTIAL text watermark and a small logo in the bottom corner" width="640" height="420">
+  </div>
+  <div class="tool-card" id="wmUpload">
+    <div class="drop-zone" id="wmDrop" tabindex="0" role="button" aria-label="Choose PDFs to watermark">
+      <div class="dz-icon">💧</div>
+      <div class="dz-title">Drop PDFs here or click to browse</div>
+      <div class="dz-hint">Up to 20 PDFs, 200 MB each · files stay in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="wmFileInput" accept=".pdf,application/pdf" multiple style="display:none">
+    </div>
+  </div>
+  <div class="tool-card wm-editor" id="wmEditor" hidden>
+    <div class="wm-cols">
+      <div class="wm-left">
+        <div class="wm-stage" id="wmStage"><canvas id="wmCanvas" aria-label="Preview of the watermarked page"></canvas></div>
+        <div class="wm-pnav"><button class="wm-ib" id="wmPrev" type="button" aria-label="Previous page">‹</button><span id="wmPageInfo">Page 1</span><button class="wm-ib" id="wmNext" type="button" aria-label="Next page">›</button></div>
+        <div id="wmFiles" class="wm-files"></div>
+        <div class="wm-fbar"><button class="btn btn-secondary" id="wmMore" type="button">Add PDF</button><button class="btn btn-secondary" id="wmReset" type="button">Start over</button><button class="btn btn-primary" id="wmZip" type="button" hidden>Download all (ZIP)</button></div>
+        <input type="file" id="wmMoreInput" accept=".pdf,application/pdf" multiple style="display:none">
+      </div>
+      <div class="wm-right">
+        <div class="wm-seg" role="group" aria-label="Watermark type"><button type="button" id="wmTypeText">Text</button><button type="button" id="wmTypeImage">Image</button></div>
+        <div id="wmTextBox">
+          <label class="wm-l" for="wmText">Watermark text</label>
+          <input class="wm-in" id="wmText" type="text" maxlength="120" placeholder="CONFIDENTIAL, DRAFT, your name…">
+          <div class="wm-row2">
+            <select class="wm-in" id="wmFont" aria-label="Font"><option value="sans">Arial</option></select>
+            <button type="button" class="wm-ib wm-b" id="wmBold" aria-label="Bold"><b>B</b></button>
+            <button type="button" class="wm-ib wm-i" id="wmItalic" aria-label="Italic"><i>I</i></button>
+            <input type="color" id="wmColor" aria-label="Text color" class="wm-color">
+          </div>
+          <div class="wm-sl"><label for="wmSize">Size</label><input type="range" id="wmSize" min="10" max="200"><span id="wmSizeV"></span></div>
+        </div>
+        <div id="wmImageBox" hidden>
+          <label class="wm-l">Logo or image</label>
+          <div class="wm-imgpick"><button class="btn btn-secondary" type="button" id="wmImgPick">Choose image</button><span id="wmImgName">No image chosen</span></div>
+          <input type="file" id="wmImgInput" accept="image/*" style="display:none">
+          <div class="wm-sl"><label for="wmImgScale">Width</label><input type="range" id="wmImgScale" min="5" max="100"><span id="wmImgScaleV"></span></div>
+        </div>
+        <label class="wm-l">Position</label>
+        <div class="wm-posrow">
+          <div class="wm-pos" role="group" aria-label="Position on page"><button type="button" data-p="tl" aria-label="Top left"></button><button type="button" data-p="tc" aria-label="Top centre"></button><button type="button" data-p="tr" aria-label="Top right"></button><button type="button" data-p="ml" aria-label="Middle left"></button><button type="button" data-p="mc" aria-label="Centre"></button><button type="button" data-p="mr" aria-label="Middle right"></button><button type="button" data-p="bl" aria-label="Bottom left"></button><button type="button" data-p="bc" aria-label="Bottom centre"></button><button type="button" data-p="br" aria-label="Bottom right"></button></div>
+          <label class="wm-chk"><input type="checkbox" id="wmTile"> Tile across the page</label>
+        </div>
+        <div class="wm-sl" id="wmGapRow"><label for="wmGap">Spacing</label><input type="range" id="wmGap" min="10" max="300"><span id="wmGapV"></span></div>
+        <div class="wm-sl"><label for="wmRot">Rotation</label><input type="range" id="wmRot" min="-180" max="180"><span id="wmRotV"></span></div>
+        <div class="wm-rotq" role="group" aria-label="Quick angles"><button type="button" data-r="0">0°</button><button type="button" data-r="45">45°</button><button type="button" data-r="90">90°</button><button type="button" data-r="-45">−45°</button></div>
+        <div class="wm-sl"><label for="wmOpacity">Opacity</label><input type="range" id="wmOpacity" min="5" max="100"><span id="wmOpacityV"></span></div>
+        <label class="wm-l">Layer</label>
+        <div class="wm-radio"><label><input type="radio" name="wmLayer" id="wmLayerOver"> Over the content</label><label><input type="radio" name="wmLayer" id="wmLayerUnder"> Behind the content</label></div>
+        <label class="wm-l" for="wmPages">Pages</label>
+        <select class="wm-in" id="wmPages"><option value="all">All pages</option><option value="first">First page only</option><option value="odd">Odd pages</option><option value="even">Even pages</option><option value="range">Custom range…</option></select>
+        <input class="wm-in" id="wmRange" type="text" placeholder="e.g. 1-3, 7, 10-" hidden aria-label="Page range">
+        <button class="btn btn-primary wm-apply" id="wmApply" type="button">Add watermark</button>
+      </div>
+    </div>
+  </div>
+  <p id="wmInfo" role="status" aria-live="polite" class="wm-info"></p>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 9 PDFs, including rotated, scanned and Urdu pages</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>How Do You Add a Watermark to a PDF Online Free?</h2>
+    <p class="lead">To add a watermark to a PDF online free, open PDFdukan's watermark tool, type your text or choose a logo, pick a position, angle and opacity, then tap Add watermark. The file is stamped in your browser, and no extra logo is added.</p>
+    <p>A live preview shows the exact page you'll download, so you can check the mark before saving. PDFdukan keeps your last settings, so the next file takes one click.</p>
+
+    <h3>How Do I Add a Custom Text Watermark to a PDF?</h3>
+    <p>Five steps, on a phone or a computer:</p>
+    <ol>
+      <li><span><strong>Add your PDFs.</strong> Tap Choose PDF or drop up to 20 files at once.</span></li>
+      <li><span><strong>Write the mark.</strong> Type CONFIDENTIAL, DRAFT or your name, then set font, size and color.</span></li>
+      <li><span><strong>Place it.</strong> Pick one of nine spots, or tick Tile across the page for a repeated pattern.</span></li>
+      <li><span><strong>Fine-tune.</strong> Set rotation and opacity, choose the pages, and check the preview.</span></li>
+      <li><span><strong>Save it.</strong> Tap Add watermark; one file downloads, several come as a ZIP.</span></li>
+    </ol>
+
+    <h3>What Can You Change on Each Watermark?</h3>
+    <p>Each option shows in the preview first:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Text in any language</h4><p>Urdu and Arabic marks come out as real letters, not boxes or errors.</p></div>
+      <div class="i2p-card"><h4>Logo or signature image</h4><p>Use PNG, JPG, WebP, SVG or GIF; transparent PNG logos blend best.</p></div>
+      <div class="i2p-card"><h4>Behind the content</h4><p>Put the mark under the text so every word stays readable.</p></div>
+      <div class="i2p-card"><h4>Only the pages you need</h4><p>Choose all, first, odd, even or a range like 1-3, 7.</p></div>
+      <div class="i2p-card"><h4>Upright on turned pages</h4><p>Landscape and rotated pages get the mark the right way up.</p></div>
+      <div class="i2p-card"><h4>Batch files</h4><p>The same watermark goes on up to 20 PDFs in one run.</p></div>
+    </div>
+
+    <h3>Which Files and Limits Apply?</h3>
+    <p>PDFdukan sets these limits for each session:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">PDF input</th><td>Up to 200 MB each, 20 files per batch</td></tr>
+        <tr><th scope="row">Image watermark</th><td>PNG, JPG, WebP, SVG, GIF</td></tr>
+        <tr><th scope="row">Rotation</th><td>Any angle from −180° to 180°</td></tr>
+        <tr><th scope="row">Opacity</th><td>5% to 100%</td></tr>
+        <tr><th scope="row">Output</th><td>PDF, or one ZIP for several files</td></tr>
+        <tr><th scope="row">Cost</th><td>Free, no sign-up, no added branding</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Who Watermarks PDFs and Why?</h3>
+    <ul>
+      <li>Real estate agents marking draft purchase agreements before a signing</li>
+      <li>Teachers stamping answer keys so copies are easy to trace</li>
+      <li>Photographers and designers tiling a name over client proofs</li>
+      <li>HR teams labeling offer letters CONFIDENTIAL before emailing them</li>
+    </ul>
+
+    <h3>How Do You Make a Watermark Clear but Not Distracting?</h3>
+    <p>Keep text marks between 20% and 35% opacity at 45°, so they read from across a desk but never hide a number. For proofs, tile a smaller mark with wide spacing. Put logos behind the content, because a mark on top of a signature line can make a contract hard to read.</p>
+
+    <h3>Is My PDF Uploaded When I Add a Watermark?</h3>
+    <p>No. PDFdukan reads pages with <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">Mozilla's pdf.js</a> and writes the watermark with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a>, both inside your browser tab. Your PDFs and logo never reach our server.</p>
+
+    <h3>What Can't This Watermark Tool Do?</h3>
+    <p>A watermark is added as page content, not locked in, so someone with a full PDF editor could remove it. Marks placed behind the content can disappear under scanned pages with a solid background. PDFs locked against changes need <a href="unlock-pdf-without-password.html">Unlock PDF</a> first.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add a watermark to a PDF online free without an account?</button></h3><div class="faq-a"><p>Yes. PDFdukan adds text or image watermarks free, with no sign-up, no page cap and no extra logo on your pages.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I put a watermark on every page?</button></h3><div class="faq-a"><p>Leave Pages set to All pages. The mark goes on each page in the same spot, including landscape pages.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I add my logo as a watermark?</button></h3><div class="faq-a"><p>Yes. Switch to Image, tap Choose image and pick your logo. Set its width as a share of the page, from 5% to 100%.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I make the watermark see-through?</button></h3><div class="faq-a"><p>Lower the Opacity slider. Around 25% keeps text below the mark easy to read.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I watermark only some pages?</button></h3><div class="faq-a"><p>Yes. Under Pages, pick first page, odd, even or Custom range, then type pages like 2-5, 9.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does a watermark reduce PDF quality?</button></h3><div class="faq-a"><p>No. The original pages are kept as they are; the mark is added on top or underneath.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I watermark several PDFs at once?</button></h3><div class="faq-a"><p>Yes. Add up to 20 PDFs, tap Add watermark, then use Download all (ZIP).</p></div></div>
+
+    <h3>Related Tools</h3>
+    <div class="related-tools-grid">
+    <a href="pdf-editor.html" class="related-tool-card"><span class="rtc-icon">✏️</span>PDF Editor</a>
+    <a href="merge-pdf.html" class="related-tool-card"><span class="rtc-icon">🔗</span>Merge PDF</a>
+    <a href="unlock-pdf-without-password.html" class="related-tool-card"><span class="rtc-icon">🔓</span>Unlock PDF</a>
+    <a href="compress-pdf-reduce-file-size.html" class="related-tool-card"><span class="rtc-icon">📉</span>Compress PDF</a>
+    </div>
+</section>
+
+</div>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/pdf-edit-core.js?v=20261110"></script>
+<script src="../js/pdf-watermark.js?v=20261110"></script>
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20260825i"></script>
+<script src="../js/tools.js?v=20260825i"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>
