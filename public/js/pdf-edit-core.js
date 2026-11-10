@@ -42,12 +42,45 @@
     impact: { pkg: '@expo-google-fonts/anton@0.4.2', css: 'PD Anton', f: { r: '400Regular/Anton_400Regular' } },
     naskh: { pkg: '@expo-google-fonts/noto-naskh-arabic@0.4.5', css: 'PD Naskh', f: { r: '400Regular/NotoNaskhArabic_400Regular', b: '700Bold/NotoNaskhArabic_700Bold' } },
     nastaliq: { pkg: '@expo-google-fonts/noto-nastaliq-urdu@0.4.2', css: 'PD Nastaliq', f: { r: '400Regular/NotoNastaliqUrdu_400Regular', b: '700Bold/NotoNastaliqUrdu_700Bold' } },
+    amiri: { pkg: '@expo-google-fonts/amiri@0.4.1', css: 'PD Amiri', f: { r: '400Regular/Amiri_400Regular', b: '700Bold/Amiri_700Bold', i: '400Regular_Italic/Amiri_400Regular_Italic', bi: '700Bold_Italic/Amiri_700Bold_Italic' } },
+    scheherazade: { pkg: '@expo-google-fonts/scheherazade-new@0.4.3', css: 'PD Scheherazade', f: { r: '400Regular/ScheherazadeNew_400Regular', b: '700Bold/ScheherazadeNew_700Bold' } },
+    devanagari: { pkg: '@expo-google-fonts/noto-sans-devanagari@0.4.2', css: 'PD Devanagari', f: { r: '400Regular/NotoSansDevanagari_400Regular', b: '700Bold/NotoSansDevanagari_700Bold' } },
+    ebgaramond: { pkg: '@expo-google-fonts/eb-garamond@0.4.3', css: 'PD EBGaramond', f: { r: '400Regular/EBGaramond_400Regular', b: '700Bold/EBGaramond_700Bold', i: '400Regular_Italic/EBGaramond_400Regular_Italic', bi: '700Bold_Italic/EBGaramond_700Bold_Italic' } },
+    firasans: { pkg: '@expo-google-fonts/fira-sans@0.4.1', css: 'PD FiraSans', f: { r: '400Regular/FiraSans_400Regular', b: '700Bold/FiraSans_700Bold', i: '400Regular_Italic/FiraSans_400Regular_Italic', bi: '700Bold_Italic/FiraSans_700Bold_Italic' } },
+    inter: { pkg: '@expo-google-fonts/inter@0.4.2', css: 'PD Inter', f: { r: '400Regular/Inter_400Regular', b: '700Bold/Inter_700Bold', i: '400Regular_Italic/Inter_400Regular_Italic', bi: '700Bold_Italic/Inter_700Bold_Italic' } },
+    notosans: { pkg: '@expo-google-fonts/noto-sans@0.4.2', css: 'PD NotoSans', f: { r: '400Regular/NotoSans_400Regular', b: '700Bold/NotoSans_700Bold', i: '400Regular_Italic/NotoSans_400Regular_Italic', bi: '700Bold_Italic/NotoSans_700Bold_Italic' } },
+    notoserif: { pkg: '@expo-google-fonts/noto-serif@0.4.2', css: 'PD NotoSerif', f: { r: '400Regular/NotoSerif_400Regular', b: '700Bold/NotoSerif_700Bold', i: '400Regular_Italic/NotoSerif_400Regular_Italic', bi: '700Bold_Italic/NotoSerif_700Bold_Italic' } },
+    ptsans: { pkg: '@expo-google-fonts/pt-sans@0.4.1', css: 'PD PTSans', f: { r: '400Regular/PTSans_400Regular', b: '700Bold/PTSans_700Bold', i: '400Regular_Italic/PTSans_400Regular_Italic', bi: '700Bold_Italic/PTSans_700Bold_Italic' } },
+    ptsanscaption: { pkg: '@expo-google-fonts/pt-sans-caption@0.4.1', css: 'PD PTSansCaption', f: { r: '400Regular/PTSansCaption_400Regular', b: '700Bold/PTSansCaption_700Bold' } },
+    ptsansnarrow: { pkg: '@expo-google-fonts/pt-sans-narrow@0.4.1', css: 'PD PTSansNarrow', f: { r: '400Regular/PTSansNarrow_400Regular', b: '700Bold/PTSansNarrow_700Bold' } },
+    ptserif: { pkg: '@expo-google-fonts/pt-serif@0.4.1', css: 'PD PTSerif', f: { r: '400Regular/PTSerif_400Regular', b: '700Bold/PTSerif_700Bold', i: '400Regular_Italic/PTSerif_400Regular_Italic', bi: '700Bold_Italic/PTSerif_700Bold_Italic' } },
+    ptserifcaption: { pkg: '@expo-google-fonts/pt-serif-caption@0.4.1', css: 'PD PTSerifCaption', f: { r: '400Regular/PTSerifCaption_400Regular', i: '400Regular_Italic/PTSerifCaption_400Regular_Italic' } },
+    ptmono: { pkg: '@expo-google-fonts/pt-mono@0.4.1', css: 'PD PTMono', f: { r: '400Regular/PTMono_400Regular' } },
+    oranienbaum: { pkg: '@expo-google-fonts/oranienbaum@0.4.1', css: 'PD Oranienbaum', f: { r: '400Regular/Oranienbaum_400Regular' } },
+    raleway: { pkg: '@expo-google-fonts/raleway@0.4.2', css: 'PD Raleway', f: { r: '400Regular/Raleway_400Regular', b: '700Bold/Raleway_700Bold', i: '400Regular_Italic/Raleway_400Regular_Italic', bi: '700Bold_Italic/Raleway_700Bold_Italic' } },
+    oswald: { pkg: '@expo-google-fonts/oswald@0.4.2', css: 'PD Oswald', f: { r: '400Regular/Oswald_400Regular', b: '700Bold/Oswald_700Bold' } },
+    sourcesans: { pkg: '@expo-google-fonts/source-sans-3@0.4.2', css: 'PD SourceSans3', f: { r: '400Regular/SourceSans3_400Regular', b: '700Bold/SourceSans3_700Bold', i: '400Regular_Italic/SourceSans3_400Regular_Italic', bi: '700Bold_Italic/SourceSans3_700Bold_Italic' } },
+    nunito: { pkg: '@expo-google-fonts/nunito@0.4.2', css: 'PD Nunito', f: { r: '400Regular/Nunito_400Regular', b: '700Bold/Nunito_700Bold', i: '400Regular_Italic/Nunito_400Regular_Italic', bi: '700Bold_Italic/Nunito_700Bold_Italic' } },
+    ubuntu: { pkg: '@expo-google-fonts/ubuntu@0.4.1', css: 'PD Ubuntu', f: { r: '400Regular/Ubuntu_400Regular', b: '700Bold/Ubuntu_700Bold', i: '400Regular_Italic/Ubuntu_400Regular_Italic', bi: '700Bold_Italic/Ubuntu_700Bold_Italic' } },
+    robotoslab: { pkg: '@expo-google-fonts/roboto-slab@0.4.2', css: 'PD RobotoSlab', f: { r: '400Regular/RobotoSlab_400Regular', b: '700Bold/RobotoSlab_700Bold' } },
+    robotocond: { pkg: '@expo-google-fonts/roboto-condensed@0.4.2', css: 'PD RobotoCondensed', f: { r: '400Regular/RobotoCondensed_400Regular', b: '700Bold/RobotoCondensed_700Bold', i: '400Regular_Italic/RobotoCondensed_400Regular_Italic', bi: '700Bold_Italic/RobotoCondensed_700Bold_Italic' } },
+    librebask: { pkg: '@expo-google-fonts/libre-baskerville@0.4.3', css: 'PD LibreBaskerville', f: { r: '400Regular/LibreBaskerville_400Regular', b: '700Bold/LibreBaskerville_700Bold', i: '400Regular_Italic/LibreBaskerville_400Regular_Italic', bi: '700Bold_Italic/LibreBaskerville_700Bold_Italic' } },
+    crimson: { pkg: '@expo-google-fonts/crimson-text@0.4.0', css: 'PD CrimsonText', f: { r: '400Regular/CrimsonText_400Regular', b: '700Bold/CrimsonText_700Bold', i: '400Regular_Italic/CrimsonText_400Regular_Italic', bi: '700Bold_Italic/CrimsonText_700Bold_Italic' } },
+    worksans: { pkg: '@expo-google-fonts/work-sans@0.4.2', css: 'PD WorkSans', f: { r: '400Regular/WorkSans_400Regular', b: '700Bold/WorkSans_700Bold', i: '400Regular_Italic/WorkSans_400Regular_Italic', bi: '700Bold_Italic/WorkSans_700Bold_Italic' } },
+    dejavusans: { pkg: 'dejavu-fonts-ttf@2.37.3', css: 'PD DejaVuSans', f: { r: 'ttf/DejaVuSans', b: 'ttf/DejaVuSans-Bold', i: 'ttf/DejaVuSans-Oblique', bi: 'ttf/DejaVuSans-BoldOblique' } },
+    dejavuserif: { pkg: 'dejavu-fonts-ttf@2.37.3', css: 'PD DejaVuSerif', f: { r: 'ttf/DejaVuSerif', b: 'ttf/DejaVuSerif-Bold', i: 'ttf/DejaVuSerif-Italic', bi: 'ttf/DejaVuSerif-BoldItalic' } },
     symbols: { pkg: 'dejavu-fonts-ttf@2.37.3', css: 'PD DejaVu', f: { r: 'ttf/DejaVuSans', b: 'ttf/DejaVuSans-Bold', i: 'ttf/DejaVuSans-Oblique', bi: 'ttf/DejaVuSans-BoldOblique' } }
   };
   // fonts offered in the font menu (label shown, key used for screen and download)
   var CHOICES = [['sans','Arial'],['serif','Times New Roman'],['calibri','Calibri'],['cambria','Cambria'],['georgia','Georgia'],['mono','Courier New'],
-    ['roboto','Roboto'],['opensans','Open Sans'],['lato','Lato'],['montserrat','Montserrat'],['poppins','Poppins'],['merriweather','Merriweather'],
-    ['playfair','Playfair Display'],['impact','Impact']];
+    ['dejavusans','Verdana (DejaVu Sans)'],['dejavuserif','DejaVu Serif'],['firasans','Fira Sans (Trebuchet MS)'],['ebgaramond','EB Garamond'],
+    ['librebask','Libre Baskerville'],['crimson','Crimson Text'],['impact','Impact'],['inter','Inter'],['lato','Lato'],['merriweather','Merriweather'],
+    ['montserrat','Montserrat'],['notosans','Noto Sans'],['notoserif','Noto Serif'],['nunito','Nunito'],['opensans','Open Sans'],['oranienbaum','Oranienbaum'],
+    ['oswald','Oswald'],['playfair','Playfair Display'],['poppins','Poppins'],['ptmono','PT Mono'],['ptsans','PT Sans'],['ptsanscaption','PT Sans Caption'],
+    ['ptsansnarrow','PT Sans Narrow'],['ptserif','PT Serif'],['ptserifcaption','PT Serif Caption'],['raleway','Raleway'],['roboto','Roboto'],
+    ['robotocond','Roboto Condensed'],['robotoslab','Roboto Slab'],['sourcesans','Source Sans 3'],['ubuntu','Ubuntu'],['worksans','Work Sans'],
+    ['amiri','Amiri (Arabic)'],['scheherazade','Scheherazade New (Arabic)'],['naskh','Noto Naskh (Arabic)'],['nastaliq','Noto Nastaliq (Urdu)'],
+    ['devanagari','Noto Sans Devanagari (Hindi)']];
   var RTL = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
   var bytesCache = {}, faceCache = {}, scriptPromise = {};
 
@@ -73,6 +106,21 @@
       if (/playfair/.test(n)) return 'playfair';
       if (/georgia|gelasio/.test(n)) return 'georgia';
       if (/impact|anton/.test(n)) return 'impact';
+      if (/garamond/.test(n)) return 'ebgaramond';
+      if (/baskerville/.test(n)) return 'librebask';
+      if (/fira ?sans|trebuchet/.test(n)) return 'firasans';
+      if (/verdana|dejavu ?sans/.test(n)) return 'dejavusans';
+      if (/dejavu ?serif/.test(n)) return 'dejavuserif';
+      if (/raleway/.test(n)) return 'raleway';
+      if (/oswald/.test(n)) return 'oswald';
+      if (/source ?sans/.test(n)) return 'sourcesans';
+      if (/nunito/.test(n)) return 'nunito';
+      if (/ubuntu/.test(n)) return 'ubuntu';
+      if (/pt ?serif/.test(n)) return 'ptserif';
+      if (/pt ?sans/.test(n)) return 'ptsans';
+      if (/inter\b/.test(n)) return 'inter';
+      if (/amiri/.test(n)) return 'amiri';
+      if (/noto ?serif/.test(n)) return 'notoserif';
       if (/calibri|carlito/.test(n)) return 'calibri';
       if (/cambria|caladea/.test(n)) return 'cambria';
       if (/courier|mono|consol|lucidaconsole|lucida console|cousine/.test(n)) return 'mono';
@@ -103,9 +151,10 @@
     }).catch(function () { return null; });
     return faceCache[key].then(function () { return "'" + FAMS[fam].css + "'"; });
   }
-  function cssStack(fam) { if (!FAMS[fam]) fam = 'sans'; return "'" + FAMS[fam].css + "', " + (/^(serif|cambria|georgia|merriweather|playfair)$/.test(fam) ? 'Georgia, serif' : fam === 'mono' ? 'monospace' : 'Arial, sans-serif'); }
+  function cssStack(fam) { if (!FAMS[fam]) fam = 'sans'; return "'" + FAMS[fam].css + "', " + (/^(serif|cambria|georgia|merriweather|playfair|dejavuserif|ebgaramond|librebask|crimson|notoserif|ptserif|ptserifcaption|robotoslab|oranienbaum|amiri)$/.test(fam) ? 'Georgia, serif' : /^(mono|ptmono)$/.test(fam) ? 'monospace' : 'Arial, sans-serif'); }
   function needsScript(text) {
     if (RTL.test(text)) return 'rtl';
+    if (/[\u0900-\u097F]/.test(text)) return 'devanagari';
     for (var i = 0; i < text.length; i++) { var c = text.charCodeAt(i); if (c > 0x24F && !(c >= 0x2000 && c <= 0x206F) && !(c >= 0x20A0 && c <= 0x20CF)) return 'symbols'; }
     return '';
   }
@@ -114,7 +163,8 @@
     if (!doc.__pdFk) { doc.registerFontkit(await getFontkit()); doc.__pdFk = {}; }
     var fam = familyFor(info), sc = needsScript(text);
     if (sc === 'symbols' && fam !== 'symbols') fam = 'symbols';
-    if (sc === 'rtl' && fam !== 'nastaliq') fam = 'naskh';
+    if (sc === 'rtl' && !/^(nastaliq|amiri|scheherazade)$/.test(fam)) fam = 'naskh';
+    if (sc === 'devanagari') fam = 'devanagari';
     var v = variant(info && info.bold, info && info.italic), key = fam + v;
     if (!doc.__pdFk[key]) doc.__pdFk[key] = fontBytes(fam, v).then(function (b) { return doc.embedFont(b, { subset: true }); });
     return doc.__pdFk[key];

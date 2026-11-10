@@ -5,8 +5,8 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="stylesheet" href="../css/style.css?v=20261110e">
-<title>Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan</title>
-<meta name="description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
+<title>Online PDF Editor Free – Edit, Fill & Sign PDF | PDFdukan</title>
+<meta name="description" content="Free online PDF editor, no sign up, no watermark: retype text, sign with a saved signature, initials and date, fill forms, add links. In your browser.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-editor.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -14,8 +14,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-editor.html">
-<meta property="og:title" content="Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan">
-<meta property="og:description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
+<meta property="og:title" content="Online PDF Editor Free – Edit, Fill & Sign PDF | PDFdukan">
+<meta property="og:description" content="Free online PDF editor, no sign up, no watermark: retype text, sign with a saved signature, initials and date, fill forms, add links. In your browser.">
 <meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -23,12 +23,12 @@
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="Online PDF Editor Free – No Sign Up, No Watermark | PDFdukan">
-<meta name="twitter:description" content="Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.">
+<meta name="twitter:title" content="Online PDF Editor Free – Edit, Fill & Sign PDF | PDFdukan">
+<meta name="twitter:description" content="Free online PDF editor, no sign up, no watermark: retype text, sign with a saved signature, initials and date, fill forms, add links. In your browser.">
 <meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script defer src="../js/pdf-edit-core.js?v=20261109c"></script>
+<script defer src="../js/pdf-edit-core.js?v=20261110"></script>
 <style>
 /* ── RESET & BASE ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -210,6 +210,9 @@ body{overflow-y:auto}
 .sig-typerow,.sig-uprow{display:flex;gap:8px;align-items:center;margin-bottom:8px}.sig-typerow[hidden],.sig-uprow[hidden]{display:none}.sig-typerow input{flex:1;padding:7px 10px;border:1px solid var(--border2,#ccc);border-radius:8px;font-size:14px;background:var(--surface,#fff);color:inherit}.sig-typerow select{padding:7px;border-radius:8px;border:1px solid var(--border2,#ccc);background:var(--surface,#fff);color:inherit}.sig-hint{font-size:12px;opacity:.75}
 .sig-inks{display:flex;gap:8px;margin:8px 0 0}.sig-ink{width:22px;height:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}.sig-ink.active{outline:2px solid var(--accent,#ff6333);outline-offset:2px}
 .sig-actions{display:flex;gap:8px;margin-top:10px;justify-content:flex-end}
+.sig-save{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--text2);margin-top:10px;cursor:pointer}.sig-save input{accent-color:var(--accent)}
+.st-sign{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.st-sign .st-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.st-saved{display:inline-flex;align-items:center;gap:2px;border:1px solid var(--border2);border-radius:6px;background:#fff;padding:2px 4px;cursor:pointer;height:30px}.st-saved img{height:24px;max-width:90px;object-fit:contain;display:block}.st-saved.active{outline:2px solid var(--accent);outline-offset:1px}.st-saved button{border:0;background:none;color:#888;cursor:pointer;font-size:12px;padding:0 2px}
 .sig-btn{padding:6px 16px;border-radius:6px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);cursor:pointer;font-size:13px}
 .sig-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 
@@ -425,7 +428,7 @@ body{overflow-y:auto}
         <div class="nd-col">
           <span class="nd-section-head">&#9999;&#65039; Edit &amp; Sign</span>
           <a href="../tools/pdf-editor.html"   class="nd-link"><span class="nd-link-icon">&#9999;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Annotate &amp; sign PDFs</div></div></a>
-          <a href="../tools/fill-sign.html"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Fill &amp; Sign</div><div class="nd-link-desc">Digital signatures</div></div></a>
+          <a href="../tools/pdf-editor.html#sign"    class="nd-link"><span class="nd-link-icon">&#9997;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sign PDF</div><div class="nd-link-desc">Sign, initial and date</div></div></a>
           <a href="../tools/add-watermark-to-pdf-online.html"    class="nd-link"><span class="nd-link-icon">&#128167;</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp all pages</div></div></a>
           <a href="../tools/add-page-numbers-to-pdf-online.html" class="nd-link"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number pages</div></div></a>
           <a href="../tools/delete-pages-from-pdf.html" class="nd-link"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove specific pages</div></div></a>
@@ -586,16 +589,17 @@ body{overflow-y:auto}
 <!-- SIGNATURE MODAL -->
 <div id="sig-modal">
   <div class="sig-box">
-    <h3>&#9997;&#65039; Add Your Signature</h3>
+    <h3 id="sig-title">&#9997;&#65039; Add Your Signature</h3>
     <div class="sig-tabs" role="tablist">
       <button type="button" class="sig-tab active" data-sigmode="draw" role="tab">Draw</button>
       <button type="button" class="sig-tab" data-sigmode="type" role="tab">Type</button>
       <button type="button" class="sig-tab" data-sigmode="upload" role="tab">Upload photo</button>
     </div>
-    <div class="sig-typerow" hidden><input type="text" id="sig-type-input" placeholder="Type your name" maxlength="40"><select id="sig-type-font" aria-label="Signature style"><option value="PD GreatVibes">Style 1</option><option value="PD Dancing">Style 2</option></select></div>
+    <div class="sig-typerow" hidden><input type="text" id="sig-type-input" placeholder="Type your name" maxlength="40"><select id="sig-type-font" aria-label="Signature style"><option value="PD GreatVibes">Great Vibes</option><option value="PD Dancing">Dancing Script</option><option value="PD Allura">Allura</option><option value="PD Sacramento">Sacramento</option><option value="PD AlexBrush">Alex Brush</option><option value="PD Satisfy">Satisfy</option><option value="PD Parisienne">Parisienne</option><option value="PD MrDafoe">Mr Dafoe</option><option value="PD HomemadeApple">Homemade Apple</option><option value="PD Caveat">Caveat</option></select></div>
     <div class="sig-uprow" hidden><button type="button" class="sig-btn" id="sig-upload-btn">Choose a photo of your signature</button><span class="sig-hint">White paper turns see-through</span><input type="file" id="sig-upload-input" accept="image/*" hidden></div>
     <canvas id="sig-canvas" width="400" height="160"></canvas>
     <div class="sig-inks" aria-label="Ink colour"><button type="button" class="sig-ink active" data-ink="#111111" title="Black" style="background:#111"></button><button type="button" class="sig-ink" data-ink="#1a3fa6" title="Blue" style="background:#1a3fa6"></button><button type="button" class="sig-ink" data-ink="#b3261e" title="Red" style="background:#b3261e"></button></div>
+    <label class="sig-save"><input type="checkbox" id="sig-save" checked> Save in this browser for next time (never uploaded)</label>
     <div class="sig-actions">
       <button class="sig-btn" id="sig-clear">Clear</button>
       <button class="sig-btn" id="sig-cancel">Cancel</button>
@@ -756,6 +760,7 @@ var PE_STATE = {
   subShape: { type:'rect', color:'#ff6333', fill:'transparent', width:'2' },
   subAnnotate: { color:'rgba(255,255,0,0.6)' },
   subForm: { type:'text' },
+  subSign: { mode:'sig', fmt:'MM/DD/YYYY', saved:-1 },
   nativeTextEdits: {},
   coverageCanvases: {}
 };
@@ -883,6 +888,7 @@ function loadPDFFile(file){
       document.getElementById('pe-filename').textContent = file.name;
       document.getElementById('btn-export-pdf').disabled = false;
       document.getElementById('pe-shell').classList.remove('pe-empty');
+      if(/^#sign/.test(location.hash) && typeof setActiveTool === 'function') setTimeout(function(){ setActiveTool('sign'); }, 0);
 
       var dz = document.getElementById('pe-drop-zone');
       if(dz) dz.remove();
@@ -1255,6 +1261,7 @@ function createObjectAt(pageNum, x, y, e){
       color:PE_STATE.subText.color||'#000000', bold:PE_STATE.subText.bold, italic:PE_STATE.subText.italic,
       underline:PE_STATE.subText.underline, align:PE_STATE.subText.align||'left',
       highlight:PE_STATE.subText.highlight||'transparent', lineHeight:'1.4' };
+    if(PE_STATE.subText.fontKey) _setObjFont(obj, PE_STATE.subText.fontKey);
   } else if(tool === 'whiteout'){
     obj = { id:uid(), type:'whiteout', x:x, y:y, w:120, h:24, color:PE_STATE.subWhiteout.color||'#ffffff' };
   } else if(tool === 'annotate'){
@@ -1266,7 +1273,17 @@ function createObjectAt(pageNum, x, y, e){
   } else if(tool === 'form'){
     obj = { id:uid(), type:'form', x:x, y:y, w:160, h:30, formType:PE_STATE.subForm.type||'text' };
   } else if(tool === 'sign'){
-    openSignatureModal(pageNum, x, y); return;
+    var ss = PE_STATE.subSign || {mode:'sig'};
+    if(ss.mode === 'check' || ss.mode === 'cross' || ss.mode === 'date'){
+      var isDate = ss.mode === 'date';
+      obj = { id:uid(), type:'text', x:x, y:y, w:isDate ? 130 : 28, h:isDate ? 26 : 30,
+        text: isDate ? _signDate(ss.fmt) : (ss.mode === 'check' ? '\u2713' : '\u2717'), fontSize:isDate ? 13 : 20,
+        color:'#111111', bold:false, italic:false, underline:false, align:'left', highlight:'transparent', lineHeight:'1.4' };
+      _setObjFont(obj, isDate ? 'sans' : 'symbols');
+    } else if(ss.saved >= 0 && _sigList()[ss.saved]){
+      var sv = _sigList()[ss.saved];
+      obj = { id:uid(), type:'signature', x:x, y:y, w:sv.w, h:sv.h, src:sv.url };
+    } else { openSignatureModal(pageNum, x, y); return; }
   } else if(tool === 'image'){
     openImageModal(pageNum, x, y); return;
   } else if(tool === 'link'){
@@ -2340,7 +2357,12 @@ sigCtx.strokeStyle = '#111111'; sigCtx.lineWidth = 2.5; sigCtx.lineCap = 'round'
 
 function openSignatureModal(pg,x,y){
   _sigPendingPage=pg; _sigPendingX=x; _sigPendingY=y;
+  var _ini = PE_STATE.subSign && PE_STATE.subSign.mode === 'init';
+  document.getElementById('sig-title').textContent = _ini ? '\u270D\uFE0F Add Your Initials' : '\u270D\uFE0F Add Your Signature';
+  document.getElementById('sig-type-input').placeholder = _ini ? 'Type your initials' : 'Type your name';
+  document.getElementById('sig-apply').textContent = _ini ? 'Insert Initials' : 'Insert Signature';
   sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+  if(_sigMode !== 'draw') _sigRedraw();
   document.getElementById('sig-modal').classList.add('open');
 }
 sigCanvas.addEventListener('mousedown', function(e){ _sigDrawing=true; var r=sigCanvas.getBoundingClientRect(); sigCtx.beginPath(); sigCtx.moveTo(e.clientX-r.left,e.clientY-r.top); });
@@ -2357,7 +2379,7 @@ document.getElementById('sig-cancel').addEventListener('click', function(){ docu
 var _sigMode = 'draw', _sigInk = '#111111', _sigFontsReady = null, _sigPhoto = null;
 function _sigLoadFonts(){
   if(_sigFontsReady) return _sigFontsReady;
-  var fcdn = window.PD_FONT_CDN || 'https://cdn.jsdelivr.net/npm/', list = [['PD GreatVibes', fcdn + '@expo-google-fonts/great-vibes@0.4.1/400Regular/GreatVibes_400Regular.ttf'],['PD Dancing', fcdn + '@expo-google-fonts/dancing-script@0.4.2/600SemiBold/DancingScript_600SemiBold.ttf']];
+  var fcdn = window.PD_FONT_CDN || 'https://cdn.jsdelivr.net/npm/', list = [['PD GreatVibes', fcdn + '@expo-google-fonts/great-vibes@0.4.1/400Regular/GreatVibes_400Regular.ttf'],['PD Dancing', fcdn + '@expo-google-fonts/dancing-script@0.4.2/600SemiBold/DancingScript_600SemiBold.ttf'],['PD Allura', fcdn + '@expo-google-fonts/allura@0.4.2/400Regular/Allura_400Regular.ttf'],['PD Sacramento', fcdn + '@expo-google-fonts/sacramento@0.4.1/400Regular/Sacramento_400Regular.ttf'],['PD AlexBrush', fcdn + '@expo-google-fonts/alex-brush@0.4.1/400Regular/AlexBrush_400Regular.ttf'],['PD Satisfy', fcdn + '@expo-google-fonts/satisfy@0.4.1/400Regular/Satisfy_400Regular.ttf'],['PD Parisienne', fcdn + '@expo-google-fonts/parisienne@0.4.1/400Regular/Parisienne_400Regular.ttf'],['PD MrDafoe', fcdn + '@expo-google-fonts/mr-dafoe@0.4.1/400Regular/MrDafoe_400Regular.ttf'],['PD HomemadeApple', fcdn + '@expo-google-fonts/homemade-apple@0.4.1/400Regular/HomemadeApple_400Regular.ttf'],['PD Caveat', fcdn + '@expo-google-fonts/caveat@0.4.2/700Bold/Caveat_700Bold.ttf']];
   _sigFontsReady = Promise.all(list.map(function(f){ var ff = new FontFace(f[0], 'url(' + f[1] + ')'); return ff.load().then(function(x){ document.fonts.add(x); }).catch(function(){}); }));
   return _sigFontsReady;
 }
@@ -2414,15 +2436,28 @@ function _sigTrimmed(){
 document.getElementById('sig-apply').addEventListener('click', function(){
   var trimmed = _sigTrimmed();
   if(!trimmed){ toast(_sigMode === 'type' ? 'Type your name first' : _sigMode === 'upload' ? 'Choose a photo of your signature first' : 'Draw your signature first'); return; }
-  var dataUrl = trimmed.url, sw = Math.min(200, trimmed.w), sh = Math.round(sw * trimmed.h / trimmed.w);
-  if(sh > 90){ sh = 90; sw = Math.round(sh * trimmed.w / trimmed.h); }
+  var _ini = PE_STATE.subSign && PE_STATE.subSign.mode === 'init', maxW = _ini ? 90 : 200, maxH = _ini ? 50 : 90;
+  var dataUrl = trimmed.url, sw = Math.min(maxW, trimmed.w), sh = Math.round(sw * trimmed.h / trimmed.w);
+  if(sh > maxH){ sh = maxH; sw = Math.round(sh * trimmed.w / trimmed.h); }
+  if(document.getElementById('sig-save').checked) _sigSaveLocal({ url:dataUrl, w:sw, h:sh, kind:_ini ? 'init' : 'sig' });
   var obj = { id:uid(), type:'signature', x:_sigPendingX, y:_sigPendingY, w:sw, h:sh, src:dataUrl };
   getPageObjects(_sigPendingPage).push(obj);
   pushHistory(); renderObjects(_sigPendingPage);
   document.getElementById('sig-modal').classList.remove('open');
   selectObj(_sigPendingPage, obj.id);
-  toast('Signature inserted');
+  toast(_ini ? 'Initials inserted' : 'Signature inserted');
+  if(PE_STATE.activeTool === 'sign') renderSubToolbar && renderSubToolbar('sign');
 });
+/* saved signatures and initials: kept only in this browser (localStorage), never uploaded */
+var SIG_STORE = 'pd-sigs-v1';
+function _sigList(){ try { var a = JSON.parse(localStorage.getItem(SIG_STORE) || '[]'); return Array.isArray(a) ? a : []; } catch(e){ return []; } }
+function _sigSaveLocal(o){ try { var a = _sigList().filter(function(x){ return x.url !== o.url; }); a.unshift(o); localStorage.setItem(SIG_STORE, JSON.stringify(a.slice(0, 6))); } catch(e){} }
+function _sigDelete(i){ try { var a = _sigList(); a.splice(i, 1); localStorage.setItem(SIG_STORE, JSON.stringify(a)); } catch(e){} }
+function _signDate(fmt){
+  var d = new Date(), dd = ('0'+d.getDate()).slice(-2), mm = ('0'+(d.getMonth()+1)).slice(-2), yy = d.getFullYear();
+  var mon = ['January','February','March','April','May','June','July','August','September','October','November','December'][d.getMonth()];
+  return fmt === 'DD/MM/YYYY' ? dd+'/'+mm+'/'+yy : fmt === 'YYYY-MM-DD' ? yy+'-'+mm+'-'+dd : fmt === 'Month D, YYYY' ? mon+' '+d.getDate()+', '+yy : mm+'/'+dd+'/'+yy;
+}
 
 /* ============================================================
    LINK MODAL
@@ -2501,7 +2536,7 @@ document.getElementById('btn-redo').addEventListener('click', redo);
 
 function renderSubToolbar(tool){
   var bar = document.getElementById('pe-sub-toolbar');
-  bar.innerHTML = '';
+  bar.innerHTML = ''; bar.onclick = null;
   bar.classList.remove('visible');
 
   if(tool === 'text'){
@@ -2509,7 +2544,7 @@ function renderSubToolbar(tool){
       '<span class="st-label">Size:</span>' +
       '<input type="number" class="st-select" id="st-font-size" value="'+PE_STATE.subText.size+'" min="6" max="120" style="width:52px">' +
       '<select class="st-select" id="st-font-family">' +
-        ['Arial','Times New Roman','Courier New','Georgia','Verdana','Tahoma'].map(function(f){ return '<option'+(f===PE_STATE.subText.fontFamily?' selected':'')+'>'+f+'</option>'; }).join('') +
+        (window.PDEditCore ? PDEditCore.CHOICES : [['sans','Arial']]).map(function(c){ return '<option value="'+c[0]+'"'+(c[0]===(PE_STATE.subText.fontKey||'sans')?' selected':'')+'>'+c[1]+'</option>'; }).join('') +
       '</select>' +
       '<div class="st-divider"></div>' +
       '<span class="st-label">Color:</span>' +
@@ -2522,7 +2557,7 @@ function renderSubToolbar(tool){
       '<button class="st-btn'+(PE_STATE.subText.italic?' active':'')+'" id="st-italic" style="font-style:italic">I</button>' +
       '<button class="st-btn'+(PE_STATE.subText.underline?' active':'')+'" id="st-underline" style="text-decoration:underline">U</button>';
     document.getElementById('st-font-size').oninput=function(e){ PE_STATE.subText.size=e.target.value; };
-    document.getElementById('st-font-family').onchange=function(e){ PE_STATE.subText.fontFamily=e.target.value; };
+    document.getElementById('st-font-family').onchange=function(e){ PE_STATE.subText.fontKey=e.target.value; if(window.PDEditCore){ PE_STATE.subText.fontFamily=PDEditCore.cssStack(e.target.value); PDEditCore.cssFace(e.target.value,false,false); } };
     document.getElementById('st-text-color').oninput=function(e){ PE_STATE.subText.color=e.target.value; };
     document.getElementById('st-text-highlight').oninput=function(e){ PE_STATE.subText.highlight=e.target.value; };
     document.getElementById('st-highlight-off').onclick=function(){ PE_STATE.subText.highlight='transparent'; };
@@ -2583,7 +2618,19 @@ function renderSubToolbar(tool){
     document.getElementById('st-form-type').onchange=function(e){ PE_STATE.subForm.type=e.target.value; };
     bar.classList.add('visible');
   } else if(tool === 'sign'){
-    bar.innerHTML = '<span style="font-size:12px;color:var(--text2)">Click anywhere on the page to open the signature pad</span>';
+    var ss = PE_STATE.subSign, saved = _sigList();
+    var mb = function(m, label, title){ return '<button class="st-btn'+(ss.mode===m && ss.saved<0?' active':'')+'" data-sm="'+m+'" title="'+title+'">'+label+'</button>'; };
+    bar.innerHTML = '<div class="st-sign">' + mb('sig','Signature','Draw, type or upload a signature') + mb('init','Initials','Add your initials') +
+      mb('check','\u2713 Check','Place a check mark') + mb('cross','\u2717 Cross','Place a cross mark') + mb('date','Date','Place today\'s date') +
+      '<select class="st-select" id="st-date-fmt" aria-label="Date format">' + ['MM/DD/YYYY','DD/MM/YYYY','YYYY-MM-DD','Month D, YYYY'].map(function(f){ return '<option'+(f===ss.fmt?' selected':'')+'>'+f+'</option>'; }).join('') + '</select>' +
+      (saved.length ? '<div class="st-divider"></div><span class="st-label">Saved:</span>' + saved.map(function(o,i){ return '<span class="st-saved'+(ss.saved===i?' active':'')+'" data-si="'+i+'" title="Click, then click the page to place it"><img src="'+o.url+'" alt="Saved '+(o.kind==='init'?'initials':'signature')+'"><button type="button" data-sd="'+i+'" aria-label="Delete saved signature">\u2715</button></span>'; }).join('') : '') +
+      '<span style="font-size:12px;color:var(--text2);margin-left:6px">Then click the page where it goes</span></div>';
+    bar.onclick = function(e){
+      var d = e.target.closest('[data-sd]'); if(d){ e.stopPropagation(); _sigDelete(+d.dataset.sd); ss.saved = -1; renderSubToolbar('sign'); return; }
+      var si = e.target.closest('[data-si]'); if(si){ ss.saved = +si.dataset.si; renderSubToolbar('sign'); return; }
+      var b = e.target.closest('[data-sm]'); if(b){ ss.mode = b.dataset.sm; ss.saved = -1; renderSubToolbar('sign'); }
+    };
+    document.getElementById('st-date-fmt').onchange = function(e){ ss.fmt = e.target.value; ss.mode = 'date'; ss.saved = -1; renderSubToolbar('sign'); };
     bar.classList.add('visible');
   } else if(tool === 'link'){
     bar.innerHTML = '<span style="font-size:12px;color:var(--text2)">Click anywhere on the page to place a hyperlink box</span>';
@@ -3211,10 +3258,10 @@ function exportPageRaster(outDoc, srcDoc, pageNum){
 setActiveTool('select');
 updateUndoRedo();
 </script>
-<script src="../js/app.js?v=20261110k"></script>
-<script src="../js/header.js?v=20260825i"></script>
+<script src="../js/app.js?v=20261110l"></script>
+<script src="../js/header.js?v=20261110"></script>
 <section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
-    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 12 PDFs</span><span>No fake ratings · Limits listed below</span></aside>
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 12 PDFs, plus signatures, initials, dates and saved signatures</span><span>No fake ratings · Limits listed below</span></aside>
 
     <h2>What Is This Online PDF Editor?</h2>
     <p class="lead">PDFdukan is an online PDF editor, free with no sign up and without a watermark. You click a line of text and type over it, add text boxes, images, signatures, links and shapes, fill form fields, then download a PDF that keeps its original text sharp and searchable.</p>
@@ -3237,13 +3284,19 @@ updateUndoRedo();
     <div class="i2p-cards">
       <div class="i2p-card"><h4>Edit existing text</h4><p>Retype names, dates or prices. Old words leave the file; new ones match the original font style.</p></div>
       <div class="i2p-card"><h4>Find and replace</h4><p>Press Ctrl+F to find a word across all pages and replace one match or every match at once.</p></div>
-      <div class="i2p-card"><h4>Signatures three ways</h4><p>Draw with a mouse or finger, type your name in a script style, or upload a photo with the paper removed.</p></div>
+      <div class="i2p-card"><h4>Sign, initial and date</h4><p>Add a signature, initials, today’s date, a check or a cross, and reuse a saved signature next time.</p></div>
       <div class="i2p-card"><h4>Fillable form fields</h4><p>Fill a PDF's own fields, or add text, multi-line, checkbox, radio and dropdown fields that others can fill.</p></div>
       <div class="i2p-card"><h4>Clickable links</h4><p>Enter a web address or email, then size the link box over your text; it opens in any PDF reader.</p></div>
       <div class="i2p-card"><h4>Images, shapes and notes</h4><p>Place a logo or photo, draw rectangles, circles, lines and arrows, sketch freehand or pin a sticky note.</p></div>
       <div class="i2p-card"><h4>Urdu, Arabic and symbols</h4><p>Type right-to-left text or symbols like ≥ and ✓; Urdu in Naskh style stays searchable text.</p></div>
       <div class="i2p-card"><h4>Page tools</h4><p>Rotate pages left or right, change their order, delete pages or insert blank ones for extra notes.</p></div>
     </div>
+
+    <h3>How Do I Sign a PDF Online for Free?</h3>
+    <p>To sign a PDF online free, open it in PDFdukan, choose Sign, then pick Signature, Initials, Check, Cross or Date and click the spot on the page. Drag the signature to move it and pull a corner to resize it.</p>
+    <p>PDFdukan creates a signature three ways: draw it with a mouse or finger, type your name in one of 10 handwriting styles, or upload a photo of your signature with the paper made see-through. Ink comes in black, blue or red.</p>
+    <p>Tick “Save in this browser for next time” and your signature and initials appear as Saved buttons on your next visit. They stay in this browser’s storage only and are never uploaded; the ✕ on each button deletes it.</p>
+    <p>A signature added here is an electronic signature: a picture of your handwriting placed on the page. It is not a certificate-based digital signature, so check that the person asking for your signature accepts it.</p>
 
     <h3>Which Files and Limits Does the Editor Support?</h3>
     <p>These details apply to every editing session:</p>
@@ -3269,7 +3322,7 @@ updateUndoRedo();
     </ul>
 
     <h3>How Do You Keep Edited Text Looking Like the Original?</h3>
-    <p>PDFdukan reads each line's font name, size, weight and color, then writes the new words in an open font with the same widths. Times New Roman, Arial, Courier, Calibri and Cambria get close look-alikes, so a replaced line keeps its length and spacing.</p>
+    <p>PDFdukan reads each line's font name, size, weight and color, then writes the new words in an open font with the same widths. Times New Roman, Arial, Courier, Calibri and Cambria get close look-alikes, so a replaced line keeps its length and spacing. For new text you can pick from 43 fonts, including EB Garamond, Libre Baskerville, PT Sans, Roboto and fonts for Arabic, Urdu and Hindi.</p>
     <p>Edit one line at a time and keep about the same number of letters, so the new words don't run into the next column. If a line belongs to a table cell, check the cell edge in the preview before you click Export PDF.</p>
     <p>A logo font or handwriting font has no look-alike, so PDFdukan uses the nearest regular style. For a heading in such a font, place a text box instead and pick its size and color yourself.</p>
 
@@ -3285,14 +3338,16 @@ updateUndoRedo();
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this online PDF editor free with no sign up and without watermark?</button></h3><div class="faq-a"><p>Yes. PDFdukan's PDF editor is free, with no account, no email and no daily limit. The downloaded file carries no watermark, logo or extra page.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit the existing text in my PDF?</button></h3><div class="faq-a"><p>Yes, in digital PDFs. Click a line, type the new words and press Enter. The old words are removed from the page, and the new ones use a matching font.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why does the new text use a slightly different font?</button></h3><div class="faq-a"><p>Most PDFs carry only the letters they used, so new letters need a look-alike font. PDFdukan picks one with the same widths, so lines keep their length.</p></div></div>
-    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I fill out a PDF form and sign it?</button></h3><div class="faq-a"><p>Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to draw, type or upload your signature.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I fill out a PDF form and sign it?</button></h3><div class="faq-a"><p>Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to add your signature, initials and today’s date.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I save my signature to use again?</button></h3><div class="faq-a"><p>Yes. Tick “Save in this browser for next time” before you insert it. The signature then shows as a Saved button in the Sign bar, kept only in this browser.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is a signature made here legally valid?</button></h3><div class="faq-a"><p>PDFdukan adds an electronic signature image, not a certificate-based digital signature. Many forms accept it, but rules differ by country and document, so ask the receiver if you are unsure.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does the PDF editor work on a phone?</button></h3><div class="faq-a"><p>Yes. The editor works in mobile Chrome and Safari, and the Sign pad accepts a finger. A larger screen makes small lines easier to tap.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I delete or rotate pages while editing?</button></h3><div class="faq-a"><p>Yes. Use the bar above each page to rotate it, move it up or down, delete it or add a blank page. Changes apply when you download.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I edit a scanned PDF?</button></h3><div class="faq-a"><p>Not its words, because a scan is a picture. You can still add text boxes, signatures and images, or make it searchable with Searchable PDF first.</p></div></div>
     <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the edited PDF get bigger?</button></h3><div class="faq-a"><p>Only a little. PDFdukan keeps the original pages and adds just the letters of each new font. To shrink a heavy file, use <a href="compress-pdf-reduce-file-size.html">Compress PDF</a>.</p></div></div>
 </section>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this online PDF editor free with no sign up and without watermark?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan's PDF editor is free, with no account, no email and no daily limit. The downloaded file carries no watermark, logo or extra page."}}, {"@type": "Question", "name": "Can I edit the existing text in my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, in digital PDFs. Click a line, type the new words and press Enter. The old words are removed from the page, and the new ones use a matching font."}}, {"@type": "Question", "name": "Why does the new text use a slightly different font?", "acceptedAnswer": {"@type": "Answer", "text": "Most PDFs carry only the letters they used, so new letters need a look-alike font. PDFdukan picks one with the same widths, so lines keep their length."}}, {"@type": "Question", "name": "Can I fill out a PDF form and sign it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to draw, type or upload your signature."}}, {"@type": "Question", "name": "Does the PDF editor work on a phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The editor works in mobile Chrome and Safari, and the Sign pad accepts a finger. A larger screen makes small lines easier to tap."}}, {"@type": "Question", "name": "Can I delete or rotate pages while editing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Use the bar above each page to rotate it, move it up or down, delete it or add a blank page. Changes apply when you download."}}, {"@type": "Question", "name": "Can I edit a scanned PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Not its words, because a scan is a picture. You can still add text boxes, signatures and images, or make it searchable with Searchable PDF first."}}, {"@type": "Question", "name": "Will the edited PDF get bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Only a little. PDFdukan keeps the original pages and adds just the letters of each new font. To shrink a heavy file, use Compress PDF."}}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Online PDF Editor", "url": "https://pdfdukan.com/tools/pdf-editor.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "Free online PDF editor with no sign up and no watermark. Retype text, sign, fill forms and add links or images, then download. Runs in your browser.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "featureList": ["Edit existing PDF text", "Find and replace", "Draw, type or upload a signature", "Fill and add form fields", "Clickable links", "Images, shapes and notes", "Rotate, move, delete and add pages"]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this online PDF editor free with no sign up and without watermark?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. PDFdukan's PDF editor is free, with no account, no email and no daily limit. The downloaded file carries no watermark, logo or extra page."}}, {"@type": "Question", "name": "Can I edit the existing text in my PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, in digital PDFs. Click a line, type the new words and press Enter. The old words are removed from the page, and the new ones use a matching font."}}, {"@type": "Question", "name": "Why does the new text use a slightly different font?", "acceptedAnswer": {"@type": "Answer", "text": "Most PDFs carry only the letters they used, so new letters need a look-alike font. PDFdukan picks one with the same widths, so lines keep their length."}}, {"@type": "Question", "name": "Can I fill out a PDF form and sign it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Click any field in a fillable form and type, tick boxes or pick from lists. Then choose Sign to add your signature, initials and today’s date."}}, {"@type": "Question", "name": "Can I save my signature to use again?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Tick “Save in this browser for next time” before you insert it. The signature then shows as a Saved button in the Sign bar, kept only in this browser."}}, {"@type": "Question", "name": "Is a signature made here legally valid?", "acceptedAnswer": {"@type": "Answer", "text": "PDFdukan adds an electronic signature image, not a certificate-based digital signature. Many forms accept it, but rules differ by country and document, so ask the receiver if you are unsure."}}, {"@type": "Question", "name": "Does the PDF editor work on a phone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The editor works in mobile Chrome and Safari, and the Sign pad accepts a finger. A larger screen makes small lines easier to tap."}}, {"@type": "Question", "name": "Can I delete or rotate pages while editing?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Use the bar above each page to rotate it, move it up or down, delete it or add a blank page. Changes apply when you download."}}, {"@type": "Question", "name": "Can I edit a scanned PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Not its words, because a scan is a picture. You can still add text boxes, signatures and images, or make it searchable with Searchable PDF first."}}, {"@type": "Question", "name": "Will the edited PDF get bigger?", "acceptedAnswer": {"@type": "Answer", "text": "Only a little. PDFdukan keeps the original pages and adds just the letters of each new font. To shrink a heavy file, use Compress PDF."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Online PDF Editor", "url": "https://pdfdukan.com/tools/pdf-editor.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "Free online PDF editor, no sign up, no watermark: retype text, sign with a saved signature, initials and date, fill forms, add links. In your browser.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "featureList": ["Edit existing PDF text", "Find and replace", "Draw, type or upload a signature", "Fill and add form fields", "Clickable links", "Images, shapes and notes", "Rotate, move, delete and add pages"]}</script>
 
 
 
