@@ -87,7 +87,9 @@ const nextConfig = {
       { source: '/image-compressor', destination: '/tools/image-compress-resize.html', permanent: true },
       { source: '/searchable-pdf', destination: '/tools/searchable-pdf.html', permanent: true },
       { source: '/html-to-pdf', destination: '/tools/html-to-pdf.html', permanent: true },
-      { source: '/islamic-inheritance', destination: '/tools/inheritance-calc-advanced.html', permanent: true },
+      { source: '/islamic-inheritance', destination: '/tools.html', permanent: true },
+      { source: '/tools/inheritance-calc-advanced.html', destination: '/tools.html', permanent: true },
+      { source: '/blog/islamic-inheritance-calculator-guide.html', destination: '/blog/index.html', permanent: true },
       // Friendly extensionless hub URLs shared by users and search engines.
       {
         source: '/tools',
@@ -134,7 +136,7 @@ const nextConfig = {
       // Keep the more complete faraid implementation as the single calculator.
       {
         source: '/tools/inheritance-calc.html',
-        destination: '/tools/inheritance-calc-advanced.html',
+        destination: '/tools.html',
         permanent: true,
       },
       // Retired AI tools (API-dependent, removed 2026-06-16) -> tools hub.

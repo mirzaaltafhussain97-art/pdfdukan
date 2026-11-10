@@ -84,7 +84,10 @@ Redirect 301 /smart-scan /scanner.html
 Redirect 301 /image-compressor /tools/compress.html
 Redirect 301 /searchable-pdf /tools/searchable-pdf.html
 Redirect 301 /html-to-pdf /tools/html-to-pdf.html
-Redirect 301 /islamic-inheritance /tools/inheritance-calc-advanced.html
+Redirect 301 /islamic-inheritance /tools.html
+Redirect 301 /tools/inheritance-calc-advanced.html /tools.html
+Redirect 301 /tools/inheritance-calc.html /tools.html
+Redirect 301 /blog/islamic-inheritance-calculator-guide.html /blog/index.html
 
 # 301 redirects for retired duplicate blog URLs (canonical = the -guide versions).
 # Hostinger serves /public files from its static layer, so next.config.js

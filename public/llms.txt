@@ -25,7 +25,6 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Image Compressor and Resizer](https://pdfdukan.com/tools/compress.html): Resize or re-encode JPG, PNG and WebP; quality and target-size results vary
 - [Searchable PDF from English Scan](https://pdfdukan.com/tools/searchable-pdf.html): Add an approximate invisible OCR word layer to one English JPG or PNG scan
 - [HTML to PDF Print Preview](https://pdfdukan.com/tools/html-to-pdf.html): Prepare one HTML document for the browser Print to PDF workflow; rendering can vary
-- [Hanafi Islamic Inheritance Estimate](https://pdfdukan.com/tools/inheritance-calc-advanced.html): Educational faraid estimate, not a fatwa or legal distribution
 - [Word to PDF](https://pdfdukan.com/tools/word-to-pdf-converter.html): Convert DOCX, DOC, ODT, RTF or TXT to PDF with a LibreOffice engine running in the browser (no upload); up to 10 files, ZIP or one combined PDF
 - [PDF to Word](https://pdfdukan.com/tools/pdf-to-word-converter.html): Convert digital or scanned PDFs (OCR in 37 languages) into an editable DOCX in the browser; columns, paragraphs, headings, tables, images and links are rebuilt, exact page design is not
 - [PDF to Excel](https://pdfdukan.com/tools/pdf-to-excel.html): Infer worksheet rows and columns from positioned searchable-PDF text; verify extracted data
@@ -50,7 +49,6 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [How to Scan Documents with Your Phone](https://pdfdukan.com/blog/scan-documents-phone.html)
 - [Best Free CamScanner Alternatives](https://pdfdukan.com/alternatives.html)
 - [How OCR Works](https://pdfdukan.com/blog/how-ocr-works.html)
-- [Islamic Inheritance (Faraid) Guide](https://pdfdukan.com/blog/islamic-inheritance-calculator-guide.html)
 
 ## About & Legal
 - [About PDFdukan and editorial standards](https://pdfdukan.com/about.html#editorial-standards)

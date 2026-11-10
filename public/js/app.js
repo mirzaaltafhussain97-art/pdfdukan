@@ -1515,9 +1515,7 @@ const TOOL_PAGES = {
   'pdf-editor':    'tools/pdf-editor.html',
   'pdf-to-ppt':    'tools/pdf-to-ppt.html',
   'pdf-to-excel':  'tools/pdf-to-excel.html',
-  'inheritance':   'tools/inheritance-calc-advanced.html',
   'word-counter':  'tools/word-character-counter.html',
-  'warasat':       'tools/inheritance-calc-advanced.html',
   /* ── PDF utilities & generators (Part 5) ── */
   'rotate-pdf':         'tools/organize-pdf-pages-online.html',
   'reorder-pdf':        'tools/organize-pdf-pages-online.html',
@@ -1579,7 +1577,6 @@ const TOOL_SEARCH_INDEX = [
   { id:'pdf-to-ppt',   name:'PDF to PowerPoint',     desc:'Export PDF pages as image-based PPTX slides',   icon:'📊', category:'PDF Tools',   keywords:['powerpoint','ppt','pptx','slides','presentation','office'] },
   { id:'pdf-to-excel', name:'PDF to Excel',          desc:'Extract tables from PDF to XLSX spreadsheet', icon:'📋', category:'PDF Tools',   keywords:['excel','xlsx','xls','table','spreadsheet','data'] },
   { id:'word-counter', name:'Word & Character Counter', desc:'Count words, characters, sentences and reading time', icon:'🔢', category:'Text Tools', keywords:['word','words','word count','word counter','character','characters','character count','character counter','letter','letters','count','counter','text','essay','sentence','paragraph','reading time','limit'] },
-  { id:'inheritance', name:'Hanafi Inheritance Estimate', desc:'Educational faraid estimate with specialist stops', icon:'☪️', category:'Calculators', keywords:['islamic','inheritance','warasat','intikal','hanafi','quran','fara\'id','estate','muslim','mother','brother','sister'] },
 ];
 
 /* ── SEARCH ──────────────────────────────────────────────────── */
@@ -2032,7 +2029,6 @@ function _initSearchTrustSignals() {
     'fill-sign':['Draw, type or upload a signature','Add movable text fields','Export a signed PDF'],
     'html-to-pdf':['Convert pasted HTML to PDF','Preview before export','Client-side generation'],
     'img-to-pdf':['JPG, PNG and WEBP input','Page size and orientation controls','Multi-image PDF export'],
-    'inheritance-calc-advanced':['Educational estimates for selected Hanafi cases','Complex and legally sensitive combinations are stopped','Net-estate, share and unassigned-residue breakdown'],
     'merge-pdf':['Reorder and combine PDFs','Multiple file support','Client-side merge'],
     'ocr':['JPG, PNG, WebP, GIF, BMP or scanned PDF','Paste a screenshot or add up to 20 images','37 languages, TXT and Word download'],
     'page-numbers':['Six number positions','Custom start and skipped pages','Custom format and color'],

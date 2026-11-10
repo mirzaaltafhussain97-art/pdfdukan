@@ -88,9 +88,6 @@
             + '<div class="nd-divider"></div>'
             + '<span class="nd-section-head">&#128221; Text Tools</span>'
             + '<a href="' + base + 'tools/word-character-counter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>'
-            + '<div class="nd-divider"></div>'
-            + '<span class="nd-section-head">&#128295; Specialist Tool</span>'
-            + '<a href="' + base + 'tools/inheritance-calc-advanced.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#9764;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Islamic Inheritance</div><div class="nd-link-desc">Warasat Intikal calculator</div></div></a>'
           + '</div>'
 
         + '</div>' /* /.nav-dropdown.mega */
@@ -168,8 +165,6 @@
     + '<a href="' + base + 'tools/ocr-image-to-text.html"           class="mnd-link">&#128292; OCR Text</a>'
     + '<div class="mnd-section">&#128221; Text Tools</div>'
     + '<a href="' + base + 'tools/word-character-counter.html" class="mnd-link">&#128290; Word Counter</a>'
-    + '<div class="mnd-section">&#128295; Specialist Tool</div>'
-    + '<a href="' + base + 'tools/inheritance-calc-advanced.html" class="mnd-link">&#9764;&#65039; Islamic Inheritance</a>'
     + '<a href="' + base + 'blog/index.html"          class="mnd-link">&#128203; Blog</a>'
     + '<a href="' + base + 'about.html"               class="mnd-link">&#127970; About</a>'
     + '<a href="' + base + 'privacy.html"             class="mnd-link">&#128274; Privacy</a>'
