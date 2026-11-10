@@ -28,6 +28,7 @@ PDFdukan provides free online tools for PDF conversion, compression, merging, sp
 - [Word to PDF](https://pdfdukan.com/tools/word-to-pdf-converter.html): Convert DOCX, DOC, ODT, RTF or TXT to PDF with a LibreOffice engine running in the browser (no upload); up to 10 files, ZIP or one combined PDF
 - [PDF to Word](https://pdfdukan.com/tools/pdf-to-word-converter.html): Convert digital or scanned PDFs (OCR in 37 languages) into an editable DOCX in the browser; columns, paragraphs, headings, tables, images and links are rebuilt, exact page design is not
 - [PDF Restriction Compatibility Check](https://pdfdukan.com/tools/unlock-pdf.html): Re-save supported unencrypted PDFs; does not decrypt files or bypass unknown passwords
+- [PDF Text Extractor](https://pdfdukan.com/tools/pdf-text-extractor.html): Extract PDF text in reading order; scanned pages read with OCR
 - [Add Watermark to PDF](https://pdfdukan.com/tools/add-watermark-to-pdf-online.html): Add a text or logo watermark to PDF
 - [Organize PDF Pages](https://pdfdukan.com/tools/organize-pdf-pages-online.html): Reorder, rotate, delete or duplicate pages, add blank pages or another PDF, and save all or selected pages; runs in the browser
 - [Fill & Sign PDF](https://pdfdukan.com/tools/fill-sign.html): Add visible form text or a drawn, typed or uploaded signature and export a flattened PDF; this is not a certificate-based cryptographic signature

@@ -2031,7 +2031,7 @@ function _initSearchTrustSignals() {
     'pdf-editor':['Retype existing text in a matching font','Sign, fill forms and add clickable links','Rotate, move, delete or add pages'],
     'pdf-metadata':['View and edit title, author, subject and keywords','Output bytes are reopened and metadata values checked','PDF rewrite may affect signatures or unsupported interactive structures'],
     'pdf-organizer':['Drag to reorder pages','Rotate, duplicate or delete pages','Add blank pages or another PDF'],
-    'pdf-text-extractor':['Extract embedded selectable PDF text without OCR','Page separators and basic line endings','Copy or UTF-8 TXT download'],
+    'pdf-text-extractor':['Text in reading order, columns and right-to-left lines','Scanned pages read with OCR in 13 languages','Copy, UTF-8 TXT or Word .docx'],
     'pdf-to-img':['Pages to JPG, PNG or WebP at 72–600 DPI','Save the photos inside a PDF','Opens password-protected PDFs in your browser'],
     'pdf-to-word':['Digital and scanned PDFs, OCR in 37 languages','Columns, paragraphs, headings, tables, images and links','Password-protected PDFs open in your browser'],
     'searchable-pdf':['JPG or PNG input with a searchable OCR text layer','Selectable OCR language','Manual review before downloading the generated PDF'],

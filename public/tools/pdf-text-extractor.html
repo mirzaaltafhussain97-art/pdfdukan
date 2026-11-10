@@ -4,128 +4,80 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PDF Text Extractor — Extract Text from PDF Free | PDFdukan</title>
-<meta name="description" content="Extract embedded text from an unencrypted PDF by page, then review, copy or download a UTF-8 TXT file. Scanned image PDFs require OCR.">
+<title>PDF Text Extractor – Free, OCR for Scans | PDFdukan</title>
+<meta name="description" content="Free PDF text extractor: copy text in true reading order, read scanned pages with OCR, Urdu and Arabic supported. Download TXT or Word. No upload.">
 <meta name="robots" content="index, follow">
-<meta name="geo.region" content="PK">
-<meta name="geo.placename" content="Pakistan">
-<meta name="geo.position" content="30.3753;69.3451">
-<meta name="ICBM" content="30.3753, 69.3451">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-text-extractor.html">
 <link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/pdf-text-extractor.html">
 <link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/pdf-text-extractor.html">
-<!-- Open Graph -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PDFdukan">
 <meta property="og:url" content="https://pdfdukan.com/tools/pdf-text-extractor.html">
-<meta property="og:title" content="PDF Text Extractor — Extract Text from PDF Free | PDFdukan">
-<meta property="og:description" content="Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.">
-<meta property="og:image" content="https://pdfdukan.com/images/pdf-text-extractor.svg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+<meta property="og:title" content="PDF Text Extractor – Free, OCR for Scans | PDFdukan">
+<meta property="og:description" content="Free PDF text extractor: copy text in true reading order, read scanned pages with OCR, Urdu and Arabic supported. Download TXT or Word. No upload.">
+<meta property="og:image" content="https://pdfdukan.com/images/pdf-text-extractor-v2.svg">
 <meta property="og:locale" content="en_US">
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pdfdukan">
-<meta name="twitter:title" content="PDF Text Extractor — Extract Text from PDF Free | PDFdukan">
-<meta name="twitter:description" content="Free online PDF text extractor. Pull all text from a PDF and copy or download as .txt. Runs in your browser, no upload.">
-<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-text-extractor.svg">
+<meta name="twitter:title" content="PDF Text Extractor – Free, OCR for Scans | PDFdukan">
+<meta name="twitter:description" content="Free PDF text extractor: copy text in true reading order, read scanned pages with OCR, Urdu and Arabic supported. Download TXT or Word. No upload.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/pdf-text-extractor-v2.svg">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <link rel="stylesheet" href="../css/style.css?v=20260825i">
 <style>
-/* ── PDF File Card ─────────────────────────────────────────── */
-.pdf-file-card {
-  background: var(--card-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 12px;
-  overflow: hidden;
-  transition: border-color var(--t) var(--ease);
-}
-.pdf-file-card:hover { border-color: var(--border-strong); }
-.pdf-file-card.sortable-ghost { opacity: 0.4; }
+[hidden]{display:none!important}
+/* ── PDF text extractor ── */
+.tx-info{font-size:13px;color:var(--text-3);margin:10px 0 0;text-align:center}
+.tx-pw{margin-top:12px;padding:12px;border:1px dashed var(--border);border-radius:10px;background:var(--card-2);font-size:13px;color:var(--text-2)}
+.tx-pw div{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.tx-pw input{flex:1 1 200px;min-height:42px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:15px}
+.tx-result{padding:16px;text-align:left}
+.tx-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:-16px -16px 12px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--card);border-radius:var(--radius) var(--radius) 0 0}
+.tx-file{font-size:14px;font-weight:700;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1 1 220px}
+.tx-sm{min-height:38px;padding:8px 14px;font-size:13px}
+.tx-opts{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card-2);font-size:13px;color:var(--text-2)}
+.tx-opts label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.tx-opts select,.tx-opts input[type=text]{min-height:36px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font-size:13px}
+.tx-opts input[type=text]{width:130px}
+.tx-stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 2px 8px;font-size:13px;color:var(--text-3)}
+.tx-stats b{color:var(--text)}
+.tx-stats .tx-ocr{color:#1565c0}
+.tx-note{margin:0 0 8px;padding:8px 12px;border-radius:8px;background:rgba(217,119,6,.1);color:#92400e;font-size:13px}
+#txOut{width:100%;box-sizing:border-box;min-height:320px;padding:12px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical;unicode-bidi:plaintext}
+.tx-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tx-acts .btn{min-height:42px}
+@media(max-width:600px){.tx-acts .btn{flex:1 1 100%}.tx-opts{gap:8px}}
 
-.pfc-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; background: var(--card-3);
-  border-bottom: 1px solid var(--border);
-  flex-wrap: wrap;
-}
-.pfc-drag {
-  font-size: 18px; color: var(--text-muted); cursor: grab;
-  padding: 2px 4px; border-radius: 4px; line-height: 1;
-  flex-shrink: 0;
-}
-.pfc-drag:hover { color: var(--text-3); }
-.pfc-doc-icon { font-size: 22px; flex-shrink: 0; }
-.pfc-info { flex: 1; min-width: 0; }
-.pfc-name {
-  font-size: 13px; font-weight: 600; white-space: nowrap;
-  overflow: hidden; text-overflow: ellipsis; color: var(--text);
-}
-.pfc-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.pfc-controls { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; align-items: center; }
-.pfc-btn {
-  background: var(--card); border: 1px solid var(--border);
-  color: var(--text-2); padding: 4px 9px; border-radius: var(--radius-sm);
-  font-size: 11px; font-weight: 600; cursor: pointer;
-  transition: var(--t) var(--ease);
-}
-.pfc-btn:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-.pfc-del {
-  background: none; border: 1px solid transparent;
-  color: var(--text-muted); padding: 4px 8px; border-radius: var(--radius-sm);
-  font-size: 13px; cursor: pointer; transition: var(--t) var(--ease);
-}
-.pfc-del:hover { background: rgba(239,68,68,0.12); border-color: var(--error); color: var(--error); }
-
-/* ── Page checkboxes ───────────────────────────────────────── */
-.pfc-pages {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 12px 14px 4px;
-  max-height: 180px; overflow-y: auto;
-}
-.pfc-page {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  border: 1.5px solid var(--primary); border-radius: 6px;
-  background: var(--primary-soft); cursor: pointer;
-  transition: var(--t) var(--ease); position: relative;
-}
-.pfc-page input[type=checkbox] {
-  position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none;
-}
-.pfc-page.unchecked {
-  border-color: var(--border); background: transparent;
-}
-.pfc-page.unchecked .pp-num { color: var(--text-muted); }
-.pfc-page:hover { transform: scale(1.1); }
-.pp-num { font-size: 11px; font-weight: 700; color: var(--primary); pointer-events: none; }
-.pfc-page.unchecked:hover { border-color: var(--text-3); }
-
-/* ── Summary bar ───────────────────────────────────────────── */
-.pfc-summary {
-  padding: 7px 14px 10px;
-  font-size: 11px; color: var(--text-3); font-weight: 500;
-}
-
-/* ── Merge hint ────────────────────────────────────────────── */
-.merge-hint {
-  background: var(--card-2); border-radius: var(--radius-sm);
-  padding: 10px 14px; font-size: 12px; color: var(--text-3);
-  display: flex; align-items: center; gap: 6px; margin-top: 10px;
-}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
 </style>
-<style>.text-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:22px;align-items:center;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.text-feature img{display:block;width:100%;height:auto}.text-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.text-feature{grid-template-columns:1fr}.text-feature img{max-width:300px;margin:auto}}</style>
 <meta name="theme-color" content="#ff6333">
-
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"PDF Text Extractor","item":"https://pdfdukan.com/tools/pdf-text-extractor.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfdukan.com/tools.html"}, {"@type": "ListItem", "position": 3, "name": "PDF Text Extractor", "item": "https://pdfdukan.com/tools/pdf-text-extractor.html"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan PDF Text Extractor", "url": "https://pdfdukan.com/tools/pdf-text-extractor.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "description": "Free PDF text extractor: copy text in true reading order, read scanned pages with OCR, Urdu and Arabic supported. Download TXT or Word. No upload.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this PDF text extractor free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It's free with no account, no watermark and no limit on pages."}}, {"@type": "Question", "name": "Can I extract text from a scanned PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Pages without a text layer are read with OCR automatically."}}, {"@type": "Question", "name": "Why is copied PDF text jumbled?", "acceptedAnswer": {"@type": "Answer", "text": "Plain copying mixes columns line by line. This extractor reads each column in turn."}}, {"@type": "Question", "name": "Does it work with Urdu and Arabic PDFs?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Typed Urdu and Arabic keep right-to-left order, and scans can use Urdu or Arabic OCR."}}, {"@type": "Question", "name": "Can I get the text as a Word file?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Tap Download Word (.docx) to get one paragraph per line and a page break per page."}}, {"@type": "Question", "name": "Does it extract images?", "acceptedAnswer": {"@type": "Answer", "text": "No. It copies text only. Use PDF to JPG for pictures."}}]}</script>
 <meta name="author" content="PDFdukan Product Team">
-<meta property="article:modified_time" content="2026-08-14T00:00:00+05:00">
+<meta property="article:modified_time" content="2026-11-10T00:00:00+05:00">
 </head>
 <body data-tool="pdf-text-extractor">
 <header class="header" role="banner">
@@ -237,56 +189,115 @@
 
 <div class="tool-page">
   <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="../tools.html" style="color:var(--text-3)">Tools</a> &rsaquo; <span>PDF Text Extractor</span></nav>
-  <div class="tool-hero"><div class="tool-hero-icon" style="background:linear-gradient(135deg,#283593,#3f51b5)">&#128196;</div><h1>PDF Text Extractor</h1><p>Read embedded PDF text in page order, then review, edit, copy or save it as a UTF-8 .txt file.</p></div>
-  <section class="text-feature" aria-labelledby="textFeatureTitle"><div><h2 id="textFeatureTitle" style="font-size:20px;margin:0">Embedded text extraction, not OCR</h2><p>Page separators and PDF.js line endings help preserve basic reading structure. Complex columns, tables and visual layout can still differ.</p></div><img src="../images/pdf-text-extractor.svg" alt="Illustration of embedded text being extracted from a multi-page PDF into a text document" width="640" height="420"></section>
-  <div class="tool-card">
-    <h3><span class="tc-icon">&#128228;</span> Upload PDF</h3>
-    <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Choose one PDF for embedded text extraction"><div class="dz-inner"><div class="dz-icon">&#128196;</div><div class="dz-text">Drop your PDF here or <span class="dz-link">browse</span></div><div class="dz-sub">One unencrypted .pdf file up to 100 MB; large files depend on browser memory</div></div><input type="file" id="fileInput" accept="application/pdf,.pdf" style="display:none"></div>
-    <p id="txtInfo" style="font-size:13px;color:var(--text-3);margin-top:12px"></p>
-  </div>
-  <div class="tool-card" id="txtResult" style="display:none">
-    <h3><span class="tc-icon">&#9989;</span> Extracted Text</h3>
-    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;color:var(--text-3)"><span>Words: <strong id="wc">0</strong></span><span>Characters: <strong id="cc">0</strong></span></div>
-    <textarea id="txtOut" rows="12" style="width:100%;padding:12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card-2);color:var(--text);font-size:13px"></textarea>
-    <div style="display:flex;gap:10px;margin-top:12px"><button class="btn btn-primary" id="txtDl">&#11015;&#65039; Download .txt</button><button class="btn btn-secondary" id="txtCopy">&#128203; Copy</button></div>
-  </div>
-  <div class="quick-answer" style="background:var(--card-2);border-left:4px solid var(--primary);padding:14px 18px;margin:0 auto 22px;max-width:800px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.65;color:var(--text-2)"><strong style="color:var(--text)">Quick answer:</strong> This tool extracts embedded PDF text; it does not recognise words inside scanned images. Page order is retained, but columns, tables, spacing and reading order may need editing.</div>
-<section class="seo-section" style="margin-top:24px"><aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Feature and extraction behavior tested 25 August 2026</span><span>Embedded text only · Page separators added · Layout may differ</span></aside>
-    <h2>About This Tool</h2><p>This tool reads the text layer already stored in an unencrypted PDF. It labels each page and uses available PDF.js line-ending signals, but visual columns, tables, headers and reading order may not reproduce exactly. For image-only scans, use an OCR workflow. File parsing happens in client-side code; the page can still load ordinary site assets, analytics and third-party libraries.</p>
-    <h2>How to Use</h2><ol><li>Upload your PDF.</li><li>Wait for the text to appear.</li><li>Copy it or download a .txt file.</li><li>Paste it wherever you need.</li></ol>
-    <h2>Frequently Asked Questions</h2>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Does it work on scanned PDFs?</button><div class="faq-a">Only if they contain real text. For image scans, use our OCR tool first.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Is it free?</button><div class="faq-a">Yes, free with no signup.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Are my files uploaded?</button><div class="faq-a">No. Text is extracted in your browser.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I extract from many pages?</button><div class="faq-a">Yes. All pages are read in order.</div></div>
-    <h2>Related Tools</h2>
-    <div class="related-tools-grid">
-    <a href="ocr-image-to-text.html" class="related-tool-card"><span class="rtc-icon">🔤</span>OCR Text</a>
-    <a href="pdf-to-word-converter.html" class="related-tool-card"><span class="rtc-icon">📝</span>PDF to Word</a>
+  <div class="tool-hero crop-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#283593,#3f51b5)">📝</div>
+      <h1>PDF Text Extractor</h1>
+      <p>Pull every word out of a PDF in reading order. Scanned pages are read with OCR automatically.</p>
+      <p class="i2p-trust">Free · No sign-up · No upload · OCR for scanned pages</p>
     </div>
-  </section>
+    <img class="tool-feature-visual" src="../images/pdf-text-extractor-v2.svg" alt="A two-column PDF page turning into clean plain text, with a scanned page read by OCR" width="640" height="420">
+  </div>
+  <div class="tool-card" id="txUpload">
+    <div class="drop-zone" id="txDrop" tabindex="0" role="button" aria-label="Choose a PDF to extract text from">
+      <div class="dz-icon">📝</div>
+      <div class="dz-title">Drop a PDF here or click to browse</div>
+      <div class="dz-hint">Text appears right away · scanned pages read with OCR · up to 200 MB</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input type="file" id="txFileInput" accept=".pdf,application/pdf" style="display:none">
+    </div>
+    <div id="txPw" hidden><form class="tx-pw" id="txPwForm"><span id="txPwMsg">This PDF needs a password to open.</span><div><input type="password" id="txPwIn" autocomplete="off" placeholder="PDF password" aria-label="PDF password"><button class="btn btn-primary" type="submit">Open</button></div></form></div>
+    <p id="txInfo" role="status" aria-live="polite" class="tx-info"></p>
+  </div>
+  <div class="tool-card tx-result" id="txResult" hidden>
+    <div class="tx-head"><span id="txFile" class="tx-file"></span><button class="btn btn-secondary tx-sm" id="txAgain" type="button">Extract another PDF</button></div>
+    <div class="tx-opts">
+      <label><input type="checkbox" id="txBreaks"> Page markers</label>
+      <label><input type="checkbox" id="txParas"> Join lines into paragraphs</label>
+      <label><input type="checkbox" id="txOcr"> Read scanned pages (OCR)</label>
+      <select id="txLang" aria-label="OCR language">
+        <option value="eng">English</option><option value="urd">Urdu</option><option value="ara">Arabic</option><option value="eng+urd">English + Urdu</option><option value="hin">Hindi</option><option value="spa">Spanish</option><option value="fra">French</option><option value="deu">German</option><option value="por">Portuguese</option><option value="ita">Italian</option><option value="tur">Turkish</option><option value="rus">Russian</option><option value="chi_sim">Chinese (Simplified)</option><option value="ben">Bengali</option>
+      </select>
+      <select id="txPages" aria-label="Pages"><option value="all">All pages</option><option value="range">Page range…</option></select>
+      <input type="text" id="txRange" placeholder="e.g. 1-3, 8" hidden aria-label="Page range">
+    </div>
+    <div class="tx-stats" id="txStats"></div>
+    <p class="tx-note" id="txNote" hidden></p>
+    <textarea id="txOut" rows="16" spellcheck="false" aria-label="Extracted text"></textarea>
+    <div class="tx-acts"><button class="btn btn-primary" id="txCopy" type="button">Copy text</button><button class="btn btn-secondary" id="txTxt" type="button">Download .txt</button><button class="btn btn-secondary" id="txDocx" type="button">Download Word (.docx)</button></div>
+  </div>
+
+<section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested on 8 PDFs: two-column, tables, Urdu, scanned and password-protected</span><span>No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Does a PDF Text Extractor Do?</h2>
+    <p class="lead">A PDF text extractor copies every word out of a PDF into plain text you can edit, search or paste anywhere. PDFdukan reads typed text in true reading order and runs OCR on scanned pages automatically, all inside your browser.</p>
+    <p>Two-column papers come out column by column, not mixed line by line, and Urdu or Arabic keeps its right-to-left order with real letters.</p>
+
+    <h3>How Do I Use the PDF Text Extractor?</h3>
+    <ol>
+      <li><span><strong>Add the PDF.</strong> Tap Choose PDF; the text appears in seconds.</span></li>
+      <li><span><strong>Set the options.</strong> Tick Join lines into paragraphs or pick a Page range.</span></li>
+      <li><span><strong>Check scanned pages.</strong> Choose the OCR language if the scan isn't English.</span></li>
+      <li><span><strong>Save it.</strong> Tap Copy text, Download .txt or Download Word (.docx).</span></li>
+    </ol>
+
+    <h3>What Makes the Extracted Text Usable?</h3>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Columns in order</h4><p>Newsletters and research papers read down the left column, then the right.</p></div>
+      <div class="i2p-card"><h4>Scans read with OCR</h4><p>Pages without a text layer go through OCR in 13 languages.</p></div>
+      <div class="i2p-card"><h4>Clean paragraphs</h4><p>Join lines into paragraphs removes mid-sentence breaks and rejoins hyphenated words.</p></div>
+      <div class="i2p-card"><h4>Locked files open</h4><p>Type the PDF's password and the text comes out as normal.</p></div>
+    </div>
+
+    <h3>Which Files and Limits Apply?</h3>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Item</th><th scope="col">Details</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Input</th><td>One PDF, up to 200 MB</td></tr>
+        <tr><th scope="row">Output</th><td>Copy, UTF-8 .txt or Word .docx</td></tr>
+        <tr><th scope="row">OCR languages</th><td>English, Urdu, Arabic, Hindi and 9 more</td></tr>
+        <tr><th scope="row">Cost</th><td>Free, no sign-up, no page cap</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Who Extracts Text from PDFs?</h3>
+    <ul>
+      <li>Students quoting a journal article without retyping it</li>
+      <li>Office staff moving invoice details into a spreadsheet</li>
+      <li>Writers pulling a scanned letter into Word to edit</li>
+      <li>Researchers feeding long reports into translation tools</li>
+    </ul>
+
+    <h3>How Do You Get the Cleanest Text?</h3>
+    <p>Use a page range when you only need one section; it's faster on long reports. For scans, pick the right OCR language before you start, because English OCR can't read Urdu letters. Keep Page markers on when you need to cite page numbers.</p>
+
+    <h3>Is My PDF Uploaded?</h3>
+    <p>No. PDFdukan reads text with <a href="https://mozilla.github.io/pdf.js/" target="_blank" rel="noopener">Mozilla's pdf.js</a> and scans with <a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener">Tesseract.js</a>, both inside your tab. Only the OCR engine and language data download once; your file never leaves the device.</p>
+
+    <h3>What Doesn't This Extractor Do?</h3>
+    <p>Tables come out as spaced lines, not cells. Handwriting and blurry phone photos give weak OCR. To keep layout and pictures, use <a href="pdf-to-word-converter.html">PDF to Word</a>.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this PDF text extractor free?</button></h3><div class="faq-a"><p>Yes. It's free with no account, no watermark and no limit on pages.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I extract text from a scanned PDF?</button></h3><div class="faq-a"><p>Yes. Pages without a text layer are read with OCR automatically.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why is copied PDF text jumbled?</button></h3><div class="faq-a"><p>Plain copying mixes columns line by line. This extractor reads each column in turn.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it work with Urdu and Arabic PDFs?</button></h3><div class="faq-a"><p>Yes. Typed Urdu and Arabic keep right-to-left order, and scans can use Urdu or Arabic OCR.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I get the text as a Word file?</button></h3><div class="faq-a"><p>Yes. Tap Download Word (.docx) to get one paragraph per line and a page break per page.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Does it extract images?</button></h3><div class="faq-a"><p>No. It copies text only. Use <a href="pdf-to-image-converter.html">PDF to JPG</a> for pictures.</p></div></div>
+
+    <h3>Related Tools</h3>
+    <div class="related-tools-grid">
+    <a href="ocr-image-to-text.html" class="related-tool-card"><span class="rtc-icon">🔤</span>OCR Image to Text</a>
+    <a href="pdf-to-word-converter.html" class="related-tool-card"><span class="rtc-icon">📝</span>PDF to Word</a>
+    <a href="word-character-counter.html" class="related-tool-card"><span class="rtc-icon">🔢</span>Word Counter</a>
+    <a href="unlock-pdf-without-password.html" class="related-tool-card"><span class="rtc-icon">🔓</span>Unlock PDF</a>
+    </div>
+</section>
+
 </div>
-<script>
-(function(){
-  var busy=false, sourceName='document';
-  function pageText(tc){ var out=''; (tc.items||[]).forEach(function(i){ if(!i||typeof i.str!=='string')return; out+=i.str; out+=i.hasEOL?'\n':' '; }); return out.replace(/[ \t]+\n/g,'\n').replace(/[ \t]{2,}/g,' ').trim(); }
-  async function onFile(f){
-    if(busy)return;
-    if(!f||(!(f.type==='application/pdf')&&!/\.pdf$/i.test(f.name||''))){ if(window.toast) toast('Please choose a PDF file','error'); return; }
-    if(!f.size){ if(window.toast) toast('This PDF file is empty','error'); return; }
-    if(f.size>100*1024*1024){ if(window.toast) toast('Please choose a PDF no larger than 100 MB','error'); return; }
-    busy=true; sourceName=(f.name||'document').replace(/\.pdf$/i,''); document.getElementById('txtResult').style.display='none'; document.getElementById('txtOut').value=''; document.getElementById('txtInfo').textContent='Reading '+f.name+'…';
-    try{
-      var data=await f.arrayBuffer(); var pdf=await pdfjsLib.getDocument({data:data}).promise; var pages=[];
-      for(var p=1;p<=pdf.numPages;p++){ document.getElementById('txtInfo').textContent='Reading page '+p+' of '+pdf.numPages+'…'; var page=await pdf.getPage(p); var tc=await page.getTextContent(); pages.push('--- Page '+p+' ---\n'+pageText(tc)); }
-      var all=pages.join('\n\n').trim(); document.getElementById('txtOut').value=all; document.getElementById('wc').textContent=(all.match(/\S+/g)||[]).length; document.getElementById('cc').textContent=all.length; document.getElementById('txtResult').style.display=''; document.getElementById('txtInfo').textContent=pdf.numPages+' page'+(pdf.numPages===1?'':'s')+' read. Review layout and reading order.';
-      if(!all.replace(/--- Page \d+ ---/g,'').trim()&&window.toast) toast('No embedded text found — this may be a scanned PDF. Try OCR.','info'); if(window.trackToolUse) trackToolUse('pdf-text-extractor');
-    }catch(err){ var msg=/password|encrypted/i.test(String(err&&err.message))?'This encrypted PDF could not be opened. Save an authorized unprotected copy first.':'Could not read this PDF.'; document.getElementById('txtInfo').textContent=msg; if(window.toast) toast(msg,'error'); console.error(err); }
-    finally{busy=false;}
-  }
-  document.addEventListener('DOMContentLoaded',function(){ var dz=document.getElementById('dropZone'),inp=document.getElementById('fileInput'); dz.onclick=function(){inp.click();}; dz.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click();}}; inp.onchange=function(e){onFile(e.target.files[0]);}; ['dragover','dragenter'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add('drag');});}); ['dragleave','drop'].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove('drag');});}); dz.addEventListener('drop',function(e){if(e.dataTransfer.files.length)onFile(e.dataTransfer.files[0]);}); document.getElementById('txtDl').onclick=function(){ var t=document.getElementById('txtOut').value; if(!t)return; var blob=new Blob(['\uFEFF',t],{type:'text/plain;charset=utf-8'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=(sourceName||'document')+'_extracted_text.txt'; document.body.appendChild(a); a.click(); document.body.removeChild(a); setTimeout(function(){URL.revokeObjectURL(url);},2000); }; document.getElementById('txtCopy').onclick=async function(){var area=document.getElementById('txtOut');if(!area.value)return;try{await navigator.clipboard.writeText(area.value);}catch(e){area.focus();area.select();document.execCommand('copy');}if(window.toast)toast('Copied!','success');}; });
-})();
-</script>
+<script src="../js/tool-loader.js?v=20261108"></script>
+<script src="../js/pdf-text-extract.js?v=20261110"></script>
 <nav class="mobile-nav"><div class="mob-nav-items">
   <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
   <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
