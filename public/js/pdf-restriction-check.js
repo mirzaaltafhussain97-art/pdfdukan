@@ -198,6 +198,64 @@
   }
 
   /* ---------- main analysis ---------- */
+  /* ---------- qpdf (WebAssembly) in a worker, shared with Unlock PDF ---------- */
+  var qw = null, qjobs = {}, qid = 0;
+  function qpdfRun(bytes, password) {
+    if (!qw) {
+      qw = new Worker('../js/qpdf-worker.js?v=20261110');
+      qw.onmessage = function (e) { var j = qjobs[e.data.id]; if (j) { delete qjobs[e.data.id]; j(e.data); } };
+      qw.onerror = function () { Object.keys(qjobs).forEach(function (k) { qjobs[k]({ ok: false, msg: 'engine' }); delete qjobs[k]; }); qw = null; };
+    }
+    return new Promise(function (res) {
+      var id = ++qid; qjobs[id] = res;
+      var copy = bytes.slice().buffer;
+      qw.postMessage({ id: id, bytes: copy, password: password || '' }, [copy]);
+    });
+  }
+
+  /* content details: signatures, forms, PDF/A, accessibility, fonts */
+  function content(r, doc, fileLen, fromDecrypted) {
+    var ctx = doc.context, cat = doc.catalog;
+    var acro = dget(ctx, cat, 'AcroForm');
+    var fl = acro ? fields(ctx, acro) : [];
+    r.fields = fl.filter(function (f) { return f.ft && f.ft !== 'Sig'; }).length;
+    r.xfa = !!(acro && dget(ctx, acro, 'XFA'));
+    r.sigs = sigInfo(ctx, fl, fileLen, false);
+    if (fromDecrypted) r.sigs.forEach(function (s) { s.coversAll = false; s.later = false; s.unknownRange = true; });
+    r.signed = r.sigs.filter(function (s) { return !s.empty; }).length;
+    r.certified = docMDP(ctx, cat);
+    var x = xmpText(ctx, cat);
+    r.xmp = !!dget(ctx, cat, 'Metadata');
+    r.pdfa = x && xmpVal(x, 'pdfaid:part') ? 'PDF/A-' + xmpVal(x, 'pdfaid:part') + (xmpVal(x, 'pdfaid:conformance') || '').toLowerCase() : '';
+    r.pdfua = x ? xmpVal(x, 'pdfuaid:part') : '';
+    r.outputIntent = arr(ctx, dget(ctx, cat, 'OutputIntents')).length > 0;
+    var mi = dget(ctx, cat, 'MarkInfo');
+    r.tagged = !!(dget(ctx, cat, 'StructTreeRoot') && mi && isTrue(dget(ctx, mi, 'Marked')));
+    r.lang = txt(dget(ctx, cat, 'Lang')) || '';
+    var info = look(ctx, ctx.trailerInfo.Info);
+    r.title = txt(dget(ctx, info, 'Title')) || (x && xmpVal(x, 'rdf:li')) || '';
+    r.producer = txt(dget(ctx, info, 'Producer')) || '';
+    r.fonts = fontInfo(ctx, doc.getPages());
+    var sc = scanObjects(ctx);
+    r.js = sc.js; r.attachments = sc.files;
+    r.limited = false;
+  }
+  function emptyContent(r) {
+    r.limited = true; r.fields = 0; r.xfa = false; r.sigs = []; r.signed = 0; r.certified = 0; r.xmp = false; r.pdfa = ''; r.pdfua = '';
+    r.outputIntent = false; r.tagged = false; r.lang = ''; r.title = ''; r.producer = ''; r.fonts = { total: 0, missing: [] }; r.js = false; r.attachments = 0;
+  }
+  async function loadDoc(bytes, ign) { return L().PDFDocument.load(bytes, { ignoreEncryption: !!ign, updateMetadata: false, throwOnInvalidObject: false }); }
+
+  /* fill content from a decrypted copy (owner-only files, or after the right password) */
+  async function unlockDetails(r, bytes, password) {
+    var q = await qpdfRun(bytes, password);
+    if (!q.ok) return q;
+    var dec = new Uint8Array(q.bytes);
+    r.decrypted = dec; r.decryptWarn = q.warn || '';
+    try { content(r, await loadDoc(dec), dec.length, true); } catch (e) { emptyContent(r); }
+    return q;
+  }
+
   async function analyze(file, bytes) {
     var r = { file: file.name, size: file.size, problems: [] };
     var head = headStr(bytes, 1024);
@@ -207,10 +265,9 @@
     r.linearized = /\/Linearized/.test(head);
     r.saves = Math.max(1, countBytes(bytes, 'startxref') - (r.linearized ? 1 : 0));
 
-    var doc = await L().PDFDocument.load(bytes, { ignoreEncryption: true, updateMetadata: false, throwOnInvalidObject: false });
+    var doc = await loadDoc(bytes, true);
     var ctx = doc.context, cat = doc.catalog;
-    var cv = nm(dget(ctx, cat, 'Version')); if (cv && parseFloat(cv) > parseFloat(r.version)) r.version = cv;
-    r.pages = doc.getPageCount();
+    try { var cv = nm(dget(ctx, cat, 'Version')); if (cv && parseFloat(cv) > parseFloat(r.version)) r.version = cv; } catch (e) {}
 
     var enc = look(ctx, ctx.trailerInfo.Encrypt);
     r.encrypted = !!enc;
@@ -225,32 +282,16 @@
     r.restricted = r.perms.filter(function (p) { return p.state !== 'yes'; }).length;
 
     var oc = await openCheck(bytes, '');
-    r.open = oc.state; if (oc.pages) r.pages = oc.pages;
+    r.open = oc.state;
+    r.pages = oc.pages || 0;
+    if (!r.pages) { try { r.pages = doc.getPageCount(); } catch (e) { r.pages = 0; } }
 
-    var acro = dget(ctx, cat, 'AcroForm');
-    var fl = acro ? fields(ctx, acro) : [];
-    r.fields = fl.filter(function (f) { return f.ft && f.ft !== 'Sig'; }).length;
-    r.xfa = !!(acro && dget(ctx, acro, 'XFA'));
-    r.sigs = sigInfo(ctx, fl, bytes.length, r.encrypted);
-    r.signed = r.sigs.filter(function (s) { return !s.empty; }).length;
-    r.certified = docMDP(ctx, cat);
-
-    var x = r.encrypted && !(r.cipher && r.cipher.metadataPlain) ? '' : xmpText(ctx, cat);
-    r.xmp = !!dget(ctx, cat, 'Metadata');
-    r.pdfa = x ? (xmpVal(x, 'pdfaid:part') ? 'PDF/A-' + xmpVal(x, 'pdfaid:part') + (xmpVal(x, 'pdfaid:conformance') || '').toLowerCase() : '') : '';
-    r.pdfua = x ? xmpVal(x, 'pdfuaid:part') : '';
-    r.outputIntent = arr(ctx, dget(ctx, cat, 'OutputIntents')).length > 0;
-    var mi = dget(ctx, cat, 'MarkInfo');
-    r.tagged = !!(dget(ctx, cat, 'StructTreeRoot') && mi && isTrue(dget(ctx, mi, 'Marked')));
-    r.lang = r.encrypted ? (dget(ctx, cat, 'Lang') ? 'set' : '') : (txt(dget(ctx, cat, 'Lang')) || '');
-    var info = look(ctx, ctx.trailerInfo.Info);
-    r.title = r.encrypted ? '' : (txt(dget(ctx, info, 'Title')) || (x && xmpVal(x, 'rdf:li')) || '');
-    r.producer = r.encrypted ? '' : (txt(dget(ctx, info, 'Producer')) || '');
-
-    var fonts = fontInfo(ctx, doc.getPages());
-    r.fonts = fonts;
-    var sc = scanObjects(ctx);
-    r.js = sc.js; r.attachments = sc.files;
+    if (!r.encrypted) {
+      content(r, doc, bytes.length, false);
+    } else {
+      emptyContent(r);
+      if (r.open === 'open' && r.cipher.filter === 'Standard') await unlockDetails(r, bytes, '');
+    }
     return r;
   }
 
@@ -308,36 +349,43 @@
     h += row('Encryption', r.encrypted ? esc(r.cipher.name) + (r.cipher.weak ? ' <span class="rc-tag">weak</span>' : '') : 'None');
     if (r.encrypted) h += row('Security revision', 'R' + r.cipher.R + (r.cipher.metadataPlain ? ' · metadata not encrypted' : ''));
     h += row('Saved revisions', r.saves + (r.saves > 1 ? ' (changed after it was first saved)' : ''));
-    h += row('JavaScript', r.js ? '<b class="rc-amb">Yes</b>' : 'No');
-    h += row('Attached files', r.attachments || 'None');
+    if (!r.limited) { h += row('JavaScript', r.js ? '<b class="rc-amb">Yes</b>' : 'No'); h += row('Attached files', r.attachments || 'None'); }
     h += '</table></div>';
     // signatures & forms
-    h += '<div class="rc-box"><h3 class="rc-h">Signatures and forms</h3><table class="rc-t">';
+    var LOCK = '<p class="rc-note rc-lock">🔒 Locked. Enter the open password above to see these details.</p>';
+    h += '<div class="rc-box"><h3 class="rc-h">Signatures and forms</h3>';
+    if (r.limited) h += LOCK; else {
+    h += '<table class="rc-t">';
     h += row('Digital signatures', r.signed ? r.signed + (r.certified ? ' · certified (level ' + r.certified + ')' : '') : 'None');
     r.sigs.filter(function (s) { return !s.empty; }).forEach(function (s, i) {
       var who = s.name || s.field || ('Signature ' + (i + 1));
       var det = [s.when, s.reason].filter(Boolean).join(' · ');
-      h += row('· ' + who, (det ? esc(det) + '<br>' : '') + (s.coversAll ? 'Covers the whole file' : (s.later ? '<b class="rc-amb">File changed after this signature</b>' : 'Range not readable')));
+      h += row('· ' + who, (det ? esc(det) + '<br>' : '') + (s.unknownRange ? 'Change check needs an unencrypted file' : (s.coversAll ? 'Covers the whole file' : (s.later ? '<b class="rc-amb">File changed after this signature</b>' : 'Range not readable'))));
     });
     var emptySig = r.sigs.filter(function (s) { return s.empty; }).length;
     if (emptySig) h += row('Empty signature fields', emptySig);
     h += row('Form fields', r.fields ? r.fields + (r.xfa ? ' (XFA form)' : '') : (r.xfa ? 'XFA form' : 'None'));
     h += '</table>';
     if (r.signed) h += '<p class="rc-note">Signer identity is not verified here. Open the file in Adobe Acrobat Reader to validate the certificate.</p>';
+    }
     h += '</div>';
     h += '</div>';
 
     // PDF/A + accessibility
     h += '<div class="rc-grid">';
     h += '<div class="rc-box"><h3 class="rc-h">PDF/A quick check</h3><ul class="rc-list">';
-    pdfaChecks(r).forEach(function (c) { h += chk(c.ok, c.ok ? c.t : c.f); });
+    (r.limited ? pdfaChecks(r).slice(0, 1) : pdfaChecks(r)).forEach(function (c) { h += chk(c.ok, c.ok ? c.t : c.f); });
+    if (r.limited) h += '</ul>' + LOCK + '<ul class="rc-list">';
     h += '</ul><p class="rc-note">Covers common PDF/A failures only. For a full ISO 19005 report, use <a href="https://verapdf.org/" target="_blank" rel="noopener">veraPDF</a>.</p></div>';
-    h += '<div class="rc-box"><h3 class="rc-h">Accessibility basics</h3><ul class="rc-list">';
+    h += '<div class="rc-box"><h3 class="rc-h">Accessibility basics</h3>';
+    if (r.limited) h += LOCK + '<ul class="rc-list">'; else {
+    h += '<ul class="rc-list">';
     h += chk(r.tagged, r.tagged ? 'Tagged PDF (has reading structure)' : 'Not tagged: screen readers may read it out of order');
     h += chk(!!r.lang, r.lang ? 'Language set' + (r.lang !== 'set' ? ': ' + r.lang : '') : 'No document language');
     h += chk(!!r.title, r.title ? 'Title: ' + r.title.slice(0, 60) : 'No document title');
     h += chk(r.perms[7].state === 'yes', r.perms[7].state === 'yes' ? 'Screen reader access allowed' : 'Screen reader access blocked');
     if (r.pdfua) h += chk(true, 'Declares PDF/UA-' + r.pdfua);
+    }
     h += '</ul><p class="rc-note">Machine checks only. Reading order and alt text still need a person.</p></div>';
     h += '</div>';
 
@@ -363,6 +411,7 @@
     L2.push('');
     L2.push('Open password: ' + (r.open === 'needs' || r.open === 'wrong' ? 'Yes' : (r.open === 'open' ? 'No' : 'Not tested')));
     L2.push('Encryption: ' + (r.encrypted ? r.cipher.name + (r.cipher.weak ? ' (weak)' : '') + ', R' + r.cipher.R : 'None'));
+    if (r.limited) L2.push('Details below are locked until the open password is entered.');
     L2.push('Digital signatures: ' + (r.signed || 'None') + (r.certified ? ', certified level ' + r.certified : ''));
     r.sigs.filter(function (s) { return !s.empty; }).forEach(function (s) { L2.push('  ' + (s.name || s.field) + (s.when ? ', ' + s.when : '') + ': ' + (s.coversAll ? 'covers whole file' : 'file changed after signing')); });
     L2.push('Form fields: ' + (r.fields || 'None') + (r.xfa ? ' (XFA)' : ''));
@@ -397,6 +446,13 @@
     msg.textContent = 'Checking…';
     var oc = await openCheck(lastBytes, pw);
     if (oc.state === 'open') {
+      if (last.limited) {
+        msg.textContent = 'Correct password. Reading the details…';
+        await unlockDetails(last, lastBytes, pw);
+        last.pages = oc.pages; last.pwOk = true;
+        render(last);
+        msg = $('rcPwMsg');
+      }
       msg.className = 'rc-pwmsg rc-good';
       msg.textContent = 'Correct password. The PDF opens with it (' + oc.pages + ' pages).';
     } else {
@@ -445,5 +501,5 @@
     dz.addEventListener('drop', function (e) { if (e.dataTransfer.files.length) onFile(e.dataTransfer.files[0]); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-  window.RestrictionCheck = { analyze: analyze, reportText: reportText, onFile: onFile };
+  window.RestrictionCheck = { analyze: analyze, unlockDetails: unlockDetails, qpdf: qpdfRun, reportText: reportText, onFile: onFile };
 })();

@@ -1,0 +1,5 @@
+qpdf 12.2.0 compiled to WebAssembly, from the npm package @neslinesli93/qpdf-wasm 0.3.0
+(https://github.com/neslinesli93/qpdf-wasm, ISC license).
+qpdf is Copyright (c) 2005-2025 Jay Berkenbilt and Copyright (c) 2022-2025 Jay Berkenbilt and Manfred Holger,
+licensed under the Apache License, Version 2.0: https://github.com/qpdf/qpdf/blob/main/LICENSE.txt
+Used by PDFdukan's Unlock PDF and PDF Restriction Check tools; runs in the visitor's browser.
