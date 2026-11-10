@@ -311,6 +311,15 @@ function toast(msg, type = '', duration = 3000) {
   _toastTimer = setTimeout(() => el.classList.remove('show'), duration);
 }
 
+/* ── BRANDED DOWNLOAD NAMES: "file012 - PDFDukan.pdf" ─────────── */
+function brand(name) {
+  name = String(name || 'download');
+  var i = name.lastIndexOf('.'), base = i > 0 ? name.slice(0, i) : name, ext = i > 0 ? name.slice(i) : '';
+  if (/ - PDFDukan$/i.test(base)) return name;
+  return base + ' - PDFDukan' + ext;
+}
+window.CMBrandName = brand;
+
 /* ── FILENAME CUSTOMIZATION MODAL ─────────────────────────────── */
 const CMFilename = (() => {
   let _modal = null, _input = null, _ext = '', _resolve = null;
@@ -399,6 +408,7 @@ const CMFilename = (() => {
    */
   function prompt(defaultName) {
     _ensureModal();
+    defaultName = brand(defaultName);
     var dotIdx = defaultName.lastIndexOf('.');
     var baseName, extPart;
     if (dotIdx > 0) {
@@ -445,8 +455,10 @@ window.CMFilename = CMFilename;
     if (a.dataset && a.dataset.cmf === '1') return;                 // already renamed
     var href = a.getAttribute('href') || '';
     if (href.indexOf('blob:') !== 0 && href.indexOf('data:') !== 0) return; // only generated files
-    if (window.__cmfRecent && (Date.now() - window.__cmfRecent) < 4000) return; // tool already popped
-    if (!window.CMFilename) return;
+    if ((window.__cmfRecent && (Date.now() - window.__cmfRecent) < 4000) || !window.CMFilename) { // tool already popped
+      a.setAttribute('download', brand(a.getAttribute('download') || 'download'));
+      return;
+    }
 
     e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
     var fname = a.getAttribute('download') || 'download';
