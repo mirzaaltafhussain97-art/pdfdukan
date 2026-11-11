@@ -2546,10 +2546,13 @@ html[data-theme="light"] .blog-hero-strip {
   text-align: center;
 }
 #pe-drop-zone .page-feature-figure {
-  width: min(100%, 560px);
-  margin: 16px auto;
+  width: 100%;
+  max-width: 300px;
+  margin: 0;
   box-shadow: none;
 }
+#pe-drop-zone .page-feature-figure img { border-radius: 10px; }
+#pe-drop-zone .page-feature-figure figcaption { font-size: 11px; text-align: center; margin-top: 6px; }
 @media (max-width: 600px) {
   .page-feature-figure { margin: 14px auto 20px; padding: 7px; border-radius: 16px; }
   .page-feature-figure img { border-radius: 11px; }
