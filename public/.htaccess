@@ -68,9 +68,9 @@ RedirectMatch 301 ^/blog/?$ /blog/index.html
 Redirect 301 /site-root-internal.html /
 Redirect 301 /ocr /tools/ocr-image-to-text.html
 Redirect 301 /merge-pdf /tools/merge-pdf.html
-Redirect 301 /split-pdf /tools/split-pdf.html
+Redirect 301 /split-pdf /tools/extract-pdf-pages.html
 Redirect 301 /compress-pdf /tools/compress-pdf-reduce-file-size.html
-Redirect 301 /image-to-pdf /tools/img-to-pdf.html
+Redirect 301 /image-to-pdf /tools/image-to-pdf-converter.html
 Redirect 301 /pdf-to-jpg /tools/pdf-to-image-converter.html
 Redirect 301 /pdf-to-word /tools/pdf-to-word-converter.html
 Redirect 301 /tools/pdf-to-word.html /tools/pdf-to-word-converter.html
@@ -83,6 +83,7 @@ Redirect 301 /tools/fill-sign.html /tools/pdf-editor.html
 Redirect 301 /fill-sign /tools/pdf-editor.html
 Redirect 301 /sign-pdf /tools/pdf-editor.html
 Redirect 301 /delete-pages /tools/delete-pages-from-pdf.html
+Redirect 301 /blog/jpg-to-pdf-guide.html /blog/jpg-to-pdf-without-losing-quality.html
 Redirect 301 /remove-pdf-pages /tools/delete-pages-from-pdf.html
 Redirect 301 /rotate-pdf /tools/organize-pdf-pages-online.html
 Redirect 301 /reorder-pdf /tools/organize-pdf-pages-online.html

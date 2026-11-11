@@ -2092,7 +2092,7 @@ function _initSearchTrustSignals() {
 
   if (location.pathname.includes('/blog/') && !location.pathname.endsWith('/blog/') && !location.pathname.endsWith('/blog/index.html')) {
     const article = document.querySelector('article, .blog-post, .post-content, main');
-    if (article && !document.querySelector('.cm-article-byline')) {
+    if (article && !document.querySelector('.cm-article-byline, .article-meta .am-date')) {
       const byline = document.createElement('div');
       byline.className = 'cm-article-byline';
       byline.textContent = 'Written by the PDFdukan Editorial Team · Updated 25 August 2026';
@@ -2107,7 +2107,7 @@ function _initSearchTrustSignals() {
           if (record && (record['@type'] === 'Article' || record['@type'] === 'BlogPosting')) {
             if (!record.author) record.author = {'@type':'Organization','name':'PDFdukan Editorial Team','url':'https://pdfdukan.com/about.html'};
             if (!record.publisher) record.publisher = {'@type':'Organization','name':'PDFdukan','url':'https://pdfdukan.com/'};
-            record.dateModified = '2026-08-25';
+            if (!record.dateModified) record.dateModified = '2026-08-25';
           }
         });
         el.textContent = JSON.stringify(data);
@@ -2121,7 +2121,7 @@ function _initSearchTrustSignals() {
    on touch/reduced-motion devices, and never intercepts input. */
 function initAmbientGlobe() {
   const homePath = location.pathname === '/' || /\/site-root-internal\.html$/.test(location.pathname);
-  const toolHero = /\/tools\//.test(location.pathname) ? document.querySelector('.tool-page .tool-hero') : null;
+  const toolHero = null; /* tool pages use the full-page 3D sphere (particles.js) */
   const hero = homePath ? document.querySelector('.hero-section') : toolHero;
   if (!hero || document.getElementById('ambientGlobe')) return;
 
@@ -2210,6 +2210,16 @@ function initAmbientGlobe() {
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   resize();
 }
+
+/* ── 3D DOT SPHERE BACKGROUND (desktop only, loaded once) ── */
+(function () {
+  if (window.__pdSphere) return; window.__pdSphere = 1;
+  function add() {
+    if (document.querySelector('script[src*="particles.js"]')) return;
+    var t = document.createElement('script'); t.src = '/js/particles.js?v=20261111'; t.defer = true; document.body.appendChild(t);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+})();
 
 /* ── INIT ─────────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
