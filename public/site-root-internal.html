@@ -266,7 +266,6 @@
               <span>📂</span> <span data-i18n="hero.btn.pdf">Import PDF</span>
             </button>
           </div>
-          <p class="supported-formats" data-i18n="hero.privacy">🔒 Privacy first — all files processed locally in your browser</p>
         </div>
       </section>
 
@@ -504,7 +503,7 @@
 </div>
 
 <!-- Hidden file inputs — capture files before redirect for unified UX -->
-<input type="file" id="fileInputImg" accept="image/*" multiple aria-label="Import images">
+<input type="file" id="fileInputImg" accept="image/*" data-cloud-accept="image/*,.pdf" multiple aria-label="Import images">
 <input type="file" id="fileInputPDF" accept=".pdf" multiple aria-label="Import PDF">
 
 <!-- Toast -->
@@ -534,7 +533,7 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/app.js?v=20261111"></script>
+<script src="js/app.js?v=20261111c"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {

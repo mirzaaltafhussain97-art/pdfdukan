@@ -2437,12 +2437,12 @@ var PD_CLOUD = {
     '/tools/pdf-to-word-converter.html': 'fileInput', '/tools/pdf-to-image-converter.html': 'fileInput',
     '/tools/image-to-pdf-converter.html': 'fileInput', '/tools/word-to-pdf-converter.html': 'fileInput',
     '/tools/ocr-image-to-text.html': 'fileInput', '/tools/pdf-text-extractor.html': 'txFileInput',
-    '/tools/searchable-pdf-converter-online.html': 'spFileInput', '/tools/image-compress-resize.html': 'fileInput', '/scanner.html': 'fileInputScanner'
+    '/tools/searchable-pdf-converter-online.html': 'spFileInput', '/tools/image-compress-resize.html': 'fileInput', '/scanner.html': 'fileInputScanner', '/': 'fileInputImg', '/index.html': 'fileInputImg'
   };
   var MIME = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', bmp: 'image/bmp',
     docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain' };
   function exts(input) {
-    var a = (input.getAttribute('accept') || '').split(',').map(function (s) { return s.trim().toLowerCase(); }), out = [];
+    var a = (input.getAttribute('data-cloud-accept') || input.getAttribute('accept') || '').split(',').map(function (s) { return s.trim().toLowerCase(); }), out = [];
     a.forEach(function (s) {
       if (s.charAt(0) === '.') out.push(s.slice(1));
       else if (s === 'image/*') out.push('jpg', 'jpeg', 'png', 'webp', 'gif', 'bmp');
@@ -2558,9 +2558,9 @@ var PD_CLOUD = {
   function init() {
     var path = location.pathname, id = INPUTS[path] || EXTRA[path]; if (!id) return;
     var input = document.getElementById(id); if (!input) return;
-    var tool = path.split('/').pop().replace(/\.html$/, '');
+    var tool = path.split('/').pop().replace(/\.html$/, '') || 'home'; if (tool === 'index') tool = 'home';
     var after = path === '/tools/pdf-editor.html' ? document.querySelector('.dz-btn') : null;
-    var zone = after ? after.parentNode : path === '/scanner.html' ? document.getElementById('uploadZone') : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
+    var zone = after ? after.parentNode : path === '/scanner.html' ? document.getElementById('uploadZone') : (path === '/' || path === '/index.html') ? document.getElementById('uploadBox') : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
     if (zone.querySelector('.pdz-safe')) return;
     zone.classList.add('pd-zone');
     var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span><div class="pdz-tip" role="tooltip"><b>Your files stay private</b><ul><li>Processed in your browser, on your device</li><li>Your PDF is never uploaded to our servers</li><li>Nothing is stored after you close the tab</li></ul></div>';
