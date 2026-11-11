@@ -118,19 +118,25 @@ body{overflow-y:auto}
 #pe-canvas-col::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
 
 /* Drop zone */
-#pe-drop-zone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;border:2px dashed var(--border2);border-radius:14px;background:var(--surface2);cursor:pointer;transition:all .2s;text-align:center;padding:52px 20px 20px;box-sizing:border-box}
+#pe-drop-zone{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;border:2px dashed var(--border2);border-radius:14px;background:var(--surface2);cursor:pointer;transition:all .2s;text-align:center;padding:40px 20px 14px;box-sizing:border-box}
 .pe-intro{width:100%;max-width:860px;margin:0 auto}
 .tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
 .tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
-.tool-hero.crop-hero .tool-hero-icon{margin:0 0 14px}
-.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+.tool-hero.crop-hero .tool-hero-icon{margin:0 0 8px;width:52px;height:52px;font-size:24px}
+.pe-intro .tool-hero{padding:16px 22px;margin-bottom:12px}
+.pe-intro .tool-hero h1{font-size:23px;margin-bottom:6px}
+.pe-intro .tool-card{padding:14px;margin-bottom:0}
+#pe-drop-zone .dz-icon{font-size:32px;margin-bottom:6px}
+#pe-drop-zone .dz-hint{margin-bottom:12px}
+#pe-drop-zone .dz-limit{margin-top:10px}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:160px;object-fit:contain;position:relative;z-index:1}
 #pe-shell:not(.pe-empty) .pe-intro>.tool-hero{display:none}
 @media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-hero-icon{margin:0 auto 14px}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
 /* before a PDF is open the page stays simple: only the drop area, no editor bars */
 #pe-shell.pe-empty{height:auto;overflow:visible;min-height:0}
 #pe-shell.pe-empty #pe-header,#pe-shell.pe-empty #pe-toolbar,#pe-shell.pe-empty #pe-sub-toolbar,#pe-shell.pe-empty #pe-thumbs-col{display:none}
 #pe-shell.pe-empty #pe-workspace{overflow:visible}
-#pe-shell.pe-empty #pe-canvas-col{overflow:visible;padding:28px 16px;width:100%;min-width:0;box-sizing:border-box}
+#pe-shell.pe-empty #pe-canvas-col{overflow:visible;padding:18px 16px;width:100%;min-width:0;box-sizing:border-box}
 #pe-drop-zone:hover,#pe-drop-zone.drag-over{border-color:var(--accent);background:rgba(255,99,51,.06)}
 .dz-icon{font-size:48px}
 .dz-title{font-size:22px;font-weight:750;color:var(--text);line-height:1.2}
