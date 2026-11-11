@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>How Accurate Is OCR on Scanned Documents? Tested | PDFdukan</title>
+<meta name="description" content="How accurate is OCR in recognizing text from scanned documents? See real test results by scan condition, what breaks OCR and how to improve it.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://pdfdukan.com/blog/how-accurate-is-ocr.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/blog/how-accurate-is-ocr.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/blog/how-accurate-is-ocr.html">
+<!-- Open Graph -->
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/blog/how-accurate-is-ocr.html">
+<meta property="og:title" content="How Accurate Is OCR on Scanned Documents? Tested | PDFdukan">
+<meta property="og:description" content="How accurate is OCR in recognizing text from scanned documents? See real test results by scan condition, what breaks OCR and how to improve it.">
+<meta property="og:image" content="https://pdfdukan.com/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="How Accurate Is OCR on Scanned Documents? Tested | PDFdukan">
+<meta name="twitter:description" content="How accurate is OCR in recognizing text from scanned documents? See real test results by scan condition, what breaks OCR and how to improve it.">
+<meta name="twitter:image" content="https://pdfdukan.com/og-image.jpg">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="../css/style.css?v=20261111">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How Accurate Is OCR on Scanned Documents? We Tested It", "description": "How accurate is OCR in recognizing text from scanned documents? See real test results by scan condition, what breaks OCR and how to improve it.", "author": {"@type": "Organization", "name": "PDFdukan Editorial Team", "url": "https://pdfdukan.com/about.html"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/", "logo": {"@type": "ImageObject", "url": "https://pdfdukan.com/favicon.svg"}}, "datePublished": "2026-11-11", "dateModified": "2026-11-11", "image": "https://pdfdukan.com/images/blog/ocr-accuracy-chart.webp", "mainEntityOfPage": "https://pdfdukan.com/blog/how-accurate-is-ocr.html"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pdfdukan.com/blog/index.html"}, {"@type": "ListItem", "position": 3, "name": "How Accurate Is OCR on Scanned Documents? We Tested It", "item": "https://pdfdukan.com/blog/how-accurate-is-ocr.html"}]}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How accurate is OCR on a clean scanned document?", "acceptedAnswer": {"@type": "Answer", "text": "OCR is close to perfect on a clean, printed scan. In our test, clean pages from 150 to 300 DPI had no character errors. Real paperwork with stains or old type will score lower."}}, {"@type": "Question", "name": "What is a good OCR accuracy rate?", "acceptedAnswer": {"@type": "Answer", "text": "A good OCR result has a character error rate under 1% for printed text. LlamaIndex gives that figure for printed documents. For invoices and forms, judge by whether every key value is right, not by the average."}}, {"@type": "Question", "name": "Is 99% OCR accuracy good enough?", "acceptedAnswer": {"@type": "Answer", "text": "99% character accuracy is good for search but not for records. On a 558-character letter, 1% is about six wrong letters, and one of them could sit inside a total or a date."}}, {"@type": "Question", "name": "Why does OCR mix up numbers like 0 and O?", "acceptedAnswer": {"@type": "Answer", "text": "OCR mixes up look-alike characters because their shapes are nearly the same. Rely Services lists O and 0, I and 1, S and 5, and B and 8 as common confusions. Checking numbers by hand is the only reliable fix."}}, {"@type": "Question", "name": "Can OCR read handwriting?", "acceptedAnswer": {"@type": "Answer", "text": "Standard OCR reads handwriting poorly. The Illinois library guide says handwriting cannot be recognized with any useful accuracy, and all four services in the Urban Institute test struggled with it. Type the text, or use a tool built for handwriting."}}, {"@type": "Question", "name": "Does a higher DPI always improve OCR?", "acceptedAnswer": {"@type": "Answer", "text": "No, higher DPI helps only up to a point. Our clean pages scored the same at 150 and 300 DPI. Damage such as specks and blur hurt far more, so a clean original beats a high-resolution copy."}}, {"@type": "Question", "name": "Is AI OCR more accurate than traditional OCR?", "acceptedAnswer": {"@type": "Answer", "text": "AI-based OCR is usually described as more accurate on messy documents. Lido, for example, gives 98–99.5% character accuracy for AI-based tools against 85–97% for traditional OCR. On clean printed pages, our Tesseract-based test already reached near-zero errors."}}, {"@type": "Question", "name": "Should I proofread OCR text?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, proofread any OCR text you will rely on. The Illinois guide notes that OCR cannot check its own output. Start with numbers, names and dates, then read pages with low confidence in full."}}]}</script>
+<style>
+.article-hero { background: linear-gradient(135deg,#00838f 0%,#26c6da 50%,#80deea 100%); padding: 56px 24px; text-align: center; }
+.article-hero h1 { font-size: 32px; font-weight: 900; color: #fff; max-width: 720px; margin: 0 auto 12px; line-height: 1.3; }
+.article-hero p { color: rgba(255,255,255,0.9); font-size: 16px; max-width: 580px; margin: 0 auto; }
+.article-meta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 24px 0 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.am-tag { font-size: 11px; font-weight: 700; color: var(--primary); background: var(--primary-soft); padding: 4px 10px; border-radius: var(--radius-pill); text-transform: uppercase; }
+.am-date, .am-read { font-size: 13px; color: var(--text-3); }
+.article-cta { background: var(--primary-soft); border: 1px solid rgba(255,99,51,0.3); border-radius: var(--radius); padding: 20px 24px; margin: 32px 0; }
+.article-cta h3 { color: var(--primary); margin-bottom: 8px; font-size: 16px; }
+.article-cta p { color: var(--text-2); font-size: 14px; margin: 0; }
+.tip-box { background: var(--card-2); border-left: 3px solid var(--success); padding: 14px 18px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 20px 0; }
+.tip-box strong { color: var(--success); }
+.warn-box { background: var(--card-2); border-left: 3px solid var(--warning); padding: 14px 18px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 20px 0; }
+.warn-box strong { color: var(--warning); }
+.format-table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 13px; }
+.format-table th { background: var(--card-3); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--text-3); border-bottom: 1px solid var(--border); }
+.format-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text-2); }
+.format-table tr:hover td { background: var(--card-2); color: var(--text); }
+.faq-h{font-size:16px;margin:22px 0 6px}
+.article-hero h1{margin-bottom:0}
+.blog-fig{margin:22px 0;text-align:center}
+.blog-fig img{width:100%;height:auto;border-radius:12px;border:1px solid var(--border);background:#fff}
+.blog-fig figcaption{font-size:13px;color:var(--text-3);margin-top:8px}
+</style>
+<meta name="theme-color" content="#ff6333">
+<meta name="author" content="PDFdukan Editorial Team">
+<meta property="article:modified_time" content="2026-11-11T00:00:00+05:00">
+</head>
+<body>
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lbg)"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <a href="../tools.html" class="nav-item">Tools</a>
+    <a href="/" class="nav-item active">Blog</a>
+  </nav>
+  <div class="header-actions" style="margin-left:auto">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn"><span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span></button>
+  </div>
+</header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer">
+  <a href="/" class="mnd-link">🏠 Home</a>
+  <a href="../tools.html" class="mnd-link">🛠️ All Tools</a>
+  <a href="/" class="mnd-link active">📝 Blog</a>
+  <a href="../about.html" class="mnd-link">🏢 About</a>
+  <a href="../scanner.html" class="mnd-link">📷 Scanner</a>
+</div>
+
+
+
+<article class="page-prose article-shield"><div class="article-hero"><h1>How Accurate Is OCR on Scanned Documents? We Tested It</h1></div>
+<nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin:16px 0 0"><a href="/" style="color:var(--text-3)">Home</a> &rsaquo; <a href="index.html" style="color:var(--text-3)">Blog</a> &rsaquo; <span>How Accurate Is OCR on Scanned Documents?</span></nav>
+<div class="article-meta"><span class="am-tag">Guide</span><span class="am-date">By the PDFdukan Editorial Team · Last updated: November 2026</span><span class="am-read">9 min read</span></div>
+
+<p id="answer">OCR is very accurate at recognizing text from clean scanned documents: in our test, printed letters came back with almost no errors. Accuracy drops sharply on worn copies, noisy faxes and handwriting. The real risk is a confident-looking result with a few wrong numbers, so always check figures against the original.</p>
+<div class="article-cta"><p>Try it on your own scan with the free <a href="../tools/ocr-image-to-text.html" style="color:var(--primary);font-weight:700">OCR image to text tool</a>. It runs in your browser.</p></div>
+
+<nav class="toc" aria-label="Table of contents"><strong>On this page</strong><ol>
+<li><a href="#accuracy">How accurate is OCR in recognizing text from scanned documents?</a></li>
+<li><a href="#measure">How is OCR accuracy measured?</a></li>
+<li><a href="#test">What did our OCR accuracy test show?</a></li>
+<li><a href="#noise">Why does damage hurt more than low resolution?</a></li>
+<li><a href="#confidence">Can you trust the OCR confidence score?</a></li>
+<li><a href="#hard">Which documents does OCR still struggle with?</a></li>
+<li><a href="#improve">How do you get the most accurate OCR from a scan?</a></li>
+<li><a href="#language">Does the language setting change OCR accuracy?</a></li>
+<li><a href="#own">How can you test OCR accuracy on your own documents?</a></li>
+<li><a href="#compare">How do OCR services compare?</a></li>
+<li><a href="#faq">Frequently Asked Questions</a></li>
+</ol></nav>
+
+<h2 id="accuracy">How accurate is OCR in recognizing text from scanned documents?</h2>
+<p>OCR reads clean printed scans almost perfectly, but every source puts a big gap between clean pages and real-world paperwork. The University of Illinois Library notes that vendors may advertise 97% to 99% accuracy. It adds that those figures count character errors, not word errors.</p>
+<p>Published ranges vary widely. LlamaIndex puts the character error rate for printed text under 1% and for handwriting at 3–5%. Lido gives 85–97% character accuracy for traditional OCR and 98–99.5% for AI-based tools. None of these brands publish the test files behind those ranges.</p>
+<p>That is why we ran our own test with a known letter and measured every error. The results match the general picture, with one twist explained below: damage to the paper mattered far more than resolution.</p>
+
+<h2 id="measure">How is OCR accuracy measured?</h2>
+<p>OCR accuracy is measured by comparing the OCR output with a correct copy of the text, called the ground truth. The most common score is the character error rate, or CER: the share of letters that were wrong, missing or extra.</p>
+<p>The word error rate, or WER, counts whole words instead. One wrong letter spoils a whole word, so WER always looks worse than CER. A page with 1% CER can easily have 5% WER.</p>
+<div style="overflow-x:auto"><table class="format-table"><tr><th>Measure</th><th>What it counts</th><th>Best for</th></tr>
+<tr><td>Character error rate (CER)</td><td>Wrong, missing or extra letters</td><td>Comparing OCR engines</td></tr>
+<tr><td>Word error rate (WER)</td><td>Wrong, missing or extra words</td><td>Search and reading</td></tr>
+<tr><td>Field-level accuracy</td><td>Whole values, such as a total or a date</td><td>Invoices, forms and records</td></tr></table></div>
+<p>Field-level accuracy matters most for business documents. Rely Services makes this point with an amount like 1,250.00 read as 1,250.80. The character score is high, yet the one value you needed is wrong.</p>
+<p>Scores can also hide meaning. The Urban Institute warns that a similarity score treats "quality" misread as "duality" like any other one-letter slip. A tiny error count can still change what a sentence says.</p>
+
+<h2 id="test">What did our OCR accuracy test show?</h2>
+<p>Our test showed near-perfect OCR on clean, tilted, faint and low-resolution pages, and a heavy failure on a worn photocopy. We used one business letter of 97 words and 558 characters, then varied only the condition of the page.</p>
+<figure class="blog-fig"><img src="../images/blog/ocr-accuracy-chart.webp" alt="Bar chart of OCR character error rate by scan condition: near zero for clean pages, 1.6% for fax, 2.3% at 72 DPI, 30.1% for a worn photocopy" width="1200" height="630" loading="lazy" decoding="async"><figcaption>Every bar is the same letter, read by the same tool.</figcaption></figure>
+<div style="overflow-x:auto"><table class="format-table"><tr><th>Page condition</th><th>CER</th><th>WER</th><th>Confidence shown</th></tr>
+<tr><td>Clean print, 300 DPI</td><td>0.0%</td><td>0.0%</td><td>96%</td></tr>
+<tr><td>Clean print, 150 DPI</td><td>0.0%</td><td>0.0%</td><td>96%</td></tr>
+<tr><td>Clean print, 100 DPI</td><td>0.2%</td><td>1.0%</td><td>96%</td></tr>
+<tr><td>12° tilt, 300 DPI</td><td>0.0%</td><td>0.0%</td><td>96%</td></tr>
+<tr><td>Very faint gray text, 300 DPI</td><td>0.0%</td><td>0.0%</td><td>96%</td></tr>
+<tr><td>Dim, angled, blurry phone photo</td><td>0.2%</td><td>1.0%</td><td>95%</td></tr>
+<tr><td>6 pt text, 300 DPI</td><td>0.2%</td><td>1.0%</td><td>96%</td></tr>
+<tr><td>Fax-like copy, 100 DPI</td><td>1.6%</td><td>8.2%</td><td>88%</td></tr>
+<tr><td>9 pt text at 72 DPI</td><td>2.3%</td><td>10.3%</td><td>86%</td></tr>
+<tr><td>Worn photocopy, 150 DPI</td><td>30.1%</td><td>60.8%</td><td>57%</td></tr></table></div>
+<p>Two results needed tool changes first. Before we added automatic straightening, the 12° page returned no text at all. The dim phone photo also failed until the tool learned to even out the shadow and try again.</p>
+<p>Keep the limits in mind. Our pages were generated in a clean serif font, so real scans of old paper will usually score worse. Treat the numbers as a fair comparison between conditions, not a promise for every document.</p>
+<p>The pattern is still useful. Clean pages in any of the tested resolutions were safe. Problems began only when the letters themselves were damaged, by fax-style hard edges, tiny screen-size text or photocopy specks.</p>
+
+<h2 id="noise">Why does damage hurt more than low resolution?</h2>
+<p>Damage hurts OCR more than low resolution because specks and blur change the shapes of letters, while a small clean letter keeps its shape. In our test, the 100 DPI page lost one character, but the speckled 150 DPI photocopy lost almost a third.</p>
+<p>That challenges a common rule of thumb. Lido says character accuracy falls under 90% below 150 DPI. Our clean 100 DPI page stayed above 99%. The resolution advice still holds for scanning, but dirt, toner specks and copy-of-a-copy blur do far more harm.</p>
+<figure class="blog-fig"><img src="../images/blog/ocr-photocopy-result.webp" alt="Zoomed worn photocopy next to its OCR output, where 2026 became 3036 and INV-20481 became INV-30481" width="1200" height="214" loading="lazy" decoding="async"><figcaption>The worn photocopy and what OCR actually read.</figcaption></figure>
+<p>Look closely at the numbers in that output. The year 2026 became 3036, and invoice INV-20481 became INV-30481. Both still look like valid values, which is exactly what makes them dangerous in a spreadsheet or an accounts system.</p>
+
+<h2 id="confidence">Can you trust the OCR confidence score?</h2>
+<p>The OCR confidence score is a useful warning light, but it is not the same as accuracy. Rely Services draws the same line: confidence is the engine's own guess, while accuracy is checked against the real text.</p>
+<p>In our test, the two moved together. Every page at 95% or higher had at most one wrong character. Scores of 86–88% came with 1.6–2.3% CER, and 57% came with 30% CER. Treat anything under about 90% as a page to proofread line by line.</p>
+<p>While testing, we found our tool showed 95% for a page where it read nothing. Tesseract reports that value for empty pages, and the tool passed it on. It now shows a dash when no text is found.</p>
+
+<h2 id="hard">Which documents does OCR still struggle with?</h2>
+<p>OCR still struggles with handwriting, damaged copies, complex tables and very old typefaces. The Illinois library guide says handwritten documents cannot be recognized with any useful degree of accuracy by standard OCR.</p>
+<p>The Urban Institute tested four OCR services on poor scans, and all four struggled with the handwritten page. LlamaIndex gives a 3–5% character error rate for handwriting with newer tools, so results depend heavily on the engine.</p>
+<p>Old print is another weak spot. The Illinois guide notes that texts published before 1850 may be less compatible with OCR software. Very small type, such as 6 pt, also lowers accuracy, though our clean 6 pt page lost only one character.</p>
+<p>Tables and multi-column pages fail in a different way. The letters may be right, but the reading order breaks, so cells merge or columns interleave. Check structure as well as spelling.</p>
+
+<h2 id="improve">How do you get the most accurate OCR from a scan?</h2>
+<p>You get the most accurate OCR by giving the engine a clean, flat, well-lit page in the right language. These steps follow the Illinois guide and our own results.</p>
+<ol>
+<li>Scan at 300 DPI, the resolution the Illinois library recommends.</li>
+<li>Keep brightness near 50%, since too high or too low reduces accuracy.</li>
+<li>Scan discolored or old pages in RGB color to keep all the image detail.</li>
+<li>Scan the original, not a copy of a copy, whenever you can.</li>
+<li>Pick the document's language before you run OCR.</li>
+<li>Check every number, date and name against the original.</li>
+</ol>
+<p>Phone photos work well when the page is flat and evenly lit. Our guide to <a href="scan-documents-phone.html" style="color:var(--primary)">scanning documents with your phone</a> covers framing and light, and our explainer on <a href="how-ocr-works.html" style="color:var(--primary)">how OCR works</a> covers what happens inside the engine.</p>
+<figure class="blog-fig"><img src="../images/blog/ocr-steps.gif" alt="Animated steps in the PDFdukan OCR tool: add a dim phone photo, pick English, read the extracted letter with 95% confidence" width="800" height="621" loading="lazy" decoding="async"><figcaption>The real tool reading our dim phone photo.</figcaption></figure>
+<p>For scanned PDFs, you can keep the page look and add a hidden text layer instead. The <a href="../tools/searchable-pdf-converter-online.html" style="color:var(--primary)">searchable PDF converter</a> does that, so you can search and copy from the original scan.</p>
+
+<h2 id="language">Does the language setting change OCR accuracy?</h2>
+<p>The language setting changes OCR accuracy because the engine uses it to pick letter shapes and likely words. Rely Services lists an incorrect language or configuration among its seven main causes of poor OCR.</p>
+<p>A wrong setting shows up as strange letters in otherwise clean text. Accented letters can lose their marks, text in another script may not be read at all, and common words come back slightly off. Set the language before you start, and choose two languages when a page mixes them.</p>
+<p>Page layout settings matter in a similar way. A two-column article read as one block can mix lines from both columns. Pick the layout that matches the page, then check the reading order.</p>
+
+<h2 id="own">How can you test OCR accuracy on your own documents?</h2>
+<p>You can test OCR accuracy on your own documents by typing a correct copy of one typical page and comparing it with the OCR output. This is the same method we used, and it takes about as long as typing the page once.</p>
+<ol>
+<li>Pick one page that represents your usual paperwork, not your cleanest one.</li>
+<li>Type the text exactly, or copy it from the original digital file if you have it.</li>
+<li>Run OCR on the scan and paste both versions side by side.</li>
+<li>Count wrong numbers, names and dates first, then other errors.</li>
+</ol>
+<p>Free text comparison tools can count the differences for you. If key values come back wrong on your test page, fix the scanning step before you process the rest of the batch.</p>
+
+<h2 id="compare">How do OCR services compare?</h2>
+<p>OCR services differ most on poor scans, not clean ones. The Urban Institute compared AWS Textract, ExtractTable, Tesseract and Adobe Acrobat DC on three poor-quality scans, scoring each output against human-typed text.</p>
+<p>Textract and ExtractTable came out ahead, with Tesseract close behind and Adobe performing poorly in that test. The authors note Tesseract ran without any image preprocessing, which could have improved it. They also tested only three documents, so treat the ranking as a hint rather than a verdict.</p>
+<p>Price and privacy matter as much as scores. The same study lists Textract at $1.50 per 1,000 pages for plain text. It lists Acrobat DC at $14.99 a month on an annual plan, while Tesseract is free. Cloud services read your file on their servers, while browser tools built on Tesseract keep the image on your device.</p>
+
+<div class="tip-box"><strong>How we tested:</strong> On 11 November 2026 we rendered one 97-word letter in ten page conditions. We ran each through the live PDFdukan OCR tool in English and scored the output with character and word error rates.</div>
+
+<h2 id="faq">Frequently Asked Questions</h2>
+<h3 class="faq-h">How accurate is OCR on a clean scanned document?</h3>
+<p>OCR is close to perfect on a clean, printed scan. In our test, clean pages from 150 to 300 DPI had no character errors. Real paperwork with stains or old type will score lower.</p>
+<h3 class="faq-h">What is a good OCR accuracy rate?</h3>
+<p>A good OCR result has a character error rate under 1% for printed text. LlamaIndex gives that figure for printed documents. For invoices and forms, judge by whether every key value is right, not by the average.</p>
+<h3 class="faq-h">Is 99% OCR accuracy good enough?</h3>
+<p>99% character accuracy is good for search but not for records. On a 558-character letter, 1% is about six wrong letters, and one of them could sit inside a total or a date.</p>
+<h3 class="faq-h">Why does OCR mix up numbers like 0 and O?</h3>
+<p>OCR mixes up look-alike characters because their shapes are nearly the same. Rely Services lists O and 0, I and 1, S and 5, and B and 8 as common confusions. Checking numbers by hand is the only reliable fix.</p>
+<h3 class="faq-h">Can OCR read handwriting?</h3>
+<p>Standard OCR reads handwriting poorly. The Illinois library guide says handwriting cannot be recognized with any useful accuracy, and all four services in the Urban Institute test struggled with it. Type the text, or use a tool built for handwriting.</p>
+<h3 class="faq-h">Does a higher DPI always improve OCR?</h3>
+<p>No, higher DPI helps only up to a point. Our clean pages scored the same at 150 and 300 DPI. Damage such as specks and blur hurt far more, so a clean original beats a high-resolution copy.</p>
+<h3 class="faq-h">Is AI OCR more accurate than traditional OCR?</h3>
+<p>AI-based OCR is usually described as more accurate on messy documents. Lido, for example, gives 98–99.5% character accuracy for AI-based tools against 85–97% for traditional OCR. On clean printed pages, our Tesseract-based test already reached near-zero errors.</p>
+<h3 class="faq-h">Should I proofread OCR text?</h3>
+<p>Yes, proofread any OCR text you will rely on. The Illinois guide notes that OCR cannot check its own output. Start with numbers, names and dates, then read pages with low confidence in full.</p>
+<div class="author-bio" style="display:flex;gap:16px;background:var(--card-2);border-radius:12px;padding:20px;margin:40px 0 20px;border:1px solid var(--border)">
+  <div style="width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0">PD</div>
+  <div><p style="margin:0 0 4px;font-weight:700"><a href="../about.html#editorial-standards">PDFdukan Editorial Team</a></p><p style="margin:0 0 8px;font-size:13px;color:var(--text-3)">Product documentation and testing</p><p style="margin:0;font-size:14px;color:var(--text-2)">The PDFdukan team builds and writes about free, browser-based document tools — PDF workflows, OCR, and privacy-first file processing.</p></div>
+</div>
+</div></article>
+
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item" onclick="location.href='../tools.html'"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleBlog">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleBlog" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px">Create account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20261111"></script>
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-word-converter.html">PDF to Word</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
