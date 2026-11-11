@@ -303,8 +303,9 @@
     <p>Our test merges with links, bookmarks and form fields gave this result:</p>
     <div style="overflow-x:auto"><table class="i2p-table">
       <tbody>
-        <tr><th scope="row">Kept</th><td>Page content, selectable text, image resolution, web links</td></tr>
-        <tr><th scope="row">Not kept</th><td>Bookmarks and working fill-in form fields</td></tr>
+        <tr><th scope="row">Kept</th><td>Page content, selectable text, image resolution, web links, fill-in form fields</td></tr>
+        <tr><th scope="row">Added</th><td>One bookmark per source file, so you can jump between documents</td></tr>
+        <tr><th scope="row">Not kept</th><td>The original bookmarks inside each file</td></tr>
         <tr><th scope="row">Not accepted</th><td>Password-locked or damaged PDFs, and non-PDF files</td></tr>
         <tr><th scope="row">Number of files</th><td>Two or more; your device's memory sets the practical limit</td></tr>
       </tbody>
@@ -320,7 +321,7 @@
     </ul>
 
     <h3>How Do I Get a Clean Merged File?</h3>
-    <p>Fill in any forms before you merge, because form fields stop working afterwards. Pages keep their original order inside each file, so to mix pages between files, merge first and then use <a href="delete-pages-from-pdf.html">Rotate, Reorder &amp; Delete PDF Pages</a>.</p>
+    <p>Form fields keep working after the merge; if two files use the same field name, the second one gets a number added. Pages keep their original order inside each file, so to mix pages between files, merge first and then use <a href="delete-pages-from-pdf.html">Rotate, Reorder &amp; Delete PDF Pages</a>.</p>
     <p>File too big for a portal? Shrink it with <a href="compress-pdf-reduce-file-size.html">Compress PDF</a>. For photos, use <a href="image-to-pdf-converter.html">Image to PDF</a> first.</p>
 
     <h3>Are My PDFs Uploaded?</h3>
@@ -387,8 +388,8 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20261111d"></script>
-<script src="../js/tools.js?v=20261111b"></script>
+<script src="../js/app.js?v=20261111"></script>
+<script src="../js/tools.js?v=20261111c"></script>
 
 <!-- Brand Processing Loader -->
 <div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">

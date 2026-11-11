@@ -1384,8 +1384,9 @@ const MergePDF = (() => {
     if (mergeBtn) mergeBtn.disabled = true;
 
     try {
-      const { PDFDocument } = PDFLib;
+      const { PDFDocument, PDFName, PDFDict, PDFHexString, PDFString } = PDFLib;
       const merged = await PDFDocument.create();
+      const starts = [], fieldRefs = [], seenField = new Set(), usedNames = new Set();
       merged.setTitle('Merged PDF');
       merged.setCreator('PDFdukan Merge PDF');
       merged.setProducer('PDFdukan using pdf-lib');
@@ -1399,7 +1400,27 @@ const MergePDF = (() => {
         const doc = await PDFDocument.load(ab);
         const pages = await merged.copyPages(doc, indices);
         pages.forEach(p => merged.addPage(p));
+        starts.push({ title: pf.name.replace(/\.pdf$/i, ''), ref: pages[0].ref });
+        // Keep fillable form fields: copied widgets need to be listed in the new AcroForm
+        try { _collectFields(pages, i, PDFName, PDFDict, PDFString, fieldRefs, seenField, usedNames); } catch (er) { console.warn('form fields', er); }
       }
+      try {
+        if (fieldRefs.length) {
+          merged.catalog.set(PDFName.of('AcroForm'), merged.context.obj({ Fields: fieldRefs }));
+        }
+        // One bookmark per source file, so the merged PDF is easy to navigate
+        if (starts.length > 1) {
+          const ctx = merged.context, root = ctx.nextRef(), refs = starts.map(() => ctx.nextRef());
+          starts.forEach((st, k) => {
+            const d = { Title: PDFHexString.fromText(st.title), Parent: root, Dest: [st.ref, 'Fit'] };
+            if (k > 0) d.Prev = refs[k - 1];
+            if (k < refs.length - 1) d.Next = refs[k + 1];
+            ctx.assign(refs[k], ctx.obj(d));
+          });
+          ctx.assign(root, ctx.obj({ Type: 'Outlines', First: refs[0], Last: refs[refs.length - 1], Count: refs.length }));
+          merged.catalog.set(PDFName.of('Outlines'), root);
+        }
+      } catch (er) { console.warn('bookmarks/forms', er); }
 
       _showProgress(95, 'Saving…');
       const bytes = await merged.save();
@@ -1421,6 +1442,25 @@ const MergePDF = (() => {
       if (pc) pc.style.display = 'none';
       if (mergeBtn) mergeBtn.disabled = pdfFiles.length < 2;
     }
+  }
+
+  function _collectFields(pages, fileIdx, PDFName, PDFDict, PDFString, out, seen, used) {
+    const W = PDFName.of('Widget'), PARENT = PDFName.of('Parent'), T = PDFName.of('T');
+    pages.forEach(pg => {
+      const annots = pg.node.Annots(); if (!annots) return;
+      for (let k = 0; k < annots.size(); k++) {
+        const ref = annots.get(k), a = annots.lookupMaybe(k, PDFDict);
+        if (!a || a.get(PDFName.of('Subtype')) !== W) continue;
+        let top = a, topRef = ref;
+        while (top.get(PARENT)) { topRef = top.get(PARENT); top = top.lookup(PARENT, PDFDict); }
+        const key = String(topRef); if (seen.has(key)) continue; seen.add(key);
+        const t = top.lookupMaybe(T, PDFString) || top.get(T);
+        let nm = t && t.decodeText ? t.decodeText() : '';
+        if (nm && used.has(nm)) { nm = nm + '_' + (fileIdx + 1); top.set(T, PDFString.of(nm)); }
+        if (nm) used.add(nm);
+        out.push(topRef);
+      }
+    });
   }
 
   function _parsePageSelection(raw, total) {
