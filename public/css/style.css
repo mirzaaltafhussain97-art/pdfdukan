@@ -2687,3 +2687,11 @@ body .tool-page .tool-hero>.tool-feature-visual{display:block;width:100%;max-hei
 .hero-chips li{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;background:var(--card);border:1px solid var(--border);font-size:11.5px;font-weight:600;color:var(--text-2);white-space:nowrap}
 .hero-chips li::before{content:'';width:12px;height:12px;flex-shrink:0;background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E")}
 @media(max-width:720px){body .tool-page .tool-hero:has(>.tool-hero-copy){grid-template-columns:1fr;text-align:center}body .tool-page .tool-hero>.tool-feature-visual{max-height:140px;margin:0 auto}body .tool-page .tool-hero>.tool-hero-copy>h1{font-size:20px}body .tool-page .tool-hero>.tool-hero-copy>*:not(.tool-hero-icon):not(h1){justify-self:center}body .tool-page .tool-hero>.tool-hero-copy>p{text-align:center}.hero-chips{justify-content:center}.hero-chips li{white-space:normal}}
+
+/* Colourful tool icon tiles */
+.has-pd-ico:has(.pd-ico2){background:none !important;box-shadow:none !important}
+.has-pd-ico .pd-ico2{width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(0,0,0,.14))}
+.tool-icon-wrap.has-pd-ico:has(.pd-ico2),.btc-icon.has-pd-ico:has(.pd-ico2){width:56px;height:56px}
+.tool-hero-icon.has-pd-ico .pd-ico2{width:100%;height:100%}
+.pd-ico2 .pd-ico-glyph{stroke-width:1.45}
+.related-tool-card .rtc-icon.has-pd-ico:has(.pd-ico2){width:40px;height:40px}

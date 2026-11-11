@@ -2121,8 +2121,9 @@ function _initSearchTrustSignals() {
    on touch/reduced-motion devices, and never intercepts input. */
 function initAmbientGlobe() {
   const homePath = location.pathname === '/' || /\/site-root-internal\.html$/.test(location.pathname);
-  const hero = document.querySelector('.hero-section');
-  if (!homePath || !hero || document.getElementById('ambientGlobe')) return;
+  const toolHero = /\/tools\//.test(location.pathname) ? document.querySelector('.tool-page .tool-hero') : null;
+  const hero = homePath ? document.querySelector('.hero-section') : toolHero;
+  if (!hero || document.getElementById('ambientGlobe')) return;
 
   const canvas = document.createElement('canvas');
   canvas.id = 'ambientGlobe';
@@ -2133,8 +2134,9 @@ function initAmbientGlobe() {
   if (!ctx) { canvas.remove(); return; }
 
   const points = [];
-  for (let lat = -75; lat <= 75; lat += 25) {
-    for (let lon = 0; lon < 360; lon += 30) {
+  const latStep = toolHero ? 15 : 25, lonStep = toolHero ? 15 : 30;
+  for (let lat = -80; lat <= 80; lat += latStep) {
+    for (let lon = 0; lon < 360; lon += lonStep) {
       points.push({ lat: lat * Math.PI / 180, lon: lon * Math.PI / 180 });
     }
   }
@@ -2161,9 +2163,9 @@ function initAmbientGlobe() {
     ctx.clearRect(0, 0, width, height);
     const light = document.documentElement.dataset.theme === 'light';
     const rgb = light ? '201,71,36' : '255,128,85';
-    const cx = width * (width < 700 ? 0.72 : 0.67) + shiftX;
-    const cy = height * (width < 700 ? 0.22 : 0.25) + shiftY;
-    const radius = Math.min(width * (width < 700 ? 0.32 : 0.23), height * 0.25, 205);
+    const cx = (toolHero ? width * (width < 700 ? 0.5 : 0.52) : width * (width < 700 ? 0.72 : 0.67)) + shiftX;
+    const cy = (toolHero ? height * 0.5 : height * (width < 700 ? 0.22 : 0.25)) + shiftY;
+    const radius = toolHero ? Math.min(width * 0.3, height * 0.47, 200) : Math.min(width * (width < 700 ? 0.32 : 0.23), height * 0.25, 205);
     points.forEach(point => {
       const cosLat = Math.cos(point.lat);
       const x3 = cosLat * Math.cos(point.lon + angle);
@@ -2173,10 +2175,10 @@ function initAmbientGlobe() {
       const perspective = 0.78 + depth * 0.22;
       const x = cx + x3 * radius * perspective;
       const y = cy + y3 * radius;
-      const dot = 0.7 + depth * 1.8;
+      const dot = toolHero ? 0.6 + depth * 1.3 : 0.7 + depth * 1.8;
       ctx.beginPath();
       ctx.arc(x, y, dot, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(' + rgb + ',' + (0.045 + depth * (light ? 0.13 : 0.18)) + ')';
+      ctx.fillStyle = 'rgba(' + rgb + ',' + (toolHero ? 0.06 + depth * (light ? 0.32 : 0.38) : 0.045 + depth * (light ? 0.13 : 0.18)) + ')';
       ctx.fill();
     });
   }
@@ -2286,14 +2288,21 @@ document.addEventListener('DOMContentLoaded', () => {
     '/tools/pdf-text-extractor.html': 'text-extract', '/tools/searchable-pdf-converter-online.html': 'searchable',
     '/tools/image-compress-resize.html': 'img-compress', '/tools/word-character-counter.html': 'word-counter'
   };
-  /* A page with folded corner; the tool glyph sits on an orange badge. */
+  /* Colourful tile per tool: gradient square, soft page shape, bold white glyph. */
+  var C = {'image-to-pdf':['#fbbf24','#f59e0b'],'pdf-to-jpg':['#facc15','#eab308'],'pdf-to-word':['#60a5fa','#2563eb'],'word-to-pdf':['#3b82f6','#1e40af'],
+    'html-to-pdf':['#a78bfa','#7c3aed'],'merge':['#fb7185','#e11d48'],'split':['#fb923c','#ea580c'],'compress':['#4ade80','#16a34a'],
+    'delete-pages':['#f87171','#dc2626'],'organize':['#22d3ee','#0891b2'],'crop':['#f472b6','#db2777'],'edit':['#c084fc','#9333ea'],
+    'fill-sign':['#818cf8','#4f46e5'],'watermark':['#38bdf8','#0284c7'],'page-numbers':['#a3e635','#65a30d'],'unlock':['#2dd4bf','#0d9488'],
+    'restriction':['#94a3b8','#475569'],'metadata':['#fbbf24','#b45309'],'scan':['#ff8a5c','#e8562a'],'ocr':['#e879f9','#c026d3'],
+    'text-extract':['#38bdf8','#0369a1'],'searchable':['#34d399','#059669'],'img-compress':['#fcd34d','#d97706'],'word-counter':['#a5b4fc','#6366f1']};
+  var n = 0;
   function svg(key) {
-    return '<svg class="pd-ico" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
-      '<path class="pd-ico-page" d="M11 4h17.5L38 13.5V41a3 3 0 0 1-3 3H11a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"/>' +
-      '<path class="pd-ico-fold" d="M28.5 4v7a2.5 2.5 0 0 0 2.5 2.5h7"/>' +
-      '<path class="pd-ico-lines" d="M13.5 15h10M13.5 20h13M13.5 25h8"/>' +
-      '<g transform="translate(17 18)"><rect class="pd-ico-badge" width="29" height="29" rx="8"/>' +
-      '<g class="pd-ico-glyph" transform="translate(2.6 2.6) scale(1.33)">' + G[key] + '</g></g></svg>';
+    var c = C[key] || ['#ff8a5c','#e8562a'], id = 'pdg' + (n++);
+    return '<svg class="pd-ico pd-ico2" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
+      '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs>' +
+      '<rect width="48" height="48" rx="13" fill="url(#' + id + ')"/>' +
+      '<path d="M0 13A13 13 0 0 1 13 0h22a13 13 0 0 1 13 13v6C30 25 14 15 0 24z" fill="#fff" opacity=".14"/>' +
+      '<g class="pd-ico-glyph" transform="translate(4.6 5) scale(2.15)">' + G[key] + '</g></svg>';
   }
   function keyOf(href) { try { return MAP[new URL(href, location.href).pathname]; } catch (e) { return null; } }
   function apply(root) {
