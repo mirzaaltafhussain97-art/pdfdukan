@@ -1053,6 +1053,59 @@
     var m = o.margins || { l: 72, r: 72, t: 72, b: 72 };
     var clampM = function (v) { return Math.max(28, Math.min(108, v - 4)); };
     var ML = clampM(m.l), MR = clampM(m.r), MT = clampM(m.t), MB = clampM(m.b);
+    /* Running header/footer: a short line repeated at the top or bottom of most
+       pages becomes a real Word header/footer (page numbers become a PAGE field),
+       so it no longer spills onto an extra page. */
+    var usedBullets = false;
+    var runHF = { head: null, foot: null };
+    (function () {
+      var flow = o.exact ? [] : o.pages.filter(function (pg) { return !pg.exact && pg.blocks && pg.blocks.length; });
+      if (flow.length < 2) return;
+      function txt(B) { return B.lines.map(function (L) { return L.text || ''; }).join(' ').replace(/\s+/g, ' ').trim(); }
+      function key(B) { return txt(B).replace(/\d+/g, '#').toLowerCase(); }
+      function edge(pg, top) {
+        var bl = pg.blocks.filter(function (B) { return B.lines && B.lines.length && !B.table && !B.img && !B.ocr; });
+        if (!bl.length) return null;
+        var B = bl.reduce(function (a, b) { return top ? (b.lines[0].y < a.lines[0].y ? b : a) : (b.lines[b.lines.length - 1].y > a.lines[a.lines.length - 1].y ? b : a); });
+        var h = pg.h || first.h, y = top ? B.lines[0].y : B.lines[B.lines.length - 1].y;
+        if ((top ? y > h * 0.1 : y < h * 0.9) || B.lines.length > 2 || txt(B).length > 120) return null;
+        return B;
+      }
+      ['head', 'foot'].forEach(function (k) {
+        var top = k === 'head', hits = {}, found = [];
+        flow.forEach(function (pg) { var B = edge(pg, top); if (B) { var kk = key(B); (hits[kk] = hits[kk] || []).push({ pg: pg, B: B }); } });
+        Object.keys(hits).forEach(function (kk) { if (hits[kk].length >= Math.max(2, Math.ceil(flow.length * 0.6))) found = hits[kk]; });
+        if (!found.length) return;
+        found.forEach(function (f) { f.pg.blocks = f.pg.blocks.filter(function (b) { return b !== f.B; }); });
+        var f0 = found[0], L0 = f0.B.lines[0], pgw = f0.pg.w || first.w;
+        var xs = [], xe = [];
+        f0.B.lines.forEach(function (L) { (L.frags || []).forEach(function (fr) { xs.push(fr.x0); xe.push(fr.x1 != null ? fr.x1 : fr.x0); }); });
+        var cx = xs.length ? (Math.min.apply(null, xs) + Math.max.apply(null, xe)) / 2 : pgw / 2;
+        var pageNo = o.pages.indexOf(f0.pg) + 1;
+        runHF[k] = { text: txt(f0.B), size: L0.size || o.body, jc: cx > pgw * 0.62 ? 'right' : cx < pgw * 0.38 ? 'left' : 'center', pageNo: pageNo,
+          y: top ? f0.B.lines[0].y - (L0.size || 10) : (f0.pg.h || first.h) - f0.B.lines[f0.B.lines.length - 1].y };
+      });
+      if (runHF.head || runHF.foot) {
+        var minTop = 1e9, maxBot = 0;
+        flow.forEach(function (pg) { pg.blocks.forEach(function (B) {
+          var t = B.table ? B.rowY[0][0] : B.lines ? B.lines[0].y - B.lines[0].size * 0.95 : B.top;
+          var b = B.table ? B.rowY[B.rowY.length - 1][1] : B.lines ? B.lines[B.lines.length - 1].y + B.lines[B.lines.length - 1].size * 0.3 : (B.y || 0);
+          if (isFinite(t)) minTop = Math.min(minTop, t); if (isFinite(b)) maxBot = Math.max(maxBot, (pg.h || first.h) - b);
+        }); });
+        if (runHF.head && minTop < 1e9) MT = clampM(Math.max(minTop, runHF.head.y + runHF.head.size * 2));
+        if (runHF.foot && maxBot > 0) MB = clampM(Math.max(maxBot, runHF.foot.y + runHF.foot.size * 2));
+      }
+    })();
+    function hfXml(tag, hf) {
+      var sz = Math.max(12, Math.round(hf.size * 2)), rp = '<w:rPr><w:sz w:val="' + sz + '"/><w:szCs w:val="' + sz + '"/></w:rPr>';
+      var r = function (t) { return t ? '<w:r>' + rp + '<w:t xml:space="preserve">' + escXml(t) + '</w:t></w:r>' : ''; };
+      var m = hf.text.match(/\d+/g), body;
+      if (m && m.indexOf(String(hf.pageNo)) >= 0) {
+        var at = hf.text.search(new RegExp('(^|\\D)' + hf.pageNo + '(\\D|$)')); if (at > 0 || hf.text.charAt(0) !== String(hf.pageNo).charAt(0)) at = hf.text.indexOf(String(hf.pageNo), at < 0 ? 0 : at);
+        body = r(hf.text.slice(0, at)) + '<w:r>' + rp + '<w:fldChar w:fldCharType="begin"/></w:r><w:r>' + rp + '<w:instrText xml:space="preserve"> PAGE </w:instrText></w:r><w:r>' + rp + '<w:fldChar w:fldCharType="separate"/></w:r>' + r(String(hf.pageNo)) + '<w:r>' + rp + '<w:fldChar w:fldCharType="end"/></w:r>' + r(hf.text.slice(at + String(hf.pageNo).length));
+      } else body = r(hf.text);
+      return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:' + tag + ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:spacing w:after="0"/><w:jc w:val="' + hf.jc + '"/></w:pPr>' + body + '</w:p></w:' + tag + '>';
+    }
     var contentW = first.w - ML - MR;
     var bodyHalf = Math.max(12, Math.min(48, Math.round(o.body * 2)));
     var rtlDoc = RTL_LANG.test(o.lang);
@@ -1106,7 +1159,7 @@
       if (p.rtl) x += '<w:bidi/>';
       if (p.spaceXml) x += p.spaceXml;
       if (p.numbered) x += '<w:ind w:left="567" w:hanging="567"/>';
-      else if (p.bullet) x += '<w:ind w:left="' + (360 + tw(p.indent || 0)) + '" w:hanging="360"/>';
+      else if (p.bullet) x += (p.symBullet ? '<w:numPr><w:ilvl w:val="0"/><w:numId w:val="1"/></w:numPr>' : '') + '<w:ind w:left="' + (360 + tw(p.indent || 0)) + '" w:hanging="360"/>';
       else if (p.indent) x += '<w:ind w:left="' + Math.min(tw(p.indent), tw(contentW * 0.6)) + '"/>';
       if (p.align) x += '<w:jc w:val="' + (p.align === 'right' ? 'right' : p.align) + '"/>';
       else if (p.rtl) x += '<w:jc w:val="right"/>';
@@ -1150,6 +1203,10 @@
         var rr = itemRuns(items, !!p.head, p.rtl);
         xmlP += rr.xml; plainP += rr.plain;
       });
+      if (p.bullet && !p.head && /^\s*[•●▪■◦‣∙·○◆►✓✔]\s*/.test(plainP)) {
+        var stripped = xmlP.replace(/(<w:t[^>]*>)\s*[•●▪■◦‣∙·○◆►✓✔][\s\u00a0]*/, '$1');
+        if (stripped !== xmlP) { xmlP = stripped.replace(/<w:r>(?:<w:rPr>(?:(?!<\/w:rPr>).)*<\/w:rPr>)?<w:t[^>]*><\/w:t><\/w:r>/, ''); plainP = plainP.replace(/^\s*[•●▪■◦‣∙·○◆►✓✔][\s\u00a0]*/, ''); p.symBullet = true; usedBullets = true; }
+      }
       plainP = plainP.replace(/[ \t]+/g, ' ').replace(/ ?\n ?/g, '\n').trim();
       if (!plainP) return '';
       countWords(plainP); text.push((p.bullet ? '' : '') + plainP); paras++;
@@ -1287,7 +1344,7 @@
     var NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
     var land = first.w > first.h;
     var doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document ' + NS + '><w:body>' + body +
-      '<w:sectPr><w:pgSz w:w="' + tw(first.w) + '" w:h="' + tw(first.h) + '"' + (land ? ' w:orient="landscape"' : '') + '/><w:pgMar w:top="' + tw(MT) + '" w:right="' + tw(MR) + '" w:bottom="' + tw(MB) + '" w:left="' + tw(ML) + '" w:header="360" w:footer="360" w:gutter="0"/>' + (rtlDoc ? '<w:bidi/>' : '') + '</w:sectPr></w:body></w:document>';
+      '<w:sectPr>' + (runHF.head ? '<w:headerReference w:type="default" r:id="rIdH1"/>' : '') + (runHF.foot ? '<w:footerReference w:type="default" r:id="rIdF1"/>' : '') + '<w:pgSz w:w="' + tw(first.w) + '" w:h="' + tw(first.h) + '"' + (land ? ' w:orient="landscape"' : '') + '/><w:pgMar w:top="' + tw(MT) + '" w:right="' + tw(MR) + '" w:bottom="' + tw(MB) + '" w:left="' + tw(ML) + '" w:header="' + (runHF.head ? tw(Math.max(14, Math.min(MT - 6, runHF.head.y))) : 360) + '" w:footer="' + (runHF.foot ? tw(Math.max(14, Math.min(MB - 6, runHF.foot.y - runHF.foot.size))) : 360) + '" w:gutter="0"/>' + (rtlDoc ? '<w:bidi/>' : '') + '</w:sectPr></w:body></w:document>';
     var font = o.bodyFont;
     var styles = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">' +
       '<w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="' + font + '" w:eastAsia="' + font + '" w:hAnsi="' + font + '" w:cs="' + (rtlDoc ? 'Arial' : font) + '"/><w:sz w:val="' + bodyHalf + '"/><w:szCs w:val="' + bodyHalf + '"/><w:lang w:val="en-US" w:eastAsia="en-US" w:bidi="' + (/urd/.test(o.lang) ? 'ur-PK' : 'ar-SA') + '"/></w:rPr></w:rPrDefault>' +
@@ -1297,7 +1354,7 @@
       '<w:style w:type="character" w:styleId="Hyperlink"><w:name w:val="Hyperlink"/><w:rPr><w:color w:val="0563C1"/><w:u w:val="single"/></w:rPr></w:style>' +
       '</w:styles>';
     var ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/>' +
-      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>';
+      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' + (usedBullets ? '<Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/>' : '') + (runHF.head ? '<Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>' : '') + (runHF.foot ? '<Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>' : '') + '</Types>';
     var now = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
     var core = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>' + escXml(st.base) + '</dc:title><dc:creator>PDFdukan PDF to Word</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF">' + now + '</dcterms:created></cp:coreProperties>';
     var zip = new JSZip();
@@ -1306,6 +1363,12 @@
     zip.file('docProps/core.xml', core);
     zip.file('word/document.xml', doc);
     zip.file('word/styles.xml', styles);
+    if (usedBullets) {
+      zip.file('word/numbering.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:numbering xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="hybridMultilevel"/><w:lvl w:ilvl="0"><w:start w:val="1"/><w:numFmt w:val="bullet"/><w:lvlText w:val="\u2022"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="360" w:hanging="360"/></w:pPr></w:lvl></w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num></w:numbering>');
+      rels.push('<Relationship Id="rIdN1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/>');
+    }
+    if (runHF.head) { zip.file('word/header1.xml', hfXml('hdr', runHF.head)); rels.push('<Relationship Id="rIdH1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/>'); }
+    if (runHF.foot) { zip.file('word/footer1.xml', hfXml('ftr', runHF.foot)); rels.push('<Relationship Id="rIdF1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>'); }
     zip.file('word/_rels/document.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' + rels.join('') + '</Relationships>');
     media.forEach(function (mm) { zip.file('word/media/' + mm.name, mm.blob); });
     var blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', compression: 'DEFLATE', compressionOptions: { level: 6 } });
