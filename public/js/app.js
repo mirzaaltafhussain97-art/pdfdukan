@@ -227,7 +227,7 @@ function updateStorageUI() {
         '</div>' +
         '<div class="sc-bar"><div class="sc-fill" style="width:5%;background:linear-gradient(90deg,#34a853,#4caf50)"></div></div>' +
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">' +
-          '<span style="font-size:11px;color:var(--text-3)">Up to 5 GB available</span>' +
+          '<span style="font-size:11px;color:var(--text-3)">' + (_driveAuto() ? 'Auto-save on' : 'Auto-save off') + '</span>' +
           '<a href="https://drive.google.com" target="_blank" rel="noopener" ' +
             'style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;flex-shrink:0">' +
             'Open Drive →' +
@@ -241,7 +241,7 @@ function updateStorageUI() {
         '<div class="sc-label"><span>Storage</span><span id="storageUsage">Local</span></div>' +
         '<div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>' +
         '<p class="sc-hint" id="storageHint" style="color:var(--primary);font-size:11px;cursor:pointer" ' +
-          'onclick="_initGDriveStorage(_gdriveToken())">☁️ Connect Google Drive →</p>';
+          'onclick="connectDrive()">☁️ Connect Google Drive →</p>';
       return;
     }
     // ── NOT SIGNED IN ───────────────────────────────────────────────────
@@ -471,6 +471,28 @@ window.CMFilename = CMFilename;
   }, true);
 })();
 
+/* ── MOBILE BOTTOM BAR: hide on scroll down, show on scroll up ── */
+(function _mobNavAutoHide() {
+  try {
+    const st = document.createElement('style');
+    st.textContent = '.mobile-nav{transition:transform .25s ease,background var(--t) var(--ease);padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}.mobile-nav.mn-hide{transform:translateY(110%)}';
+    document.head.appendChild(st);
+  } catch (e) {}
+  let last = window.scrollY || 0, ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function () {
+      const nav = document.querySelector('.mobile-nav'), y = window.scrollY || 0;
+      if (nav) {
+        const atEnd = window.innerHeight + y >= document.documentElement.scrollHeight - 4;
+        if (y > last + 6 && y > 80 && !atEnd) nav.classList.add('mn-hide');
+        else if (y < last - 6 || y <= 80 || atEnd) nav.classList.remove('mn-hide');
+      }
+      last = y; ticking = false;
+    });
+  }, { passive: true });
+})();
+
 /* ── CSV TRANSACTION LOG ─────────────────────────────────────── */
 const CMLogs = (() => {
   var STORAGE_KEY = 'cm_transaction_log';
@@ -630,6 +652,7 @@ if (STATE.user) {
 
 /* Firebase calls this whenever the user logs in/out (and on page load). */
 function _onAuthChanged(user) {
+  const _wasOut = !STATE.user;
   if (user) {
     STATE.user = {
       name:  user.displayName || (user.email ? user.email.split('@')[0] : 'User'),
@@ -647,6 +670,7 @@ function _onAuthChanged(user) {
   } catch (e) {}
   updateAuthUI();
   if (typeof updateStorageUI === 'function') updateStorageUI();
+  if (user && _wasOut && typeof _afterSignInDrive === 'function') _afterSignInDrive();
 }
 
 function openAuth(tab) {
@@ -724,6 +748,19 @@ async function _initGDriveStorage(token) {
     updateStorageUI(); return;
   }
   try {
+    // Reuse the PDFdukan folder if this app already created one (drive.file sees only our own files)
+    try {
+      const q = encodeURIComponent("name='" + GDRIVE_FOLDER_NAME + "' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+      const f = await fetch(GDRIVE_API + '?q=' + q + '&fields=files(id)&pageSize=1', { headers: { 'Authorization': 'Bearer ' + token } });
+      if (f.ok) {
+        const j = await f.json();
+        if (j.files && j.files[0]) {
+          localStorage.setItem('pdfdukan_drive_folder_id', j.files[0].id);
+          localStorage.setItem('pdfdukan_drive_setup_done', 'true');
+          updateStorageUI(); return;
+        }
+      }
+    } catch (e) {}
     // Create the PDFdukan folder in user's Drive
     const res = await fetch(GDRIVE_API, {
       method: 'POST',
@@ -823,6 +860,118 @@ function gDriveShowSaveBtn(containerId, getBlobFn, filename) {
   container.appendChild(btn);
 }
 window.gDriveShowSaveBtn = gDriveShowSaveBtn;
+
+/* ── DRIVE CONNECT + AUTO-SAVE ────────────────────────────────────
+   After sign-in, offer to connect the user's own Google Drive. When
+   connected and auto-save is on, every file a tool generates is also
+   uploaded to the "PDFdukan — CamMaster Files" folder (drive.file
+   scope: PDFdukan can only see files it created). */
+function _driveAuto() { try { return localStorage.getItem('pdfdukan_drive_autosave') === '1'; } catch (e) { return false; } }
+function _storeDriveToken(t) {
+  try { localStorage.setItem('cm_gdrive_token', t); localStorage.setItem('cm_gdrive_token_expiry', String(Date.now() + 3600000)); } catch (e) {}
+}
+async function connectDrive() {
+  if (!(await _firebaseReady()) || !_auth) { toast('Sign-in is not ready — please try again.', 'error'); return false; }
+  const u = _auth.currentUser;
+  if (!u) { openAuth('signin'); return false; }
+  const prov = new _fb.GoogleAuthProvider();
+  prov.addScope('https://www.googleapis.com/auth/drive.file');
+  if (u.email) prov.setCustomParameters({ login_hint: u.email });
+  let cred = null;
+  try {
+    const isG = (u.providerData || []).some(function (p) { return p.providerId === 'google.com'; });
+    const r = isG ? await _fb.reauthenticateWithPopup(u, prov) : await _fb.linkWithPopup(u, prov);
+    cred = _fb.GoogleAuthProvider.credentialFromResult(r);
+  } catch (e) {
+    if (e && (e.code === 'auth/credential-already-in-use' || e.code === 'auth/email-already-in-use')) cred = _fb.GoogleAuthProvider.credentialFromError(e);
+    else if (e && e.code === 'auth/user-mismatch') { toast('Please pick the same Google account you signed in with.', 'error', 5000); return false; }
+    else if (e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request')) return false;
+    else { toast(typeof _authErr === 'function' ? _authErr(e) : 'Could not connect Google Drive.', 'error'); return false; }
+  }
+  if (!cred || !cred.accessToken) { toast('Google did not allow Drive access. Please try again.', 'error'); return false; }
+  _storeDriveToken(cred.accessToken);
+  try { if (localStorage.getItem('pdfdukan_drive_autosave') === null) localStorage.setItem('pdfdukan_drive_autosave', '1'); } catch (e) {}
+  if (localStorage.getItem('pdfdukan_drive_setup_done') !== 'true') await _initGDriveStorage(cred.accessToken);
+  else toast('☁️ Google Drive connected', 'success');
+  _closeDrivePrompt();
+  updateStorageUI();
+  if (typeof _ppRender === 'function') { try { _ppRender(); } catch (e) {} }
+  return true;
+}
+window.connectDrive = connectDrive;
+
+function _closeDrivePrompt() { const m = document.getElementById('drivePrompt'); if (m) m.classList.remove('show'); }
+function _showDrivePrompt(reconnect) {
+  let m = document.getElementById('drivePrompt');
+  if (!m) {
+    m = document.createElement('div');
+    m.className = 'modal-backdrop'; m.id = 'drivePrompt';
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'drivePromptT');
+    m.innerHTML = '<div class="auth-modal" style="max-width:400px;text-align:center">' +
+      '<button class="modal-close" aria-label="Close" data-dp="no">✕</button>' +
+      '<div style="width:56px;height:56px;margin:4px auto 12px;border-radius:16px;display:grid;place-items:center;background:rgba(66,133,244,.1)">' + (window.__PD_GD_SVG || '☁️') + '</div>' +
+      '<h2 id="drivePromptT" style="margin-bottom:8px;font-size:20px"></h2>' +
+      '<p id="drivePromptP" style="color:var(--text-2);font-size:14px;line-height:1.6;margin-bottom:16px"></p>' +
+      '<ul style="list-style:none;text-align:left;font-size:13px;color:var(--text-2);line-height:1.7;margin:0 0 18px;padding:0">' +
+        '<li style="margin-bottom:4px">✅ Files go to one folder: <b>' + GDRIVE_FOLDER_NAME + '</b></li>' +
+        '<li style="margin-bottom:4px">🔒 PDFdukan can only see files it saves there</li>' +
+        '<li>⚙️ Turn auto-save off any time in your profile</li></ul>' +
+      '<button class="btn btn-primary" data-dp="yes" style="width:100%;margin-bottom:8px;justify-content:center">Connect Google Drive</button>' +
+      '<button class="btn btn-secondary" data-dp="no" style="width:100%;justify-content:center">Not now</button></div>';
+    m.addEventListener('click', function (e) {
+      const b = e.target.closest('[data-dp]');
+      if (!b && e.target !== m) return;
+      if (b && b.dataset.dp === 'yes') { connectDrive(); return; }
+      try { localStorage.setItem('pdfdukan_drive_prompt_later', String(Date.now())); } catch (er) {}
+      _closeDrivePrompt();
+    });
+    document.body.appendChild(m);
+  }
+  document.getElementById('drivePromptT').textContent = reconnect ? 'Reconnect Google Drive' : 'Save your work to your Google Drive';
+  document.getElementById('drivePromptP').textContent = reconnect
+    ? 'Google Drive access lasts about an hour. Reconnect to keep saving your files to your Drive.'
+    : 'Connect your own Google Drive and every file you create with PDFdukan tools is saved there too, so you can open it on any device.';
+  m.classList.add('show');
+}
+window._showDrivePrompt = _showDrivePrompt;
+
+function _afterSignInDrive() {
+  let tries = 0;
+  (function wait() {
+    const am = document.getElementById('authModal');
+    if (am && am.classList.contains('show') && tries++ < 240) { setTimeout(wait, 500); return; }
+    setTimeout(function () {
+      if (!STATE.user) return;
+      if (_gdriveToken()) {                       // Google sign-in already granted Drive access
+        try { if (localStorage.getItem('pdfdukan_drive_autosave') === null) localStorage.setItem('pdfdukan_drive_autosave', '1'); } catch (e) {}
+        updateStorageUI(); return;
+      }
+      let later = 0; try { later = +localStorage.getItem('pdfdukan_drive_prompt_later') || 0; } catch (e) {}
+      if (Date.now() - later < 7 * 864e5) return;  // "Not now" → ask again after 7 days
+      _showDrivePrompt(false);
+    }, 900);
+  })();
+}
+
+/* Real downloads only: the Save As hook above stops the first click and
+   re-clicks with the chosen name, so this listener sees each file once. */
+(function _driveAutoSave() {
+  let askedThisPage = false;
+  document.addEventListener('click', function (e) {
+    const a = (e.target && e.target.closest) ? e.target.closest('a[download]') : null;
+    if (!a || e.defaultPrevented) return;
+    const href = a.getAttribute('href') || '';
+    if (href.indexOf('blob:') !== 0 && href.indexOf('data:') !== 0) return;
+    const name = a.getAttribute('download') || 'PDFdukan-file';
+    if (/Transaction_Log/i.test(name)) return;
+    if (!STATE.user || !_driveAuto()) return;
+    if (!_gdriveToken()) {
+      if (localStorage.getItem('pdfdukan_drive_setup_done') === 'true' && !askedThisPage) { askedThisPage = true; setTimeout(function () { _showDrivePrompt(true); }, 1200); }
+      return;
+    }
+    fetch(href).then(function (r) { return r.blob(); }).then(function (b) { return gDriveSave(b, name); }).catch(function (er) { console.warn('[GDrive] auto-save skipped', er); });
+  }, true);
+})();
 
 async function signInEmail() {
   const email = document.getElementById('siEmail')?.value.trim();
@@ -1148,11 +1297,11 @@ function _ppEnsure() {
           '<div class="cpp-sec-hd">Recent Activity</div>' +
           '<div id="cppHist" class="cpp-hist"></div>' +
         '</div>' +
-        '<div class="cpp-sec" id="cppDriveSec" style="display:none">' +
+        '<div class="cpp-sec" id="cppDriveSec">' +
           '<div class="cpp-sec-hd">Google Drive</div>' +
-          '<div id="cppDriveStatus" class="cpp-warnbox" style="background:rgba(66,133,244,.08);border-color:rgba(66,133,244,.25);color:#4285f4">' +
-            '&#128196; Google Drive connected — your files can be saved to Drive.' +
-          '</div>' +
+          '<div id="cppDriveStatus" class="cpp-warnbox" style="background:rgba(66,133,244,.08);border-color:rgba(66,133,244,.25);color:#4285f4"></div>' +
+          '<label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px;cursor:pointer"><input type="checkbox" id="cppDriveAuto"> Save every file I download to my Drive</label>' +
+          '<button class="btn btn-sm btn-secondary" id="cppDriveBtn" style="width:100%;margin-top:8px" onclick="connectDrive()">Connect Google Drive</button>' +
         '</div>' +
         '<div class="cpp-sec cpp-logout-sec">' +
           '<button class="btn btn-sm" id="cppOut" style="width:100%;border:1px solid var(--error,#ef4444);color:var(--error,#ef4444);background:transparent">Sign Out</button>' +
@@ -1241,9 +1390,15 @@ function _ppRender() {
   const nmIn = document.getElementById('cppNm');    if (nmIn) nmIn.value = u.name || '';
   const vs   = document.getElementById('cppVerSec'); if (vs) vs.style.display = u.emailVerified ? 'none' : 'block';
 
-  // Google Drive section — show only when Drive token available
-  const driveToken = (() => { try { return localStorage.getItem('cm_gdrive_token'); } catch(e) { return null; } })();
-  const ds = document.getElementById('cppDriveSec'); if (ds) ds.style.display = driveToken ? 'block' : 'none';
+  // Google Drive section
+  const dOk = !!_gdriveToken(), dSet = localStorage.getItem('pdfdukan_drive_setup_done') === 'true';
+  const dst = document.getElementById('cppDriveStatus');
+  if (dst) dst.innerHTML = dOk ? '&#9989; Connected — files go to the "' + GDRIVE_FOLDER_NAME + '" folder in your Drive.'
+    : dSet ? 'Drive access expired. Reconnect to keep saving to your Drive.' : 'Not connected. Connect to keep a copy of your work in your own Drive.';
+  const dbt = document.getElementById('cppDriveBtn');
+  if (dbt) { dbt.style.display = dOk ? 'none' : ''; dbt.textContent = dSet ? 'Reconnect Google Drive' : 'Connect Google Drive'; }
+  const dau = document.getElementById('cppDriveAuto');
+  if (dau) { dau.checked = _driveAuto(); dau.onchange = function () { try { localStorage.setItem('pdfdukan_drive_autosave', this.checked ? '1' : '0'); } catch (e) {} updateStorageUI(); }; }
 
   const hist = document.getElementById('cppHist');
   if (hist) {
@@ -2519,6 +2674,7 @@ var PD_CLOUD = {
   }
 
   var GD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0066da" d="M3.3 18.4l1 1.7c.2.4.5.6.8.8l3.6-6.2H1.5c0 .4.1.8.3 1.1z"/><path fill="#00ac47" d="M12 8.6L8.4 2.4c-.3.2-.6.5-.8.8L1.8 13.6c-.2.3-.3.7-.3 1.1h7.2z"/><path fill="#ea4335" d="M19.8 20.9c.3-.2.6-.5.8-.8l.4-.7 2-3.4c.2-.3.3-.7.3-1.1h-7.2l1.5 3z"/><path fill="#00832d" d="M12 8.6l3.6-6.2c-.4-.2-.8-.3-1.2-.3H9.6c-.4 0-.8.1-1.2.3z"/><path fill="#2684fc" d="M15.6 14.7H8.4l-3.6 6.2c.4.2.8.3 1.2.3h12.6c.4 0 .8-.1 1.2-.3z"/><path fill="#ffba00" d="M19.8 9l-3.3-5.8c-.2-.4-.5-.6-.8-.8L12 8.6l3.6 6.1h7.2c0-.4-.1-.8-.3-1.1z"/></svg>';
+  window.__PD_GD_SVG = GD.replace('<svg ', '<svg width="30" height="30" ');
   var DB = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#0061ff" d="M6 2.5L0 6.3l6 3.9 6-3.9zm12 0l-6 3.8 6 3.9 6-3.9zM0 14l6 3.9 6-3.9-6-3.8zm18-3.8L12 14l6 3.9 6-3.9zM6 19.2l6 3.9 6-3.9-6-3.9z"/></svg>';
   var SHIELD = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l8 3.2v6c0 4.7-3.4 8.3-8 9.8-4.6-1.5-8-5.1-8-9.8v-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.3 12.2l2.5 2.5 4.9-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   var STAR5 = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
