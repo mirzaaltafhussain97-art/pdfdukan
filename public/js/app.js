@@ -2544,8 +2544,8 @@ var PD_CLOUD = {
     var zone = after ? after.parentNode : path === '/scanner.html' ? document.getElementById('uploadZone') : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
     if (zone.querySelector('.pdz-safe')) return;
     zone.classList.add('pd-zone');
-    var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span>';
-    safe.title = 'Files are processed in your browser and not uploaded';
+    var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span><div class="pdz-tip" role="tooltip"><b>Your files stay private</b><ul><li>Processed in your browser, on your device</li><li>Your PDF is never uploaded to our servers</li><li>Nothing is stored after you close the tab</li></ul></div>';
+    safe.tabIndex = 0; safe.addEventListener('click', function (e) { e.stopPropagation(); });
     zone.insertBefore(safe, zone.firstChild);
     var terms = document.createElement('p'); terms.className = 'pdz-terms';
     terms.innerHTML = 'By using this tool, you accept our <a href="/terms.html">terms of use</a>';
