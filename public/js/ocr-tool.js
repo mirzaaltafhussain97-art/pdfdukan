@@ -110,6 +110,76 @@
   }
 
   /* ── Image preparation ──────────────────────────────────── */
+  /* Straighten a tilted page before OCR. Tesseract gives up on pages tilted more than
+     a few degrees (a 12° scan returned no text), so find the angle at which text rows
+     line up best (projection profile) and rotate the page back. */
+  function deskew(c) {
+    var s = Math.min(1, 900 / Math.max(c.width, c.height)), w = Math.max(1, Math.round(c.width * s)), h = Math.max(1, Math.round(c.height * s));
+    var t = document.createElement('canvas'); t.width = w; t.height = h;
+    var tx = t.getContext('2d', { willReadFrequently: true }); tx.drawImage(c, 0, 0, w, h);
+    var d = tx.getImageData(0, 0, w, h).data, sum = 0, n = w * h, g = new Uint8Array(n);
+    for (var i = 0; i < n; i++) { g[i] = (d[i * 4] * 299 + d[i * 4 + 1] * 587 + d[i * 4 + 2] * 114) / 1000; sum += g[i]; }
+    var thr = sum / n * 0.75, xs = [], ys = [];
+    for (var y = 0; y < h; y += 1) for (var x = 0; x < w; x += 2) if (g[y * w + x] < thr) { xs.push(x - w / 2); ys.push(y - h / 2); }
+    if (xs.length < 200) return c;
+    var R = Math.ceil(Math.sqrt(w * w + h * h)), best = 0, bestScore = -1, score0 = 0;
+    for (var a10 = -200; a10 <= 200; a10 += 5) {
+      var a = a10 / 10 * Math.PI / 180, sn = Math.sin(a), cs = Math.cos(a), bins = new Float64Array(2 * R + 1), sc = 0;
+      for (var k = 0; k < xs.length; k++) bins[Math.round(ys[k] * cs - xs[k] * sn) + R]++;
+      for (var b = 0; b < bins.length; b++) sc += bins[b] * bins[b];
+      if (a10 === 0) score0 = sc;
+      if (sc > bestScore) { bestScore = sc; best = a10 / 10; }
+    }
+    if (Math.abs(best) < 0.8 || bestScore < score0 * 1.15) return c;
+    var rad = -best * Math.PI / 180, W = c.width, H = c.height;
+    var nw = Math.round(Math.abs(W * Math.cos(rad)) + Math.abs(H * Math.sin(rad))), nh = Math.round(Math.abs(W * Math.sin(rad)) + Math.abs(H * Math.cos(rad)));
+    var o = document.createElement('canvas'); o.width = nw; o.height = nh;
+    var ox = o.getContext('2d'); ox.fillStyle = '#fff'; ox.fillRect(0, 0, nw, nh);
+    ox.translate(nw / 2, nh / 2); ox.rotate(rad); ox.drawImage(c, -W / 2, -H / 2);
+    c.width = c.height = 0;
+    return o;
+  }
+
+  /* Even out uneven lighting (a shadow across a phone photo): estimate the paper
+     brightness in small tiles, then divide each pixel by it. A single global
+     threshold loses the text on the dark side; this keeps it. */
+  /* Word confidences: Tesseract.js puts words under blocks › paragraphs › lines. */
+  function wordConfs(data) {
+    var out = [], ws = data.words || [];
+    if (!ws.length) (data.blocks || []).forEach(function (b) { (b.paragraphs || []).forEach(function (pp) { (pp.lines || []).forEach(function (l) { ws = ws.concat(l.words || []); }); }); });
+    ws.forEach(function (w) { if (String(w.text || '').trim() && isFinite(w.confidence)) out.push(+w.confidence); });
+    return out;
+  }
+  function flatten(c) {
+    var W = c.width, H = c.height, x = c.getContext('2d', { willReadFrequently: true });
+    var d = x.getImageData(0, 0, W, H), p = d.data, N = W * H, g = new Float32Array(N), i;
+    for (i = 0; i < N; i++) g[i] = 0.299 * p[i * 4] + 0.587 * p[i * 4 + 1] + 0.114 * p[i * 4 + 2];
+    var bs = Math.max(12, Math.round(Math.min(W, H) / 30)), gw = Math.ceil(W / bs), gh = Math.ceil(H / bs), bg = new Float32Array(gw * gh);
+    for (var by = 0; by < gh; by++) for (var bx = 0; bx < gw; bx++) {
+      var vals = [];
+      for (var yy = by * bs; yy < Math.min(H, (by + 1) * bs); yy += 2) for (var xx = bx * bs; xx < Math.min(W, (bx + 1) * bs); xx += 2) vals.push(g[yy * W + xx]);
+      vals.sort(function (a, b) { return a - b; });
+      bg[by * gw + bx] = vals.length ? vals[Math.floor(vals.length * 0.9)] : 255;
+    }
+    var sm = new Float32Array(gw * gh);
+    for (by = 0; by < gh; by++) for (bx = 0; bx < gw; bx++) {
+      var t = 0, n = 0;
+      for (var oy = -1; oy <= 1; oy++) for (var ox = -1; ox <= 1; ox++) { var qy = by + oy, qx = bx + ox; if (qy < 0 || qx < 0 || qy >= gh || qx >= gw) continue; t += bg[qy * gw + qx]; n++; }
+      sm[by * gw + bx] = Math.max(24, t / n);
+    }
+    for (var y = 0; y < H; y++) {
+      var fy = Math.min(gh - 1, Math.max(0, y / bs - 0.5)), y0 = Math.floor(fy), y1 = Math.min(gh - 1, y0 + 1), ty = fy - y0;
+      for (var xq = 0; xq < W; xq++) {
+        var fx = Math.min(gw - 1, Math.max(0, xq / bs - 0.5)), x0 = Math.floor(fx), x1 = Math.min(gw - 1, x0 + 1), tx = fx - x0;
+        var b = (sm[y0 * gw + x0] * (1 - tx) + sm[y0 * gw + x1] * tx) * (1 - ty) + (sm[y1 * gw + x0] * (1 - tx) + sm[y1 * gw + x1] * tx) * ty;
+        var v = g[y * W + xq] / b * 255; v = (v - 40) * 1.25; v = v < 0 ? 0 : v > 255 ? 255 : v;
+        var k = (y * W + xq) * 4; p[k] = p[k + 1] = p[k + 2] = v;
+      }
+    }
+    x.putImageData(d, 0, 0);
+    return c;
+  }
+
   function drawScaled(src, w, h, mode) {
     // Small images: enlarge so small letters reach a size Tesseract reads well.
     // Large images: shrink to save memory. Pixels are not otherwise changed in Original mode.
@@ -122,6 +192,7 @@
     x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
     x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
     x.drawImage(src, 0, 0, c.width, c.height);
+    if (mode === 'document') return flatten(c);
     if (mode !== 'original') {
       var d = x.getImageData(0, 0, c.width, c.height), p = d.data, k = mode === 'document' ? 1.32 : 1.08;
       for (var i = 0; i < p.length; i += 4) {
@@ -410,6 +481,7 @@
           var pagePt = bm.width > bm.height ? { w: 792, h: 792 * bm.height / bm.width } : { w: 612, h: 612 * bm.height / bm.width };
           bm.close();
         }
+        try { if (!window.PD_NODESKEW) canvas = deskew(canvas); } catch (e) { }
         try { if (!window.PD_NOFRAMES) removeFrames(canvas); } catch (e) { }
         var preview = await pagePreview(colorSrc);
         var parts = layout === 'cols' ? splitColumns(canvas) : [canvas], texts = [], sx = null;
@@ -418,8 +490,18 @@
           if (st.cancelled) return;
           texts.push(clean(out.data.text));
           if (parts.length === 1 && !window.PD_NOSTRUCT) { try { sx = structure(out.data); } catch (e) { sx = null; } }
-          (out.data.words || []).forEach(function (w) { if (String(w.text || '').trim() && isFinite(w.confidence)) confs.push(+w.confidence); });
-          if (!(out.data.words || []).length && isFinite(out.data.confidence)) confs.push(+out.data.confidence);
+          var wc = wordConfs(out.data);
+          if (wc.length) confs.push.apply(confs, wc);
+          else if (isFinite(out.data.confidence) && String(out.data.text || '').trim()) confs.push(+out.data.confidence); // empty page: Tesseract still reports 95
+        }
+        // Nothing read? Retry once with even lighting (shadowed or dim photos).
+        if (!texts.filter(Boolean).length && parts.length === 1 && mode !== 'document' && !st.cancelled) {
+          var fl = flatten(canvas);
+          out = await st.worker.recognize(fl, { rotateAuto: true }, { text: true, blocks: true, imageColor: true });
+          if (st.cancelled) return;
+          texts = [clean(out.data.text)];
+          if (!window.PD_NOSTRUCT) { try { sx = structure(out.data); } catch (e) { sx = null; } }
+          confs.push.apply(confs, wordConfs(out.data));
         }
         var lay = null;
         try { if (parts.length === 1) lay = await layoutOf(out.data, colorSrc || canvas, pagePt, lang); } catch (e) { lay = null; if (window.PD_DEBUG) console.error("LAYOUT", e && e.stack); }
@@ -470,10 +552,18 @@
     say(found ? 'Text extracted. Check it against the image before you use it.' : 'No text found.', found ? 'success' : 'info');
   }
   /* one page at a time: the picture on the left, its text on the right (like a two-page viewer) */
+  /* Editor text without depending on layout: innerText drops line breaks while the
+     result panel is still hidden, which glued words together ("6toner"). */
+  function edText(ed) {
+    var c = ed.cloneNode(true);
+    c.querySelectorAll('br').forEach(function (b) { b.replaceWith('\n'); });
+    c.querySelectorAll('p,div,li,h1,h2,h3,h4,tr').forEach(function (b) { b.append('\n\n'); });
+    return c.textContent;
+  }
   function saveEdits() {
     var r = st.results[st.view], ed = $('ocrEditor');
     if (!r || !ed) return;
-    r.html = ed.innerHTML; r.text = clean(ed.innerText.replace(/\u00a0/g, ' '));
+    r.html = ed.innerHTML; r.text = clean(edText(ed).replace(/\u00a0/g, ' '));
   }
   function showPage(i) {
     if (!st.results.length) return;
@@ -502,7 +592,7 @@
   }
   function counts() {
     var ed = $('ocrEditor'); if (!ed) return;
-    var cur = st.results[st.view]; if (cur) { cur.text = clean(ed.innerText.replace(/\u00a0/g, ' ')); cur.html = ed.innerHTML; }
+    var cur = st.results[st.view]; if (cur) { cur.text = clean(edText(ed).replace(/\u00a0/g, ' ')); cur.html = ed.innerHTML; }
     var plain = st.results.map(function (r) { return r.text || ''; }).join('\n');
     $('statWords').textContent = plain.trim() ? plain.trim().split(/\s+/u).length : 0;
     $('statChars').textContent = plain.replace(/\n/g, '').length;
