@@ -1571,7 +1571,7 @@ input[type="file"]{display:none}
 .nav-dropdown.mega {
   display: flex;
   gap: 0;
-  min-width: 620px;
+  min-width: 860px;
   padding: 16px 12px;
 }
 @media(max-width: 960px) {

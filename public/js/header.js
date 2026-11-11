@@ -88,6 +88,18 @@
             + '<a href="' + base + 'tools/word-character-counter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128290;</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a>'
           + '</div>'
 
+
+          /* Column 3 — More PDF tools */
+          + '<div class="nd-col">'
+            + '<span class="nd-section-head">&#128295; More PDF Tools</span>'
+            + '<a href="' + base + 'tools/delete-pages-from-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128465;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove pages from a PDF</div></div></a>'
+            + '<a href="' + base + 'tools/unlock-pdf-without-password.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128275;</span><div class="nd-link-body"><div class="nd-link-name">Unlock PDF</div><div class="nd-link-desc">Remove print/copy limits</div></div></a>'
+            + '<a href="' + base + 'tools/pdf-text-extractor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128196;</span><div class="nd-link-body"><div class="nd-link-name">PDF Text Extractor</div><div class="nd-link-desc">Copy all text from a PDF</div></div></a>'
+            + '<a href="' + base + 'tools/searchable-pdf-converter-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128269;</span><div class="nd-link-body"><div class="nd-link-name">Searchable PDF</div><div class="nd-link-desc">OCR layer for scans</div></div></a>'
+            + '<a href="' + base + 'tools/pdf-metadata-editor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#127991;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">PDF Metadata Editor</div><div class="nd-link-desc">Title, author, keywords</div></div></a>'
+            + '<a href="' + base + 'tools/pdf-restriction-compatibility-check.html" class="nd-link" role="menuitem"><span class="nd-link-icon">&#128737;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Restriction Check</div><div class="nd-link-desc">See what a PDF blocks</div></div></a>'
+          + '</div>'
+
         + '</div>' /* /.nav-dropdown.mega */
       + '</div>' /* /.nav-item.has-dropdown (Tools) */
 
@@ -151,6 +163,14 @@
     + '<a href="' + base + 'tools/compress-pdf-reduce-file-size.html"  class="mnd-link">&#128201; Compress PDF</a>'
     + '<a href="' + base + 'tools/pdf-to-word-converter.html"   class="mnd-link">&#128221; PDF to Word</a>'
     + '<a href="' + base + 'tools/word-to-pdf-converter.html"   class="mnd-link">&#128196; Word to PDF</a>'
+    + '<a href="' + base + 'tools/html-to-pdf-converter-online.html" class="mnd-link">&#127760; HTML to PDF</a>'
+    + '<div class="mnd-section">&#128295; More PDF Tools</div>'
+    + '<a href="' + base + 'tools/delete-pages-from-pdf.html" class="mnd-link">&#128465;&#65039; Delete Pages</a>'
+    + '<a href="' + base + 'tools/unlock-pdf-without-password.html" class="mnd-link">&#128275; Unlock PDF</a>'
+    + '<a href="' + base + 'tools/pdf-text-extractor.html" class="mnd-link">&#128196; PDF Text Extractor</a>'
+    + '<a href="' + base + 'tools/searchable-pdf-converter-online.html" class="mnd-link">&#128269; Searchable PDF</a>'
+    + '<a href="' + base + 'tools/pdf-metadata-editor.html" class="mnd-link">&#127991;&#65039; Metadata Editor</a>'
+    + '<a href="' + base + 'tools/pdf-restriction-compatibility-check.html" class="mnd-link">&#128737;&#65039; Restriction Check</a>'
     + '<div class="mnd-section">&#9999;&#65039; Edit &amp; Sign</div>'
     + '<a href="' + base + 'tools/pdf-editor.html"    class="mnd-link">&#9999;&#65039; PDF Editor</a>'
     + '<a href="' + base + 'tools/pdf-editor.html#sign"     class="mnd-link">&#9997;&#65039; Sign PDF</a>'
