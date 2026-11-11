@@ -84,6 +84,7 @@ Redirect 301 /fill-sign /tools/pdf-editor.html
 Redirect 301 /sign-pdf /tools/pdf-editor.html
 Redirect 301 /delete-pages /tools/delete-pages-from-pdf.html
 Redirect 301 /blog/jpg-to-pdf-guide.html /blog/jpg-to-pdf-without-losing-quality.html
+Redirect 301 /blog/pdf-to-word-guide.html /blog/pdf-to-word-without-losing-formatting.html
 Redirect 301 /remove-pdf-pages /tools/delete-pages-from-pdf.html
 Redirect 301 /rotate-pdf /tools/organize-pdf-pages-online.html
 Redirect 301 /reorder-pdf /tools/organize-pdf-pages-online.html
