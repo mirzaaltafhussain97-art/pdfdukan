@@ -2038,7 +2038,14 @@ const CompressImage = (() => {
       }
       if (run !== st.gen) return;
 
-      st.result = { blob, format, w, h, quality };
+      // Never hand back a bigger file than the user gave us: when nothing else
+      // changed (same pixels, same format), keep the original file untouched.
+      let keptOriginal = false;
+      if (st.file && blob.size >= st.bytes && w === st.w && h === st.h && format === st.type && met) {
+        blob = st.file; quality = null; keptOriginal = true;
+      }
+
+      st.result = { blob, format, w, h, quality, keptOriginal };
       _drawBlob($('compPreview'), blob, 360, 280);
       setText('statCompSize', _fmtBytes(blob.size));
       setText('statCompDims', `${w} × ${h} px · ${FMT_NAME[format]}${quality != null ? ' · ' + Math.round(quality * 100) + '% quality' : ''}`);
@@ -2048,7 +2055,8 @@ const CompressImage = (() => {
       sav.classList.toggle('worse', delta > 0.5);
       setText('downloadLabel', `Download ${FMT_NAME[format]} (${_fmtBytes(blob.size)})`);
 
-      if (!met) _warn(`Could not get under ${st.targetKb} KB at ${w} × ${h} px. The smallest result is ${_fmtBytes(blob.size)}. Pick a smaller size in step 2.`);
+      if (keptOriginal) _warn('Your file is already well compressed: re-saving it made it larger, so we kept your original (no quality lost). For a smaller file, choose Smallest file or make it smaller in pixels.');
+      else if (!met) _warn(`Could not get under ${st.targetKb} KB at ${w} × ${h} px. The smallest result is ${_fmtBytes(blob.size)}. Pick a smaller size in step 2.`);
       else if (quality != null && quality < 0.4 && st.level === 'target') _warn(`To reach ${st.targetKb} KB, quality dropped to ${Math.round(quality * 100)}%, so the image may look blurry. Making it smaller in pixels (step 2) usually looks better.`);
       else if (delta > 0.5) _warn(format === 'image/png'
         ? 'The new PNG is larger than your file. Choose JPG or WebP, or make it smaller in pixels.'
