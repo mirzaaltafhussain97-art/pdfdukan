@@ -233,9 +233,13 @@ const ImageToPDF = (() => {
         const rot = images[i].rot || 0;
         const iw0 = img.naturalWidth  || img.width;
         const ih0 = img.naturalHeight || img.height;
-        const preserveOriginal = quality >= 0.97 && rot === 0;
-        let compSrc = images[i].src;
         let imgFormat = images[i].file.type === 'image/png' ? 'PNG' : images[i].file.type === 'image/webp' ? 'WEBP' : 'JPEG';
+        // Phone JPEGs often carry an EXIF rotation tag. Pure rotations (3/6/8) are
+        // kept lossless by rotating the untouched JPEG on the page; mirrored tags
+        // (2/4/5/7) are rare and fall back to a re-encode.
+        const orient = (quality >= 0.97 && rot === 0 && imgFormat === 'JPEG') ? _jpegOrientation(images[i].src) : 1;
+        const preserveOriginal = quality >= 0.97 && rot === 0 && [1, 3, 6, 8].indexOf(orient) >= 0;
+        let compSrc = images[i].src;
         let outW = iw0, outH = ih0;
         if (!preserveOriginal) {
           const c = document.createElement('canvas');
@@ -262,7 +266,10 @@ const ImageToPDF = (() => {
         const x = margin + (pW - iw) / 2;
         const y = margin + (pH - ih) / 2;
 
-        doc.addImage(compSrc, imgFormat, x, y, iw, ih, undefined, preserveOriginal ? 'NONE' : 'MEDIUM');
+        if (preserveOriginal && orient === 6)      doc.addImage(compSrc, imgFormat, x, y - iw, ih, iw, undefined, 'NONE', -90);
+        else if (preserveOriginal && orient === 8) doc.addImage(compSrc, imgFormat, x + iw, y + ih - iw, ih, iw, undefined, 'NONE', 90);
+        else if (preserveOriginal && orient === 3) doc.addImage(compSrc, imgFormat, x + iw, y - ih, iw, ih, undefined, 'NONE', 180);
+        else doc.addImage(compSrc, imgFormat, x, y, iw, ih, undefined, preserveOriginal ? 'NONE' : 'MEDIUM');
       }
 
       pdfBlob = doc.output('blob');
@@ -283,6 +290,31 @@ const ImageToPDF = (() => {
       if (pc) pc.style.display = 'none';
       if (genBtn) genBtn.disabled = !images.length;
     }
+  }
+
+  /* Read the EXIF Orientation tag (1-8) from a JPEG data URL; 1 if absent. */
+  function _jpegOrientation(dataUrl) {
+    try {
+      const bin = atob(dataUrl.slice(dataUrl.indexOf(',') + 1, dataUrl.indexOf(',') + 1 + 87384));
+      const b = i => bin.charCodeAt(i) & 255;
+      if (b(0) !== 0xFF || b(1) !== 0xD8) return 1;
+      let o = 2;
+      while (o + 4 < bin.length) {
+        if (b(o) !== 0xFF) return 1;
+        const m = b(o + 1), len = (b(o + 2) << 8) | b(o + 3);
+        if (m === 0xE1 && bin.substr(o + 4, 6) === 'Exif\0\0') {
+          const t = o + 10, le = bin.substr(t, 2) === 'II';
+          const u16 = i => le ? b(i) | (b(i + 1) << 8) : (b(i) << 8) | b(i + 1);
+          const u32 = i => le ? (b(i) | (b(i + 1) << 8) | (b(i + 2) << 16)) + b(i + 3) * 16777216 : b(i) * 16777216 + ((b(i + 1) << 16) | (b(i + 2) << 8) | b(i + 3));
+          const ifd = t + u32(t + 4), n = u16(ifd);
+          for (let k = 0; k < n; k++) { const e = ifd + 2 + k * 12; if (u16(e) === 0x0112) { const v = u16(e + 8); return v >= 1 && v <= 8 ? v : 1; } }
+          return 1;
+        }
+        if (m === 0xDA) return 1;
+        o += 2 + len;
+      }
+    } catch (e) {}
+    return 1;
   }
 
   function _readDataURL(file) {
