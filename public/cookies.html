@@ -42,14 +42,95 @@
 <body>
 
 <header class="header" role="banner">
-  <a href="/" class="logo">
-    <div class="logo-icon">📄</div>
-    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  <!-- Brand Logo (SVG) -->
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs>
+        <linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff6333"/>
+          <stop offset="100%" stop-color="#ff9055"/>
+        </linearGradient>
+      </defs>
+      <rect width="40" height="40" rx="10" fill="url(#lgrad)"/>
+      <!-- Scanner corner brackets -->
+      <path d="M6 12 L6 6 L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 12 L34 6 L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M6 28 L6 34 L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <path d="M34 28 L34 34 L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke-opacity="0.9"/>
+      <!-- Document shape (center) -->
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <!-- Folded corner tab -->
+      <path d="M21 10 L24 13 L21 13 Z" fill="#ff6333" fill-opacity="0.55"/>
+      <!-- Text lines on document -->
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <!-- Gear badge (bottom-right overlap) -->
+      <circle cx="28.5" cy="29" r="7" fill="url(#lgrad)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <!-- Gear teeth -->
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text">
+      <div class="brand">PDFdukan</div>
+      <div class="sub">CamMaster</div>
+    </div>
   </a>
-  <div class="header-actions" style="margin-left:auto">
-    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">🌙</span></button>
+
+  <!-- Mega Navigation -->
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item active">Home</a>
+
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+      Tools <span class="nav-chevron">▾</span>
+      <div class="nav-dropdown mega" role="menu"><div class="nd-col"><span class="nd-section-head">📄 PDF Tools</span><a href="tools/image-to-pdf-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a><a href="tools/pdf-to-image-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a><a href="tools/crop-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Trim margins, keep text</div></div></a><a href="tools/merge-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a><a href="tools/extract-pdf-pages.html" class="nd-link" role="menuitem"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a><a href="tools/compress-pdf-reduce-file-size.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📉</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a><a href="tools/pdf-to-word-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a><a href="tools/word-to-pdf-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div><div class="nd-link-desc">Convert DOCX to PDF</div></div></a><a href="tools/html-to-pdf-converter-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🌐</span><div class="nd-link-body"><div class="nd-link-name">HTML → PDF</div><div class="nd-link-desc">Paste or upload HTML to PDF</div></div></a></div><div class="nd-col"><span class="nd-section-head">✏️ Edit &amp; Sign</span><a href="tools/pdf-editor.html" class="nd-link active" role="menuitem"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a><a href="tools/pdf-editor.html#sign" class="nd-link" role="menuitem"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Sign PDF</div><div class="nd-link-desc">Sign, initial and date</div></div></a><a href="tools/add-watermark-to-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp text or image</div></div></a><a href="tools/add-page-numbers-to-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number all pages</div></div></a><a href="tools/organize-pdf-pages-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🗃️</span><div class="nd-link-body"><div class="nd-link-name">PDF Organizer</div><div class="nd-link-desc">Rotate, reorder &amp; delete</div></div></a><div class="nd-divider"></div><span class="nd-section-head">📷 Image &amp; Scan</span><a href="scanner.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a><a href="tools/image-compress-resize.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔜</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor &amp; Resizer</div><div class="nd-link-desc">JPG, PNG, WebP optimizer</div></div></a><a href="tools/ocr-image-to-text.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to editable text</div></div></a><div class="nd-divider"></div><span class="nd-section-head">📝 Text Tools</span><a href="tools/word-character-counter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a></div><div class="nd-col"><span class="nd-section-head">🔧 More PDF Tools</span><a href="tools/delete-pages-from-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove pages from a PDF</div></div></a><a href="tools/unlock-pdf-without-password.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔓</span><div class="nd-link-body"><div class="nd-link-name">Unlock PDF</div><div class="nd-link-desc">Remove print/copy limits</div></div></a><a href="tools/pdf-text-extractor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">PDF Text Extractor</div><div class="nd-link-desc">Copy all text from a PDF</div></div></a><a href="tools/searchable-pdf-converter-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔍</span><div class="nd-link-body"><div class="nd-link-name">Searchable PDF</div><div class="nd-link-desc">OCR layer for scans</div></div></a><a href="tools/pdf-metadata-editor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">PDF Metadata Editor</div><div class="nd-link-desc">Title, author, keywords</div></div></a><a href="tools/pdf-restriction-compatibility-check.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🛡️</span><div class="nd-link-body"><div class="nd-link-name">Restriction Check</div><div class="nd-link-desc">See what a PDF blocks</div></div></a></div></div>
+    </div>
+
+    <a href="blog/index.html" class="nav-item" data-i18n="nav.blog">Blog</a>
+
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
+      <span data-i18n="nav.legal">Legal</span> <span class="nav-chevron">▾</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="about.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">🏢</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="privacy.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔒</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="terms.html"   class="nd-link" role="menuitem"><span class="nd-link-icon">📋</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a>
+        <a href="cookies.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🍪</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="sitemap.xml"  class="nd-link" role="menuitem"><span class="nd-link-icon">🗺️</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="search-wrap" role="search">
+    <span class="search-icon" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+    <input type="search" class="search-input" placeholder="Search tools… (Ctrl+K)" aria-label="Search">
+  </div>
+
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle dark/light mode">
+      <span id="themeIcon">🌙</span>
+    </button>
+    <button class="icon-btn notif-btn-wrap" id="notifBtn" onclick="toggleNotifications()" aria-label="Notifications" style="position:relative">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span id="notifBadge" style="display:none;position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--error);color:#fff;border-radius:50%;font-size:10px;font-weight:700;align-items:center;justify-content:center;line-height:1">0</span>
+    </button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span>
+      <span id="authLabel">Sign In</span>
+    </button>
   </div>
 </header>
+
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu"><a href="/" class="mnd-link">🏠 Home</a><div class="mnd-section">📄 PDF Tools</div><a href="tools/image-to-pdf-converter.html" class="mnd-link">📑 Image to PDF</a><a href="tools/pdf-to-image-converter.html" class="mnd-link">📷 PDF to JPG</a><a href="tools/crop-pdf-online.html" class="mnd-link">✂️ Crop PDF</a><a href="tools/merge-pdf.html" class="mnd-link">🔗 Merge PDF</a><a href="tools/extract-pdf-pages.html" class="mnd-link">✂️ Split PDF</a><a href="tools/compress-pdf-reduce-file-size.html" class="mnd-link">📉 Compress PDF</a><a href="tools/pdf-to-word-converter.html" class="mnd-link">📝 PDF to Word</a><a href="tools/word-to-pdf-converter.html" class="mnd-link">📄 Word to PDF</a><a href="tools/html-to-pdf-converter-online.html" class="mnd-link">🌐 HTML to PDF</a><div class="mnd-section">🔧 More PDF Tools</div><a href="tools/delete-pages-from-pdf.html" class="mnd-link">🗑️ Delete Pages</a><a href="tools/unlock-pdf-without-password.html" class="mnd-link">🔓 Unlock PDF</a><a href="tools/pdf-text-extractor.html" class="mnd-link">📄 PDF Text Extractor</a><a href="tools/searchable-pdf-converter-online.html" class="mnd-link">🔍 Searchable PDF</a><a href="tools/pdf-metadata-editor.html" class="mnd-link">🏷️ Metadata Editor</a><a href="tools/pdf-restriction-compatibility-check.html" class="mnd-link">🛡️ Restriction Check</a><div class="mnd-section">✏️ Edit &amp; Sign</div><a href="tools/pdf-editor.html" class="mnd-link active">✏️ PDF Editor</a><a href="tools/pdf-editor.html#sign" class="mnd-link">✍️ Sign PDF</a><a href="tools/add-watermark-to-pdf-online.html" class="mnd-link">💧 Watermark</a><a href="tools/add-page-numbers-to-pdf-online.html" class="mnd-link">🔢 Page Numbers</a><a href="tools/organize-pdf-pages-online.html" class="mnd-link">🗃️ PDF Organizer</a><div class="mnd-section">📷 Image &amp; Scan</div><a href="scanner.html" class="mnd-link">📷 Smart Scan</a><a href="tools/image-compress-resize.html" class="mnd-link">🔜 Image Compressor</a><a href="tools/ocr-image-to-text.html" class="mnd-link">🔤 OCR Text</a><div class="mnd-section">📝 Text Tools</div><a href="tools/word-character-counter.html" class="mnd-link">🔢 Word Counter</a><a href="blog/index.html" class="mnd-link">📋 Blog</a><a href="about.html" class="mnd-link">🏢 About</a><a href="privacy.html" class="mnd-link">🔒 Privacy</a></div>
 
 <article class="page-prose">
   <p class="page-meta"><a href="/">Home</a> › Cookies Policy</p>
@@ -105,12 +186,73 @@
 </article>
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab"        id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitle" style="margin-bottom:6px;text-align:center">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px;text-align:center">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field">
+        <label>Email Address</label>
+        <input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signInEmail()">
+      </div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle;margin-right:8px"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Sign Up with Google
+      </button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <!-- Full Name -->
+      <div class="auth-field">
+        <label>Full Name</label>
+        <input type="text" id="suName" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label>Gmail / Email Address</label>
+        <input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account →</button>
+      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+    </div>
+  </div>
+</div>
 <script src="js/app.js?v=20261111"></script>
+<script src="js/header.js?v=20261111"></script>
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
     <div class="footer-grid">
       <div class="footer-brand">
-        <h3><span class="fb-icon">📄</span> PDFdukan</h3>
+        <h3><img class="fb-logo" src="/favicon.svg" width="34" height="34" alt="PDFdukan logo"> PDFdukan</h3>
         <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
       </div>
       <div class="footer-col">
