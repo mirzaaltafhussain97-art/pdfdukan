@@ -2829,7 +2829,11 @@ var PD_CLOUD = {
     var zone = after ? after.parentNode : path === '/scanner.html' ? document.getElementById('uploadZone') : (path === '/' || path === '/index.html') ? document.getElementById('uploadBox') : (input.closest('.drop-zone, .upload-zone, .dz, [class*="drop"]') || input.parentNode);
     if (zone.querySelector('.pdz-safe')) return;
     zone.classList.add('pd-zone');
-    var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span><div class="pdz-tip" role="tooltip"><b>Your files stay private</b><ul><li>Processed in your browser, on your device</li><li>Your PDF is never uploaded to our servers</li><li>Nothing is stored after you close the tab</li></ul></div>';
+    var safe = document.createElement('div'); safe.className = 'pdz-safe'; safe.innerHTML = SHIELD + '<span>Files stay on your device</span><div class="pdz-tip" role="tooltip"><b>Your files stay private</b><ul><li>Processed in your browser, on your device</li><li>Your files are never uploaded to our servers</li><li class="pdz-store"></li></ul></div>';
+    var _storeLine = function () { var li = safe.querySelector('.pdz-store'); if (!li) return;
+      var drive = STATE.user && localStorage.getItem('pdfdukan_drive_setup_done') === 'true' && _driveAuto();
+      li.textContent = drive ? 'Auto-save is on: a copy of each result also goes to your own Google Drive' : 'Nothing is kept after you close the tab, except the names in Recent'; };
+    _storeLine(); safe.addEventListener('mouseenter', _storeLine); safe.addEventListener('focusin', _storeLine);
     safe.tabIndex = 0; safe.addEventListener('click', function (e) { e.stopPropagation(); });
     zone.insertBefore(safe, zone.firstChild);
     var terms = document.createElement('p'); terms.className = 'pdz-terms';
