@@ -775,11 +775,13 @@ async function _initGDriveStorage(token) {
       body: JSON.stringify({ name: GDRIVE_FOLDER_NAME, mimeType: 'application/vnd.google-apps.folder' })
     });
     if (!res.ok) {
-      console.warn('[GDrive] Folder create failed:', res.status);
-      if (res.status === 401 || res.status === 403) {
+      let reason = '';
+      try { const ej = await res.json(); reason = (ej.error && ((ej.error.errors && ej.error.errors[0] && ej.error.errors[0].reason) || ej.error.status)) || ''; } catch (e) {}
+      console.warn('[GDrive] Folder create failed:', res.status, reason);
+      if (res.status === 401 || /insufficient|PERMISSION_DENIED|authError/i.test(reason) && !/accessNotConfigured|SERVICE_DISABLED/i.test(reason)) {
         try { localStorage.removeItem('cm_gdrive_token'); localStorage.removeItem('cm_gdrive_token_expiry'); } catch (e) {}
         toast('Google Drive was not connected: please tick the "Google Drive" box on the Google screen and try again.', 'error', 7000);
-      } else toast('Could not set up your Drive folder. Please try again.', 'error');
+      } else toast('Google Drive is not available right now. Please try again later.', 'error', 6000);
       updateStorageUI(); return false;
     }
     const data = await res.json();
