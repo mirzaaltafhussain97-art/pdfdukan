@@ -815,6 +815,30 @@ async function _initGDriveStorage(token) {
   }
 }
 
+/* Move every file PDFdukan saved in the user's Drive folder to Drive Trash
+   (restorable from Drive for 30 days). drive.file scope: only files this
+   app created are visible, so nothing else in the Drive is touched.
+   Returns { trashed, failed } or null when Drive access is not available. */
+async function gDriveTrashAll() {
+  const token = _gdriveToken();
+  if (!token) return null;
+  const folderId = (() => { try { return localStorage.getItem('pdfdukan_drive_folder_id'); } catch (e) { return null; } })();
+  const auth = { 'Authorization': 'Bearer ' + token };
+  let trashed = 0, failed = 0, pageToken = '';
+  do {
+    const q = encodeURIComponent((folderId ? "'" + folderId + "' in parents and " : '') + "trashed=false and mimeType!='application/vnd.google-apps.folder'");
+    const r = await fetch(GDRIVE_API + '?q=' + q + '&fields=nextPageToken,files(id)&pageSize=200' + (pageToken ? '&pageToken=' + pageToken : ''), { headers: auth });
+    if (!r.ok) { if (r.status === 401) return null; throw new Error('Drive list failed ' + r.status); }
+    const j = await r.json(); pageToken = j.nextPageToken || '';
+    for (const f of (j.files || [])) {
+      const u = await fetch(GDRIVE_API + '/' + f.id, { method: 'PATCH', headers: Object.assign({ 'Content-Type': 'application/json' }, auth), body: JSON.stringify({ trashed: true }) });
+      u.ok ? trashed++ : failed++;
+    }
+  } while (pageToken);
+  return { trashed, failed };
+}
+window.gDriveTrashAll = gDriveTrashAll;
+
 /**
  * Save a Blob to the user's PDFdukan Drive folder.
  * @param {Blob} blob - the file data
@@ -1652,6 +1676,7 @@ function _toolLabel() {
 function _recordDownload(name, href) {
   const id = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const ext = (name.split('.').pop() || '').toUpperCase();
+  try { if (localStorage.getItem('cm_history_off') === '1') return id; } catch (e) {}   // Settings → history off
   try {
     addToRecent({ id, name, type: ext && ext.length <= 5 ? ext : 'FILE', tool: _toolLabel(), page: location.pathname, ts: Date.now() });
     fetch(href).then(r => r.blob()).then(b => {

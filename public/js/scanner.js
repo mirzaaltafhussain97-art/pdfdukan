@@ -397,7 +397,7 @@ const ScannerApp = (() => {
     $('scanWorkstage').append($('scanCropOptions'));
     $('scanClose').onclick=_discardAll;$('scanAddImages').onclick=()=>{if(!busy&&state.screen!=='crop')$('fileInputScanner').click();};
     $('scanCropToggle').onclick=()=>state.screen==='crop'?_cancelCrop():_enterCrop();$('scanCancelCrop').onclick=_cancelCrop;
-    $('scanConfirm').onclick=()=>{if(busy)return;if(state.screen==='crop')_commitCrop();else if(state.screen==='export')_editPage(state.editingIndex);else{_saveCurrent();showScreen('export');_renderExportPreview();}};
+    $('scanConfirm').onclick=()=>{if(busy)return;if(state.screen==='crop')_commitCrop();else if(state.screen==='export')_editPage(state.editingIndex);else{_saveCurrent();_openDownloadDialog();}};
     $('scanOriginalImages').onclick=()=>{if(busy)return;for(const p of state.applyToAll?state.pages:[state.pages[state.editingIndex]]){_invalidateAuto(p);p.croppedImg=p.sourceImg;p.cropCorners=_fullCorners(p.sourceImg);p.filter='original';p.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};p.needsCropReview=false;}state.currentFilter='original';state.adjustments={brightness:0,contrast:0,sharpness:0,saturation:0};_editPage(state.editingIndex);};
     $('btnResetCrop').onclick=async()=>{if(busy)return;_invalidateAuto(state.pages[state.editingIndex]);showProcessing('Detecting document edges…');try{if(window.ScanProcessor?.available){const source=cropEditor._getRotatedImg(),result=await ScanProcessor.detect(source,{crop:false});cropEditor.img=source;cropEditor.rotation=0;cropEditor.corners=copy(result.corners);cropEditor.legacyCorners=copy(result.previousCorners||result.corners);cropEditor.detectionNeedsReview=result.needsReview;}else await cropEditor.resetCorners();_fitCrop();}catch(error){toast('Detection failed. Please adjust corners manually.','error');}finally{hideProcessing();}};
     $('btnFitCrop').onclick=()=>{cropEditor.fitFull();_fitCrop();};$('btnPreviousDetection').onclick=()=>{cropEditor.useOriginalDetection();_fitCrop();};
@@ -412,6 +412,61 @@ const ScannerApp = (() => {
     });
     _buildFilters();
   }
+
+  /* ── DOWNLOAD DIALOG ─────────────────────────────────────────
+     After the filter step a small window in the middle of the screen asks
+     for the format (PDF or Image), like phone scanner apps. The PDF options
+     are the same controls the export screen used, moved into the window. */
+  let _dlFormat='pdf';
+  function _openDownloadDialog(){
+    if(!state.pages.length){toast('No pages to export','error');return;}
+    let m=document.getElementById('scanDlDialog');
+    if(!m){
+      m=document.createElement('div');m.id='scanDlDialog';m.className='sdl-backdrop';m.setAttribute('role','dialog');m.setAttribute('aria-modal','true');m.setAttribute('aria-labelledby','sdlTitle');
+      m.innerHTML='<div class="sdl-panel">'+
+        '<div class="sdl-head"><h2 id="sdlTitle">Select Download Format</h2><button type="button" class="sdl-x" aria-label="Close" data-sdl="close">&#10005;</button></div>'+
+        '<div class="sdl-formats" role="radiogroup" aria-label="Format">'+
+          '<button type="button" class="sdl-fmt" role="radio" data-fmt="pdf"><svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M10 4h20l10 10v30H10z" fill="#ef4423"/><path d="M30 4v10h10z" fill="#ffb4a3"/><text x="25" y="35" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="Arial,sans-serif">PDF</text></svg><span>PDF</span></button>'+
+          '<button type="button" class="sdl-fmt" role="radio" data-fmt="image"><svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><rect x="5" y="9" width="38" height="30" rx="4" fill="#2f8cff"/><circle cx="16" cy="19" r="4" fill="#fff"/><path d="M5 35l12-12 9 9 6-6 11 11v2a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z" fill="#7cc0ff"/></svg><span>Image</span></button>'+
+        '</div>'+
+        '<div class="sdl-opts" id="sdlPdfOpts"></div>'+
+        '<p class="sdl-note" id="sdlImgNote"></p>'+
+        '<div class="sdl-foot"><span class="sdl-count" id="sdlCount"></span><button type="button" class="sdl-dl" data-sdl="go">Download</button></div>'+
+      '</div>';
+      const st=document.createElement('style');st.textContent=
+        '.sdl-backdrop{position:fixed;inset:0;z-index:10100;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:16px}'+
+        '.sdl-backdrop.show{display:flex}'+
+        '.sdl-panel{background:var(--bg-card,#fff);color:var(--text,#111);border:1px solid var(--border,#ddd);border-radius:16px;width:440px;max-width:100%;max-height:calc(100vh - 32px);overflow:auto;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.35)}'+
+        '.sdl-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.sdl-head h2{font-size:17px;font-weight:800;margin:0}'+
+        '.sdl-x{background:none;border:0;color:var(--text-3,#888);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:8px}.sdl-x:hover{background:var(--border,#eee)}'+
+        '.sdl-formats{display:flex;gap:12px;margin-bottom:14px}'+
+        '.sdl-fmt{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border:1.5px solid var(--border,#ddd);border-radius:12px;background:transparent;color:inherit;font-weight:700;font-size:14px;cursor:pointer}'+
+        '.sdl-fmt[aria-checked="true"]{border-color:var(--primary,#ff6333);background:rgba(255,99,51,.08)}'+
+        '.sdl-opts .pdf-options{margin:0}.sdl-opts .po-row{justify-content:space-between}'+
+        '.sdl-note{font-size:13px;color:var(--text-3,#777);margin:2px 0 6px}'+
+        '.sdl-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}.sdl-count{font-size:13px;color:var(--text-3,#777)}'+
+        '.sdl-dl{background:var(--primary,#ff6333);color:#fff;border:0;border-radius:10px;padding:11px 26px;font-weight:800;font-size:15px;cursor:pointer}.sdl-dl:hover{filter:brightness(1.08)}';
+      document.head.appendChild(st);document.body.appendChild(m);
+      // Reuse the existing PDF option controls (same ids the export code reads).
+      const opts=document.querySelector('#screen-export .pdf-options');if(opts)m.querySelector('#sdlPdfOpts').appendChild(opts);
+      m.addEventListener('click',e=>{
+        const f=e.target.closest('[data-fmt]');if(f){_dlFormat=f.dataset.fmt;_syncDl();return;}
+        const a=e.target.closest('[data-sdl]');
+        if(e.target===m||(a&&a.dataset.sdl==='close')){_closeDownloadDialog();return;}
+        if(a&&a.dataset.sdl==='go'){_closeDownloadDialog();if(_dlFormat==='pdf')exportAsPDF();else exportAsImages('jpeg');}
+      });
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('show'))_closeDownloadDialog();});
+    }
+    _syncDl();m.classList.add('show');setTimeout(()=>m.querySelector('.sdl-dl')?.focus(),30);
+  }
+  function _syncDl(){
+    const m=document.getElementById('scanDlDialog');if(!m)return;const n=state.pages.length;
+    m.querySelectorAll('.sdl-fmt').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.fmt===_dlFormat)));
+    m.querySelector('#sdlPdfOpts').hidden=_dlFormat!=='pdf';
+    const note=m.querySelector('#sdlImgNote');note.hidden=_dlFormat!=='image';note.textContent=n>1?`${n} pages → ${n} JPG images in one ZIP file.`:'1 page → one JPG image.';
+    m.querySelector('#sdlCount').textContent=`${n} page${n!==1?'s':''}`;
+  }
+  function _closeDownloadDialog(){document.getElementById('scanDlDialog')?.classList.remove('show');}
 
   /* ── EXPORT SCREEN ────────────────────────────────────────── */
   function _renderExportPreview() {

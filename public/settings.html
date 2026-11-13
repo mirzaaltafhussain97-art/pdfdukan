@@ -286,7 +286,7 @@
       <div class="setting-row">
         <div class="setting-label">
           <div class="sl-title">Clear Recent History</div>
-          <div class="sl-desc">Remove all saved recent document entries from this device</div>
+          <div class="sl-desc">Remove the Recent list on this device and, if you choose, the copies saved in your Google Drive</div>
         </div>
         <div class="setting-control">
           <button class="btn-reset" onclick="clearHistory()">Clear History</button>
@@ -370,7 +370,7 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="js/app.js?v=20261113f"></script>
+<script src="js/app.js?v=20261113g"></script>
 <script src="js/header.js?v=20261111"></script>
 <script>
 // Populate controls from SETTINGS on load
@@ -408,12 +408,59 @@ function onHistoryToggle(enabled) {
   toast(enabled ? 'History enabled' : 'History disabled', 'success');
 }
 
+/* Clear History: removes the Recent / My Documents list on this device and,
+   if the user ticks it, moves the files PDFdukan saved in their Google Drive
+   folder to Drive Trash (they can still restore them from Drive for 30 days). */
 function clearHistory() {
-  if (!confirm('Clear all recent document history? This cannot be undone.')) return;
-  localStorage.removeItem('cm_recent');
-  STATE.recentDocs = [];
-  updateStorageUI();
-  toast('History cleared ✓', 'success');
+  let m = document.getElementById('clearHistModal');
+  const driveLinked = localStorage.getItem('pdfdukan_drive_setup_done') === 'true' && typeof STATE !== 'undefined' && !!STATE.user;
+  const n = (STATE.recentDocs || []).length;
+  if (!m) {
+    m = document.createElement('div'); m.id = 'clearHistModal'; m.className = 'modal-backdrop';
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'chTitle');
+    m.innerHTML = '<div class="auth-modal" style="max-width:420px">' +
+      '<button class="modal-close" aria-label="Close" data-ch="no">✕</button>' +
+      '<h2 id="chTitle" style="font-size:19px;margin-bottom:8px">Clear history?</h2>' +
+      '<p id="chText" style="color:var(--text-2);font-size:14px;line-height:1.6;margin-bottom:14px"></p>' +
+      '<label id="chDriveRow" style="display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.5;margin-bottom:16px;cursor:pointer">' +
+        '<input type="checkbox" id="chDrive" checked style="margin-top:3px;width:18px;height:18px;flex-shrink:0">' +
+        '<span>Also delete the files PDFdukan saved in my Google Drive folder <b>“PDFdukan — CamMaster Files”</b>. They go to Drive Trash, where you can restore them for 30 days. Nothing else in your Drive is touched.</span></label>' +
+      '<button class="btn btn-primary" data-ch="yes" style="width:100%;justify-content:center;margin-bottom:8px;background:#dc2626;border-color:#dc2626">Clear history</button>' +
+      '<button class="btn btn-secondary" data-ch="no" style="width:100%;justify-content:center">Cancel</button></div>';
+    m.addEventListener('click', e => {
+      const b = e.target.closest('[data-ch]');
+      if (e.target === m || (b && b.dataset.ch === 'no')) { m.classList.remove('show'); return; }
+      if (b && b.dataset.ch === 'yes') _doClearHistory(m);
+    });
+    document.body.appendChild(m);
+  }
+  document.getElementById('chText').textContent = 'This removes ' + n + ' item' + (n !== 1 ? 's' : '') + ' from Recent and My Documents on this device. Files already in your Downloads folder stay there.';
+  document.getElementById('chDriveRow').style.display = driveLinked ? 'flex' : 'none';
+  document.getElementById('chDrive').checked = driveLinked;
+  m.classList.add('show');
+}
+async function _doClearHistory(m) {
+  const wantDrive = document.getElementById('chDriveRow').style.display !== 'none' && document.getElementById('chDrive').checked;
+  const btn = m.querySelector('[data-ch="yes"]'); btn.disabled = true; btn.textContent = 'Clearing…';
+  let driveMsg = '';
+  try {
+    if (wantDrive) {
+      let r = typeof gDriveTrashAll === 'function' ? await gDriveTrashAll() : null;
+      if (r === null && typeof connectDrive === 'function') {          // Drive access expired: reconnect once
+        toast('Please reconnect Google Drive to delete the Drive copies.', 'info', 5000);
+        if (await connectDrive()) r = await gDriveTrashAll();
+      }
+      if (r === null) driveMsg = ' Drive files were NOT deleted (Drive not connected).';
+      else driveMsg = ' ' + r.trashed + ' Drive file' + (r.trashed !== 1 ? 's' : '') + ' moved to Drive Trash' + (r.failed ? ', ' + r.failed + ' could not be deleted' : '') + '.';
+    }
+    localStorage.removeItem('cm_recent');
+    STATE.recentDocs = [];
+    updateStorageUI();
+    toast('History cleared ✓' + driveMsg, driveMsg.indexOf('NOT') > -1 || driveMsg.indexOf('could not') > -1 ? 'info' : 'success', 7000);
+    m.classList.remove('show');
+  } catch (e) {
+    toast('Could not delete the Drive files: ' + (e && e.message || e) + '. History was not cleared.', 'error', 7000);
+  } finally { btn.disabled = false; btn.textContent = 'Clear history'; }
 }
 
 function resetSettings() {
