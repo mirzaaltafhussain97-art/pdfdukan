@@ -1,6 +1,6 @@
 /* Heavy detector/warp work owns an isolated worker. Jobs use IDs, never indexes. */
 window.ScanProcessor=(()=>{
- const url=new URL('scan-crop-worker.js?v=20261105_fixes',document.currentScript.src),available=typeof Worker!=='undefined'&&typeof createImageBitmap==='function'&&typeof OffscreenCanvas!=='undefined';
+ const url=new URL('scan-crop-worker.js?v=20261113c',document.currentScript.src),available=typeof Worker!=='undefined'&&typeof createImageBitmap==='function'&&typeof OffscreenCanvas!=='undefined';
  let worker,sequence=0,running=false,modelsRequested=false;const jobs=[];
  function start(){if(worker)return;worker=new Worker(url);}
  async function drain(){

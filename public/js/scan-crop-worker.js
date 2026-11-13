@@ -1,4 +1,4 @@
-importScripts('scan-cv-runtime.js?v=20261105_fixes','crop.js?v=20261105_fixes','document-boundary.js?v=20261105_fixes','scan-paper-profile.js?v=20261105_fixes');
+importScripts('scan-cv-runtime.js?v=20261105_fixes','crop.js?v=20261113c','document-boundary.js?v=20261113c','scan-paper-profile.js?v=20261105_fixes');
 const editor=new CropEditor('worker');editor.silent=true;
 async function warp(image,corners,preview=false){
  const ordered=ensureCornerOrder(corners),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),W=Math.max(dist(ordered.tl,ordered.tr),dist(ordered.bl,ordered.br)),H=Math.max(dist(ordered.tl,ordered.bl),dist(ordered.tr,ordered.br));

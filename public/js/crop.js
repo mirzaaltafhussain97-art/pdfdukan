@@ -112,7 +112,12 @@ const MLDetector = (() => {
         // Inside the document worker the heavier model loads on a helper
         // thread (in parallel with the light one) so both can run at once.
         const helper = inWorker ? startHelper(HEATMAP_MODELS[1]) : null;
+        // A second copy of the light model on another thread takes the wider
+        // paddings, so hard photos finish sooner. Same model, same inputs:
+        // identical answers, only computed in parallel. Used once it is ready.
+        const assist = inWorker && (self.navigator && navigator.hardwareConcurrency || 2) >= 4 ? startHelper(HEATMAP_MODELS[0]) : null;
         try { _heat.push({ session: await ort.InferenceSession.create(HEATMAP_MODELS[0], { executionProviders: ['wasm'] }) }); } catch (_) {}
+        if (assist && _heat[0]) { const first = _heat[0]; assist.ready.then(ok => { if (ok) first.assist = assist; }); }
         if (helper && await helper.ready) _heat.push({ remote: helper });
         else { try { _heat.push({ session: await ort.InferenceSession.create(HEATMAP_MODELS[1], { executionProviders: ['wasm'] }) }); } catch (_) {} }
         if (_heat.length) { _session = _heat[0]; _kind = 'heatmap'; }
@@ -304,6 +309,7 @@ const MLDetector = (() => {
     // The helper model starts on its own thread right away; its answers are
     // read in exactly the same order the sequential loop used to produce them.
     const remotes = _heat.map(runner => runner.remote ? runner.remote.run(MARGINS.map(m => tensorFor(m).tensor.data), S) : null);
+    const ASSIST_FROM = 2, assists = _heat.map(runner => runner.assist ? runner.assist.run(MARGINS.slice(ASSIST_FROM).map(m => tensorFor(m).tensor.data), S) : null);
     try {
     for (let r_i = 0; r_i < _heat.length; r_i++) {
       const runner = _heat[r_i], remote = remotes[r_i];
@@ -311,7 +317,8 @@ const MLDetector = (() => {
         const margin = MARGINS[m_i];
         const { tensor, side, ox, oy } = tensorFor(margin);
         let heat = null;
-        const answer = remote ? await remote.get(m_i) : null;
+        const assist = assists[r_i];
+        const answer = remote ? await remote.get(m_i) : (assist && m_i >= ASSIST_FROM ? await assist.get(m_i - ASSIST_FROM) : null);
         if (answer && answer.empty) continue;
         if (answer && answer.heat) heat = answer.heat;
         else {
@@ -332,13 +339,13 @@ const MLDetector = (() => {
       }
       if (settled) break;
     }
-    } finally { remotes.forEach(remote => remote && remote.cancel()); }
+    } finally { remotes.forEach(remote => remote && remote.cancel()); assists.forEach(a => a && a.cancel()); }
     if (!runs.length) return null;
     const diag = Math.hypot(W, H), dist = (a, b) => a.q.reduce((acc, p, i) => acc + Math.hypot(p.x - b.q[i].x, p.y - b.q[i].y), 0) / 4;
     const clusters = [];
     for (const r of runs.slice().sort((a, b) => b.conf - a.conf)) { const c = clusters.find(c => dist(c[0], r) < 0.03 * diag); c ? c.push(r) : clusters.push([r]); }
     const support = c => c.reduce((acc, r) => acc + r.conf, 0), maxSupport = Math.max(...clusters.map(support));
-    let best = null; const dbg = [];
+    let best = null; const dbg = [], allClusters = [];
     for (const c of clusters) {
       const sum = support(c), avg = [0,1,2,3].map(i => ({ x: c.reduce((a, r) => a + r.q[i].x * r.conf, 0) / sum, y: c.reduce((a, r) => a + r.q[i].y * r.conf, 0) / sum }));
       const quad = ensureCornerOrder({ tl: avg[0], tr: avg[1], br: avg[2], bl: avg[3] });
@@ -355,13 +362,55 @@ const MLDetector = (() => {
       dbg.push({ n: c.length, sum: +sum.toFixed(2), edge: +edge.toFixed(2), sides: sides.map(v => +v.toFixed(2)), pp: +pp.toFixed(2), score: +score.toFixed(3), q: [quad.tl, quad.tr, quad.br, quad.bl].map(p => [Math.round(p.x), Math.round(p.y)]) });
       const onFrame = [0,1,2,3].every(i => { const A = snapped[keys[i]], B = snapped[keys[(i+1)%4]];
         return (A.y < tol && B.y < tol) || (A.x > W-tol && B.x > W-tol) || (A.y > H-tol && B.y > H-tol) || (A.x < tol && B.x < tol); });
-      if (!best || score > best.score) best = { score, conf: c[0].conf, frameOnly: onFrame, frameSides: edge, corners: { tl: snapped.tl, tr: snapped.tr, br: snapped.br, bl: snapped.bl } };
+      const entry = { score, sum, conf: c[0].conf, frameOnly: onFrame, frameSides: edge, raw: quad, snapEdge: edge, corners: { tl: snapped.tl, tr: snapped.tr, br: snapped.br, bl: snapped.bl } };
+      allClusters.push(entry);
+      if (!best || score > best.score) best = entry;
     }
     _lastConfidence = best.conf; _lastDebug = { runs: runs.length, clusters: dbg };
     // Every answer is "the whole photo" while the photo border is plainly not
     // paper: the model saw the padded photo rectangle, not a sheet (typical for
     // a small card on a dark surface). Hand over to the contour detectors.
+    // "Whole photo" won, but the model also outlined a smaller object, and all
+    // printed detail sits inside that object while the rest of the photo is
+    // plain (a card on a bedsheet or on white paper). That object is the scan.
+    const frameSidesOf = (q, tf = 1) => { const ks = ['tl','tr','br','bl'], t = tol * tf; let n = 0; for (let i = 0; i < 4; i++) { const A = q[ks[i]], B = q[ks[(i+1)%4]];
+      if ((A.y < t && B.y < t) || (A.x > W-t && B.x > W-t) || (A.y > H-t && B.y > H-t) || (A.x < t && B.x < t)) n++; } return n; };
+    const squarish = (q, par = true) => { const ks = ['tl','tr','br','bl']; return ks.every((k, i) => { const p = q[k], a = q[ks[(i+3)%4]], b = q[ks[(i+1)%4]];
+      const ux = a.x-p.x, uy = a.y-p.y, vx = b.x-p.x, vy = b.y-p.y, c = (ux*vx + uy*vy) / Math.max(1e-6, Math.hypot(ux, uy) * Math.hypot(vx, vy)); return Math.abs(c) < 0.42; })
+      // opposite sides close to parallel (a flat object seen from a normal angle)
+      && (!par || [0, 1].every(i => { const d = j => Math.atan2(q[ks[(j+1)%4]].y - q[ks[j]].y, q[ks[(j+1)%4]].x - q[ks[j]].x);
+        let g = Math.abs(d(i) - d(i+2)) % (2*Math.PI); g = Math.abs(g - Math.PI); return g < 8 * Math.PI / 180; })); };
+    // (one frame side is enough when another outline has most of the support)
+    if (best.frameOnly || frameSidesOf(best.corners) >= 1) {
+      const fa = q => Math.abs(['tl','tr','br','bl'].reduce((a, k, i, ks) => { const p = q[k], r = q[ks[(i+1)%4]]; return a + p.x*r.y - r.x*p.y; }, 0)) / 2 / (W*H);
+      const alts = allClusters.filter(c => c !== best && frameSidesOf(c.raw, 2) <= 2 && frameSidesOf(c.raw) < frameSidesOf(best.corners) && squarish(c.raw) && c.sum >= (frameSidesOf(best.corners) >= 2 || best.frameOnly ? 0.3 : 0.6) * best.sum && fa(c.raw) >= 0.03 && fa(c.raw) <= 0.8 && fa(c.raw) < 0.85 * fa(best.corners)).sort((a, b) => fa(b.raw) - fa(a.raw));
+      for (const alt of alts) {
+        const pick = fa(alt.corners) / Math.max(1e-6, fa(alt.raw)) > 0.85 && fa(alt.corners) / Math.max(1e-6, fa(alt.raw)) < 1.18 ? alt.corners : alt.raw;
+        const dd = _detailInOut(img, pick, best.corners);
+        _lastDebug.inner = { inD: +dd.inD.toFixed(4), outD: +dd.outD.toFixed(4) };
+        if (dd.outN > 50 && dd.outD < 0.012 && dd.inD > Math.max(0.02, 5 * dd.outD)) { _lastDebug.innerPicked = true; best = Object.assign({}, alt, { corners: pick }); break; }
+      }
+    }
+    // Still the whole photo, and its border is visibly not paper: give up
+    // here so the contour detectors can look for the sheet instead.
     if (best.frameOnly && best.frameSides < 0.5) { _lastDebug.rejected = 'scene-frame'; return null; }
+    // The winner may be one half of a folded sheet: a larger outline with
+    // comparable support shares its other sides, and every side where they
+    // differ shows the same paper on both sides (a crease, not an edge).
+    if (!best.frameOnly && !_lastDebug.innerPicked) {
+      const ks = ['tl','tr','br','bl'], diag = Math.hypot(W, H), fa = q => Math.abs(ks.reduce((a, k, i) => { const p = q[k], r = q[ks[(i+1)%4]]; return a + p.x*r.y - r.x*p.y; }, 0)) / 2;
+      // Distance of one outline's side from the other's side LINE: collinear
+      // sides (the same sheet edge, just longer) count as shared.
+      const sideDist = (q1, q2, i) => { const a = q2[ks[i]], b = q2[ks[(i+1)%4]], L = Math.hypot(b.x-a.x, b.y-a.y) || 1;
+        return Math.max(...[q1[ks[i]], q1[ks[(i+1)%4]]].map(p => Math.abs((b.x-a.x)*(p.y-a.y) - (b.y-a.y)*(p.x-a.x)) / L)); };
+      for (const alt of allClusters.filter(c => c !== best && !c.frameOnly && squarish(c.raw, false) && c.sum >= 0.7 * best.sum && fa(c.raw) >= 1.3 * fa(best.corners)).sort((a, b) => b.score - a.score)) {
+        const differ = [0,1,2,3].filter(i => sideDist(best.corners, alt.raw, i) > 0.03 * diag);
+        if (!differ.length || differ.length > 2) continue;
+        if (differ.every(i => _sideSameBothWays(img, best.corners, i) >= 0.45)) { _lastDebug.unfolded = true;
+          best = Object.assign({}, alt, { corners: fa(alt.corners) >= 0.9 * fa(alt.raw) ? alt.corners : alt.raw }); break; }
+      }
+    }
+    if (!best.frameOnly) { const grown = expandSidesToBackground(img, best.corners); if (grown !== best.corners) _lastDebug.expanded = true; return grown; }
     return best.corners;
   }
 
@@ -375,11 +424,9 @@ const MLDetector = (() => {
    edge are kept as given, so a good prediction is never made worse.
 ═══════════════════════════════════════════════════════════════ */
 const _snapCache = new WeakMap();
-function snapQuadToEdges(img, corners, options = {}) {
-  const keys = ['tl','tr','br','bl'];
-  if (!corners || !keys.every(k => corners[k] && Number.isFinite(corners[k].x) && Number.isFinite(corners[k].y))) return corners;
-  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
-  const s = Math.min(1, (options.maxSide || 900) / Math.max(W, H)), w = Math.max(2, Math.round(W * s)), h = Math.max(2, Math.round(H * s));
+/* Blurred RGB copy of the photo at a working size, cached per image and
+   shared by edge snapping and side expansion. */
+function _blurField(img, w, h) {
   // Blurred RGB at working size, cached per image (several outlines are
   // snapped against the same photo during one detection).
   let a = _snapCache.get(img);
@@ -403,6 +450,125 @@ function snapQuadToEdges(img, corners, options = {}) {
     const x0 = x | 0, y0 = y | 0, fx = x - x0, fy = y - y0, i00 = (y0*w+x0)*3, i10 = i00 + 3, i01 = i00 + w*3, i11 = i01 + 3;
     for (let c = 0; c < 3; c++) out[c] = a[i00+c]*(1-fx)*(1-fy) + a[i10+c]*fx*(1-fy) + a[i01+c]*(1-fx)*fy + a[i11+c]*fx*fy;
     return true; };
+  return { a, sample };
+}
+
+/* SIDE EXPANSION — a printed band along a card or form edge (a coloured
+   header, a dark footer strip) can be mistaken for the outside. When the
+   strip just outside a side is clearly NOT the surrounding table (different
+   colour, not merely a darker shadow of it) and the table appears again a
+   little further out along the whole side, move that side out to it. */
+function expandSidesToBackground(img, corners) {
+  const keys = ['tl','tr','br','bl'];
+  if (!corners || !keys.every(k => corners[k] && Number.isFinite(corners[k].x))) return corners;
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+  const s = Math.min(1, 900 / Math.max(W, H)), w = Math.max(2, Math.round(W * s)), h = Math.max(2, Math.round(H * s));
+  const { sample } = _blurField(img, w, h);
+  const P = keys.map(k => ({ x: corners[k].x * s, y: corners[k].y * s }));
+  const cx = P.reduce((a, p) => a + p.x, 0) / 4, cy = P.reduce((a, p) => a + p.y, 0) / 4;
+  const chroma = c => { const t = c[0] + c[1] + c[2] + 30; return [c[0] / t, c[1] / t]; };
+  const geo = [];
+  for (let i = 0; i < 4; i++) { const A = P[i], B = P[(i+1)%4], len = Math.hypot(B.x-A.x, B.y-A.y); if (len < 20) return corners;
+    let nx = (B.y-A.y)/len, ny = -(B.x-A.x)/len; if (((A.x+B.x)/2-cx)*nx + ((A.y+B.y)/2-cy)*ny < 0) { nx = -nx; ny = -ny; }
+    const perp = Math.min(Math.hypot(P[(i+1)%4].x-P[(i+2)%4].x, P[(i+1)%4].y-P[(i+2)%4].y), Math.hypot(P[i].x-P[(i+3)%4].x, P[i].y-P[(i+3)%4].y));
+    geo.push({ A, B, nx, ny, perp }); }
+  // Table colour: median of a ring well outside the quad on all four sides.
+  const ring = [], c = [0,0,0];
+  for (const g of geo) { const R = Math.max(14, 0.2 * g.perp);
+    for (let j = 0; j < 16; j++) { const t = 0.1 + 0.8 * j / 15; if (sample(g.A.x + (g.B.x-g.A.x)*t + g.nx*R, g.A.y + (g.B.y-g.A.y)*t + g.ny*R, c)) ring.push(c.slice()); } }
+  if (ring.length < 14) return corners;
+  const bg = [0,1,2].map(k => ring.map(v => v[k]).sort((a, b) => a - b)[ring.length >> 1]);
+  const bgSpread = ring.filter(v => Math.hypot(v[0]-bg[0], v[1]-bg[1], v[2]-bg[2]) < 30).length / ring.length;
+  if (bgSpread < 0.6) return corners;                 // busy surroundings: no reliable table colour
+  const bgC = chroma(bg), isBg = v => Math.hypot(v[0]-bg[0], v[1]-bg[1], v[2]-bg[2]) < 32;
+  // Foreign = clearly not the table: another hue, much brighter, or a dark
+  // printed band far darker than any shadow (a shadow keeps ~half the light).
+  const foreign = v => { const k = chroma(v), sv = v[0]+v[1]+v[2], sb = bg[0]+bg[1]+bg[2];
+    const neutral = Math.abs(v[0]/(sv+1) - 1/3) < 0.04 && Math.abs(v[1]/(sv+1) - 1/3) < 0.04 && Math.abs(v[2]/(sv+1) - 1/3) < 0.04;
+    return Math.hypot(k[0]-bgC[0], k[1]-bgC[1]) > 0.035 || sv > sb + 90 || (sb > 240 && sv < 0.42 * sb && neutral); };
+  const lines = []; let moved = 0;
+  for (const g of geo) {
+    const maxD = Math.max(6, 0.14 * g.perp), found = [], stripCols = []; let tested = 0, strip = 0;
+    for (let j = 0; j < 21; j++) { const t = 0.12 + 0.76 * j / 20, px = g.A.x + (g.B.x-g.A.x)*t, py = g.A.y + (g.B.y-g.A.y)*t;
+      if (!sample(px + g.nx*5, py + g.ny*5, c)) continue; tested++;
+      if (isBg(c) || !foreign(c)) continue; strip++; stripCols.push(c.slice());
+      const inkBand = (c[0]+c[1]+c[2]) < 0.42 * (bg[0]+bg[1]+bg[2]);
+      for (let d = 6; d <= maxD; d += 0.5) { if (!sample(px + g.nx*d, py + g.ny*d, c)) { if (d > 7 && inkBand) found.push(d - 1); break; }
+        if (isBg(c) && sample(px + g.nx*(d+3), py + g.ny*(d+3), c) && isBg(c)) {
+          // The edge itself is the sharpest colour step before the table shows.
+          let bestD = d, bestG = -1; const u = [0,0,0], v = [0,0,0];
+          for (let e = 3; e <= d + 1; e += 0.5) { if (!sample(px + g.nx*(e-1.5), py + g.ny*(e-1.5), u) || !sample(px + g.nx*(e+1.5), py + g.ny*(e+1.5), v)) continue;
+            const gr = Math.hypot(u[0]-v[0], u[1]-v[1], u[2]-v[2]); if (gr > bestG) { bestG = gr; bestD = e; } }
+          found.push(bestD); break; } } }
+    // A printed band is one even colour along the side; patterned cloth is not.
+    const sd = stripCols.length ? Math.max(...[0,1,2].map(k => { const v = stripCols.map(x => x[k]), mu = v.reduce((a, b) => a + b, 0) / v.length; return Math.sqrt(v.reduce((a, b) => a + (b-mu)*(b-mu), 0) / v.length); })) : 99;
+    let shift = 0;
+    if (tested >= 12 && strip >= 0.7 * tested && found.length >= 0.7 * tested && sd < 22) {
+      found.sort((a, b) => a - b); const med = found[found.length >> 1], q1 = found[(found.length * 0.25) | 0], q3 = found[(found.length * 0.75) | 0];
+      if (q3 - q1 <= Math.max(2.5, 0.25 * med)) { shift = Math.max(0, med); moved++; } }
+    lines.push({ x: g.A.x + g.nx*shift, y: g.A.y + g.ny*shift, dx: g.B.x - g.A.x, dy: g.B.y - g.A.y });
+  }
+  if (!moved) return corners;
+  const meet = (p, q) => { const den = p.dx*q.dy - p.dy*q.dx; if (Math.abs(den) < 1e-9) return null; const u = ((q.x-p.x)*q.dy - (q.y-p.y)*q.dx) / den; return { x: p.x + p.dx*u, y: p.y + p.dy*u }; };
+  const out = {};
+  for (let i = 0; i < 4; i++) { const q = meet(lines[(i+3)%4], lines[i]); if (!q) return corners; out[keys[i]] = { x: Math.max(0, Math.min(W, q.x / s)), y: Math.max(0, Math.min(H, q.y / s)) }; }
+  return out;
+}
+
+/* Printed detail (text, photo, QR) inside vs outside a quad. Used to tell a
+   card lying on plain cloth/paper apart from "the whole photo is the page". */
+function _detailInOut(img, corners, outer) {
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height, s = Math.min(1, 520 / Math.max(W, H));
+  const w = Math.max(8, Math.round(W * s)), h = Math.max(8, Math.round(H * s));
+  let f = _detailCache.get(img);
+  if (!f || f.w !== w) {
+    const cv0 = document.createElement('canvas'); cv0.width = w; cv0.height = h; const x = cv0.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0, w, h);
+    const d = x.getImageData(0, 0, w, h).data, L = new Float32Array(w*h), B = new Float32Array(w*h), T = new Float32Array(w*h);
+    for (let i = 0; i < w*h; i++) L[i] = .299*d[i*4] + .587*d[i*4+1] + .114*d[i*4+2];
+    const r = 4;
+    for (let y = 0; y < h; y++) { let acc = 0; for (let k = -r; k <= r; k++) acc += L[y*w + Math.min(w-1, Math.max(0, k))]; for (let xx = 0; xx < w; xx++) { T[y*w+xx] = acc / (2*r+1); acc += L[y*w + Math.min(w-1, xx+r+1)] - L[y*w + Math.max(0, xx-r)]; } }
+    for (let xx = 0; xx < w; xx++) { let acc = 0; for (let k = -r; k <= r; k++) acc += T[Math.min(h-1, Math.max(0, k))*w + xx]; for (let y = 0; y < h; y++) { B[y*w+xx] = acc / (2*r+1); acc += T[Math.min(h-1, y+r+1)*w + xx] - T[Math.max(0, y-r)*w + xx]; } }
+    const det = new Uint8Array(w*h); for (let i = 0; i < w*h; i++) det[i] = B[i] - L[i] > 28 ? 1 : 0;
+    f = { w, h, det }; _detailCache.set(img, f);
+  }
+  const P = ['tl','tr','br','bl'].map(k => ({ x: corners[k].x * s, y: corners[k].y * s }));
+  const cx = P.reduce((a, p) => a + p.x, 0) / 4, cy = P.reduce((a, p) => a + p.y, 0) / 4;
+  const inside = (x, y, grow) => P.every((a, i) => { const b = P[(i+1)%4]; return (b.x-a.x)*(y-a.y) - (b.y-a.y)*(x-a.x) >= -grow * Math.hypot(b.x-a.x, b.y-a.y); });
+  const margin = 0.03 * Math.max(w, h);
+  const O = outer && ['tl','tr','br','bl'].map(k => ({ x: outer[k].x * s, y: outer[k].y * s }));
+  const inOuter = (x, y) => !O || O.every((a, i) => { const b = O[(i+1)%4]; return (b.x-a.x)*(y-a.y) - (b.y-a.y)*(x-a.x) >= margin * Math.hypot(b.x-a.x, b.y-a.y); });
+  let ni = 0, di = 0, no = 0, dO = 0;
+  for (let y = 2; y < h - 2; y += 2) for (let x = 2; x < w - 2; x += 2) {
+    const v = f.det[y*w+x];
+    if (inside(x, y, -margin)) { ni++; di += v; } else if (!inside(x, y, margin) && inOuter(x, y)) { no++; dO += v; } }
+  return { inD: ni ? di / ni : 0, outD: no ? dO / no : 1, outN: no };
+}
+const _detailCache = new WeakMap();
+
+/* Fraction of a side where the colour is the same a little inside and a little
+   outside: a fold or printed rule across one sheet, not the sheet's edge. */
+function _sideSameBothWays(img, corners, side) {
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+  const s = Math.min(1, 900 / Math.max(W, H)), w = Math.max(2, Math.round(W * s)), h = Math.max(2, Math.round(H * s));
+  const { sample } = _blurField(img, w, h), ks = ['tl','tr','br','bl'];
+  const P = ks.map(k => ({ x: corners[k].x * s, y: corners[k].y * s })), cx = P.reduce((a, p) => a + p.x, 0) / 4, cy = P.reduce((a, p) => a + p.y, 0) / 4;
+  const A = P[side], B = P[(side+1)%4], len = Math.hypot(B.x-A.x, B.y-A.y); if (len < 10) return 0;
+  let nx = (B.y-A.y)/len, ny = -(B.x-A.x)/len; if (((A.x+B.x)/2-cx)*nx + ((A.y+B.y)/2-cy)*ny < 0) { nx = -nx; ny = -ny; }
+  let n = 0, same = 0; const u = [0,0,0], v = [0,0,0];
+  for (let j = 0; j < 17; j++) { const t = 0.1 + 0.8 * j / 16, px = A.x + (B.x-A.x)*t, py = A.y + (B.y-A.y)*t;
+    if (!sample(px - nx*9, py - ny*9, u) || !sample(px + nx*9, py + ny*9, v)) continue; n++;
+    // Same paper in shade still has the same hue; brightness may drop across a fold.
+    const su = u[0]+u[1]+u[2]+1, sv = v[0]+v[1]+v[2]+1, ratio = sv / su;
+    if (Math.hypot(u[0]/su - v[0]/sv, u[1]/su - v[1]/sv) < 0.03 && ratio > 0.55 && ratio < 1.8) same++; }
+  return n >= 8 ? same / n : 0;
+}
+
+function snapQuadToEdges(img, corners, options = {}) {
+  const keys = ['tl','tr','br','bl'];
+  if (!corners || !keys.every(k => corners[k] && Number.isFinite(corners[k].x) && Number.isFinite(corners[k].y))) return corners;
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height;
+  const s = Math.min(1, (options.maxSide || 900) / Math.max(W, H)), w = Math.max(2, Math.round(W * s)), h = Math.max(2, Math.round(H * s));
+  const { a, sample } = _blurField(img, w, h);
   const P = keys.map(k => ({ x: corners[k].x * s, y: corners[k].y * s }));
   const cx = (P[0].x+P[1].x+P[2].x+P[3].x)/4, cy = (P[0].y+P[1].y+P[2].y+P[3].y)/4;
   const lines = [], inn = [0,0,0], out = [0,0,0], T = 48, sideInliers = [], sideSnapped = [];
@@ -454,10 +620,29 @@ function snapQuadToEdges(img, corners, options = {}) {
         if (!inliers || set.length > inliers.length || (set.length === inliers.length && strength > inliers.strength)) { inliers = set; inliers.strength = strength; }
       }
     }
+    let fit = null;
     if (inliers && inliers.length >= 0.45 * T) {
       let st = 0, sd = 0, stt = 0, std = 0; const k = inliers.length;
       for (const r of inliers) { st += r.t; sd += r.d; stt += r.t*r.t; std += r.t*r.d; }
       const m = (k*std - st*sd) / Math.max(1e-9, k*stt - st*st), c = (sd - m*st) / k;
+      // Moving a side OUTWARD is only right when the strip it crosses is the
+      // same paper as just inside the prediction. On checked cloth, tiles or a
+      // patterned mat, the strip is pattern: keep the predicted side instead.
+      let crossed = 0, paperLike = 0, lines = 0, patterned = 0; const ref = [0,0,0], mid = [0,0,0], q0 = [0,0,0], q1 = [0,0,0];
+      for (let j = 0; j < 11; j++) { const t = 0.1 + 0.8 * j / 10, off = m * t + c;
+        if (off < 3) continue; const px = A.x + (B.x-A.x)*t, py = A.y + (B.y-A.y)*t;
+        if (!sample(px - nx*4, py - ny*4, ref)) continue;
+        for (const f of [0.35, 0.7]) { if (!sample(px + nx*off*f, py + ny*off*f, mid)) continue; crossed++;
+          if (Math.hypot(mid[0]-ref[0], mid[1]-ref[1], mid[2]-ref[2]) < 38) paperLike++; }
+        // Pattern test: a strip of paper is smooth; tiles/checks have sharp steps inside it.
+        if (off >= 6) { lines++; let step = 0;
+          for (let d = 1; d + 2 <= off - 1.5; d += 1) { if (!sample(px + nx*d, py + ny*d, q0) || !sample(px + nx*(d+2), py + ny*(d+2), q1)) break;
+            step = Math.max(step, Math.hypot(q1[0]-q0[0], q1[1]-q0[1], q1[2]-q0[2]) / 1.732); }
+          if (step > 35) patterned++; } }
+      if (crossed < 6 || paperLike >= 0.75 * crossed || !lines || patterned < 0.35 * lines) fit = { m, c };
+    }
+    if (fit) {
+      const { m, c } = fit;
       lines.push({ x: A.x + nx*c, y: A.y + ny*c, dx: (B.x + nx*(m+c)) - (A.x + nx*c), dy: (B.y + ny*(m+c)) - (A.y + ny*c) });
       snapped++; sideInliers.push(inliers.length); sideSnapped.push(true);
     } else { lines.push({ x: A.x, y: A.y, dx: B.x - A.x, dy: B.y - A.y }); sideInliers.push(inliers ? inliers.length : 0); sideSnapped.push(false); }
@@ -1103,6 +1288,33 @@ function _calcQuadArea(c) {
    Updated: professional L-bracket corners (like a document scanner)
    + subtle orange tint fill inside selection.
 ═══════════════════════════════════════════════════════════════ */
+/* White letterbox bars added around a photo by an app (full-height columns or
+   full-width rows of plain white at the edges). Returns the picture area. */
+function _letterboxContent(img) {
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height, s = Math.min(1, 700 / Math.max(W, H));
+  const w = Math.max(8, Math.round(W * s)), h = Math.max(8, Math.round(H * s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(img, 0, 0, w, h);
+  const d = x.getImageData(0, 0, w, h).data, lum = i => .299*d[i] + .587*d[i+1] + .114*d[i+2];
+  const plainCol = cx => { for (let y = 0; y < h; y++) if (lum((y*w+cx)*4) < 242) return false; return true; };
+  const plainRow = cy => { for (let xx = 0; xx < w; xx++) if (lum((cy*w+xx)*4) < 242) return false; return true; };
+  let L = 0, R = w - 1, T = 0, B = h - 1;
+  while (L < w * 0.4 && plainCol(L)) L++;
+  while (R > w * 0.6 && plainCol(R)) R--;
+  while (T < h * 0.4 && plainRow(T)) T++;
+  while (B > h * 0.6 && plainRow(B)) B--;
+  const minBar = 0.025;
+  // A real bar ends abruptly in picture: the first column/row after it is
+  // mostly non-white. A blank page margin ends in a few text strokes only.
+  const fillCol = cx => { let n = 0; for (let y = 0; y < h; y++) if (lum((y*w+cx)*4) < 242) n++; return n / h; };
+  const fillRow = cy => { let n = 0; for (let xx = 0; xx < w; xx++) if (lum((cy*w+xx)*4) < 242) n++; return n / w; };
+  const bar = (size, total, fill) => size >= total * minBar && fill >= 0.6;
+  const l = bar(L, w, fillCol(Math.min(w-1, L+2))) ? L + 1 : 0, r = bar(w - 1 - R, w, fillCol(Math.max(0, R-2))) ? R - 1 : w - 1;
+  const t = bar(T, h, fillRow(Math.min(h-1, T+2))) ? T + 1 : 0, b = bar(h - 1 - B, h, fillRow(Math.max(0, B-2))) ? B - 1 : h - 1;
+  if (l === 0 && r === w - 1 && t === 0 && b === h - 1) return null;
+  if (r - l < w * 0.3 || b - t < h * 0.3) return null;
+  return { x: Math.round(l / s), y: Math.round(t / s), w: Math.round((r - l + 1) / s), h: Math.round((b - t + 1) / s) };
+}
+
 class CropEditor {
   constructor(canvasId) {
     this.canvas  = document.getElementById(canvasId);
@@ -1130,6 +1342,24 @@ class CropEditor {
      If OpenCV finds the physical document paper boundary (area >= 35% of frame,
      score >= 0.55), it wins over inner table/photo boxes. */
   async setImageAsync(img) {
+    // Photos exported by some phone/scanner apps carry plain white bars on the
+    // sides (letterboxing). Those bars look like paper and pull the outline
+    // onto the photo frame, so detect inside the real picture area instead.
+    if (!this._inLetterbox) {
+      const box = _letterboxContent(img);
+      if (box) {
+        const sub = document.createElement('canvas'); sub.width = box.w; sub.height = box.h;
+        sub.getContext('2d').drawImage(img, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
+        const inner = new CropEditor(null); inner.silent = true; inner._inLetterbox = true;
+        await inner.setImageAsync(sub);
+        const shift = q => q && Object.fromEntries(['tl','tr','br','bl'].map(k => [k, { x: q[k].x + box.x, y: q[k].y + box.y }]));
+        this.img = img; this.rotation = 0;
+        this.corners = shift(inner.corners); this.legacyCorners = shift(inner.legacyCorners || inner.corners);
+        this.detectionNeedsReview = inner.detectionNeedsReview; this.hasPhotoPadding = !!inner.hasPhotoPadding;
+        this.lastBoundary = Object.assign({}, inner.lastBoundary || {}, { letterbox: box });
+        this.draw(); return;
+      }
+    }
     this.img      = img;
     this.rotation = 0;
     this.hasPhotoPadding = false;
@@ -1274,9 +1504,9 @@ class CropEditor {
     ctx.closePath(); ctx.fill('evenodd');
     ctx.restore();
 
-    /* Selection border */
-    ctx.strokeStyle = this._brandColor;
-    ctx.lineWidth   = 2.5;
+    /* Selection border (green while a dragged side is locked onto a paper edge) */
+    ctx.strokeStyle = this._drag && this._snapped ? '#22c55e' : this._brandColor;
+    ctx.lineWidth   = this._drag && this._snapped ? 3 : 2.5;
     ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(cp.tl.x, cp.tl.y); ctx.lineTo(cp.tr.x, cp.tr.y);
@@ -1452,6 +1682,73 @@ class CropEditor {
     return null;
   }
 
+  /* MAGNETIC EDGES — while a corner or side is dragged, the side(s) it moves
+     are pulled onto a clear paper edge within a small radius, the way phone
+     scanner apps do. Away from any edge nothing snaps, so free placement
+     still works. Returns corners in image pixels. */
+  _magnetField() {
+    const src = this._getRotatedImg(), W = src.width || src.naturalWidth, H = src.height || src.naturalHeight;
+    const k = Math.min(1, 900 / Math.max(W, H)), w = Math.max(2, Math.round(W * k)), h = Math.max(2, Math.round(H * k));
+    const { sample } = _blurField(src, w, h);
+    return { sample, k, W, H };
+  }
+  // Best parallel shift of segment A→B (image px) toward a strong straight
+  // edge, within ±R image px. Only the part of the side near `focus` counts
+  // (0 = A end, 1 = B end, null = whole side).
+  _magnetSide(f, A, B, R, focus) {
+    const ax = A.x * f.k, ay = A.y * f.k, bx = B.x * f.k, by = B.y * f.k, len = Math.hypot(bx-ax, by-ay);
+    if (len < 12) return null;
+    const nx = -(by-ay) / len, ny = (bx-ax) / len, r = Math.max(3, R * f.k), u = [0,0,0], v = [0,0,0];
+    const ts = []; for (let j = 0; j < 24; j++) { const t = focus == null ? 0.08 + 0.84 * j / 23 : (focus ? 0.55 + 0.4 * j / 23 : 0.05 + 0.4 * j / 23); ts.push(t); }
+    let best = { off: 0, g: -1 }, g0 = 0; const prof = [];
+    for (let off = -r; off <= r; off += 0.5) {
+      // A paper edge is a STEP: one colour on one side all along the line,
+      // another on the other. Text and printed rules average out here.
+      let n = 0; const su = [0,0,0], sv = [0,0,0];
+      for (const t of ts) { const px = ax + (bx-ax)*t + nx*off, py = ay + (by-ay)*t + ny*off;
+        if (!f.sample(px - nx*3, py - ny*3, u) || !f.sample(px + nx*3, py + ny*3, v)) continue; n++;
+        for (let c = 0; c < 3; c++) { su[c] += u[c]; sv[c] += v[c]; } }
+      if (n < 8) continue;
+      const g = Math.hypot(su[0]-sv[0], su[1]-sv[1], su[2]-sv[2]) / n;
+      if (Math.abs(off) < 0.26) g0 = g;
+      prof.push({ off, g });
+      if (g > best.g) best = { off, g };
+    }
+    // Snap only to a clear edge, clearly stronger than where the side is now;
+    // of several strong edges (a card's printed header line), take the nearest.
+    if (best.g < 32) return null;
+    const peaks = prof.filter((q, i) => (i === 0 || q.g >= prof[i-1].g) && (i === prof.length - 1 || q.g >= prof[i+1].g));
+    // The sheet's edge is the OUTERMOST clear step (inside it there can be
+    // printed headers or text rows). For clockwise corners the outward
+    // direction is negative offset.
+    for (const q of peaks.sort((a, b) => a.off - b.off)) if (q.g >= 0.4 * best.g && q.g >= 32) { best = q; break; }
+    const d = best.off / f.k;
+    return { A: { x: A.x + nx/1 * d, y: A.y + ny * d }, B: { x: B.x + nx * d, y: B.y + ny * d } };
+  }
+  _magnetApply() {
+    if (!this._drag || this.magnet === false) return;
+    const f = this._magnetField(), ks = ['tl','tr','br','bl'], C = this.corners, R = 10 / Math.max(1e-6, this.scale);
+    const meet = (p1, p2, q1, q2) => { const d = (p2.x-p1.x)*(q2.y-q1.y) - (p2.y-p1.y)*(q2.x-q1.x); if (Math.abs(d) < 1e-9) return null;
+      const t = ((q1.x-p1.x)*(q2.y-q1.y) - (q1.y-p1.y)*(q2.x-q1.x)) / d; return { x: p1.x + (p2.x-p1.x)*t, y: p1.y + (p2.y-p1.y)*t }; };
+    const inside = p => p && p.x >= -1 && p.y >= -1 && p.x <= f.W + 1 && p.y <= f.H + 1;
+    if (this._drag.type === 'corner') {
+      const i = ks.indexOf(this._drag.key), P = C[ks[i]], prev = C[ks[(i+3)%4]], next = C[ks[(i+1)%4]];
+      const s1 = this._magnetSide(f, prev, P, R, 1), s2 = this._magnetSide(f, P, next, R, 0);
+      const L1 = s1 ? [s1.A, s1.B] : [prev, P], L2 = s2 ? [s2.A, s2.B] : [P, next];
+      if (!s1 && !s2) { this._snapped = false; return; }
+      const q = meet(L1[0], L1[1], L2[0], L2[1]);
+      if (inside(q) && Math.hypot(q.x - P.x, q.y - P.y) <= R * 1.5) { C[ks[i]] = { x: Math.max(0, Math.min(f.W, q.x)), y: Math.max(0, Math.min(f.H, q.y)) }; this._snapped = true; }
+      else this._snapped = false;
+    } else {
+      const map = { top: [0, 1], right: [1, 2], bottom: [2, 3], left: [3, 0] }[this._drag.key], a = ks[map[0]], b = ks[map[1]];
+      const sd = this._magnetSide(f, C[a], C[b], R, null);
+      if (!sd) { this._snapped = false; return; }
+      const pa = C[ks[(map[0]+3)%4]], nb = C[ks[(map[1]+1)%4]];
+      const qa = meet(sd.A, sd.B, pa, C[a]), qb = meet(sd.A, sd.B, C[b], nb);
+      if (inside(qa) && inside(qb)) { C[a] = qa; C[b] = qb; this._snapped = true; } else this._snapped = false;
+    }
+  }
+
   _bindEvents() {
     const c    = this.canvas;
     const deep = obj => JSON.parse(JSON.stringify(obj));
@@ -1495,12 +1792,13 @@ class CropEditor {
           this.corners[k] = { x: cx(orig[k].x + dx), y: cy(orig[k].y + dy) };
         }
       }
+      try { this._magnetApply(); } catch (err) { this._snapped = false; }
       this.draw();
     };
 
     const onUp = () => {
       const wasDragging = !!this._drag;
-      this._drag = null;
+      this._drag = null; this._snapped = false;
       c.classList.remove('grabbing');
       if (wasDragging) this.draw();   // final redraw clears the magnifier loupe
     };

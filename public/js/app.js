@@ -442,6 +442,23 @@ window.CMFilename = CMFilename;
    point to a blob:/data: URL, shows the filename popup, then downloads
    with the chosen name. Tools that already call CMFilename are skipped
    (via __cmfRecent) to avoid a double popup. */
+/* Some tools click a download link that was never added to the page. Such a
+   click never reaches the document, so the rename popup, Drive auto-save and
+   the Recent list would miss it. Route those clicks through the page. */
+(function _routeDetachedDownloads() {
+  try {
+    const orig = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      const href = this.getAttribute('href') || '';
+      if (!this.isConnected && this.hasAttribute('download') && (href.indexOf('blob:') === 0 || href.indexOf('data:') === 0) && document.body) {
+        this.style.display = 'none'; document.body.appendChild(this);
+        try { return orig.call(this); } finally { setTimeout(() => { try { this.remove(); } catch (e) {} }, 0); }
+      }
+      return orig.call(this);
+    };
+  } catch (e) {}
+})();
+
 (function _globalSaveAs() {
   /* Keep blob URLs alive while the rename popup is open (tools often
      revokeObjectURL right after click, which would break the deferred
@@ -986,12 +1003,15 @@ function _afterSignInDrive() {
     if (href.indexOf('blob:') !== 0 && href.indexOf('data:') !== 0) return;
     const name = a.getAttribute('download') || 'PDFdukan-file';
     if (/Transaction_Log/i.test(name)) return;
+    const recId = _recordDownload(name, href);
     if (!STATE.user || !_driveAuto()) return;
     if (!_gdriveToken()) {
       if (localStorage.getItem('pdfdukan_drive_setup_done') === 'true' && !askedThisPage) { askedThisPage = true; setTimeout(function () { _showDrivePrompt(true); }, 1200); }
       return;
     }
-    fetch(href).then(function (r) { return r.blob(); }).then(function (b) { return gDriveSave(b, name); }).catch(function (er) { console.warn('[GDrive] auto-save skipped', er); });
+    fetch(href).then(function (r) { return r.blob(); }).then(function (b) { return gDriveSave(b, name); })
+      .then(function (d) { if (d && d.webViewLink) _updateRecent(recId, { driveLink: d.webViewLink }); })
+      .catch(function (er) { console.warn('[GDrive] auto-save skipped', er); });
   }, true);
 })();
 
@@ -1587,9 +1607,10 @@ function _initFeatureGate() {
 function addToRecent(doc) {
   STATE.recentDocs = STATE.recentDocs.filter(d => d.id !== doc.id);
   STATE.recentDocs.unshift({ ...doc, date: new Date().toLocaleDateString() });
-  if (STATE.recentDocs.length > 20) STATE.recentDocs = STATE.recentDocs.slice(0, 20);
-  localStorage.setItem('cm_recent', JSON.stringify(STATE.recentDocs));
-  updateStorageUI();
+  if (STATE.recentDocs.length > 30) STATE.recentDocs = STATE.recentDocs.slice(0, 30);
+  try { localStorage.setItem('cm_recent', JSON.stringify(STATE.recentDocs)); }
+  catch (e) { STATE.recentDocs.forEach((d, i) => { if (i > 5) delete d.thumb; }); try { localStorage.setItem('cm_recent', JSON.stringify(STATE.recentDocs)); } catch (er) {} }
+  updateStorageUI(); renderRecent();
 }
 function renderRecent(filter = '') {
   const grid = document.getElementById('recentGrid');
@@ -1606,22 +1627,63 @@ function renderRecent(filter = '') {
       </div>`;
     return;
   }
-  grid.innerHTML = docs.slice(0, 8).map(doc => `
-    <article class="doc-card" onclick="openRecentDoc('${doc.id}')">
+  const ico = t => t === 'PDF' ? '📄' : /JPE?G|PNG|WEBP|GIF/.test(t || '') ? '🖼️' : /DOCX?|TXT/.test(t || '') ? '📝' : /ZIP/.test(t || '') ? '🗜️' : '📁';
+  grid.innerHTML = docs.slice(0, 12).map(doc => `
+    <article class="doc-card" role="button" tabindex="0" onclick="openRecentDoc('${_esc(doc.id)}')" title="${doc.driveLink ? 'Open in Google Drive' : 'Open the tool again'}">
       <div class="doc-thumb">
-        ${doc.thumb ? `<img src="${doc.thumb}" alt="${doc.name}" loading="lazy">` : '<span>📄</span>'}
-        <span class="doc-badge">${doc.pages || 1} page${(doc.pages||1) > 1 ? 's' : ''}</span>
+        ${doc.thumb ? `<img src="${_esc(doc.thumb)}" alt="" loading="lazy">` : `<span>${ico(doc.type)}</span>`}
+        <span class="doc-badge">${_esc(doc.type || 'FILE')}${doc.driveLink ? ' · ☁️ Drive' : ''}</span>
       </div>
       <div class="doc-info">
-        <div class="doc-name" title="${doc.name}">${doc.name}</div>
-        <div class="doc-meta">${doc.date} · ${doc.type || 'PDF'}</div>
+        <div class="doc-name" title="${_esc(doc.name)}">${_esc(doc.name)}</div>
+        <div class="doc-meta">${_esc(doc.date || '')}${doc.size ? ' · ' + _fmtStorageBytes(doc.size) : ''}${doc.tool ? ' · ' + _esc(doc.tool) : ''}</div>
       </div>
     </article>`).join('');
 }
+/* Every file a tool hands you (a real download) goes into this list: name,
+   tool, size, a small preview for images, and the Drive link when the file
+   was also saved to Google Drive. Only these details are kept in this
+   browser; the file itself is in your Downloads (and your Drive). */
+function _toolLabel() {
+  const h = document.querySelector('h1');
+  const t = (h && h.textContent.trim()) || document.title.split(/[|–-]/)[0].trim();
+  return t.split(/\s[—–|-]\s/)[0].slice(0, 40);
+}
+function _recordDownload(name, href) {
+  const id = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const ext = (name.split('.').pop() || '').toUpperCase();
+  try {
+    addToRecent({ id, name, type: ext && ext.length <= 5 ? ext : 'FILE', tool: _toolLabel(), page: location.pathname, ts: Date.now() });
+    fetch(href).then(r => r.blob()).then(b => {
+      const patch = { size: b.size };
+      if (/^image\//.test(b.type) && b.size < 40e6) {
+        return createImageBitmap(b).then(bm => {
+          const k = 160 / Math.max(bm.width, bm.height), c = document.createElement('canvas');
+          c.width = Math.max(1, Math.round(bm.width * k)); c.height = Math.max(1, Math.round(bm.height * k));
+          c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height); patch.thumb = c.toDataURL('image/jpeg', 0.6);
+          _updateRecent(id, patch);
+        }).catch(() => _updateRecent(id, patch));
+      }
+      _updateRecent(id, patch);
+    }).catch(() => {});
+  } catch (e) {}
+  return id;
+}
+function _updateRecent(id, patch) {
+  const d = STATE.recentDocs.find(x => x.id === id); if (!d) return;
+  Object.assign(d, patch);
+  try { localStorage.setItem('cm_recent', JSON.stringify(STATE.recentDocs)); } catch (e) {}
+  renderRecent(); if (typeof _ppRender === 'function') { try { _ppRender(); } catch (e) {} }
+}
 function openRecentDoc(id) {
   const doc = STATE.recentDocs.find(d => d.id === id);
-  if (doc) toast(`Opening ${doc.name}…`);
+  if (!doc) return;
+  if (doc.driveLink) { window.open(doc.driveLink, '_blank', 'noopener'); return; }
+  toast('This file is in your Downloads folder. Opening the tool you used…', 'info', 4000);
+  if (doc.page && doc.page !== location.pathname) setTimeout(() => { location.href = doc.page; }, 900);
 }
+window.addToRecent = addToRecent;
+window.addEventListener('storage', e => { if (e.key === 'cm_recent') { try { STATE.recentDocs = JSON.parse(e.newValue) || []; renderRecent(); } catch (er) {} } });
 
 /* ── SIDEBAR NAV ─────────────────────────────────────────────── */
 function initSidebarNav() {
@@ -1660,7 +1722,7 @@ function handleNavClick(nav) {
           toast('No documents yet — scan or upload a file to get started', 'info');
         }
       } else {
-        window.location.href = '/';
+        window.location.href = '/#recent';
       }
     },
     tools:     prefix + 'tools.html',
@@ -1670,7 +1732,7 @@ function handleNavClick(nav) {
     recent:    function() {
       const grid = document.getElementById('recentGrid');
       if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      else toast('Recent docs below ↓');
+      else window.location.href = '/#recent';
     },
   };
   const target = routes[nav];
@@ -2404,6 +2466,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
   _initFeatureGate();
   renderRecent();
+  if (location.hash === '#recent') setTimeout(() => { const g = document.getElementById('recentGrid'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 400);
   initSidebarNav();
   initSearch();
   initModal();

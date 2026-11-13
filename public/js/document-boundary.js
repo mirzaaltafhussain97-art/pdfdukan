@@ -405,6 +405,20 @@ function findRuledContent(image) {
  return {width:w,height:h,textures,rows:rows.map(r=>({y:r.y,points:r.points.filter((_,i)=>i%3===0)}))};
 }
 window.rankBoundaryCandidates=function(image,row){
+ // A box PRINTED on a page (a table border, a framed field) shows a thin dark
+ // line with the same paper on both sides; a real sheet edge is a step to the
+ // surface behind it. Several printed sides mean this outline is not the sheet.
+ const printedFrame=(()=>{let field=null;return q=>{
+  const W0=image.naturalWidth||image.width,H0=image.naturalHeight||image.height,s=Math.min(1,800/Math.max(W0,H0));
+  if(!field){const c=document.createElement('canvas');c.width=Math.max(2,Math.round(W0*s));c.height=Math.max(2,Math.round(H0*s));const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(image,0,0,c.width,c.height);const d=x.getImageData(0,0,c.width,c.height).data,L=new Float32Array(c.width*c.height);for(let i=0;i<L.length;i++)L[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];field={L,w:c.width,h:c.height};}
+  const at=(x,y)=>{x=Math.round(x);y=Math.round(y);return x<0||y<0||x>=field.w||y>=field.h?null:field.L[y*field.w+x];};
+  const P=['tl','tr','br','bl'].map(k=>({x:q[k].x*s,y:q[k].y*s})),cx=P.reduce((a,p)=>a+p.x,0)/4,cy=P.reduce((a,p)=>a+p.y,0)/4;let printed=0;
+  for(let i=0;i<4;i++){const A=P[i],B=P[(i+1)%4],len=Math.hypot(B.x-A.x,B.y-A.y);if(len<20)return false;let nx=(B.y-A.y)/len,ny=-(B.x-A.x)/len;if(((A.x+B.x)/2-cx)*nx+((A.y+B.y)/2-cy)*ny<0){nx=-nx;ny=-ny;}
+   let tested=0,lines=0;for(let j=0;j<15;j++){const t=.15+.7*j/14,px=A.x+(B.x-A.x)*t,py=A.y+(B.y-A.y)*t,prof=[];for(let d=-10;d<=10;d++){const v=at(px+nx*d,py+ny*d);if(v===null)break;prof.push(v);}if(prof.length<21)continue;tested++;
+    const med=a=>a.slice().sort((p,q)=>p-q)[a.length>>1],inn=med(prof.slice(0,6)),out=med(prof.slice(15)),core=Math.min(...prof.slice(7,14));
+    if(inn-core>25&&out-core>25&&Math.abs(inn-out)<22&&out>110)lines++;}
+   if(tested>=8&&lines>=.6*tested)printed++;}
+  return printed>=3;};})();
  const W=image.naturalWidth||image.width,H=image.naturalHeight||image.height,keys=['tl','tr','br','bl'],area=q=>Math.abs(keys.reduce((s,k,i)=>{const a=q[k],b=q[keys[(i+1)%4]];return s+a.x*b.y-a.y*b.x},0))/2;
  const region=findPaperRegion(image),rulings=findRuledContent(image),candidates=row.proposal.candidates.map(c=>({name:c.name,corners:c.corners,quality:c.quality}));
  const baseline=candidates.find(c=>c.name==='baseline');
@@ -427,7 +441,11 @@ window.rankBoundaryCandidates=function(image,row){
   // coverage veto only when rotations agree and an independent contour has
   // strong visible support on every side of the same outer outline.
   const confirmedOutline=c.modelSupport>=3&&c.area>=.10&&c.area<=.85&&c.quality.score>=.85&&c.quality.support.every(v=>v>=.70)&&candidates.some(other=>other.name.startsWith('contour-')&&other.quality.score>=.85&&other.quality.support.every(v=>v>=.70)&&valid(other.corners)&&keys.reduce((n,k)=>n+Math.hypot(other.corners[k].x-c.corners[k].x,other.corners[k].y-c.corners[k].y),0)/4<Math.hypot(W,H)*.025);
-  if(c.aspect<.45)c.reject='thin-inner-region';else if(region&&c.coverage<.95&&!confirmedOutline)c.reject='cuts-paper-region';else if(c.area<.10&&area(row.old)/(W*H)>.45)c.reject='tiny-inner-object';else if(rulings&&c.missingLines>=2&&c.missingLines>rulings.rows.length*.12&&!strongVisibleSheet(c))c.reject='cuts-ruled-content';
+  const tolB=.015*Math.max(W,H),borderSide=i=>{const a=c.corners[keys[i]],b=c.corners[keys[(i+1)%4]];return(a.y<tolB&&b.y<tolB)||(a.y>H-tolB&&b.y>H-tolB)||(a.x<tolB&&b.x<tolB)||(a.x>W-tolB&&b.x>W-tolB);};
+  // A side with no visible edge at all, away from the photo border, cuts
+  // straight through the sheet (glare, a fold, a plastic sleeve): not a crop.
+  const blindSide=c!==baseline&&c.quality&&c.quality.score>.3&&[0,1,2,3].some(i=>c.quality.support[i]<.12&&!borderSide(i));
+  if(blindSide)c.reject='side-without-edge';else if(c!==baseline&&c.area<.6&&printedFrame(c.corners))c.reject='printed-frame-on-page';else if(c.aspect<.45)c.reject='thin-inner-region';else if(region&&c.coverage<.95&&!confirmedOutline)c.reject='cuts-paper-region';else if(c.area<.10&&area(row.old)/(W*H)>.45)c.reject='tiny-inner-object';else if(rulings&&c.missingLines>=2&&c.missingLines>rulings.rows.length*.12&&!strongVisibleSheet(c))c.reject='cuts-ruled-content';
  }
  let selected=baseline;const baseScore=baseline.quality.score,baseArea=valid(baseline.corners)?area(baseline.corners):0;
  for(const c of candidates){if(c.reject||c===baseline)continue;
