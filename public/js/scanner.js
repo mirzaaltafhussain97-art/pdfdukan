@@ -445,20 +445,22 @@ const ScannerApp = (() => {
     let writer;
     try {
       if(typeof Worker!=='undefined'){
-        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261105_fixes',document.baseURI));let id=0;
+        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261113',document.baseURI));let id=0;
         const request=(method,fields={},transfer=[])=>new Promise((resolve,reject)=>{const own=++id,timer=setTimeout(()=>reject(new Error('PDF processing timed out')),120000);worker.onmessage=({data})=>{if(data.id!==own)return;clearTimeout(timer);data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.postMessage({id:own,method,...fields},transfer);});
         writer={request,dispose:()=>worker.terminate()};await request('start',{orientation,pageSize});
       }else{
         const doc=new jsPDF({orientation,unit:'mm',format:pageSize});let index=0;
-        writer={async request(method,data){if(method==='page'){if(index++)doc.addPage();const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),s=Math.min(W/data.width,H/data.height),w=data.width*s,h=data.height*s;doc.addImage(new Uint8Array(data.bytes),'JPEG',(W-w)/2,(H-h)/2,w,h);}if(method==='finish')return {bytes:doc.output('arraybuffer')};},dispose(){}};
+        writer={async request(method,data){if(method==='page'){if(index++)doc.addPage();const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),s=Math.min(W/data.width,H/data.height),w=data.width*s,h=data.height*s;doc.addImage(new Uint8Array(data.bytes),data.format||'JPEG',(W-w)/2,(H-h)/2,w,h);}if(method==='finish')return {bytes:doc.output('arraybuffer')};},dispose(){}};
       }
       const idLayout=(document.getElementById('pdfLayout')?.value||'one')==='id2';
       const total=idLayout?Math.ceil(state.pages.length/2):state.pages.length;
       for (let i = 0; i < total; i++) {
         $('scanBusyText').textContent=`Creating PDF · page ${i+1} / ${total}`;
         const c = idLayout ? await _renderIdSheet(state.pages.slice(i*2,i*2+2),pageSize,orientation) : await _renderExportPage(state.pages[i]);
-        const blob=await new Promise(resolve=>c.toBlob(resolve,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');const bytes=await blob.arrayBuffer();
-        await writer.request('page',{bytes,width:c.width,height:c.height},[bytes]);
+        // Pure black-and-white pages compress far better as PNG than as JPEG.
+        const bilevel=!idLayout&&state.pages[i].filter==='bw'&&_isBilevel(c), format=bilevel?'PNG':'JPEG';
+        const blob=await new Promise(resolve=>bilevel?c.toBlob(resolve,'image/png'):c.toBlob(resolve,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');const bytes=await blob.arrayBuffer();
+        await writer.request('page',{bytes,width:c.width,height:c.height,format},[bytes]);
         await new Promise(resolve=>requestAnimationFrame(resolve));
       }
       const result=await writer.request('finish');_downloadBlob(new Blob([result.bytes],{type:'application/pdf'}),`${base}.pdf`);
@@ -499,6 +501,14 @@ const ScannerApp = (() => {
       let y=margin; items.forEach(t=>{g.drawImage(t.c,(W-t.w)/2,y,t.w,t.h);y+=t.h+gap;});
     }
     return sheet;
+  }
+
+  // True when a sample of the page holds only black or white pixels.
+  function _isBilevel(c){
+    try{const g=c.getContext('2d'),w=c.width,h=c.height,step=Math.max(1,Math.floor(Math.sqrt(w*h/40000)));
+      const d=g.getImageData(0,0,w,h).data;
+      for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){const k=(y*w+x)*4,v=d[k];if((v>8&&v<247)||Math.abs(d[k+1]-v)>8||Math.abs(d[k+2]-v)>8)return false;}
+      return true;}catch(e){return false;}
   }
 
   // Render one page (cropped + filtered) to an image blob.
