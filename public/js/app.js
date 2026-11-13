@@ -207,48 +207,53 @@ function _fmtStorageBytes(bytes) {
 function updateStorageUI() {
   const card = document.getElementById('storageCard');
   const driveReady = localStorage.getItem('pdfdukan_drive_setup_done') === 'true';
+  const tokenOk = !!_gdriveToken();
 
   if (card) {
-    if (STATE.user && driveReady) {
-      // ── DRIVE CONNECTED view ──────────────────────────────────────────
+    const tick = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+    if (STATE.user && driveReady && tokenOk) {
+      // ── CONNECTED: folder ready and access is live ─────────────────
       card.innerHTML =
         '<div class="sc-label">' +
-          '<span style="display:flex;align-items:center;gap:5px">' +
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
-            '☁️ Google Drive' +
-          '</span>' +
-          '<span style="color:#34a853;font-size:11px;font-weight:700">Connected</span>' +
+          '<span style="display:flex;align-items:center;gap:5px;color:var(--text)">' + tick + 'Google Drive</span>' +
+          '<span style="display:inline-flex;align-items:center;gap:4px;color:#34a853;font-size:11px;font-weight:700">' +
+            '<span style="width:7px;height:7px;border-radius:50%;background:#34a853;box-shadow:0 0 0 3px rgba(52,168,83,.2)"></span>Connected</span>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:7px;margin:8px 0 4px">' +
-          '<span style="font-size:15px">📁</span>' +
-          '<span style="font-size:12px;color:var(--text-2);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
-            'PDFdukan — CamMaster Files' +
-          '</span>' +
+          '<span style="font-size:14px">📁</span>' +
+          '<span style="font-size:11.5px;color:var(--text-2);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + GDRIVE_FOLDER_NAME + '">' + GDRIVE_FOLDER_NAME + '</span>' +
         '</div>' +
-        '<div class="sc-bar"><div class="sc-fill" style="width:5%;background:linear-gradient(90deg,#34a853,#4caf50)"></div></div>' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:7px">' +
-          '<span style="font-size:11px;color:var(--text-3)">' + (_driveAuto() ? 'Auto-save on' : 'Auto-save off') + '</span>' +
-          '<a href="https://drive.google.com" target="_blank" rel="noopener" ' +
-            'style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;flex-shrink:0">' +
-            'Open Drive →' +
-          '</a>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">' +
+          '<span style="font-size:11px;color:' + (_driveAuto() ? '#34a853' : 'var(--text-3)') + '">' + (_driveAuto() ? 'Auto-save on' : 'Auto-save off') + '</span>' +
+          '<a href="https://drive.google.com/drive/folders/' + encodeURIComponent(localStorage.getItem('pdfdukan_drive_folder_id') || '') + '" target="_blank" rel="noopener" ' +
+            'style="font-size:11px;color:var(--primary);text-decoration:none;font-weight:700;flex-shrink:0">Open folder →</a>' +
         '</div>';
       return;
     }
-    if (STATE.user && !driveReady) {
-      // ── SIGNED IN, Drive not set up yet ─────────────────────────────
+    if (STATE.user && driveReady && !tokenOk) {
+      // ── LINKED before, but Google's 1-hour access has run out ───────
       card.innerHTML =
-        '<div class="sc-label"><span>Storage</span><span id="storageUsage">Local</span></div>' +
-        '<div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>' +
-        '<p class="sc-hint" id="storageHint" style="color:var(--primary);font-size:11px;cursor:pointer" ' +
-          'onclick="connectDrive()">☁️ Connect Google Drive →</p>';
+        '<div class="sc-label">' +
+          '<span style="color:var(--text)">Google Drive</span>' +
+          '<span style="display:inline-flex;align-items:center;gap:4px;color:#f59e0b;font-size:11px;font-weight:700">' +
+            '<span style="width:7px;height:7px;border-radius:50%;background:#f59e0b"></span>Paused</span>' +
+        '</div>' +
+        '<p class="sc-hint" style="margin:6px 0 4px">Drive access lasts about 1 hour. Files are not saving to Drive now.</p>' +
+        '<p class="sc-hint" style="color:var(--primary);font-size:11px;font-weight:700;cursor:pointer" onclick="connectDrive()">↻ Reconnect Google Drive →</p>';
+      return;
+    }
+    if (STATE.user) {
+      // ── SIGNED IN, Drive not connected ──────────────────────────────
+      card.innerHTML =
+        '<div class="sc-label"><span>Google Drive</span><span style="color:var(--text-3);font-size:11px;font-weight:700">Not connected</span></div>' +
+        '<p class="sc-hint" style="margin:6px 0 4px">Files stay on this device only.</p>' +
+        '<p class="sc-hint" id="storageHint" style="color:var(--primary);font-size:11px;font-weight:700;cursor:pointer" onclick="connectDrive()">☁️ Connect Google Drive →</p>';
       return;
     }
     // ── NOT SIGNED IN ───────────────────────────────────────────────────
     card.innerHTML =
-      '<div class="sc-label"><span>Storage</span><span id="storageUsage">Local</span></div>' +
-      '<div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>' +
-      '<p class="sc-hint" id="storageHint">☁️ Sign in to connect Google Drive</p>';
+      '<div class="sc-label"><span>Storage</span><span id="storageUsage">This device</span></div>' +
+      '<p class="sc-hint" id="storageHint" style="margin-top:6px">☁️ Sign in to save files to your Google Drive</p>';
     return;
   }
 
@@ -745,7 +750,7 @@ function _gdriveToken() {
 async function _initGDriveStorage(token) {
   if (!token) return;
   if (localStorage.getItem('pdfdukan_drive_setup_done') === 'true') {
-    updateStorageUI(); return;
+    updateStorageUI(); return true;
   }
   try {
     // Reuse the PDFdukan folder if this app already created one (drive.file sees only our own files)
@@ -757,7 +762,9 @@ async function _initGDriveStorage(token) {
         if (j.files && j.files[0]) {
           localStorage.setItem('pdfdukan_drive_folder_id', j.files[0].id);
           localStorage.setItem('pdfdukan_drive_setup_done', 'true');
-          updateStorageUI(); return;
+          updateStorageUI();
+          toast('✅ Google Drive connected — files save to "' + GDRIVE_FOLDER_NAME + '"', 'success', 5000);
+          return true;
         }
       }
     } catch (e) {}
@@ -767,16 +774,25 @@ async function _initGDriveStorage(token) {
       headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: GDRIVE_FOLDER_NAME, mimeType: 'application/vnd.google-apps.folder' })
     });
-    if (!res.ok) { console.warn('[GDrive] Folder create failed:', await res.text()); return; }
+    if (!res.ok) {
+      console.warn('[GDrive] Folder create failed:', res.status);
+      if (res.status === 401 || res.status === 403) {
+        try { localStorage.removeItem('cm_gdrive_token'); localStorage.removeItem('cm_gdrive_token_expiry'); } catch (e) {}
+        toast('Google Drive was not connected: please tick the "Google Drive" box on the Google screen and try again.', 'error', 7000);
+      } else toast('Could not set up your Drive folder. Please try again.', 'error');
+      updateStorageUI(); return false;
+    }
     const data = await res.json();
     try {
       localStorage.setItem('pdfdukan_drive_folder_id', data.id);
       localStorage.setItem('pdfdukan_drive_setup_done', 'true');
     } catch(e) {}
     updateStorageUI();
-    toast('☁️ Google Drive connected — files save to "' + GDRIVE_FOLDER_NAME + '"', 'success', 5000);
+    toast('✅ Google Drive connected — files save to "' + GDRIVE_FOLDER_NAME + '"', 'success', 5000);
+    return true;
   } catch(e) {
     console.warn('[GDrive] Setup error:', e);
+    return false;
   }
 }
 
@@ -891,14 +907,17 @@ async function connectDrive() {
   if (!cred || !cred.accessToken) { toast('Google did not allow Drive access. Please try again.', 'error'); return false; }
   _storeDriveToken(cred.accessToken);
   try { if (localStorage.getItem('pdfdukan_drive_autosave') === null) localStorage.setItem('pdfdukan_drive_autosave', '1'); } catch (e) {}
-  if (localStorage.getItem('pdfdukan_drive_setup_done') !== 'true') await _initGDriveStorage(cred.accessToken);
-  else toast('☁️ Google Drive connected', 'success');
+  if (localStorage.getItem('pdfdukan_drive_setup_done') !== 'true') {
+    if (!(await _initGDriveStorage(cred.accessToken))) { updateStorageUI(); return false; }
+  } else toast('✅ Google Drive connected', 'success');
   _closeDrivePrompt();
   updateStorageUI();
   if (typeof _ppRender === 'function') { try { _ppRender(); } catch (e) {} }
   return true;
 }
 window.connectDrive = connectDrive;
+// Keep the Drive status honest: Google's access token lasts ~1 hour, so re-check every minute.
+setInterval(function () { if (document.getElementById('storageCard')) updateStorageUI(); }, 60000);
 
 function _closeDrivePrompt() { const m = document.getElementById('drivePrompt'); if (m) m.classList.remove('show'); }
 function _showDrivePrompt(reconnect) {
@@ -944,6 +963,7 @@ function _afterSignInDrive() {
       if (!STATE.user) return;
       if (_gdriveToken()) {                       // Google sign-in already granted Drive access
         try { if (localStorage.getItem('pdfdukan_drive_autosave') === null) localStorage.setItem('pdfdukan_drive_autosave', '1'); } catch (e) {}
+        if (localStorage.getItem('pdfdukan_drive_setup_done') !== 'true') _initGDriveStorage(_gdriveToken()).catch(function () {});
         updateStorageUI(); return;
       }
       let later = 0; try { later = +localStorage.getItem('pdfdukan_drive_prompt_later') || 0; } catch (e) {}
