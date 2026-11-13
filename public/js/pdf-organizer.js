@@ -211,6 +211,39 @@
     st.pages = toEnd ? rest.concat(s) : s.concat(rest); render();
   }
   function reverse() { push(); st.pages.reverse(); render(); }
+  /* Alternate pages from two PDFs: front sides from the first file, back sides
+     from the second (A1, B1, A2, B2 …). revB = the back sides were scanned
+     last-to-first, as a one-sided scanner does when you flip the stack. */
+  function interleave(revB) {
+    var order = [];
+    st.pages.forEach(function (p) { if (p.s >= 0 && order.indexOf(p.s) < 0) order.push(p.s); });
+    if (order.length < 2) { say('Add a second PDF first: one with the front pages, one with the back pages.', 'info'); return false; }
+    var A = st.pages.filter(function (p) { return p.s === order[0]; }), B = st.pages.filter(function (p) { return p.s === order[1]; });
+    var rest = st.pages.filter(function (p) { return p.s !== order[0] && p.s !== order[1]; });
+    if (revB) B = B.slice().reverse();
+    var out = [], n = Math.max(A.length, B.length);
+    for (var k = 0; k < n; k++) { if (A[k]) out.push(A[k]); if (B[k]) out.push(B[k]); }
+    push(); st.pages = out.concat(rest); st.sel = {}; render();
+    say('Pages alternated: ' + A.length + ' + ' + B.length + (A.length !== B.length ? ' (the files have different page counts, extra pages go last)' : '') + '.', A.length !== B.length ? 'info' : 'success');
+    return true;
+  }
+  function interleaveMenu(btn) {
+    var m = $('orgIlMenu');
+    if (!m) {
+      m = document.createElement('div'); m.id = 'orgIlMenu'; m.hidden = true; m.setAttribute('role', 'menu');
+      m.style.cssText = 'position:absolute;z-index:50;background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:6px;min-width:260px';
+      m.innerHTML = '<div style="font-size:12px;color:var(--text-3,#64748b);padding:6px 10px">First PDF = front pages, second PDF = back pages</div>' +
+        '<button type="button" class="org-btn" data-il="0" role="menuitem" style="display:block;width:100%;text-align:left;margin:2px 0">Back pages in normal order</button>' +
+        '<button type="button" class="org-btn" data-il="1" role="menuitem" style="display:block;width:100%;text-align:left;margin:2px 0">Back pages in reverse order (flipped stack)</button>';
+      m.addEventListener('click', function (e) { var b = e.target.closest('[data-il]'); if (!b) return; m.hidden = true; interleave(b.dataset.il === '1'); });
+      document.addEventListener('click', function (e) { if (!m.hidden && !m.contains(e.target) && e.target !== btn) m.hidden = true; });
+      document.body.appendChild(m);
+    }
+    var r = btn.getBoundingClientRect();
+    m.style.left = Math.max(8, Math.min(window.scrollX + r.left, window.scrollX + window.innerWidth - 280)) + 'px';
+    m.style.top = (window.scrollY + r.bottom + 6) + 'px';
+    m.hidden = !m.hidden;
+  }
   function original() { push(); st.pages.sort(function (a, b) { return (a.s < 0) - (b.s < 0) || a.s - b.s || a.i - b.i || a.id - b.id; }); render(); }
   function selectAll(on) { st.sel = {}; if (on) st.pages.forEach(function (p) { st.sel[p.id] = 1; }); render(); }
   function setZoom(z) { st.zoom = Math.max(0.6, Math.min(2, z)); render(); }
@@ -330,6 +363,7 @@
     $('orgRotL').addEventListener('click', function () { rotate(targets(), -90); });
     $('orgRotR').addEventListener('click', function () { rotate(targets(), 90); });
     $('orgReverse').addEventListener('click', reverse);
+    if ($('orgInterleave')) $('orgInterleave').addEventListener('click', function () { interleaveMenu(this); });
     $('orgOriginal').addEventListener('click', original);
     $('orgUndo').addEventListener('click', undo);
     $('orgRedo').addEventListener('click', redo);
@@ -360,5 +394,5 @@
     });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-  window.OrgTool = { _st: st, addFiles: addFiles, save: save, build: build };
+  window.OrgTool = { _st: st, addFiles: addFiles, save: save, build: build, interleave: interleave };
 })();
