@@ -10,9 +10,14 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // Leftovers from the domain's old WordPress site: tell crawlers they are gone for good.
+  if (/^\/(comments\/)?feed\/?$/.test(request.nextUrl.pathname) || request.nextUrl.pathname.startsWith('/category/')) {
+    return new NextResponse(null, { status: 410 });
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/index.html', '/home.html'],
+  matcher: ['/index.html', '/home.html', '/feed', '/feed/', '/comments/feed', '/comments/feed/', '/category/:path*'],
 };
