@@ -452,10 +452,11 @@ const ScannerApp = (() => {
         const doc=new jsPDF({orientation,unit:'mm',format:pageSize});let index=0;
         writer={async request(method,data){if(method==='page'){if(index++)doc.addPage();const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),s=Math.min(W/data.width,H/data.height),w=data.width*s,h=data.height*s;doc.addImage(new Uint8Array(data.bytes),'JPEG',(W-w)/2,(H-h)/2,w,h);}if(method==='finish')return {bytes:doc.output('arraybuffer')};},dispose(){}};
       }
-      for (let i = 0; i < state.pages.length; i++) {
-        const page = state.pages[i];
-        $('scanBusyText').textContent=`Creating PDF · page ${i+1} / ${state.pages.length}`;
-        const c = await _renderExportPage(page);
+      const idLayout=(document.getElementById('pdfLayout')?.value||'one')==='id2';
+      const total=idLayout?Math.ceil(state.pages.length/2):state.pages.length;
+      for (let i = 0; i < total; i++) {
+        $('scanBusyText').textContent=`Creating PDF · page ${i+1} / ${total}`;
+        const c = idLayout ? await _renderIdSheet(state.pages.slice(i*2,i*2+2),pageSize,orientation) : await _renderExportPage(state.pages[i]);
         const blob=await new Promise(resolve=>c.toBlob(resolve,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');const bytes=await blob.arrayBuffer();
         await writer.request('page',{bytes,width:c.width,height:c.height},[bytes]);
         await new Promise(resolve=>requestAnimationFrame(resolve));
@@ -468,6 +469,36 @@ const ScannerApp = (() => {
       console.error('PDF export error:', e);
       toast('PDF export failed: ' + e.message, 'error');
     }finally{writer?.dispose();}
+  }
+
+  // ID card layout: two scans (front + back) on one sheet. A card-shaped scan
+  // is drawn at the standard ID-1 card size (85.6 x 53.98 mm) so a printout
+  // matches the real card; any other shape is fitted into its half of the sheet.
+  async function _renderIdSheet(pages,pageSize,orientation){
+    const mm={a4:[210,297],letter:[215.9,279.4],a3:[297,420]}[pageSize]||[210,297];
+    let [Wm,Hm]=mm; if(orientation==='landscape')[Wm,Hm]=[Hm,Wm];
+    const pxmm=300/25.4, W=Math.round(Wm*pxmm), H=Math.round(Hm*pxmm);
+    const sheet=document.createElement('canvas'); sheet.width=W; sheet.height=H;
+    const g=sheet.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,W,H);
+    const side=W>H, margin=20*pxmm, gap=12*pxmm;
+    const boxW=side?(W-2*margin-gap)/2:W-2*margin, boxH=side?H-2*margin:(H-2*margin-gap)/2;
+    const items=[];
+    for(const pg of pages){
+      const c=await _renderExportPage(pg), ar=c.width/c.height;
+      let w,h;
+      if(ar>1.45&&ar<1.75){w=85.6*pxmm;h=53.98*pxmm;}            // landscape card
+      else if(ar>1/1.75&&ar<1/1.45){w=53.98*pxmm;h=85.6*pxmm;}   // portrait card
+      else{const f=Math.min(boxW/c.width,boxH/c.height);w=c.width*f;h=c.height*f;}
+      const s=Math.min(1,boxW/w,boxH/h); items.push({c,w:w*s,h:h*s});
+    }
+    // Keep the two sides close together near the top, like a photocopy.
+    if(side){
+      const total=items.reduce((a,t)=>a+t.w,0)+gap*(items.length-1); let x=(W-total)/2;
+      items.forEach(t=>{g.drawImage(t.c,x,margin,t.w,t.h);x+=t.w+gap;});
+    }else{
+      let y=margin; items.forEach(t=>{g.drawImage(t.c,(W-t.w)/2,y,t.w,t.h);y+=t.h+gap;});
+    }
+    return sheet;
   }
 
   // Render one page (cropped + filtered) to an image blob.

@@ -86,6 +86,7 @@ Redirect 301 /delete-pages /tools/delete-pages-from-pdf.html
 Redirect 301 /blog/jpg-to-pdf-guide.html /blog/jpg-to-pdf-without-losing-quality.html
 Redirect 301 /blog/pdf-to-jpg-guide.html /blog/pdf-to-jpg-high-quality.html
 Redirect 301 /blog/pdf-workflows.html /blog/merge-split-organize-pdf-right-order.html
+Redirect 301 /blog/scan-cnic-documents-pdf-pakistan.html /blog/scan-cnic-documents-pdf-safely.html
 Redirect 301 /blog/pdf-to-word-guide.html /blog/pdf-to-word-without-losing-formatting.html
 Redirect 301 /blog/compress-images-guide.html /blog/compress-images-without-losing-quality.html
 Redirect 301 /remove-pdf-pages /tools/delete-pages-from-pdf.html
