@@ -52,13 +52,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- ===== PRELOAD critical above-the-fold resources ===== -->
-<link rel="preload" href="css/style.css?v=20261111" as="style">
+<link rel="preload" href="css/style.css?v=20261114a" as="style">
 <link rel="preload" href="/images/hero-scanner.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-<link rel="stylesheet" href="css/style.css?v=20261111">
+<link rel="stylesheet" href="css/style.css?v=20261114a">
 </head>
 <body>
 
@@ -207,66 +207,44 @@
         <div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div>
       </div>
 
-      <!-- HERO -->
-      <section class="hero-section" aria-label="Document Scanner">
-        <div class="hero-layout">
-          <div class="hero-left">
-            <div style="position:relative;z-index:1">
-              <div class="hero-badge"><span>✨</span><span data-i18n="hero.badge">AI-Assisted Document Scanner</span></div>
-            </div>
-            <h1 class="hero-title" data-i18n="hero.title">
-              Free Online PDF Tools &amp; Document Scanner — <span class="highlight">No Installation Needed</span>
-            </h1>
-            <p class="hero-subtitle" data-i18n="hero.subtitle">
-              Merge, split, compress, convert, unlock and OCR PDFs for free. Every tool runs in your browser, so files stay on your device, with no sign-up and no watermark.
-            </p>
-            <!-- Popular tools strip: top tools visible right on the homepage -->
-            <style>
-            .hero-tools{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px}
-            .hero-tool{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-pill);font-size:13px;font-weight:600;color:var(--text);text-decoration:none;transition:all .15s}
-            .hero-tool:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow)}
-            .hero-tool span{font-size:16px}
-            .hero-tool-all{background:var(--primary);color:#fff;border-color:var(--primary)}
-            .hero-tool-all:hover{background:var(--primary-hover);color:#fff}
-            @media(max-width:600px){.hero-tool{padding:8px 13px;font-size:12px}}
-            </style>
-            <nav class="hero-tools" aria-label="Popular tools">
-              <a href="tools/merge-pdf.html" class="hero-tool"><span>🔗</span>Merge PDF</a>
-              <a href="tools/compress-pdf-reduce-file-size.html" class="hero-tool"><span>📉</span>Compress PDF</a>
-              <a href="tools/pdf-to-word-converter.html" class="hero-tool"><span>📝</span>PDF to Word</a>
-              <a href="tools/image-to-pdf-converter.html" class="hero-tool"><span>📑</span>JPG to PDF</a>
-              <a href="tools/pdf-to-image-converter.html" class="hero-tool"><span>🖼️</span>PDF to JPG</a>
-              <a href="tools/extract-pdf-pages.html" class="hero-tool"><span>✂️</span>Split PDF</a>
-              <a href="tools/ocr-image-to-text.html" class="hero-tool"><span>🔤</span>OCR Text</a>
-              <a href="tools.html" class="hero-tool hero-tool-all"><span>🧰</span>Browse All Tools →</a>
-            </nav>
-          </div>
-          <div class="hero-right" aria-hidden="false">
-            <img src="/images/hero-scanner.svg"
-                 alt="CamMaster document scanner workflow showing crop correction on a phone and PDF export"
-                 width="400" height="267"
-                 loading="eager"
-                 fetchpriority="high"
-                 style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto">
-          </div>
-        </div>
-
+      <!-- HERO (compact, scanner-app style) -->
+      <style>
+      .cs-hero{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px 16px;margin:0 0 18px}
+      .cs-hero h1{font-size:20px;line-height:1.3;font-weight:800;margin:0 0 2px;color:var(--text)}
+      .cs-hero .cs-sub{font-size:13px;color:var(--text-3);margin:0 0 14px}
+      .cs-hero .upload-box{max-width:none;width:100%;margin:0;padding:22px 16px 18px;border:1.5px dashed var(--border);border-radius:14px;background:var(--bg-2);min-height:0}
+      .cs-hero .upload-box:hover{border-color:var(--primary)}
+      .cs-hero .upload-icon{width:52px;height:52px;margin:0 auto 8px;font-size:0;background:none;box-shadow:none}
+      .cs-hero .upload-icon.cs-dz-art{width:auto;height:auto;margin:0 auto 6px}.cs-hero .cs-dz-art img{display:block;width:150px;height:auto;margin:0 auto}.cs-hero .upload-box:hover .cs-dz-art img{transform:translateY(-2px);transition:transform .2s}
+      .cs-hero .upload-icon .cs-ic{width:52px;height:52px;border-radius:14px}.cs-hero .upload-icon svg{width:28px;height:28px}
+      .cs-hero .upload-text{font-size:15px;font-weight:600;margin:0 0 4px}.cs-hero .upload-hint{font-size:12px;margin:0 0 14px}
+      .cs-hero .upload-actions{display:grid;grid-template-columns:repeat(3,minmax(0,190px));justify-content:center;gap:12px}
+      .cs-hero .action-btn{justify-content:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:600;background:var(--card);color:var(--text);border:1px solid var(--border);box-shadow:none}
+      .cs-hero .action-btn:hover{border-color:var(--primary);color:var(--primary);transform:none;box-shadow:none}
+      .cs-hero .action-btn .cs-ic{width:26px;height:26px;border-radius:7px}.cs-hero .action-btn svg{width:16px;height:16px}
+      .cs-tools{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;margin-top:16px}
+      .cs-tool{display:flex;flex-direction:column;align-items:center;gap:7px;padding:8px 2px;border-radius:12px;text-decoration:none;color:var(--text-2);font-size:12.5px;font-weight:500;text-align:center}
+      .cs-tool:hover{background:var(--bg-2);color:var(--text)}
+      .cs-ic{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--ic-bg);flex-shrink:0}
+      html[data-theme="dark"] .cs-ic,html:not([data-theme]) .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,transparent)}
+      .cs-ic svg{width:24px;height:24px;fill:none;stroke:var(--ic-fg);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      @media(max-width:760px){.cs-tools{grid-template-columns:repeat(5,minmax(0,1fr));row-gap:10px}.cs-hero .upload-actions{grid-template-columns:1fr 1fr 1fr;gap:8px}.cs-hero .action-btn{font-size:12px;padding:8px 6px;flex-direction:column;gap:4px}}
+      @media(max-width:420px){.cs-tools{grid-template-columns:repeat(4,minmax(0,1fr))}.cs-tools .cs-tool:nth-child(8){display:none}.cs-hero{padding:14px 12px}.cs-hero h1{font-size:17px}}
+      </style>
+      <section class="cs-hero" aria-label="Document Scanner">
+        <h1 data-i18n="hero.title">Free Online PDF Tools &amp; Document Scanner</h1>
+        <p class="cs-sub">Merge, split, compress, convert and OCR PDFs free. Files stay on your device — no sign-up, no watermark.</p>
         <div class="upload-box" id="uploadBox" role="button" tabindex="0">
-          <div class="upload-icon" aria-hidden="true">📁</div>
-          <h2 class="upload-text" data-i18n="upload.drop">Drop documents here or click to upload</h2>
-          <p class="upload-hint" data-i18n="upload.hint">Supports JPG, PNG, PDF — process multiple files at once</p>
+          <div class="upload-icon cs-dz-art" aria-hidden="true"><img src="/images/dropzone-pc.svg" width="168" height="112" alt=""></div>
+          <h2 class="upload-text" data-i18n="upload.drop">Drag and drop files here, or click to upload</h2>
+          <p class="upload-hint" data-i18n="upload.hint">JPG, PNG or PDF — several files at once</p>
           <div class="upload-actions">
-            <button class="action-btn primary" onclick="event.stopPropagation();window.location.href='scanner.html'" aria-label="Smart Scan">
-              <span>📷</span> <span data-i18n="hero.btn.scan">Smart Scan</span>
-            </button>
-            <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputImg').click()" aria-label="Import images">
-              <span>🖼️</span> <span data-i18n="hero.btn.import">Import Images</span>
-            </button>
-            <button class="action-btn secondary" onclick="event.stopPropagation();document.getElementById('fileInputPDF').click()" aria-label="Import PDF">
-              <span>📂</span> <span data-i18n="hero.btn.pdf">Import PDF</span>
-            </button>
+            <button class="action-btn" onclick="event.stopPropagation();window.location.href='scanner.html'" aria-label="Smart Scan"><span class="cs-ic" style="--ic-bg:#fff1ea;--ic-fg:#ff6333"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg></span><span data-i18n="hero.btn.scan">Smart Scan</span></button>
+            <button class="action-btn" onclick="event.stopPropagation();document.getElementById('fileInputImg').click()" aria-label="Import images"><span class="cs-ic" style="--ic-bg:#e8f0ff;--ic-fg:#2f6bff"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.6"/><path d="M3 17l5-5 4 4 3-3 6 6"/></svg></span><span data-i18n="hero.btn.import">Import Images</span></button>
+            <button class="action-btn" onclick="event.stopPropagation();document.getElementById('fileInputPDF').click()" aria-label="Import PDF"><span class="cs-ic" style="--ic-bg:#fdecec;--ic-fg:#e5383b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg></span><span data-i18n="hero.btn.pdf">Import PDF</span></button>
           </div>
         </div>
+        <nav class="cs-tools" aria-label="Popular tools"><a class="cs-tool" href="scanner.html"><span class="cs-ic" style="--ic-bg:#fff1ea;--ic-fg:#ff6333"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M7 12h10"/></svg></span><span class="cs-tl">Smart Scan</span></a><a class="cs-tool" href="tools/pdf-to-word-converter.html"><span class="cs-ic" style="--ic-bg:#e8f0ff;--ic-fg:#2f6bff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M8.5 11l1.3 6 2.2-4.5 2.2 4.5 1.3-6"/></svg></span><span class="cs-tl">PDF to Word</span></a><a class="cs-tool" href="tools/image-to-pdf-converter.html"><span class="cs-ic" style="--ic-bg:#fdecec;--ic-fg:#e5383b"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="12" height="10" rx="1.5"/><path d="M3 13l3.5-3.5 3 3 2-2L15 14"/><path d="M14 11h4l3 3v7h-9v-5"/></svg></span><span class="cs-tl">JPG to PDF</span></a><a class="cs-tool" href="tools/pdf-to-image-converter.html"><span class="cs-ic" style="--ic-bg:#e9f8ef;--ic-fg:#1f9d55"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h8l4 4v4"/><path d="M5 3v18h6"/><rect x="12" y="13" width="9" height="8" rx="1.2"/><path d="M12 19l2.5-2.5 2 2 1.5-1.5 3 3"/></svg></span><span class="cs-tl">PDF to JPG</span></a><a class="cs-tool" href="tools/merge-pdf.html"><span class="cs-ic" style="--ic-bg:#f1ebff;--ic-fg:#7c4dff"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4v5a4 4 0 0 0 4 4h4a4 4 0 0 1 4 4v3"/><path d="M18 4v5a4 4 0 0 1-4 4"/><path d="M15 17l3 3 3-3"/></svg></span><span class="cs-tl">Merge PDF</span></a><a class="cs-tool" href="tools/extract-pdf-pages.html"><span class="cs-ic" style="--ic-bg:#fff6e0;--ic-fg:#e69500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h6v18H5zM13 3h6v18h-6z"/><path d="M12 2v20" stroke-dasharray="2 2"/></svg></span><span class="cs-tl">Split PDF</span></a><a class="cs-tool" href="tools/compress-pdf-reduce-file-size.html"><span class="cs-ic" style="--ic-bg:#e6f7fa;--ic-fg:#0ea5b7"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v6M9 6l3 3 3-3M12 21v-6M9 18l3-3 3 3"/><path d="M4 12h16"/></svg></span><span class="cs-tl">Compress PDF</span></a><a class="cs-tool" href="tools/ocr-image-to-text.html"><span class="cs-ic" style="--ic-bg:#eef0f4;--ic-fg:#475569"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 9h8M12 9v7"/></svg></span><span class="cs-tl">Image to Text</span></a><a class="cs-tool" href="tools.html"><span class="cs-ic" style="--ic-bg:#eef0f4;--ic-fg:#334155"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span class="cs-tl">All Tools</span></a></nav>
       </section>
 
       <!-- All tools, grouped by task -->
@@ -533,7 +511,7 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/app.js?v=20261113h"></script>
+<script src="js/app.js?v=20261114a"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {

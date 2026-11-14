@@ -144,3 +144,42 @@ body.scan-editor-open .cm-fname-backdrop {z-index:10050;}
    showing a disabled tile and an apology note in the main tool panel. */
 .scan-filter-grid .filter-card[data-filter=handwriting],#scanHandwritingNote {display:none;}
 .toast .toast-undo {margin-left:10px;padding:4px 12px;min-height:28px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font:inherit;font-weight:700;cursor:pointer;}
+/* ── Phone layout (≤600px): photo on top, pages as a swipeable strip,
+   then one tidy toolbar row and one swipeable filter row, like phone
+   scanner apps. Everything fits; nothing is cut off. ── */
+@media(max-width:600px){
+ .scan-editor-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto auto;width:100%;}
+ .scan-editor-body>*{min-width:0;max-width:100%;}
+ .scan-page-list{flex:1 1 auto;min-width:0;}
+ .scan-workstage{grid-row:1;grid-column:1;padding:8px;touch-action:pan-y pinch-zoom;}
+ .scan-page-rail{grid-row:2;grid-column:1;flex-direction:row;align-items:center;border-right:0;border-top:1px solid var(--scan-line);height:84px;}
+ .scan-page-list{display:flex;flex-direction:row;gap:6px;overflow-x:auto;overflow-y:hidden;padding:6px 6px;overscroll-behavior:contain;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;}
+ .scan-page-item{flex:0 0 auto;position:relative;scroll-snap-align:center;}
+ .scan-page{width:58px!important;min-height:0!important;height:70px;margin:0!important;padding:3px!important;}
+ .scan-page-picture{height:48px!important;max-width:none;margin:0 auto 2px!important;padding:2px!important;}
+ .scan-page canvas{max-height:44px!important;}
+ .scan-page-number{font-size:11px;line-height:1;}.scan-page-meta{display:none!important;}
+ .scan-editor .scan-page-remove{width:20px!important;height:20px!important;min-height:20px!important;font-size:12px!important;top:-2px!important;left:-2px!important;}
+ .scan-add{flex:0 0 auto;width:58px;height:70px;margin:0 6px 0 0;padding:2px;font-size:11px;line-height:1.2;white-space:normal;}
+ .scan-tools{grid-row:3;grid-column:1;display:block!important;border-left:0;border-top:1px solid var(--scan-line);padding:8px 8px 6px!important;max-height:none!important;overflow:visible;}
+ .scan-transform-row{display:inline-flex!important;gap:4px!important;width:auto!important;margin:0!important;vertical-align:middle;}
+ .scan-transform-row button{width:40px;min-height:38px!important;padding:0!important;}
+ .scan-crop-toggle{display:inline-flex!important;align-items:center;justify-content:center;gap:6px;width:auto!important;min-width:0!important;margin:0 0 0 6px!important;padding:0 14px!important;min-height:38px;vertical-align:middle;}
+ .scan-tools .scan-divider{display:none;}
+ .scan-filter-grid{display:flex!important;grid-template-columns:none!important;flex-wrap:nowrap;gap:8px!important;overflow-x:auto;overscroll-behavior:contain;margin:8px -8px 0!important;padding:2px 8px 4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+ .scan-filter-grid::-webkit-scrollbar{display:none;}
+ .scan-filter-grid .filter-card{flex:0 0 64px;min-height:0!important;scroll-snap-align:start;}
+ .scan-filter-icon{width:56px!important;height:56px!important;font-size:24px;margin:0 auto;}
+ .scan-filter-grid .fc-label,.scan-filter-grid .filter-card:last-child .fc-label{font-size:11px!important;line-height:1.2;text-align:center;white-space:normal;}
+ .scan-filter-more{margin-top:4px;}.scan-filter-more summary{font-size:12px;}
+ .scan-apply-all{display:flex!important;font-size:12px!important;padding-top:4px!important;}
+ .scan-editor[data-mode=crop] .scan-page-rail{display:none;}
+ .scan-editor[data-mode=export] .scan-editor-body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;}
+ .scan-editor-footer{padding:6px 8px;}.scan-editor-footer button{font-size:13px;}
+}
+/* Filter cards: no box around the card when tapped or focused; the chosen
+   filter shows only as a darker icon tile with an accent ring. */
+.scan-editor .scan-filter-grid .filter-card,.scan-editor .scan-filter-grid .filter-card:focus,.scan-editor .scan-filter-grid .filter-card:active{outline:none!important;box-shadow:none!important;border:0!important;background:transparent!important;-webkit-tap-highlight-color:transparent;}
+.scan-editor .scan-filter-grid .filter-card:focus-visible .scan-filter-icon{outline:2px solid var(--scan-accent-ink);outline-offset:2px;}
+.scan-filter-grid .filter-card.active .scan-filter-icon{border:2px solid var(--scan-accent)!important;background:color-mix(in srgb,var(--scan-accent) 22%,var(--card-3))!important;}
+.scan-filter-grid .filter-card:not(.active):hover .scan-filter-icon{background:color-mix(in srgb,var(--scan-accent) 8%,var(--card-3));}

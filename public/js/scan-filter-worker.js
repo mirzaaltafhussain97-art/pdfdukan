@@ -1,6 +1,6 @@
 // filters.js has no DOM dependency in its pixel-processing functions.
 self.window = self;
-importScripts('filters.js?v=20261105_fixes');
+importScripts('filters.js?v=20261114b');
 self.onmessage = async ({ data: { pixels, bitmap, filter, adjustments } }) => {
   try {
     if(['bw','bwsoft','noshadow','enhance','grayscale'].includes(filter)){

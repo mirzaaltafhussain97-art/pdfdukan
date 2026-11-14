@@ -189,7 +189,13 @@ const ScannerApp = (() => {
       const icon=document.createElement('span');icon.className='scan-filter-icon';icon.setAttribute('aria-hidden','true');icon.innerHTML=filterIcons[id];
       const text=document.createElement('span');text.className='fc-label';text.textContent=label;b.append(icon,text);
       if(id==='handwriting'){b.disabled=true;b.title='Not ready: tested models also changed printed text and graphics.';b.setAttribute('aria-describedby','scanHandwritingNote');const availability=document.createElement('span');availability.className='fc-availability';availability.textContent='Unavailable';b.append(availability);}
-      else b.onclick=()=>_selectFilter(id);
+      else{
+        // A swipe across the filter row (phones) or a drag must not pick a filter.
+        let sx=0,sy=0,moved=false;
+        b.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY;moved=false;});
+        b.addEventListener('pointermove',e=>{if(Math.hypot(e.clientX-sx,e.clientY-sy)>8)moved=true;});
+        b.onclick=e=>{if(moved){moved=false;e.preventDefault();return;}_selectFilter(id);b.blur();};
+      }
       grid.append(b);
     }
     $('scanExtraFilters').replaceChildren();
@@ -406,6 +412,33 @@ const ScannerApp = (() => {
     $('applyToAll').onchange=e=>{state.applyToAll=e.target.checked;if(state.applyToAll)_applySettings();};
     for(const key of ['brightness','contrast','sharpness','saturation'])$('sl_'+key).oninput=e=>{if(busy)return;state.adjustments[key]=Number(e.target.value);$('sv_'+key).textContent=e.target.value;_applySettings();_reprocess();};
     $('scanZoomIn').onclick=()=>{zoom=Math.min(3,zoom+.25);_applyZoom();};$('scanZoomOut').onclick=()=>{zoom=Math.max(1,zoom-.25);_applyZoom();};
+    /* Mouse wheel / trackpad over the page moves through the pages (one page
+       per notch), and the page list follows. When the page is zoomed in the
+       wheel scrolls the zoomed page as usual. PageUp/PageDown and the arrow
+       keys do the same from the keyboard. */
+    let wheelAcc=0,wheelAt=0,wheelSeen=0;
+    const stepPage=dir=>{if(busy||state.screen!=='filter')return false;const next=state.editingIndex+dir;if(next<0||next>=state.pages.length)return false;_editPage(next);
+      requestAnimationFrame(()=>$('scanPageList').querySelector('[aria-current="true"],.active')?.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'}));return true;};
+    $('scanWorkstage').addEventListener('wheel',e=>{
+      if(state.screen!=='filter'||e.ctrlKey||zoom>1||state.pages.length<2)return;
+      e.preventDefault();const now=performance.now();if(now-wheelSeen>300)wheelAcc=0;wheelSeen=now;
+      if(now-wheelAt<320){wheelAcc=0;return;}            // one page per notch / per swipe burst
+      wheelAcc+=e.deltaMode===1?e.deltaY*40:e.deltaY;
+      if(Math.abs(wheelAcc)<60)return;
+      const dir=wheelAcc>0?1:-1;wheelAcc=0;wheelAt=now;stepPage(dir);
+    },{passive:false});
+    /* Phones: swipe the photo left/right to move between pages. */
+    let tx=0,ty=0,tt=0,multi=false;
+    $('scanWorkstage').addEventListener('touchstart',e=>{multi=e.touches.length>1;const t=e.touches[0];tx=t.clientX;ty=t.clientY;tt=performance.now();},{passive:true});
+    $('scanWorkstage').addEventListener('touchend',e=>{
+      if(multi||state.screen!=='filter'||zoom>1||state.pages.length<2)return;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
+      if(performance.now()-tt<700&&Math.abs(dx)>50&&Math.abs(dx)>1.5*Math.abs(dy))stepPage(dx<0?1:-1);
+    },{passive:true});
+    $('scanEditor').addEventListener('keydown',e=>{
+      if(state.screen!=='filter'||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;
+      if(e.key==='PageDown'||e.key==='ArrowDown'){if(stepPage(1))e.preventDefault();}
+      else if(e.key==='PageUp'||e.key==='ArrowUp'){if(stepPage(-1))e.preventDefault();}
+    });
     $('scanEditor').addEventListener('keydown',e=>{
       if(e.key==='Escape'){e.preventDefault();if(state.screen==='crop')_cancelCrop();else _discardAll();}
       if(e.key==='Tab'){const elements=[...$('scanEditor').querySelectorAll('button:not(:disabled),input,select,summary,[tabindex="0"]')].filter(el=>el.getClientRects().length);const first=elements[0],last=elements.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}

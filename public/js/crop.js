@@ -391,6 +391,61 @@ const MLDetector = (() => {
         if (dd.outN > 50 && dd.outD < 0.012 && dd.inD > Math.max(0.02, 5 * dd.outD)) { _lastDebug.innerPicked = true; best = Object.assign({}, alt, { corners: pick }); break; }
       }
     }
+    // The winner runs on to the photo border on one or two sides, but another
+    // outline shares its other sides and stops earlier at a real step, and
+    // everything between the two is something else than this sheet (another
+    // paper underneath, cloth, a table). The sheet ends at the nearer edge.
+    if (!_lastDebug.innerPicked) {
+      const ks = ['tl','tr','br','bl'], diag = Math.hypot(W, H), cur = best.corners;
+      const fa = q => Math.abs(ks.reduce((a, k, i) => { const p = q[k], r = q[ks[(i+1)%4]]; return a + p.x*r.y - r.x*p.y; }, 0)) / 2;
+      const lineDist = (q1, q2, i) => { const a = q2[ks[i]], b = q2[ks[(i+1)%4]], L = Math.hypot(b.x-a.x, b.y-a.y) || 1;
+        return Math.max(...[q1[ks[i]], q1[ks[(i+1)%4]]].map(p => Math.abs((b.x-a.x)*(p.y-a.y) - (b.y-a.y)*(p.x-a.x)) / L)); };
+      const nearFrame = (q, i) => { const A = q[ks[i]], B = q[ks[(i+1)%4]], t = 0.045 * Math.max(W, H);
+        return (A.y < t && B.y < t) || (A.x > W-t && B.x > W-t) || (A.y > H-t && B.y > H-t) || (A.x < t && B.x < t); };
+      const sc = Math.min(1, 900 / Math.max(W, H)), fld = _blurField(img, Math.max(2, Math.round(W*sc)), Math.max(2, Math.round(H*sc)));
+      const col = (x, y) => { const c = [0,0,0]; return fld.sample(x*sc, y*sc, c) ? c : null; };
+      // For each side lying on the photo border, look inward for a straight
+      // step (small tilt allowed) beyond which first one thing and then
+      // another appears, neither of them this sheet.
+      const cx0 = ks.reduce((a, k) => a + cur[k].x, 0) / 4, cy0 = ks.reduce((a, k) => a + cur[k].y, 0) / 4, out = {}; let moved = 0;
+      const lines = ks.map((k, i) => ({ A: cur[k], B: cur[ks[(i+1)%4]] }));
+      for (let i = 0; i < 4; i++) {
+        if (!nearFrame(cur, i)) continue;
+        const A = cur[ks[i]], B = cur[ks[(i+1)%4]], len = Math.hypot(B.x-A.x, B.y-A.y); if (len < 0.2 * diag) continue;
+        let nx = (B.y-A.y)/len, ny = -(B.x-A.x)/len; if ((cx0-(A.x+B.x)/2)*nx + (cy0-(A.y+B.y)/2)*ny < 0) { nx = -nx; ny = -ny; }   // inward normal
+        const perp = Math.min(Math.hypot(cur[ks[(i+1)%4]].x-cur[ks[(i+2)%4]].x, cur[ks[(i+1)%4]].y-cur[ks[(i+2)%4]].y), Math.hypot(A.x-cur[ks[(i+3)%4]].x, A.y-cur[ks[(i+3)%4]].y));
+        const maxIn = 0.22 * perp, step = Math.max(2, 1.2 / sc), px = 3 / sc, cands = []; let bestLine = null;
+        for (let tilt = -4; tilt <= 4; tilt++) { const tl = Math.tan(tilt * Math.PI / 180) * len;
+          for (let d = 0.035 * perp; d <= maxIn; d += step) {
+            let n = 0; const su = [0,0,0], sv = [0,0,0];
+            for (let j = 0; j < 20; j++) { const t = 0.1 + 0.8 * j / 19, off = d + tl * (t - 0.5), x = A.x + (B.x-A.x)*t + nx*off, y = A.y + (B.y-A.y)*t + ny*off;
+              const u = col(x + nx*px, y + ny*px), v = col(x - nx*px, y - ny*px); if (!u || !v) continue; n++;
+              for (let c = 0; c < 3; c++) { su[c] += u[c]; sv[c] += v[c]; } }
+            if (n < 14) continue; const g = Math.hypot(su[0]-sv[0], su[1]-sv[1], su[2]-sv[2]) / n;
+            if (g >= 30) cands.push({ g, d, tl });
+          } }
+        // strongest dozen, innermost first: the sheet's own edge lies inside any edge of what is under it
+        const tryLines = cands.sort((p, q) => q.g - p.g).filter((c, k, arr) => !arr.slice(0, k).some(o => Math.abs(o.d - c.d) < 6 * step)).slice(0, 12).sort((p, q) => q.d - p.d);
+        let n = 0, good = 0;
+        for (const cand of tryLines) { n = 0; good = 0;
+          for (let j = 0; j < 12; j++) { const t = 0.1 + 0.8 * j / 11, off = cand.d + cand.tl * (t - 0.5), x = A.x + (B.x-A.x)*t, y = A.y + (B.y-A.y)*t;
+            const inside = col(x + nx*(off + 4*px), y + ny*(off + 4*px)), near = col(x + nx*off*0.85, y + ny*off*0.85), far = col(x + nx*off*0.12, y + ny*off*0.12);
+            if (!inside || !near || !far) continue; n++; const dd = (p, q) => Math.hypot(p[0]-q[0], p[1]-q[1], p[2]-q[2]);
+            let alike = 0; for (const f of [0.1, 0.25, 0.4, 0.55, 0.7, 0.85]) { const c = col(x + nx*off*f, y + ny*off*f); if (c && dd(c, inside) <= 38) alike++; }
+            if (alike === 0 && dd(near, far) > 38) good++; }
+          if (n >= 9 && good >= 0.7 * n) { bestLine = cand; break; } }
+        if (!bestLine) continue;
+        if (n >= 9 && good >= 0.7 * n) {
+          const o0 = bestLine.d - bestLine.tl * 0.5, o1 = bestLine.d + bestLine.tl * 0.5;
+          lines[i] = { A: { x: A.x + nx*o0, y: A.y + ny*o0 }, B: { x: B.x + nx*o1, y: B.y + ny*o1 } }; moved++; }
+      }
+      if (moved) {
+        const meet = (p, q) => { const d1x = p.B.x-p.A.x, d1y = p.B.y-p.A.y, d2x = q.B.x-q.A.x, d2y = q.B.y-q.A.y, den = d1x*d2y - d1y*d2x; if (Math.abs(den) < 1e-9) return null;
+          const u = ((q.A.x-p.A.x)*d2y - (q.A.y-p.A.y)*d2x) / den; return { x: p.A.x + d1x*u, y: p.A.y + d1y*u }; };
+        let okAll = true; for (let i = 0; i < 4; i++) { const q = meet(lines[(i+3)%4], lines[i]); if (!q) { okAll = false; break; } out[ks[i]] = { x: Math.max(0, Math.min(W, q.x)), y: Math.max(0, Math.min(H, q.y)) }; }
+        if (okAll && fa(out) > 0.5 * fa(cur)) { _lastDebug.trimmed = moved; best = Object.assign({}, best, { corners: out, frameOnly: false }); }
+      }
+    }
     // Still the whole photo, and its border is visibly not paper: give up
     // here so the contour detectors can look for the sheet instead.
     if (best.frameOnly && best.frameSides < 0.5) { _lastDebug.rejected = 'scene-frame'; return null; }

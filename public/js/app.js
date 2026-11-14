@@ -2575,9 +2575,9 @@ document.addEventListener('DOMContentLoaded', () => {
     var c = C[key] || ['#ff8a5c','#e8562a'], id = 'pdg' + (n++);
     return '<svg class="pd-ico pd-ico2" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
       '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs>' +
-      '<rect width="48" height="48" rx="13" fill="url(#' + id + ')"/>' +
-      '<path d="M0 13A13 13 0 0 1 13 0h22a13 13 0 0 1 13 13v6C30 25 14 15 0 24z" fill="#fff" opacity=".14"/>' +
-      '<g class="pd-ico-glyph" transform="translate(4.6 5) scale(2.15)">' + G[key] + '</g></svg>';
+      // Flat, scanner-app style: soft tinted tile, glyph in the tool's colour.
+      '<rect width="48" height="48" rx="13" fill="' + c[1] + '" opacity=".14"/>' +
+      '<g class="pd-ico-glyph pd-ico-flat" transform="translate(4.6 5) scale(2.15)" style="stroke:' + c[1] + ';color:' + c[1] + '">' + G[key] + '</g></svg>';
   }
   function keyOf(href) { try { return MAP[new URL(href, location.href).pathname]; } catch (e) { return null; } }
   function apply(root) {

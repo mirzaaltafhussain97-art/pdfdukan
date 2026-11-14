@@ -1,6 +1,6 @@
 /* Bounded interactive previews; exports always render the full source size. */
 window.ScanRenderer = (() => {
-  const workerUrl = new URL('scan-filter-worker.js?v=20261105_fixes', document.currentScript.src);
+  const workerUrl = new URL('scan-filter-worker.js?v=20261114b', document.currentScript.src);
   let worker, workerFailed = false, cached, queue = Promise.resolve();
   let previewImage, previewSource, previewCache = [];
   const settingsKey = (filter, settings) => JSON.stringify([!!window.cvReady, filter,

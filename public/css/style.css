@@ -2698,3 +2698,16 @@ body .tool-page .tool-hero>.tool-feature-visual{display:block;width:100%;max-hei
 
 /* Full-page 3D dot sphere (js/particles.js) */
 #particleCanvas{position:fixed !important;top:0 !important;left:0 !important;width:100vw !important;height:100vh !important;z-index:-10 !important;pointer-events:none !important;opacity:.45 !important}
+/* flat tool icons: glyph dots follow the glyph colour */
+.pd-ico-flat circle[r="1"],.pd-ico-flat circle[r=".9"]{fill:currentColor!important}
+.pd-ico-flat{stroke-width:1.7}
+/* Scanner-app style tool tiles: flat tinted icon, compact card */
+.has-pd-ico .pd-ico2{filter:none}
+html[data-theme="light"] .tool-icon-wrap.has-pd-ico,html[data-theme="dark"] .tool-icon-wrap.has-pd-ico:has(.pd-ico2){background:none!important;box-shadow:none!important}
+.tool-icon-wrap.has-pd-ico:has(.pd-ico2),.btc-icon.has-pd-ico:has(.pd-ico2){width:46px;height:46px;margin-bottom:8px}
+.tools-grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.tool-card{padding:14px 10px 12px}
+.tool-card .tc-name{font-size:13px}
+.tool-card .tc-desc{font-size:11.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tool-card:hover{transform:none}
+.tool-card::before{display:none}
