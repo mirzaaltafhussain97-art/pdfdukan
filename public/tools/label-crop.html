@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Label Crop – Free Shipping Label Cropper for 4x6 | PDFdukan</title>
+<meta name="description" content="Label crop online free: crop Flipkart, Meesho and Amazon shipping label PDFs to 4x6, 4x4 or A4 in one click. Bulk files, SKU sort, sharp barcodes.">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="PK">
+<meta name="geo.placename" content="Pakistan">
+<meta name="geo.position" content="30.3753;69.3451">
+<meta name="ICBM" content="30.3753, 69.3451">
+<link rel="canonical" href="https://pdfdukan.com/tools/label-crop.html">
+<link rel="alternate" hreflang="en" href="https://pdfdukan.com/tools/label-crop.html">
+<link rel="alternate" hreflang="x-default" href="https://pdfdukan.com/tools/label-crop.html">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PDFdukan">
+<meta property="og:url" content="https://pdfdukan.com/tools/label-crop.html">
+<meta property="og:title" content="Label Crop – Free Shipping Label Cropper for 4x6 | PDFdukan">
+<meta property="og:description" content="Label crop online free: crop Flipkart, Meesho and Amazon shipping label PDFs to 4x6, 4x4 or A4 in one click. Bulk files, SKU sort, sharp barcodes.">
+<meta property="og:image" content="https://pdfdukan.com/images/og/label-crop.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@pdfdukan">
+<meta name="twitter:title" content="Label Crop – Free Shipping Label Cropper for 4x6 | PDFdukan">
+<meta name="twitter:description" content="Label crop online free: crop Flipkart, Meesho and Amazon shipping label PDFs to 4x6, 4x4 or A4 in one click. Bulk files, SKU sort, sharp barcodes.">
+<meta name="twitter:image" content="https://pdfdukan.com/images/og/label-crop.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
+<style>
+/* Crop stage */
+.crop-stage-wrap{margin-top:14px;overflow:auto;max-height:72vh;border:1px solid var(--border);border-radius:12px;background:var(--card-2);padding:10px}
+.crop-stage{position:relative;display:block;width:fit-content;margin:0 auto;line-height:0;touch-action:none;user-select:none}
+.crop-stage canvas{display:block;max-width:100%;height:auto;border-radius:6px;cursor:crosshair}
+.crop-stage canvas.grabbing{cursor:grabbing}
+.crop-hint{font-size:13px;color:var(--text-3);margin-top:10px;text-align:center;line-height:1.5}
+.crop-pagebar{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:4px;margin-bottom:6px}
+.crop-pagebar button{padding:6px 14px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-weight:600}
+.crop-pagebar button:disabled{opacity:.4;cursor:not-allowed}
+/* Toolbar */
+.crop-toolbar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.ct-btn{padding:7px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);cursor:pointer;font-weight:600;font-size:13px;white-space:nowrap}
+.ct-btn:hover{border-color:var(--primary);color:var(--primary)}
+.ct-angle{padding:7px 12px;border-radius:8px;background:var(--card-2);border:1px solid var(--border);font-weight:700;font-size:13px;color:var(--primary);min-width:56px;text-align:center}
+.crop-feature{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,340px);gap:22px;align-items:center;max-width:800px;margin:0 auto 22px;padding:18px;background:var(--card);border:1px solid var(--border);border-radius:14px}.crop-feature img{display:block;width:100%;height:auto}.crop-feature p{margin:8px 0 0;color:var(--text-2);font-size:14px;line-height:1.65}@media(max-width:680px){.crop-feature{grid-template-columns:1fr}.crop-feature img{max-width:320px;margin:auto}}
+
+/* ── PDF to Image ── */
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.i2p-copy h3{font-size:18px;margin:28px 0 10px}
+.i2p-copy .faq-item h3.i2p-fq{margin:0;font-size:inherit;font-weight:inherit}
+.i2p-copy a{color:var(--primary);font-weight:600}
+.i2p-table{width:100%;border-collapse:collapse;font-size:14px}
+.i2p-table th,.i2p-table td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.i2p-table thead th,.i2p-table tbody th{background:var(--card-2);font-weight:700}
+.i2p-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:560px){.i2p-table{font-size:13px}.i2p-table th,.i2p-table td{padding:8px 6px}}
+.i2p-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0}
+.i2p-card{background:var(--card-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+@media(max-width:560px){.i2p-cards{grid-template-columns:1fr}}
+.i2p-card h4{margin:0 0 6px;font-size:15px;color:var(--text)}
+.i2p-card p{margin:0;font-size:14px;color:var(--text-2);line-height:1.55}
+.i2p-trust{margin:8px 0 0;font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-file{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);margin-top:12px;flex-wrap:wrap}
+.cpf-icon{font-size:26px}
+.cz-file-info{flex:1 1 160px;min-width:0;text-align:left}
+.cz-file-name{font-weight:700;font-size:14px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cz-file-meta{font-size:12px;color:var(--text-3);margin-top:2px}
+.cz-link{background:none;border:1px solid var(--border);color:var(--primary);font-weight:700;font-size:12px;padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer}
+.cz-link:hover{border-color:var(--primary)}
+.cz-group{padding-top:16px;margin-top:14px;border-top:1px solid var(--border);text-align:left}
+.cz-group.cz-first{padding-top:0;margin-top:0;border-top:0}
+.cz-label{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--text-2);margin-bottom:10px}
+.cp-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.cp-modes{grid-template-columns:1fr}}
+.cp-mode{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--card-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;color:var(--text-2)}
+.cp-mode strong{font-size:14px;color:var(--text)}
+.cp-mode span{font-size:12px;line-height:1.45}
+.cp-mode:hover,.cp-mode.active{border-color:var(--primary)}
+.cp-mode.active{background:var(--primary-soft,rgba(255,99,51,.1))}
+.cp-mode.active strong{color:var(--primary)}
+.cz-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.cz-chip{background:var(--card-2);border:1.5px solid var(--border);color:var(--text-2);border-radius:var(--radius-sm);padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer}
+.cz-chip:hover{border-color:var(--primary);color:var(--primary)}
+.cz-chip.active{border-color:var(--primary);background:var(--primary-soft,rgba(255,99,51,.1));color:var(--primary)}
+.cz-note{font-size:12px;color:var(--text-3);margin-top:8px;line-height:1.5}
+.cz-note:empty{display:none}
+.cz-inline{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cz-inline label{font-size:13px;font-weight:600;color:var(--text-2)}
+.cz-inline input{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 10px;font-size:15px;width:170px;max-width:100%;outline:none}
+.cz-inline input:focus{border-color:var(--primary)}
+.cp-go{width:100%;justify-content:center}
+.p2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.p2-stats{grid-template-columns:1fr 1fr}.p2-stats .cz-sum-box:last-child{grid-column:1/-1}}
+.cz-sum-box{background:var(--card-2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;min-width:0}
+.cz-sum-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-3)}
+.cz-sum-val{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cz-warn{margin:12px 0;padding:10px 12px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,.4);background:rgba(217,119,6,.08);color:var(--text-2);font-size:13px;line-height:1.5;text-align:left}
+
+.tool-hero.crop-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);text-align:left;align-items:center;gap:22px}
+.tool-hero.crop-hero .tool-hero-copy{position:relative;z-index:1}
+.tool-hero.crop-hero .tool-feature-visual{display:block;width:100%;max-height:210px;object-fit:contain;position:relative;z-index:1}
+@media(max-width:720px){.tool-hero.crop-hero{grid-template-columns:1fr;text-align:center}.tool-hero.crop-hero .tool-feature-visual{max-height:170px}}
+.cr-pass{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card-2);text-align:left}
+.cr-pass p{margin:0 0 8px;font-size:14px;color:var(--text-2)}
+.cr-pass p.cr-bad{color:var(--danger,#d32f2f);font-weight:600}
+#crModes{margin-top:16px}
+.cr-opts{margin-top:14px}
+.cr-flabel{display:block;font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:8px}
+.cr-check{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);cursor:pointer;margin:12px 14px 0 0}
+.cr-apply{display:flex;flex-wrap:wrap;align-items:center}
+.cr-apply .cr-check{margin-top:0;margin-bottom:6px}
+.cr-range{background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 10px;font-size:14px;width:150px;max-width:100%}
+.cr-range:disabled{opacity:.5}
+.cr-cuts{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.cr-cuts label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--text-2)}
+.cr-cuts input{width:84px;background:var(--card-2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px;font-size:14px}
+.cr-pagenav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;font-weight:700;font-size:14px;color:var(--text)}
+.cr-stage-wrap{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px;overflow:auto;text-align:center}
+.cr-stage{display:inline-block;line-height:0;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+#crCanvas{display:block;max-width:100%;touch-action:none}
+.cr-stage.cr-drawing #crCanvas{cursor:crosshair}
+.cr-info{text-align:center;font-weight:600;color:var(--text-2)}
+.p2-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media(max-width:560px){.p2-stats{grid-template-columns:1fr 1fr}.p2-stats .cz-sum-box:last-child{grid-column:1/-1}}
+#crDownload{margin-top:12px}
+#crImageMode .tool-card{margin-top:0}
+
+.lc-h{font-size:17px;display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.lc-files{display:grid;gap:8px;margin-top:10px}
+.lc-file{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:10px;background:var(--card-2);font-size:14px}
+.lc-fn{font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lc-fm{color:var(--text-3);font-size:12px;white-space:nowrap}
+.drop-zone.lc-compact{padding:14px}
+.drop-zone.lc-compact .dz-icon,.drop-zone.lc-compact .dz-hint{display:none}
+.lc-opts{margin-top:16px;display:grid;gap:12px}
+.lc-opts .cz-chips{display:flex;flex-wrap:wrap;gap:8px}
+.lc-checks{display:flex;flex-wrap:wrap;gap:16px;font-size:14px}
+.lc-msg{margin:10px 0 0;padding:10px 12px;border-radius:10px;font-size:14px;background:var(--card-2)}
+.lc-msg.error{background:#fdecec;color:#b42318}
+.lc-warnnote{background:#fff7e6;border:1px solid #f5d38a;color:#7a4b00;padding:10px 12px;border-radius:10px}
+.lc-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0}
+.lc-actions .download-btn{flex:1;min-width:200px}
+.lc-print{min-height:44px;padding:0 18px;font-weight:700}
+.lc-out{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;padding:12px;background:var(--card-2);border:1px solid var(--border);border-radius:12px}
+.lc-out canvas{background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.18);border-radius:3px;max-width:100%;height:auto}
+.lc-more{align-self:center;font-weight:700;color:var(--text-3)}
+.lc-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px}
+.lc-sum-col table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+.lc-sum-col th,.lc-sum-col td{padding:6px 8px;border-bottom:1px solid var(--border);text-align:left}
+.lc-sum-col td:last-child,.lc-sum-col th:last-child{text-align:right}
+.lc-links{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0 0}
+.lc-pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.lc-page{margin:0;text-align:center}
+.lc-page canvas{width:100%;height:auto;border:1px solid var(--border);border-radius:6px;background:#fff}
+.lc-page figcaption{font-size:12px;color:var(--text-3);margin-top:4px}
+.lc-page.lc-warn canvas{border-color:#f5a524;box-shadow:0 0 0 2px rgba(245,165,36,.3)}
+.lc-key{display:inline-block;width:14px;height:10px;border:2px solid;border-radius:2px;vertical-align:middle;margin:0 4px 0 10px}
+.lc-key-g{border-color:#16a34a;background:rgba(22,163,74,.12)}.lc-key-b{border-color:#2563eb;border-style:dashed}
+.lc-ed-wrap{overflow:auto;background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+.lc-ed-wrap canvas{max-width:100%;height:auto;touch-action:none;cursor:crosshair}
+@media(max-width:600px){.lc-out{gap:8px;padding:8px}.lc-out canvas{width:calc(50% - 4px)!important}}
+.lc-fig{margin:18px 0}.lc-fig img{width:100%;height:auto;border:1px solid var(--border);border-radius:12px}.lc-fig figcaption{font-size:13px;color:var(--text-3);margin-top:6px;text-align:center}
+</style>
+<meta name="theme-color" content="#ff6333">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PDFdukan Label Crop", "url": "https://pdfdukan.com/tools/label-crop.html", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (web browser)", "browserRequirements": "Requires JavaScript", "description": "Label crop online free: crop Flipkart, Meesho and Amazon shipping label PDFs to 4x6, 4x4 or A4 in one click. Bulk files, SKU sort, sharp barcodes.", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/"}, "featureList": ["Automatic shipping label detection", "4x6, 4x4, 3x5, A6 and A4 2-up or 4-up output", "Label only, label with invoice, or invoice only", "Sort by SKU or courier with a pick list", "Bulk: many PDFs into one print file", "Vector crop that keeps barcodes sharp", "Manual crop box for any layout"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://pdfdukan.com/tools.html"},{"@type":"ListItem","position":3,"name":"Label Crop","item":"https://pdfdukan.com/tools/label-crop.html"}]}</script>
+<meta name="author" content="PDFdukan Product Team">
+<meta property="article:modified_time" content="2026-11-14T00:00:00+05:00">
+</head>
+<body data-tool="label-crop">
+<header class="header" role="banner">
+  <a href="/" class="logo-svg-wrap" aria-label="PDFdukan — Home">
+    <svg class="logo-svg-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" role="img" aria-label="PDFdukan logo">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+      <rect width="40" height="40" rx="10" fill="url(#lg)"/>
+      <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 28L6 34L12 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M34 28L34 34L28 34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+      <path d="M21 10L24 13L21 13Z" fill="#ff6333" fill-opacity="0.55"/>
+      <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      <circle cx="28.5" cy="29" r="7" fill="url(#lg)"/>
+      <circle cx="28.5" cy="29" r="4.2" fill="none" stroke="white" stroke-width="1.4"/>
+      <circle cx="28.5" cy="29" r="1.8" fill="white"/>
+      <rect x="27.8" y="21.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="27.8" y="33.8" width="1.4" height="2.4" rx="0.7" fill="white"/>
+      <rect x="21.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+      <rect x="33.8" y="28.3" width="2.4" height="1.4" rx="0.7" fill="white"/>
+    </svg>
+    <div class="logo-text"><div class="brand">PDFdukan</div><div class="sub">CamMaster</div></div>
+  </a>
+  <nav class="nav-links" aria-label="Site navigation">
+    <a href="/" class="nav-item">Home</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Tools <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown mega" role="menu"><div class="nd-col"><span class="nd-section-head">📄 PDF Tools</span><a href="../tools/image-to-pdf-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📑</span><div class="nd-link-body"><div class="nd-link-name">Image → PDF</div><div class="nd-link-desc">JPG, PNG, WEBP to PDF</div></div></a><a href="../tools/pdf-to-image-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">PDF → JPG</div><div class="nd-link-desc">Extract pages as images</div></div></a><a href="../tools/crop-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Crop PDF</div><div class="nd-link-desc">Trim margins, keep text</div></div></a><a href="../tools/label-crop.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">Label Crop</div><div class="nd-link-desc">Shipping labels to 4x6</div></div></a><a href="../tools/merge-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔗</span><div class="nd-link-body"><div class="nd-link-name">Merge PDF</div><div class="nd-link-desc">Combine multiple PDFs</div></div></a><a href="../tools/extract-pdf-pages.html" class="nd-link" role="menuitem"><span class="nd-link-icon">✂️</span><div class="nd-link-body"><div class="nd-link-name">Split PDF</div><div class="nd-link-desc">Divide by page ranges</div></div></a><a href="../tools/compress-pdf-reduce-file-size.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📉</span><div class="nd-link-body"><div class="nd-link-name">Compress PDF</div><div class="nd-link-desc">Reduce file size</div></div></a><a href="../tools/pdf-to-word-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📝</span><div class="nd-link-body"><div class="nd-link-name">PDF → Word</div><div class="nd-link-desc">Extract text to .doc</div></div></a><a href="../tools/word-to-pdf-converter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">Word → PDF</div><div class="nd-link-desc">Convert DOCX to PDF</div></div></a><a href="../tools/html-to-pdf-converter-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🌐</span><div class="nd-link-body"><div class="nd-link-name">HTML → PDF</div><div class="nd-link-desc">Paste or upload HTML to PDF</div></div></a></div><div class="nd-col"><span class="nd-section-head">✏️ Edit &amp; Sign</span><a href="../tools/pdf-editor.html" class="nd-link active" role="menuitem"><span class="nd-link-icon">✏️</span><div class="nd-link-body"><div class="nd-link-name">PDF Editor</div><div class="nd-link-desc">Edit text &amp; objects</div></div></a><a href="../tools/pdf-editor.html#sign" class="nd-link" role="menuitem"><span class="nd-link-icon">✍️</span><div class="nd-link-body"><div class="nd-link-name">Sign PDF</div><div class="nd-link-desc">Sign, initial and date</div></div></a><a href="../tools/add-watermark-to-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">💧</span><div class="nd-link-body"><div class="nd-link-name">Watermark</div><div class="nd-link-desc">Stamp text or image</div></div></a><a href="../tools/add-page-numbers-to-pdf-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Page Numbers</div><div class="nd-link-desc">Auto-number all pages</div></div></a><a href="../tools/organize-pdf-pages-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🗃️</span><div class="nd-link-body"><div class="nd-link-name">PDF Organizer</div><div class="nd-link-desc">Rotate, reorder &amp; delete</div></div></a><div class="nd-divider"></div><span class="nd-section-head">📷 Image &amp; Scan</span><a href="../scanner.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📷</span><div class="nd-link-body"><div class="nd-link-name">Smart Scan</div><div class="nd-link-desc">AI edge detection</div></div></a><a href="../photo-scanner.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🖼️</span><div class="nd-link-body"><div class="nd-link-name">Photo Scanner</div><div class="nd-link-desc">Scan photos and pictures</div></div></a><a href="../tools/image-compress-resize.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔜</span><div class="nd-link-body"><div class="nd-link-name">Image Compressor &amp; Resizer</div><div class="nd-link-desc">JPG, PNG, WebP optimizer</div></div></a><a href="../tools/ocr-image-to-text.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔤</span><div class="nd-link-body"><div class="nd-link-name">OCR Text</div><div class="nd-link-desc">Image to editable text</div></div></a><div class="nd-divider"></div><span class="nd-section-head">📝 Text Tools</span><a href="../tools/word-character-counter.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔢</span><div class="nd-link-body"><div class="nd-link-name">Word &amp; Character Counter</div><div class="nd-link-desc">Words, characters, reading time</div></div></a></div><div class="nd-col"><span class="nd-section-head">🔧 More PDF Tools</span><a href="../tools/delete-pages-from-pdf.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🗑️</span><div class="nd-link-body"><div class="nd-link-name">Delete Pages</div><div class="nd-link-desc">Remove pages from a PDF</div></div></a><a href="../tools/unlock-pdf-without-password.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔓</span><div class="nd-link-body"><div class="nd-link-name">Unlock PDF</div><div class="nd-link-desc">Remove print/copy limits</div></div></a><a href="../tools/pdf-text-extractor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">📄</span><div class="nd-link-body"><div class="nd-link-name">PDF Text Extractor</div><div class="nd-link-desc">Copy all text from a PDF</div></div></a><a href="../tools/searchable-pdf-converter-online.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🔍</span><div class="nd-link-body"><div class="nd-link-name">Searchable PDF</div><div class="nd-link-desc">OCR layer for scans</div></div></a><a href="../tools/pdf-metadata-editor.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🏷️</span><div class="nd-link-body"><div class="nd-link-name">PDF Metadata Editor</div><div class="nd-link-desc">Title, author, keywords</div></div></a><a href="../tools/pdf-restriction-compatibility-check.html" class="nd-link" role="menuitem"><span class="nd-link-icon">🛡️</span><div class="nd-link-body"><div class="nd-link-name">Restriction Check</div><div class="nd-link-desc">See what a PDF blocks</div></div></a></div></div>
+    </div>
+    <a href="../blog/index.html" class="nav-item">Blog</a>
+    <div class="nav-item has-dropdown" tabindex="0" role="button" aria-haspopup="true">
+      Legal <span class="nav-chevron">&#9662;</span>
+      <div class="nav-dropdown legal" role="menu">
+        <a href="../about.html"   class="nd-link"><span class="nd-link-icon">&#127970;</span><div class="nd-link-body"><div class="nd-link-name">About Us</div></div></a>
+        <a href="../privacy.html" class="nd-link"><span class="nd-link-icon">&#128274;</span><div class="nd-link-body"><div class="nd-link-name">Privacy Policy</div></div></a>
+        <a href="../terms.html"   class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Terms of Service</div></div></a><a href="../disclaimer.html" class="nd-link"><span class="nd-link-icon">&#128203;</span><div class="nd-link-body"><div class="nd-link-name">Disclaimer</div></div></a>
+        <a href="../cookies.html" class="nd-link"><span class="nd-link-icon">&#127850;</span><div class="nd-link-body"><div class="nd-link-name">Cookie Policy</div></div></a>
+        <div class="nd-divider"></div>
+        <a href="../sitemap.xml"  class="nd-link"><span class="nd-link-icon">&#128506;&#65039;</span><div class="nd-link-body"><div class="nd-link-name">Sitemap</div></div></a>
+      </div>
+    </div>
+  </nav>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle theme"><span id="themeIcon">&#127769;</span></button>
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()" aria-label="Menu"><span></span><span></span><span></span></button>
+    <button class="auth-btn" onclick="openAuth()" id="authBtn" aria-label="Sign in or account">
+      <span class="avatar" id="userAvatar">U</span><span id="authLabel">Sign In</span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav drawer -->
+<div class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Mobile menu"><a href="/" class="mnd-link">🏠 Home</a><div class="mnd-section">📄 PDF Tools</div><a href="../tools/image-to-pdf-converter.html" class="mnd-link">📑 Image to PDF</a><a href="../tools/pdf-to-image-converter.html" class="mnd-link">📷 PDF to JPG</a><a href="../tools/crop-pdf-online.html" class="mnd-link">✂️ Crop PDF</a><a href="../tools/label-crop.html" class="mnd-link">🏷️ Label Crop</a><a href="../tools/merge-pdf.html" class="mnd-link">🔗 Merge PDF</a><a href="../tools/extract-pdf-pages.html" class="mnd-link">✂️ Split PDF</a><a href="../tools/compress-pdf-reduce-file-size.html" class="mnd-link">📉 Compress PDF</a><a href="../tools/pdf-to-word-converter.html" class="mnd-link">📝 PDF to Word</a><a href="../tools/word-to-pdf-converter.html" class="mnd-link">📄 Word to PDF</a><a href="../tools/html-to-pdf-converter-online.html" class="mnd-link">🌐 HTML to PDF</a><div class="mnd-section">🔧 More PDF Tools</div><a href="../tools/delete-pages-from-pdf.html" class="mnd-link">🗑️ Delete Pages</a><a href="../tools/unlock-pdf-without-password.html" class="mnd-link">🔓 Unlock PDF</a><a href="../tools/pdf-text-extractor.html" class="mnd-link">📄 PDF Text Extractor</a><a href="../tools/searchable-pdf-converter-online.html" class="mnd-link">🔍 Searchable PDF</a><a href="../tools/pdf-metadata-editor.html" class="mnd-link">🏷️ Metadata Editor</a><a href="../tools/pdf-restriction-compatibility-check.html" class="mnd-link">🛡️ Restriction Check</a><div class="mnd-section">✏️ Edit &amp; Sign</div><a href="../tools/pdf-editor.html" class="mnd-link active">✏️ PDF Editor</a><a href="../tools/pdf-editor.html#sign" class="mnd-link">✍️ Sign PDF</a><a href="../tools/add-watermark-to-pdf-online.html" class="mnd-link">💧 Watermark</a><a href="../tools/add-page-numbers-to-pdf-online.html" class="mnd-link">🔢 Page Numbers</a><a href="../tools/organize-pdf-pages-online.html" class="mnd-link">🗃️ PDF Organizer</a><div class="mnd-section">📷 Image &amp; Scan</div><a href="../scanner.html" class="mnd-link">📷 Smart Scan</a><a href="../photo-scanner.html" class="mnd-link">🖼️ Photo Scanner</a><a href="../tools/image-compress-resize.html" class="mnd-link">🔜 Image Compressor</a><a href="../tools/ocr-image-to-text.html" class="mnd-link">🔤 OCR Text</a><div class="mnd-section">📝 Text Tools</div><a href="../tools/word-character-counter.html" class="mnd-link">🔢 Word Counter</a><a href="../blog/index.html" class="mnd-link">📋 Blog</a><a href="../about.html" class="mnd-link">🏢 About</a><a href="../privacy.html" class="mnd-link">🔒 Privacy</a></div>
+
+<div class="tool-page">
+
+  <nav aria-label="Breadcrumb" style="font-size:12px;color:var(--text-3);margin-bottom:16px">
+    <a href="/" style="color:var(--text-3)">Home</a> › <a href="../tools.html" style="color:var(--text-3)">Tools</a> › <span>Label Crop</span>
+  </nav>
+
+  <div class="tool-hero">
+    <div class="tool-hero-copy">
+      <div class="tool-hero-icon" style="background:linear-gradient(135deg,#ff6333,#ff9055)">🏷️</div>
+      <h1>Label Crop: Free Shipping Label Cropper for 4x6 Printers</h1>
+      <p>Drop your Flipkart, Meesho or Amazon label PDF. Each shipping label is found, cropped and set on a 4x6 page, ready for your thermal printer.</p>
+      <ul class="hero-chips"><li>Free</li><li>No sign-up</li><li>Bulk PDFs</li><li>Barcodes stay sharp</li></ul>
+    </div>
+    <img class="tool-feature-visual" src="../images/label-crop.svg" alt="An A4 label PDF with the shipping label cut out and placed on a 4x6 thermal label" width="640" height="420">
+  </div>
+
+  <div class="tool-card">
+    <h2 class="lc-h"><span class="tc-icon">📂</span> Upload label PDFs</h2>
+    <div class="drop-zone" id="lcDrop" tabindex="0" role="button" aria-label="Choose label PDF files">
+      <div class="dz-icon">🏷️</div>
+      <div class="dz-title">Drop label PDFs here or click to browse</div>
+      <div class="dz-hint">One or many PDFs · processed in your browser</div>
+      <span class="dz-btn">Choose PDF</span>
+      <input aria-label="Choose label PDF files" type="file" id="lcInput" accept=".pdf,application/pdf" multiple style="display:none">
+    </div>
+    <div id="lcFiles" class="lc-files"></div>
+    <button type="button" class="cz-link" id="lcAddMore" hidden>+ Add more PDFs</button>
+    <p class="lc-msg" id="lcMsg" role="alert" hidden></p>
+
+    <div class="lc-opts">
+      <div class="cz-group">
+        <div class="cz-label">Label size</div>
+        <div class="cz-chips" role="group" aria-label="Label size">
+          <button type="button" class="cz-chip active" data-lc-size="4x6" aria-pressed="true">4 × 6 in</button>
+          <button type="button" class="cz-chip" data-lc-size="4x4" aria-pressed="false">4 × 4 in</button>
+          <button type="button" class="cz-chip" data-lc-size="3x5" aria-pressed="false">3 × 5 in</button>
+          <button type="button" class="cz-chip" data-lc-size="a6" aria-pressed="false">A6</button>
+          <button type="button" class="cz-chip" data-lc-size="a4x4" aria-pressed="false">A4 · 4 per sheet</button>
+          <button type="button" class="cz-chip" data-lc-size="a4x2" aria-pressed="false">A4 · 2 per sheet</button>
+          <button type="button" class="cz-chip" data-lc-size="orig" aria-pressed="false">Original size</button>
+        </div>
+      </div>
+      <div class="cz-group">
+        <div class="cz-label">Invoice</div>
+        <div class="cz-chips" role="group" aria-label="Invoice">
+          <button type="button" class="cz-chip active" data-lc-inv="labels" aria-pressed="true">Labels only</button>
+          <button type="button" class="cz-chip" data-lc-inv="both" aria-pressed="false">Label + invoice</button>
+          <button type="button" class="cz-chip" data-lc-inv="invoices" aria-pressed="false">Invoices only</button>
+        </div>
+      </div>
+      <div class="cz-group">
+        <div class="cz-label">Order</div>
+        <div class="cz-chips" role="group" aria-label="Label order">
+          <button type="button" class="cz-chip active" data-lc-sort="none" aria-pressed="true">As in PDF</button>
+          <button type="button" class="cz-chip" data-lc-sort="sku" aria-pressed="false">Sort by SKU</button>
+          <button type="button" class="cz-chip" data-lc-sort="courier" aria-pressed="false">Sort by courier</button>
+        </div>
+      </div>
+      <div class="lc-checks">
+        <label class="cr-check"><input type="checkbox" id="lcRotate" checked> Rotate wide labels to fit</label>
+        <label class="cr-check"><input type="checkbox" id="lcMargin" checked> Small safe margin</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="tool-card" id="lcResult" hidden>
+    <h2 class="lc-h"><span class="tc-icon">✅</span> Labels ready</h2>
+    <div class="p2-stats">
+      <div class="cz-sum-box"><div class="cz-sum-label">Cropped</div><div class="cz-sum-val" id="lcCount">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">Page size</div><div class="cz-sum-val" id="lcSize">—</div></div>
+      <div class="cz-sum-box"><div class="cz-sum-label">File size</div><div class="cz-sum-val" id="lcBytes">—</div></div>
+    </div>
+    <p class="cz-note lc-warnnote" id="lcNote" hidden></p>
+    <div class="lc-actions">
+      <button class="download-btn" id="lcDownload" type="button"><span>📥</span> Download PDF</button>
+      <button class="btn btn-secondary lc-print" id="lcPrint" type="button">🖨️ Print</button>
+    </div>
+    <div class="lc-out" id="lcOut" aria-label="Preview of the cropped labels"></div>
+    <div class="lc-summary" id="lcSummary" hidden></div>
+    <p class="lc-links"><button type="button" class="cz-link" id="lcEdit">✏️ Adjust crop box</button> <button type="button" class="cz-link" id="lcAuto" hidden>↺ Back to auto detect</button> <button type="button" class="cz-link" id="lcReset">Start over</button></p>
+  </div>
+
+  <div class="tool-card" id="lcEditor" hidden>
+    <h2 class="lc-h"><span class="tc-icon">✏️</span> Adjust crop box</h2>
+    <p class="cz-note">Drag the corners or the box. The same box is used on every page, which suits PDFs where each page has one label in the same place.</p>
+    <div class="lc-ed-wrap"><canvas id="lcEdCanvas" aria-label="Page with crop box"></canvas></div>
+    <div class="lc-actions"><button class="btn btn-primary" id="lcEdApply" type="button">Use this box on all pages</button><button class="cz-link" id="lcEdCancel" type="button">Cancel</button></div>
+  </div>
+
+  <div class="tool-card" id="lcPreviewCard" hidden>
+    <h2 class="lc-h"><span class="tc-icon">🔍</span> What was found</h2>
+    <p class="cz-note"><span class="lc-key lc-key-g"></span> label <span class="lc-key lc-key-b"></span> invoice (when included)</p>
+    <div class="lc-pages" id="lcPages"></div>
+  </div>
+
+  <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
+
+  <section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with 7 label PDFs: label + invoice pages, 2 and 4 labels per A4 sheet, a scanned PDF, a 4x6 file and a 200-page batch</span><span>Free to use · No fake ratings · Limits listed below</span></aside>
+
+    <h2>What Is Label Crop?</h2>
+    <p class="lead">Label crop is the job of cutting the shipping label out of an A4 label PDF so it prints on a 4x6 thermal label. PDFdukan’s label crop tool finds each label in your PDF, crops it, and places it on a 4x6, 4x4, 3x5, A6 or A4 page, ready for your label printer.</p>
+    <p>Marketplaces such as Flipkart, Meesho and Amazon give sellers labels as A4 pages, often with the tax invoice on the same sheet. Printing that page on a thermal printer shrinks the barcode or cuts it off. A shipping label cropper fixes that in one step, and this one works on a phone or laptop with no app.</p>
+
+    <h3>How Do You Crop a Shipping Label?</h3>
+    <p>You crop shipping labels with PDFdukan in four steps:</p>
+    <ol>
+      <li><span><strong>Download your label PDF</strong> from the seller panel, the same file you would normally print on A4.</span></li>
+      <li><span><strong>Drop it here.</strong> Add one PDF or many at once. Labels are found and cropped right away.</span></li>
+      <li><span><strong>Pick your options:</strong> label size, label with or without invoice, and the order you want to pack in.</span></li>
+      <li><span><strong>Download or print.</strong> Tap Download PDF, or Print to send it straight to your label printer.</span></li>
+    </ol>
+    <figure class="lc-fig"><img src="../images/tools/label-crop-found.webp" alt="Label crop tool showing green boxes around the shipping label on each A4 page and blue dashed boxes around the invoice" width="900" height="615" loading="lazy" decoding="async"><figcaption>Each label is marked in green; the invoice, when you include it, in blue.</figcaption></figure>
+
+    <h3>Which Label PDFs Does It Work With?</h3>
+    <p>The tool looks for the barcode block on each page, so it does not depend on one marketplace’s layout. It handles these common layouts:</p>
+    <ul>
+      <li><strong>Label on top, invoice below</strong>, split by a dashed or solid line. This is the usual Flipkart and Meesho label format.</li>
+      <li><strong>One label in a corner</strong> of an A4 page with notes or an invoice elsewhere, as many Amazon self-ship and courier PDFs do.</li>
+      <li><strong>2 or 4 labels per A4 sheet.</strong> Each label becomes its own 4x6 page.</li>
+      <li><strong>Scanned or photographed label PDFs.</strong> Detection works on the page image, not the text.</li>
+      <li><strong>PDFs that are already 4x6.</strong> They pass through and can be merged with others into one print file.</li>
+    </ul>
+    <p>Flipkart’s own seller API describes its label file as an <a href="https://seller.flipkart.com/api-docs/order-api-docs/v3/GetLabelByShipmentId.html" target="_blank" rel="noopener">integrated shipping label with an optional invoice</a>, merged into one PDF for many shipments. That is exactly the file this tool splits. If a label is ever missed, tap <strong>Adjust crop box</strong>, drag one box over the label, and it is used on every page.</p>
+
+    <h3>Which Label Size Should You Choose?</h3>
+    <p>Choose the size of the labels loaded in your printer:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Option</th><th scope="col">Page size</th><th scope="col">Use it for</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">4 × 6 in</th><td>101.6 × 152.4 mm</td><td>Standard thermal shipping labels (often sold as 100 × 150 mm)</td></tr>
+        <tr><th scope="row">4 × 4 in</th><td>101.6 × 101.6 mm</td><td>Square rolls some Meesho and small sellers use</td></tr>
+        <tr><th scope="row">3 × 5 in</th><td>76.2 × 127 mm</td><td>Smaller rolls for light parcels</td></tr>
+        <tr><th scope="row">A6</th><td>105 × 148 mm</td><td>A6 label stock, common outside India</td></tr>
+        <tr><th scope="row">A4 · 2 or 4 per sheet</th><td>210 × 297 mm</td><td>Laser or inkjet printers with sticker sheets</td></tr>
+        <tr><th scope="row">Original size</th><td>Same as the label</td><td>Keep the crop exactly as it is</td></tr>
+      </tbody>
+    </table></div>
+    <p>4x6 is the default because it is the shipping industry’s standard label: <a href="https://docs.shipstation.com/apis/shipengine/docs/labels/formats" target="_blank" rel="noopener">ShipEngine’s label documentation</a> lists 4" × 6" (100 × 150 mm) as the default size for every label format. Labels are scaled to fill the page, and wide labels are turned sideways when that makes them bigger. You can switch rotation off.</p>
+
+    <h3>Can You Keep the Invoice?</h3>
+    <p>Yes. Pick one of three invoice options:</p>
+    <div class="i2p-cards">
+      <div class="i2p-card"><h4>Labels only</h4><p>The default. Only the shipping labels, one per page, for the parcel.</p></div>
+      <div class="i2p-card"><h4>Label + invoice</h4><p>Each invoice is cropped and printed right after its own label, so the pair stays together for the box.</p></div>
+      <div class="i2p-card"><h4>Invoices only</h4><p>Just the invoices, for your records or to print on A4 later.</p></div>
+      <div class="i2p-card"><h4>Many files at once</h4><p>Add every label PDF of the day. They come out as one print file in the order you choose.</p></div>
+    </div>
+
+    <h3>How Do You Sort Labels by SKU or Courier?</h3>
+    <p>Tap <strong>Sort by SKU</strong> or <strong>Sort by courier</strong> before you print. The tool reads the SKU and courier name printed on each label, such as Ekart, Delhivery, Xpressbees, Shadowfax, Valmo, DTDC or Amazon Shipping, and reorders the pages. Packing goes faster when all orders of one product, or all parcels for one pickup, sit together.</p>
+    <p>Below the preview you also get a <strong>pick list</strong>: each SKU with its total quantity, and a count of labels per courier. Use it to collect stock before you pack and to check the pickup count with the courier.</p>
+    <figure class="lc-fig"><img src="../images/tools/label-crop-result.webp" alt="Cropped 4x6 shipping labels with a pick list of SKUs and quantities and a count of labels per courier" width="900" height="760" loading="lazy" decoding="async"><figcaption>Result: 4x6 labels, plus a pick list by SKU and a count by courier.</figcaption></figure>
+    <p>Sorting needs the text inside the PDF. Labels from seller panels have it. A scanned label PDF has no text layer, so its labels keep their original order.</p>
+
+    <h3>Why Do Barcodes Stay Sharp?</h3>
+    <p>The label is not turned into a picture. The tool places the original page inside the new 4x6 page and hides everything outside the label, using the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library. Text and barcode bars stay as vector shapes, so the courier’s scanner reads them at any size and the file stays small. A 200-label print file from our test was under 1 MB.</p>
+
+    <h3>How Do You Print Cropped Labels on a Thermal Printer?</h3>
+    <p>Most thermal label printers sold for e-commerce (TVS, Zebra, TSC, HPRT, iDPRT and similar) print a 4x6 PDF the same way:</p>
+    <ol>
+      <li><span>Set the printer’s paper size to <strong>4 × 6 in or 100 × 150 mm</strong> in its driver.</span></li>
+      <li><span>In the print window, choose <strong>Actual size</strong> or <strong>100% scale</strong>, not “Fit to page”.</span></li>
+      <li><span>Keep orientation on <strong>Portrait</strong>; the tool has already rotated wide labels.</span></li>
+      <li><span>If bars look faint, raise the printer’s <strong>darkness</strong> a step in its driver settings.</span></li>
+    </ol>
+    <p>If the first label prints shifted, calibrate the printer to the label gap (usually by holding the feed button) and print again.</p>
+
+    <h3>How Does It Compare With Other Label Croppers?</h3>
+    <p>Most label croppers are built for one marketplace at a time. Here is what differs, based on the tools’ own pages in November 2026:</p>
+    <div class="i2p-tablewrap"><table class="i2p-table">
+      <thead><tr><th scope="col">Feature</th><th scope="col">PDFdukan Label Crop</th><th scope="col">Typical label cropper</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Marketplaces</th><td>Any label PDF with a barcode, plus a manual box</td><td>Separate pages per marketplace</td></tr>
+        <tr><th scope="row">Output sizes</th><td>4x6, 4x4, 3x5, A6, A4 2-up and 4-up, original</td><td>Usually 4x6 only</td></tr>
+        <tr><th scope="row">Invoice</th><td>Labels only, label + invoice, or invoices only</td><td>Often with or without invoice</td></tr>
+        <tr><th scope="row">Sorting</th><td>By SKU or courier, with a pick list</td><td>Some sort by SKU; some only in paid plans</td></tr>
+        <tr><th scope="row">Files</th><td>Many PDFs at once; no file limit set by us</td><td>Some limit files per upload on free plans</td></tr>
+        <tr><th scope="row">Your files</th><td>Processed in your browser</td><td>Varies; check each tool’s policy</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>Is My Label PDF Uploaded?</h3>
+    <p>No. Label PDFs hold customer names, phone numbers and addresses, so the whole crop runs inside your browser tab. The file is not sent to PDFdukan’s servers. The page still loads analytics and ads, like the rest of the site.</p>
+
+    <h3>What Label Crop Doesn’t Do</h3>
+    <ul>
+      <li>It does not create labels or AWB numbers; it only crops the labels your marketplace gives you.</li>
+      <li>It does not add or change SKU text on the label. Sorting uses the SKU that is already printed.</li>
+      <li>Password-protected PDFs need <a href="unlock-pdf-without-password.html">Unlock PDF</a> first.</li>
+      <li>On a very large batch, an older phone works more slowly because your device does the work. In our test, a laptop cropped 200 pages in about 16 seconds.</li>
+    </ul>
+    <p>Need something else for your orders? <a href="merge-pdf.html">Merge PDF</a> joins label files, <a href="crop-pdf-online.html">Crop PDF</a> trims any page, and <a href="compress-pdf-reduce-file-size.html">Compress PDF</a> shrinks invoices for email.</p>
+
+    <h3>Frequently Asked Questions</h3>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Is this label crop tool free?</button></h3><div class="faq-a"><p>Yes. Label Crop is free, needs no account and adds no watermark. We set no limit on files or labels.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">How do I crop a Flipkart shipping label to 4x6?</button></h3><div class="faq-a"><p>Download the label PDF from the seller panel, drop it here and keep 4 × 6 in selected. Each label is cropped onto its own 4x6 page. Tap Download PDF or Print.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop Meesho and Amazon labels too?</button></h3><div class="faq-a"><p>Yes. The tool finds the barcode block on any label PDF, so Meesho, Amazon and courier labels work the same way. If a layout is missed, use Adjust crop box once.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I print the invoice with the label?</button></h3><div class="faq-a"><p>Yes. Choose Label + invoice and each invoice follows its own label. Choose Invoices only to get just the invoices.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Can I crop many label PDFs at once?</button></h3><div class="faq-a"><p>Yes. Add several PDFs together or tap Add more PDFs. All labels come out in one print file.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Will the barcode still scan after cropping?</button></h3><div class="faq-a"><p>Yes. The label is not turned into an image, so barcode bars stay sharp vector lines at any size. Print at Actual size or 100% scale.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Why are my labels not sorted by SKU?</button></h3><div class="faq-a"><p>Sorting reads the SKU printed in the PDF’s text. A scanned or photographed label PDF has no text layer, so it keeps its original order.</p></div></div>
+    <div class="faq-item"><h3 class="i2p-fq"><button class="faq-q" onclick="toggleFAQ(this)" aria-expanded="false">Are my label PDFs uploaded?</button></h3><div class="faq-a"><p>No. The crop runs in your browser tab, so customer names and addresses are not sent to PDFdukan’s servers.</p></div></div>
+  </section>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this label crop tool free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Label Crop is free, needs no account and adds no watermark. We set no limit on files or labels."}}, {"@type": "Question", "name": "How do I crop a Flipkart shipping label to 4x6?", "acceptedAnswer": {"@type": "Answer", "text": "Download the label PDF from the seller panel, drop it here and keep 4 × 6 in selected. Each label is cropped onto its own 4x6 page. Tap Download PDF or Print."}}, {"@type": "Question", "name": "Can I crop Meesho and Amazon labels too?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The tool finds the barcode block on any label PDF, so Meesho, Amazon and courier labels work the same way. If a layout is missed, use Adjust crop box once."}}, {"@type": "Question", "name": "Can I print the invoice with the label?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose Label + invoice and each invoice follows its own label. Choose Invoices only to get just the invoices."}}, {"@type": "Question", "name": "Can I crop many label PDFs at once?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Add several PDFs together or tap Add more PDFs. All labels come out in one print file."}}, {"@type": "Question", "name": "Will the barcode still scan after cropping?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The label is not turned into an image, so barcode bars stay sharp vector lines at any size. Print at Actual size or 100% scale."}}, {"@type": "Question", "name": "Why are my labels not sorted by SKU?", "acceptedAnswer": {"@type": "Answer", "text": "Sorting reads the SKU printed in the PDF’s text. A scanned or photographed label PDF has no text layer, so it keeps its original order."}}, {"@type": "Question", "name": "Are my label PDFs uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The crop runs in your browser tab, so customer names and addresses are not sent to PDFdukan’s servers."}}]}</script>
+</div>
+
+<nav class="mobile-nav"><div class="mob-nav-items">
+  <button class="mob-nav-item" onclick="location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+  <button class="mob-nav-item" onclick="location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+  <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button><button class="mob-nav-item" onclick="location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+</div></nav>
+
+<div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true" aria-labelledby="authTitleTool">
+  <div class="auth-modal">
+    <button class="modal-close" onclick="closeAuth()" aria-label="Close">✕</button>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabSignIn" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tabSignUp" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="panelSignIn">
+      <h2 id="authTitleTool" style="margin-bottom:6px">Welcome back</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
+      <div class="auth-divider"><span>or</span></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
+      <button class="auth-submit" onclick="signInEmail()">Sign In</button>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
+    </div>
+    <div id="panelSignUp" style="display:none">
+      <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
+      <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
+      <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
+      <div class="auth-divider"><span>or fill in below</span></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field-row">
+        <div class="auth-field">
+          <label>Password</label>
+          <input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+        </div>
+        <div class="auth-field">
+          <label>Confirm Password</label>
+          <input aria-label="Confirm password" type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+        </div>
+      </div>
+      <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script src="../js/app.js?v=20261114a"></script>
+<script src="../js/tools.js?v=20261111c"></script>
+<script defer src="../js/label-crop.js?v=20261114a"></script>
+
+<!-- Brand Processing Loader -->
+<div class="brand-loader-overlay" id="brandLoader" role="status" aria-live="polite">
+  <div class="brand-loader-ring">
+    <div class="brand-loader-glow"></div>
+    <div class="brand-loader-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="36" height="36">
+        <defs><linearGradient id="blg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6333"/><stop offset="100%" stop-color="#ff9055"/></linearGradient></defs>
+        <rect width="40" height="40" rx="10" fill="url(#blg2)"/>
+        <path d="M6 12L6 6L12 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M34 12L34 6L28 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="12" y="10" width="12" height="16" rx="2" fill="white" fill-opacity="0.95"/>
+        <rect x="14" y="16" width="7" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="19" width="9" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+        <rect x="14" y="22" width="5" height="1.4" rx="0.7" fill="#ff6333" fill-opacity="0.75"/>
+      </svg>
+    </div>
+  </div>
+  <div class="brand-loader-text">Processing...</div>
+  <div class="brand-loader-sub">Please wait</div>
+</div>
+<!-- FOOTER -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3><img class="fb-logo" src="/favicon.svg" width="34" height="34" alt="PDFdukan logo"> PDFdukan</h3>
+        <p>Home of CamMaster — a browser-based document scanner. Convert, merge, split PDFs and extract text from images — free, private, and right in your browser.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Scanner</h4>
+        <a href="../scanner.html">CamMaster Scanner</a>
+        <a href="../tools/ocr-image-to-text.html">OCR Text</a>
+        <a href="../tools/image-to-pdf-converter.html">Image to PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>PDF Tools</h4>
+        <a href="../tools/merge-pdf.html">Merge PDF</a>
+        <a href="../tools/extract-pdf-pages.html">Split PDF</a>
+        <a href="../tools/compress-pdf-reduce-file-size.html">Compress PDF</a>
+        <a href="../tools/pdf-to-image-converter.html">PDF to JPG</a>
+        <a href="../tools/crop-pdf-online.html">Crop PDF</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About PDFdukan</a>
+        <a href="../blog/index.html">Blog</a>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../privacy.html">Privacy Policy</a>
+        <a href="../terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <strong>PDFdukan</strong>. All rights reserved. CamMaster™ is a trademark of PDFdukan.</p>
+      <div class="footer-links">
+        <a href="../privacy.html">Privacy</a>
+        <a href="../terms.html">Terms</a>
+        <a href="../sitemap.xml">Sitemap</a>
+        <a href="../cookies.html">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="Mobile navigation">
+  <div class="mob-nav-items">
+    <button class="mob-nav-item" onclick="window.location.href='/'"><span class="mni">🏠</span><span>Home</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../scanner.html'"><span class="mni">📷</span><span>Scan</span></button>
+    <button class="mob-nav-item active"><span class="mni">🛠️</span><span>Tools</span></button>
+    <button class="mob-nav-item" onclick="window.location.href='../blog/index.html'"><span class="mni">&#128221;</span><span>Blog</span></button>
+    <button class="mob-nav-item" onclick="if(window.openAuth)openAuth()"><span class="mni">👤</span><span>Account</span></button>
+  </div>
+</nav>
+</body>
+</html>
