@@ -28,7 +28,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "Best Free PDF Tools 2026, Picked by Task and Tested", "description": "Best free PDF tools 2026, compared by task: free-tier limits, file privacy and our real no-upload test. Pick the right free tool for your next PDF.", "author": {"@type": "Organization", "name": "PDFdukan Editorial Team", "url": "https://pdfdukan.com/about.html"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/", "logo": {"@type": "ImageObject", "url": "https://pdfdukan.com/favicon.svg"}}, "datePublished": "2026-05-30", "dateModified": "2026-11-11", "image": "https://pdfdukan.com/images/blog/free-pdf-tools-cover.webp", "mainEntityOfPage": "https://pdfdukan.com/blog/best-free-pdf-tools.html"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pdfdukan.com/blog/index.html"}, {"@type": "ListItem", "position": 3, "name": "Best Free PDF Tools 2026, Picked by Task and Tested", "item": "https://pdfdukan.com/blog/best-free-pdf-tools.html"}]}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the best free PDF tool for everyday tasks?", "acceptedAnswer": {"@type": "Answer", "text": "The best free PDF tool for everyday tasks is one that merges, splits, compresses and converts with no signup or watermark. Test it with one small file first. Check the download step, because that is where hidden paywalls appear."}}, {"@type": "Question", "name": "Are free online PDF tools safe?", "acceptedAnswer": {"@type": "Answer", "text": "Free online PDF tools are reasonably safe for ordinary files if they use HTTPS and delete uploads quickly. For sensitive records, choose a tool that processes files in your browser. Then no copy sits on a third-party server."}}, {"@type": "Question", "name": "Do free PDF tools add watermarks?", "acceptedAnswer": {"@type": "Answer", "text": "Some free PDF tools add watermarks to push paid plans, but many do not. Run one test page and open the result before you process a full document. Our own test outputs had no watermark."}}, {"@type": "Question", "name": "Do I need an account to use free PDF tools?", "acceptedAnswer": {"@type": "Answer", "text": "Most free PDF tools need no account for a single task. Some ask for signup after a few tasks a day or before download. The PDFdukan tools in our test worked without an account."}}, {"@type": "Question", "name": "Can I edit a scanned PDF for free?", "acceptedAnswer": {"@type": "Answer", "text": "A scanned PDF can be edited for free once OCR turns its page images into text. Run OCR first, then edit or convert the result. Proofread names and numbers, because OCR can misread look-alike characters."}}, {"@type": "Question", "name": "Can I use free PDF tools on my phone?", "acceptedAnswer": {"@type": "Answer", "text": "Free PDF tools work on a phone if the site is built for small screens. Browser-based tools need no app install. Try one task on your phone before you depend on it."}}, {"@type": "Question", "name": "Is Adobe Acrobat Reader free?", "acceptedAnswer": {"@type": "Answer", "text": "Adobe Acrobat Reader is free, and Denser names it the best free PDF reader overall. The paid Acrobat Pro starts at $19.99 a month, according to Denser. Free task tools can cover merging, compressing and converting."}}, {"@type": "Question", "name": "Which free PDF tools work without the cloud?", "acceptedAnswer": {"@type": "Answer", "text": "Desktop and self-hosted PDF tools work without sending files to a cloud service. PDFonFly notes that PDF24 offers a desktop app. Konomic names Stirling PDF the best self-hosted option, though it needs technical setup. Browser-based tools also keep files local while they process them."}}, {"@type": "Question", "name": "How many free PDF tools do I really need?", "acceptedAnswer": {"@type": "Answer", "text": "Most people need one PDF reader and one toolkit that covers merge, split, compress and convert. Adding many separate sites means more uploads and more limits to track. Keep one trusted toolkit bookmarked instead."}}]}</script>
 <style>
@@ -261,21 +261,21 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

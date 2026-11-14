@@ -26,7 +26,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@context":"https://schema.org","@type":"Article","headline":"How to Split a PDF into Separate Files (Free)","description":"Split a PDF into separate files for free — extract a page range, every page, or pull out single pages.","datePublished":"2026-06-05","dateModified":"2026-08-25","author":{"@type":"Organization","name":"PDFdukan Editorial Team","url":"https://pdfdukan.com/about.html#editorial-standards"},"publisher":{"@type":"Organization","@id":"https://pdfdukan.com/#organization","name":"PDFdukan","url":"https://pdfdukan.com","logo":{"@type":"ImageObject","url":"https://pdfdukan.com/apple-touch-icon.png","width":180,"height":180}},"mainEntityOfPage":{"@type":"WebPage","@id":"https://pdfdukan.com/blog/split-pdf-guide.html"},"image":{"@type":"ImageObject","url":"https://pdfdukan.com/images/blog-pdf-workflow.svg","width":800,"height":400},"@id":"https://pdfdukan.com/blog/split-pdf-guide.html#article","url":"https://pdfdukan.com/blog/split-pdf-guide.html","isPartOf":{"@id":"https://pdfdukan.com/#website"},"inLanguage":"en","isAccessibleForFree":true},{"@type":"BreadcrumbList","@id":"https://pdfdukan.com/blog/split-pdf-guide.html#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://pdfdukan.com/"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://pdfdukan.com/blog/index.html"},{"@type":"ListItem","position":3,"name":"How to Split a PDF into Separate Files (Free)","item":"https://pdfdukan.com/blog/split-pdf-guide.html"}]}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I extract just one page?","acceptedAnswer":{"@type":"Answer","text":"Yes. Pull out a single page, a custom range like 3-8, or split every page into its own file."}},{"@type":"Question","name":"Does splitting preserve every PDF feature?","acceptedAnswer":{"@type":"Answer","text":"Pages are copied without intentional rasterization or image recompression. Interactive forms, outlines, links, annotations, signatures and unusual PDF features may not all carry over, so verify important outputs."}},{"@type":"Question","name":"How do I get all the split files together?","acceptedAnswer":{"@type":"Answer","text":"When you split into many files, download them together as a single ZIP archive."}},{"@type":"Question","name":"Where is the split operation performed?","acceptedAnswer":{"@type":"Answer","text":"The selected PDF is processed by client-side code in your browser. The page can still request ordinary site assets, analytics and third-party libraries."}}]}</script>
 <style>
@@ -106,7 +106,7 @@
   </ol>
 </nav>
 
-<img src="/images/blog-pdf-workflow.svg" alt="A single PDF being split into separate page files" loading="lazy" style="width:100%;max-height:340px;object-fit:contain;border-radius:12px;margin:8px 0 20px">
+<img src="/images/blog-pdf-workflow.svg" width="800" height="400" alt="A single PDF being split into separate page files" loading="lazy" style="width:100%;max-height:340px;object-fit:contain;border-radius:12px;margin:8px 0 20px">
 
 <p id="why">Sometimes you only need part of a PDF. Maybe a 50-page report has one section you want to send, or a scanned booklet should become one file per page. Splitting lets you keep exactly what you need and leave the rest behind.</p>
 
@@ -164,21 +164,21 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

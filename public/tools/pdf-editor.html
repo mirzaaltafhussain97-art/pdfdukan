@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <title>Online PDF Editor Free – Edit, Fill & Sign PDF | PDFdukan</title>
 <meta name="description" content="Free online PDF editor, no sign up, no watermark: retype text, sign with a saved signature, initials and date, fill forms, add links. In your browser.">
 <link rel="canonical" href="https://pdfdukan.com/tools/pdf-editor.html">
@@ -470,7 +470,7 @@ body{overflow-y:auto}
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
       Open PDF
     </button>
-    <input type="file" id="file-input-hidden" accept=".pdf">
+    <input aria-label="Choose files" type="file" id="file-input-hidden" accept=".pdf">
     <span class="pe-filename" id="pe-filename">No file loaded</span>
     <div class="hdr-spacer"></div>
     <div id="pe-history-wrap" aria-label="Edit history">
@@ -583,8 +583,8 @@ body{overflow-y:auto}
       <button type="button" class="sig-tab" data-sigmode="type" role="tab">Type</button>
       <button type="button" class="sig-tab" data-sigmode="upload" role="tab">Upload photo</button>
     </div>
-    <div class="sig-typerow" hidden><input type="text" id="sig-type-input" placeholder="Type your name" maxlength="40"><select id="sig-type-font" aria-label="Signature style"><option value="PD GreatVibes">Great Vibes</option><option value="PD Dancing">Dancing Script</option><option value="PD Allura">Allura</option><option value="PD Sacramento">Sacramento</option><option value="PD AlexBrush">Alex Brush</option><option value="PD Satisfy">Satisfy</option><option value="PD Parisienne">Parisienne</option><option value="PD MrDafoe">Mr Dafoe</option><option value="PD HomemadeApple">Homemade Apple</option><option value="PD Caveat">Caveat</option></select></div>
-    <div class="sig-uprow" hidden><button type="button" class="sig-btn" id="sig-upload-btn">Choose a photo of your signature</button><span class="sig-hint">White paper turns see-through</span><input type="file" id="sig-upload-input" accept="image/*" hidden></div>
+    <div class="sig-typerow" hidden><input aria-label="Type your name" type="text" id="sig-type-input" placeholder="Type your name" maxlength="40"><select id="sig-type-font" aria-label="Signature style"><option value="PD GreatVibes">Great Vibes</option><option value="PD Dancing">Dancing Script</option><option value="PD Allura">Allura</option><option value="PD Sacramento">Sacramento</option><option value="PD AlexBrush">Alex Brush</option><option value="PD Satisfy">Satisfy</option><option value="PD Parisienne">Parisienne</option><option value="PD MrDafoe">Mr Dafoe</option><option value="PD HomemadeApple">Homemade Apple</option><option value="PD Caveat">Caveat</option></select></div>
+    <div class="sig-uprow" hidden><button type="button" class="sig-btn" id="sig-upload-btn">Choose a photo of your signature</button><span class="sig-hint">White paper turns see-through</span><input aria-label="Choose files" type="file" id="sig-upload-input" accept="image/*" hidden></div>
     <canvas id="sig-canvas" width="400" height="160"></canvas>
     <div class="sig-inks" aria-label="Ink colour"><button type="button" class="sig-ink active" data-ink="#111111" title="Black" style="background:#111"></button><button type="button" class="sig-ink" data-ink="#1a3fa6" title="Blue" style="background:#1a3fa6"></button><button type="button" class="sig-ink" data-ink="#b3261e" title="Red" style="background:#b3261e"></button></div>
     <label class="sig-save"><input type="checkbox" id="sig-save" checked> Save in this browser for next time (never uploaded)</label>
@@ -600,7 +600,7 @@ body{overflow-y:auto}
 <div id="link-modal">
   <div class="link-box">
     <h3>&#128279; Insert Link</h3>
-    <input type="url" id="link-url-input" placeholder="https://example.com" />
+    <input aria-label="https://example.com" type="url" id="link-url-input" placeholder="https://example.com" />
     <div class="link-actions">
       <button class="sig-btn" id="link-cancel">Cancel</button>
       <button class="sig-btn primary" id="link-apply">Insert Link Box</button>
@@ -613,7 +613,7 @@ body{overflow-y:auto}
   <div class="img-box">
     <h3>&#128444;&#65039; Insert Image</h3>
     <div class="img-drop" id="img-drop-label">Click to choose image or drag here<br><small style="color:var(--text3)">PNG, JPG, WebP, GIF</small></div>
-    <input type="file" id="img-file-hidden" accept="image/*">
+    <input aria-label="Choose files" type="file" id="img-file-hidden" accept="image/*">
     <div class="img-actions">
       <button class="sig-btn" id="img-cancel">Cancel</button>
     </div>
@@ -636,11 +636,11 @@ body{overflow-y:auto}
     <button class="fr-btn fr-close-x" id="fr-close-btn" title="Close (Esc)">&#215;</button>
   </div>
   <div class="fr-row">
-    <input type="text" id="fr-find" placeholder="Find text…" autocomplete="off" spellcheck="false">
+    <input aria-label="Find text…" type="text" id="fr-find" placeholder="Find text…" autocomplete="off" spellcheck="false">
     <span id="fr-count" class="fr-count"></span>
   </div>
   <div class="fr-row">
-    <input type="text" id="fr-replace" placeholder="Replace with…" autocomplete="off" spellcheck="false">
+    <input aria-label="Replace with…" type="text" id="fr-replace" placeholder="Replace with…" autocomplete="off" spellcheck="false">
   </div>
   <div class="fr-actions">
     <button class="fr-btn" id="fr-prev">&#8592; Prev</button>
@@ -658,9 +658,9 @@ body{overflow-y:auto}
   <button class="ft-btn" id="ft-bold" title="Bold"><b>B</b></button>
   <button class="ft-btn" id="ft-italic" title="Italic"><i>I</i></button>
   <div class="ft-sep"></div>
-  <select class="ft-font" id="ft-font" title="Font"></select>
-  <input type="number" class="ft-size" id="ft-size" min="6" max="120" value="14" title="Font Size">
-  <input type="color" class="ft-color" id="ft-color" value="#000000" title="Text Color">
+  <select aria-label="Font" class="ft-font" id="ft-font" title="Font"></select>
+  <input aria-label="Font Size" type="number" class="ft-size" id="ft-size" min="6" max="120" value="14" title="Font Size">
+  <input aria-label="Text Color" type="color" class="ft-color" id="ft-color" value="#000000" title="Text Color">
   <div class="ft-sep"></div>
   <button class="ft-btn ft-move-btn" id="ft-move" title="Move"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v14M1 8h14M8 1l-2.5 2.5M8 1l2.5 2.5M8 15l-2.5-2.5M8 15l2.5-2.5M1 8l2.5-2.5M1 8l2.5 2.5M15 8l-2.5-2.5M15 8l-2.5 2.5"/></svg></button>
   <button class="ft-btn ft-delete" id="ft-delete" title="Delete">&#128465;</button>
@@ -2530,15 +2530,15 @@ function renderSubToolbar(tool){
   if(tool === 'text'){
     bar.innerHTML =
       '<span class="st-label">Size:</span>' +
-      '<input type="number" class="st-select" id="st-font-size" value="'+PE_STATE.subText.size+'" min="6" max="120" style="width:52px">' +
-      '<select class="st-select" id="st-font-family">' +
+      '<input aria-label="St font size" type="number" class="st-select" id="st-font-size" value="'+PE_STATE.subText.size+'" min="6" max="120" style="width:52px">' +
+      '<select aria-label="St font family" class="st-select" id="st-font-family">' +
         (window.PDEditCore ? PDEditCore.CHOICES : [['sans','Arial']]).map(function(c){ return '<option value="'+c[0]+'"'+(c[0]===(PE_STATE.subText.fontKey||'sans')?' selected':'')+'>'+c[1]+'</option>'; }).join('') +
       '</select>' +
       '<div class="st-divider"></div>' +
       '<span class="st-label">Color:</span>' +
-      '<input type="color" class="st-input-color" id="st-text-color" value="'+PE_STATE.subText.color+'">' +
+      '<input aria-label="St text color" type="color" class="st-input-color" id="st-text-color" value="'+PE_STATE.subText.color+'">' +
       '<span class="st-label">Highlight:</span>' +
-      '<input type="color" class="st-input-color" id="st-text-highlight" value="'+(PE_STATE.subText.highlight&&PE_STATE.subText.highlight!=='transparent'?PE_STATE.subText.highlight:'#ffff00')+'">' +
+      '<input aria-label="St text highlight" type="color" class="st-input-color" id="st-text-highlight" value="'+(PE_STATE.subText.highlight&&PE_STATE.subText.highlight!=='transparent'?PE_STATE.subText.highlight:'#ffff00')+'">' +
       '<button class="st-btn" id="st-highlight-off">No Highlight</button>' +
       '<div class="st-divider"></div>' +
       '<button class="st-btn'+(PE_STATE.subText.bold?' active':'')+'" id="st-bold" style="font-weight:bold">B</button>' +
@@ -2556,9 +2556,9 @@ function renderSubToolbar(tool){
   } else if(tool === 'draw'){
     bar.innerHTML =
       '<span class="st-label">Color:</span>' +
-      '<input type="color" class="st-input-color" id="st-draw-color" value="'+PE_STATE.subDraw.color+'">' +
+      '<input aria-label="St draw color" type="color" class="st-input-color" id="st-draw-color" value="'+PE_STATE.subDraw.color+'">' +
       '<span class="st-label">Width:</span>' +
-      '<input type="range" min="1" max="20" value="'+PE_STATE.subDraw.width+'" id="st-draw-width" style="width:80px">' +
+      '<input aria-label="St draw width" type="range" min="1" max="20" value="'+PE_STATE.subDraw.width+'" id="st-draw-width" style="width:80px">' +
       '<span id="st-draw-width-val" style="font-size:12px;color:var(--text2);min-width:24px">'+PE_STATE.subDraw.width+'px</span>';
     document.getElementById('st-draw-color').oninput=function(e){ PE_STATE.subDraw.color=e.target.value; };
     document.getElementById('st-draw-width').oninput=function(e){ PE_STATE.subDraw.width=e.target.value; document.getElementById('st-draw-width-val').textContent=e.target.value+'px'; };
@@ -2566,16 +2566,16 @@ function renderSubToolbar(tool){
   } else if(tool === 'shapes'){
     bar.innerHTML =
       '<span class="st-label">Shape:</span>' +
-      '<select class="st-select" id="st-shape-type">' +
+      '<select aria-label="St shape type" class="st-select" id="st-shape-type">' +
         ['rect','circle','line','arrow','triangle'].map(function(t){ return '<option value="'+t+'"'+(t===PE_STATE.subShape.type?' selected':'')+'>'+t.charAt(0).toUpperCase()+t.slice(1)+'</option>'; }).join('') +
       '</select>' +
       '<span class="st-label">Stroke:</span>' +
-      '<input type="color" class="st-input-color" id="st-shape-stroke" value="'+(PE_STATE.subShape.color||'#ff6333')+'">' +
+      '<input aria-label="St shape stroke" type="color" class="st-input-color" id="st-shape-stroke" value="'+(PE_STATE.subShape.color||'#ff6333')+'">' +
       '<span class="st-label">Fill:</span>' +
-      '<input type="color" class="st-input-color" id="st-shape-fill" value="'+(PE_STATE.subShape.fill&&PE_STATE.subShape.fill!=='transparent'?PE_STATE.subShape.fill:'#ffffff')+'">' +
+      '<input aria-label="St shape fill" type="color" class="st-input-color" id="st-shape-fill" value="'+(PE_STATE.subShape.fill&&PE_STATE.subShape.fill!=='transparent'?PE_STATE.subShape.fill:'#ffffff')+'">' +
       '<button class="st-btn" id="st-shape-fill-none">No Fill</button>' +
       '<span class="st-label">Width:</span>' +
-      '<input type="number" class="st-select" id="st-shape-lw" value="'+PE_STATE.subShape.width+'" min="1" max="20" style="width:46px">';
+      '<input aria-label="St shape lw" type="number" class="st-select" id="st-shape-lw" value="'+PE_STATE.subShape.width+'" min="1" max="20" style="width:46px">';
     document.getElementById('st-shape-type').onchange=function(e){ PE_STATE.subShape.type=e.target.value; };
     document.getElementById('st-shape-stroke').oninput=function(e){ PE_STATE.subShape.color=e.target.value; };
     document.getElementById('st-shape-fill').oninput=function(e){ PE_STATE.subShape.fill=e.target.value; };
@@ -2585,21 +2585,21 @@ function renderSubToolbar(tool){
   } else if(tool === 'whiteout'){
     bar.innerHTML =
       '<span class="st-label">Cover Color:</span>' +
-      '<input type="color" class="st-input-color" id="st-wo-color" value="'+PE_STATE.subWhiteout.color+'">' +
+      '<input aria-label="St wo color" type="color" class="st-input-color" id="st-wo-color" value="'+PE_STATE.subWhiteout.color+'">' +
       '<span style="font-size:12px;color:var(--text2);margin-left:8px">White = hide text &nbsp;|&nbsp; Black = redact &nbsp;|&nbsp; Match page background for seamless blend</span>';
     document.getElementById('st-wo-color').oninput=function(e){ PE_STATE.subWhiteout.color=e.target.value; };
     bar.classList.add('visible');
   } else if(tool === 'annotate'){
     bar.innerHTML =
       '<span class="st-label">Note Color:</span>' +
-      '<input type="color" class="st-input-color" id="st-ann-color" value="#ffff00">' +
+      '<input aria-label="St ann color" type="color" class="st-input-color" id="st-ann-color" value="#ffff00">' +
       '<span style="font-size:12px;color:var(--text2);margin-left:8px">Click the page to drop a sticky note</span>';
     document.getElementById('st-ann-color').oninput=function(e){ PE_STATE.subAnnotate.color=e.target.value+'99'; };
     bar.classList.add('visible');
   } else if(tool === 'form'){
     bar.innerHTML =
       '<span class="st-label">Field Type:</span>' +
-      '<select class="st-select" id="st-form-type">' +
+      '<select aria-label="St form type" class="st-select" id="st-form-type">' +
         ['text','textarea','checkbox','radio','select'].map(function(t){ return '<option value="'+t+'"'+(t===PE_STATE.subForm.type?' selected':'')+'>'+t.charAt(0).toUpperCase()+t.slice(1)+'</option>'; }).join('') +
       '</select>' +
       '<span style="font-size:12px;color:var(--text2);margin-left:8px">Click on the page to place a form field</span>';

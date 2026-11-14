@@ -28,7 +28,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Compress a PDF: Settings That Work", "description": "Learn how to compress a PDF the right way: which setting fits scans, photo reports and text files, with real test results. Try it free in your browser.", "author": {"@type": "Organization", "name": "PDFdukan Editorial Team", "url": "https://pdfdukan.com/about.html"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/", "logo": {"@type": "ImageObject", "url": "https://pdfdukan.com/favicon.svg"}}, "datePublished": "2026-06-05", "dateModified": "2026-11-11", "image": "https://pdfdukan.com/images/blog/pdf-compress-results.webp", "mainEntityOfPage": "https://pdfdukan.com/blog/compress-pdf-reduce-size.html"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pdfdukan.com/blog/index.html"}, {"@type": "ListItem", "position": 3, "name": "How to Compress a PDF: Settings That Work", "item": "https://pdfdukan.com/blog/compress-pdf-reduce-size.html"}]}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do you compress a PDF without losing quality?", "acceptedAnswer": {"@type": "Answer", "text": "Use \"Keep text\" on Light or Balanced, which shrinks only the pictures. Text and lines stay sharp because they are not images. Check the busiest page at full zoom before you send the file."}}, {"@type": "Question", "name": "How much can a scanned PDF shrink?", "acceptedAnswer": {"@type": "Answer", "text": "A scanned PDF can shrink by 80% or more, because every page is a large image. Our 13.79 MB test scan became 1.79 MB on Balanced. Results depend on the scan resolution and color."}}, {"@type": "Question", "name": "Does compressing a PDF remove the searchable text from a scan?", "acceptedAnswer": {"@type": "Answer", "text": "No, \"Keep text\" keeps any searchable text layer a scan already has. \"Pages as images\" removes it, because each page turns into a plain picture. To add searchable text first, use the searchable PDF converter."}}, {"@type": "Question", "name": "Can I compress a PDF on a Mac without a website?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, Preview on a Mac can compress a PDF offline. Choose File › Export, then pick \"Reduce File Size\" under Quartz Filter. Apple notes the result may look lower in quality."}}, {"@type": "Question", "name": "Why is my PDF from Word so large?", "acceptedAnswer": {"@type": "Answer", "text": "A PDF from Word is usually large because of the photos inside it. Text adds very little weight. Shrink the photos before inserting them, or compress the finished PDF once."}}, {"@type": "Question", "name": "Should I compress before or after merging PDFs?", "acceptedAnswer": {"@type": "Answer", "text": "Compress after merging, once, at the end. Each compression pass shrinks images again and can soften them further. Merging first also lets you check the final size against the limit."}}, {"@type": "Question", "name": "Will compressing break a digital signature?", "acceptedAnswer": {"@type": "Answer", "text": "Compressing can break a certificate-based digital signature, because the file changes after signing. Tools disagree on this, so do not rely on it. Compress the document first, then sign it."}}]}</script>
 <style>
@@ -194,21 +194,21 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

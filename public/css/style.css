@@ -2711,3 +2711,7 @@ html[data-theme="light"] .tool-icon-wrap.has-pd-ico,html[data-theme="dark"] .too
 .tool-card .tc-desc{font-size:11.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tool-card:hover{transform:none}
 .tool-card::before{display:none}
+
+/* auth modal switch: a real button that looks like the old link */
+.auth-switch-link{background:none;border:0;padding:0;font:inherit;color:var(--primary);font-weight:700;cursor:pointer}
+.auth-switch-link:hover{text-decoration:underline}

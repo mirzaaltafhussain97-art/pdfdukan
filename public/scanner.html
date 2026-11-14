@@ -55,7 +55,7 @@
   })();
 </script>
 
-<link rel="stylesheet" href="css/style.css?v=20261114a">
+<link rel="stylesheet" href="css/style.css?v=20261114b">
 <style>
 .scanner-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 24px; }
 .cv-badge { display: none !important; }
@@ -308,7 +308,7 @@
         <div class="pdf-options">
           <div class="po-row">
             <label>Page Size</label>
-            <select id="pdfPageSize">
+            <select aria-label="Pdf page size" id="pdfPageSize">
               <option value="a4">A4</option>
               <option value="letter">Letter</option>
               <option value="a3">A3</option>
@@ -316,7 +316,7 @@
           </div>
           <div class="po-row">
             <label>Orientation</label>
-            <select id="pdfOrientation">
+            <select aria-label="Pdf orientation" id="pdfOrientation">
               <option value="portrait">Portrait</option>
               <option value="landscape">Landscape</option>
             </select>
@@ -330,7 +330,7 @@
           </div>
           <div class="po-row">
             <label>Quality</label>
-            <select id="pdfQuality">
+            <select aria-label="Pdf quality" id="pdfQuality">
               <option value="0.98" selected>High (clear text)</option>
               <option value="0.85">Medium (smaller file)</option>
               <option value="0.7">Low (smaller file)</option>
@@ -418,10 +418,10 @@
         Continue with Google
       </button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••" autocomplete="current-password"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
@@ -431,22 +431,22 @@
         Sign Up with Google
       </button>
       <div class="auth-divider"><span>or fill in below</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
-      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
       
       <div class="auth-field-row">
         <div class="auth-field">
           <label>Password</label>
-          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
           <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
         </div>
         <div class="auth-field">
           <label>Confirm Password</label>
-          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+          <input aria-label="Confirm password" type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
         </div>
       </div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account →</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>
@@ -480,8 +480,8 @@
 </div>
 
 <!-- Hidden file inputs -->
-<input type="file" id="fileInputScanner" accept="image/*,.pdf,application/pdf" multiple>
-<input type="file" id="fileInputPdfScan" accept=".pdf,application/pdf" multiple>
+<input aria-label="Choose files" type="file" id="fileInputScanner" accept="image/*,.pdf,application/pdf" multiple>
+<input aria-label="Choose files" type="file" id="fileInputPdfScan" accept=".pdf,application/pdf" multiple>
 
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>

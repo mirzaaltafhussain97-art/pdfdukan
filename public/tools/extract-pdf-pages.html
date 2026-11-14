@@ -37,7 +37,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <style>
 /* ── Split mode cards ──────────────────────────────────────── */
 .split-mode-cards {
@@ -227,7 +227,7 @@
       <div class="dz-title">Drop a PDF here or click to browse</div>
       <div class="dz-hint">Choose an unlocked PDF. Capacity depends on file complexity and your device memory.</div>
       <span class="dz-btn">Choose PDF</span>
-      <input type="file" id="fileInput" accept=".pdf,application/pdf">
+      <input aria-label="Choose files" type="file" id="fileInput" accept=".pdf,application/pdf">
     </div>
     <div id="pdfInfo" style="margin-top:10px;font-size:13px;color:var(--text-3);padding:8px 12px;background:var(--card-2);border-radius:var(--radius-sm);display:none"></div>
   </div>
@@ -267,7 +267,7 @@
       <div class="options-row">
         <div class="option-group">
           <label>Pages per group</label>
-          <input type="number" id="everyN" value="2" min="1" max="500" style="width:80px">
+          <input aria-label="Every n" type="number" id="everyN" value="2" min="1" max="500" style="width:80px">
         </div>
       </div>
     </div>
@@ -275,7 +275,7 @@
     <div class="split-option" id="opt_ranges">
       <div class="option-group" style="max-width:420px">
         <label>Page ranges (e.g. 1-3, 4, 5-7)</label>
-        <input type="text" id="rangesInput" placeholder="1-3, 4, 5-7, 8-10"
+        <input aria-label="1-3, 4, 5-7, 8-10" type="text" id="rangesInput" placeholder="1-3, 4, 5-7, 8-10"
           style="background:var(--card-2);border:1px solid var(--border);color:var(--text);
                  padding:9px 12px;border-radius:var(--radius-sm);font-size:13px;outline:none;width:100%">
       </div>
@@ -394,32 +394,32 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or fill in below</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
-      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
       
       <div class="auth-field-row">
         <div class="auth-field">
           <label>Password</label>
-          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
           <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
         </div>
         <div class="auth-field">
           <label>Confirm Password</label>
-          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+          <input aria-label="Confirm password" type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
         </div>
       </div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

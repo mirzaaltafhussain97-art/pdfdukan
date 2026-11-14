@@ -28,7 +28,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Compress Images Without Losing Quality", "description": "Learn how to compress images without losing quality: resize first, pick the right setting and format, and keep files small. Real test results inside.", "author": {"@type": "Organization", "name": "PDFdukan Editorial Team", "url": "https://pdfdukan.com/about.html"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/", "logo": {"@type": "ImageObject", "url": "https://pdfdukan.com/favicon.svg"}}, "datePublished": "2026-05-30", "dateModified": "2026-11-11", "image": "https://pdfdukan.com/images/blog/compress-images-cover-og.jpg", "mainEntityOfPage": "https://pdfdukan.com/blog/compress-images-without-losing-quality.html"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pdfdukan.com/blog/index.html"}, {"@type": "ListItem", "position": 3, "name": "How to Compress Images Without Losing Quality", "item": "https://pdfdukan.com/blog/compress-images-without-losing-quality.html"}]}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can you compress images without losing quality?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, images compress with no visible loss when you resize first and save once. Set the width to the display size, then save at about 80%. Check the result at 100% zoom before you replace the original."}}, {"@type": "Question", "name": "Why did my image get bigger after compressing?", "acceptedAnswer": {"@type": "Answer", "text": "An image gets bigger when it was already compressed harder than your new setting. The PDFdukan compressor now keeps your original file in that case."}}, {"@type": "Question", "name": "Should I compress an image more than once?", "acceptedAnswer": {"@type": "Answer", "text": "No, compress an image only once. Each lossy save drops more detail, and the damage adds up. Keep the original and compress a fresh copy when you need a new size."}}, {"@type": "Question", "name": "Does compressing remove location data?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, in our test the compressed file had no GPS or camera data. A file kept as the original still has it."}}, {"@type": "Question", "name": "Is WebP better than JPG for the web?", "acceptedAnswer": {"@type": "Answer", "text": "WebP is usually smaller at the same look. Our resized photo was 128 KB as WebP and 226 KB as JPG."}}, {"@type": "Question", "name": "How do I compress an image to a set size, like 100 KB?", "acceptedAnswer": {"@type": "Answer", "text": "Choose Target size and pick a preset from 20 KB to 1 MB. The tool finds the highest quality that fits. For images headed into a PDF, see JPG to PDF without losing quality."}}]}</script>
 <style>
@@ -187,21 +187,21 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

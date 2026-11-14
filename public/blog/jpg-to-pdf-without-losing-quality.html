@@ -28,7 +28,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Convert JPG to PDF Without Losing Quality", "description": "Learn how to convert JPG to PDF without losing quality: keep the original photo, fix sideways phone pictures and keep the file small. Try it free.", "author": {"@type": "Organization", "name": "PDFdukan Editorial Team", "url": "https://pdfdukan.com/about.html"}, "publisher": {"@type": "Organization", "name": "PDFdukan", "url": "https://pdfdukan.com/", "logo": {"@type": "ImageObject", "url": "https://pdfdukan.com/favicon.svg"}}, "datePublished": "2026-05-30", "dateModified": "2026-11-11", "image": "https://pdfdukan.com/images/blog/jpg-to-pdf-cover-og.jpg", "mainEntityOfPage": "https://pdfdukan.com/blog/jpg-to-pdf-without-losing-quality.html"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfdukan.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pdfdukan.com/blog/index.html"}, {"@type": "ListItem", "position": 3, "name": "How to Convert JPG to PDF Without Losing Quality", "item": "https://pdfdukan.com/blog/jpg-to-pdf-without-losing-quality.html"}]}]}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can you convert JPG to PDF without losing quality?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, when the converter embeds the original JPG instead of saving it again. In the PDFdukan Image to PDF tool, Best mode does this for images left unrotated in the tool."}}, {"@type": "Question", "name": "Will the colors change?", "acceptedAnswer": {"@type": "Answer", "text": "Colors stay the same when the original JPG is embedded, because the PDF holds the same image data."}}, {"@type": "Question", "name": "What page size should I choose?", "acceptedAnswer": {"@type": "Answer", "text": "Choose the page size the recipient asks for. The tool offers A4, Letter, A3 and A5, and page size does not change the image data."}}, {"@type": "Question", "name": "Can I combine several JPGs into one PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, add several images together and each becomes its own page in the order you set. To join finished PDFs, see our guide to merging PDFs without losing quality."}}, {"@type": "Question", "name": "Can I convert iPhone HEIC photos?", "acceptedAnswer": {"@type": "Answer", "text": "The PDFdukan converter accepts JPEG, PNG and WebP, not HEIC. On an iPhone, Settings › Camera › Formats › Most Compatible saves new photos as JPEG."}}, {"@type": "Question", "name": "Are my images uploaded to a server?", "acceptedAnswer": {"@type": "Answer", "text": "No, the PDFdukan Image to PDF tool builds the PDF in your browser, so photos are not sent away for conversion. The page still loads normal site files and its PDF library."}}]}</script>
 <style>
@@ -186,21 +186,21 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px">Create account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your name"></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="suEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="suPass" placeholder="Min. 8 characters"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your name"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 characters"></div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>

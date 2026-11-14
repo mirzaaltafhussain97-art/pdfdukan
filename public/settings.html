@@ -28,7 +28,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="css/style.css?v=20261114a">
+<link rel="stylesheet" href="css/style.css?v=20261114b">
 <style>
 .settings-grid { display: flex; flex-direction: column; gap: 14px; }
 .setting-row {
@@ -223,7 +223,7 @@
           <div class="sl-desc">Used when exporting from the scanner</div>
         </div>
         <div class="setting-control">
-          <select id="exportFormat" onchange="saveSetting('exportFormat', this.value)">
+          <select aria-label="Export format" id="exportFormat" onchange="saveSetting('exportFormat', this.value)">
             <option value="pdf">PDF (Recommended)</option>
             <option value="jpeg">JPEG Image</option>
             <option value="png">PNG Image</option>
@@ -237,7 +237,7 @@
           <div class="sl-desc">Trade-off between file size and image quality</div>
         </div>
         <div class="setting-control">
-          <select id="qualityPreset" onchange="saveSetting('quality', this.value)">
+          <select aria-label="Quality preset" id="qualityPreset" onchange="saveSetting('quality', this.value)">
             <option value="high">Maximum Quality (larger files)</option>
             <option value="balanced">Balanced (recommended)</option>
             <option value="compressed">High Compression (smaller files)</option>
@@ -251,7 +251,7 @@
           <div class="sl-desc">Filter applied automatically when scanning a new document</div>
         </div>
         <div class="setting-control">
-          <select id="scanFilter" onchange="saveSetting('scanFilter', this.value)">
+          <select aria-label="Scan filter" id="scanFilter" onchange="saveSetting('scanFilter', this.value)">
             <option value="enhance">Auto-Enhance</option>
             <option value="magicpro">Magic Pro (AI)</option>
             <option value="bw">Black &amp; White</option>

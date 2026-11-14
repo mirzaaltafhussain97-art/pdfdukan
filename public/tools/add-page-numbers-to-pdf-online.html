@@ -29,7 +29,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20261114a">
+<link rel="stylesheet" href="../css/style.css?v=20261114b">
 <style>
 [hidden]{display:none!important}
 /* ── Add page numbers ── */
@@ -185,7 +185,7 @@
       <div class="dz-title">Drop PDFs here or click to browse</div>
       <div class="dz-hint">Up to 20 PDFs, 200 MB each · numbered in your browser</div>
       <span class="dz-btn">Choose PDF</span>
-      <input type="file" id="pnFileInput" accept=".pdf,application/pdf" multiple style="display:none">
+      <input aria-label="Choose files" type="file" id="pnFileInput" accept=".pdf,application/pdf" multiple style="display:none">
     </div>
   </div>
   <div class="tool-card pn-editor" id="pnEditor" hidden>
@@ -195,7 +195,7 @@
         <div class="pn-pnav"><button class="pn-ib" id="pnPrev" type="button" aria-label="Previous page">‹</button><span id="pnPageInfo">Page 1</span><button class="pn-ib" id="pnNext" type="button" aria-label="Next page">›</button></div>
         <div id="pnFiles" class="pn-files"></div>
         <div class="pn-fbar"><button class="btn btn-secondary" id="pnMore" type="button">Add PDF</button><button class="btn btn-secondary" id="pnReset" type="button">Start over</button><button class="btn btn-primary" id="pnZip" type="button" hidden>Download all (ZIP)</button></div>
-        <input type="file" id="pnMoreInput" accept=".pdf,application/pdf" multiple style="display:none">
+        <input aria-label="Choose files" type="file" id="pnMoreInput" accept=".pdf,application/pdf" multiple style="display:none">
       </div>
       <div class="pn-right">
         <div class="pn-l">Quick setup</div>
@@ -210,7 +210,7 @@
           <select class="pn-in" id="pnFmt"><option value="n">1</option><option value="page-n">Page 1</option><option value="n-of-t">1 of 10</option><option value="page-n-of-t">Page 1 of 10</option><option value="n/t">1 / 10</option><option value="dash">- 1 -</option><option value="roman">i, ii, iii</option><option value="ROMAN">I, II, III</option><option value="alpha">a, b, c</option><option value="custom">Custom text…</option></select>
           <select class="pn-in pn-pad" id="pnPad" aria-label="Digits"><option value="0">1, 2, 3</option><option value="2">01, 02</option><option value="3">001, 002</option><option value="4">0001</option><option value="6">000001</option></select>
         </div>
-        <div id="pnCustomRow" hidden><input class="pn-in" id="pnCustom" type="text" maxlength="80" placeholder="e.g. Report-{n} or Sheet {n} of {total}"><div class="pn-hint">Use {n} for the number and {total} for the page count.</div></div>
+        <div id="pnCustomRow" hidden><input aria-label="e.g. Report-{n} or Sheet {n} of {total}" class="pn-in" id="pnCustom" type="text" maxlength="80" placeholder="e.g. Report-{n} or Sheet {n} of {total}"><div class="pn-hint">Use {n} for the number and {total} for the page count.</div></div>
         <div class="pn-grid">
           <label>Start at <input class="pn-in" id="pnStart" type="number" min="0" max="99999" inputmode="numeric"></label>
           <label>From page <input class="pn-in" id="pnFrom" type="number" min="1" inputmode="numeric"></label>
@@ -335,32 +335,32 @@
       <p style="color:var(--text-2);font-size:14px;margin-bottom:20px">Connect Google Drive to save selected outputs to your own Drive storage. Review the destination before uploading sensitive documents.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Continue with Google</button>
       <div class="auth-divider"><span>or</span></div>
-      <div class="auth-field"><label>Email</label><input type="email" id="siEmail" placeholder="you@example.com"></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="siPass" placeholder="••••••••"></div>
+      <div class="auth-field"><label>Email</label><input aria-label="Email address" type="email" id="siEmail" placeholder="you@example.com"></div>
+      <div class="auth-field"><label>Password</label><input aria-label="Password" type="password" id="siPass" placeholder="••••••••"></div>
       <button class="auth-submit" onclick="signInEmail()">Sign In</button>
-      <p class="auth-switch">No account? <a href="#" onclick="switchAuthTab('signup');return false">Sign Up free</a></p>
+      <p class="auth-switch">No account? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signup')">Sign Up free</button></p>
     </div>
     <div id="panelSignUp" style="display:none">
       <h2 style="margin-bottom:6px;text-align:center">Create your account</h2>
       <p style="color:var(--text-2);font-size:14px;margin-bottom:16px;text-align:center">Free forever. No credit card required.</p>
       <button class="google-btn" onclick="signInWithGoogle()">Sign Up with Google</button>
       <div class="auth-divider"><span>or fill in below</span></div>
-      <div class="auth-field"><label>Full Name</label><input type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
-      <div class="auth-field"><label>Gmail / Email Address</label><input type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Full Name</label><input aria-label="Full name" type="text" id="suName" placeholder="Your full name" autocomplete="name"></div>
+      <div class="auth-field"><label>Gmail / Email Address</label><input aria-label="Email address" type="email" id="suEmail" placeholder="you@example.com" autocomplete="email"></div>
       
       <div class="auth-field-row">
         <div class="auth-field">
           <label>Password</label>
-          <input type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+          <input aria-label="Password" type="password" id="suPass" placeholder="Min. 8 chars" autocomplete="new-password" oninput="updatePwStrength(this.value)">
           <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
         </div>
         <div class="auth-field">
           <label>Confirm Password</label>
-          <input type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
+          <input aria-label="Confirm password" type="password" id="suPassConf" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUpEmail()">
         </div>
       </div>
       <button class="auth-submit" onclick="signUpEmail()">Create Account &#8594;</button>
-      <p class="auth-switch">Already a member? <a href="#" onclick="switchAuthTab('signin');return false">Sign In</a></p>
+      <p class="auth-switch">Already a member? <button type="button" class="auth-switch-link" onclick="switchAuthTab('signin')">Sign In</button></p>
     </div>
   </div>
 </div>
