@@ -27,11 +27,11 @@ const ScannerApp = (() => {
     window.ScanRenderer?.warmup().catch(error=>console.warn('Filter worker warmup:',error));
   }
   function _openEditor(){
-    if($('scanEditor').hidden){focusBeforeEditor=document.activeElement;$('scanEditor').hidden=false;$('scanBackdrop').hidden=false;document.body.classList.add('scan-editor-open');$('scanClose').focus();}
+    if($('scanEditor').hidden){focusBeforeEditor=document.activeElement;$('scanEditor').hidden=false;$('scanBackdrop').hidden=false;_lockPage(true);$('scanClose').focus();}
   }
   function _closeEditor(){
     if(busy){toast('Please wait for the current page to finish.','warning');return;}
-    _saveCurrent();$('scanEditor').hidden=true;$('scanBackdrop').hidden=true;document.body.classList.remove('scan-editor-open');
+    _saveCurrent();$('scanEditor').hidden=true;$('scanBackdrop').hidden=true;_lockPage(false);
     $('resumeEditor').hidden=!state.pages.length;focusBeforeEditor?.focus();
   }
   function showScreen(name){
@@ -355,7 +355,7 @@ const ScannerApp = (() => {
     }
     state.editingIndex=-1;state._currentCropped=null;previewRevision++;
     _renderPages();_updateAutoStatus();
-    $('scanEditor').hidden=true;$('scanBackdrop').hidden=true;document.body.classList.remove('scan-editor-open');$('resumeEditor').hidden=true;
+    $('scanEditor').hidden=true;$('scanBackdrop').hidden=true;_lockPage(false);$('resumeEditor').hidden=true;
     showScreen('upload');focusBeforeEditor?.focus();
     if(count)_undoToast(count>1?`Scan closed. ${count} pages discarded.`:'Scan closed. Page discarded.');
   }
@@ -367,6 +367,13 @@ const ScannerApp = (() => {
   function _fitCrop(){
     if(state.screen!=='crop')return;const viewport=$('screen-crop');cropEditor._maxW=Math.max(80,viewport.clientWidth-8);cropEditor._maxH=Math.max(80,viewport.clientHeight-8);cropEditor.draw();
   }
+  /* Freeze the page behind the editor. overflow:hidden alone does not stop
+     phones from scrolling the page when a swipe reaches the end of the editor,
+     so the body is pinned in place and the scroll position restored on close. */
+  let _lockY=0;
+  function _lockPage(on){const b=document.body,h=document.documentElement;
+    if(on){if(b.classList.contains('scan-editor-open'))return;_lockY=window.scrollY||0;h.classList.add('scan-editor-open');b.classList.add('scan-editor-open');b.style.top=(-_lockY)+'px';}
+    else{if(!b.classList.contains('scan-editor-open'))return;h.classList.remove('scan-editor-open');b.classList.remove('scan-editor-open');b.style.top='';window.scrollTo(0,_lockY);}}
   function _applyZoom(){
     const canvas=$('previewCanvas'),stage=$('scanWorkstage');$('scanZoomValue').textContent=Math.round(zoom*100)+'%';stage.dataset.zoomed=String(zoom>1);
     if(zoom===1){canvas.style.width='';canvas.style.height='';canvas.style.maxWidth='100%';canvas.style.maxHeight='100%';return;}
@@ -430,9 +437,12 @@ const ScannerApp = (() => {
     /* Phones: swipe the photo left/right to move between pages. */
     let tx=0,ty=0,tt=0,multi=false;
     $('scanWorkstage').addEventListener('touchstart',e=>{multi=e.touches.length>1;const t=e.touches[0];tx=t.clientX;ty=t.clientY;tt=performance.now();},{passive:true});
+    $('scanWorkstage').addEventListener('touchmove',e=>{if(!multi&&state.screen==='filter'&&zoom<=1&&e.cancelable)e.preventDefault();},{passive:false});
     $('scanWorkstage').addEventListener('touchend',e=>{
       if(multi||state.screen!=='filter'||zoom>1||state.pages.length<2)return;const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;
-      if(performance.now()-tt<700&&Math.abs(dx)>50&&Math.abs(dx)>1.5*Math.abs(dy))stepPage(dx<0?1:-1);
+      if(performance.now()-tt>900)return;
+      if(Math.abs(dx)>45&&Math.abs(dx)>1.3*Math.abs(dy))stepPage(dx<0?1:-1);       // swipe left/right
+      else if(Math.abs(dy)>45&&Math.abs(dy)>1.3*Math.abs(dx))stepPage(dy<0?1:-1);  // swipe up/down, like scrolling a stack
     },{passive:true});
     $('scanEditor').addEventListener('keydown',e=>{
       if(state.screen!=='filter'||/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName))return;
@@ -490,7 +500,7 @@ const ScannerApp = (() => {
       });
       document.addEventListener('keydown',e=>{if(e.key==='Escape'&&m.classList.contains('show'))_closeDownloadDialog();});
     }
-    _syncDl();m.classList.add('show');setTimeout(()=>m.querySelector('.sdl-dl')?.focus(),30);
+    _syncDl();m.classList.add('show');setTimeout(_warmExport,60);setTimeout(()=>m.querySelector('.sdl-dl')?.focus(),30);
   }
   function _syncDl(){
     const m=document.getElementById('scanDlDialog');if(!m)return;const n=state.pages.length;
@@ -526,6 +536,7 @@ const ScannerApp = (() => {
     if (base === null) return;
     showProcessing('Creating PDF…');
 
+    if (!window.jspdf) { hideProcessing(); toast('PDF engine is still loading. Check your connection and try again.', 'error'); return; }
     const { jsPDF } = window.jspdf;
     const pageSize = document.getElementById('pdfPageSize')?.value || 'a4';
     const orientation = document.getElementById('pdfOrientation')?.value || 'portrait';
@@ -544,12 +555,14 @@ const ScannerApp = (() => {
       const total=idLayout?Math.ceil(state.pages.length/2):state.pages.length;
       for (let i = 0; i < total; i++) {
         $('scanBusyText').textContent=`Creating PDF · page ${i+1} / ${total}`;
-        const c = idLayout ? await _renderIdSheet(state.pages.slice(i*2,i*2+2),pageSize,orientation) : await _renderExportPage(state.pages[i]);
-        // Pure black-and-white pages compress far better as PNG than as JPEG.
-        const bilevel=!idLayout&&state.pages[i].filter==='bw'&&_isBilevel(c), format=bilevel?'PNG':'JPEG';
-        const blob=await new Promise(resolve=>bilevel?c.toBlob(resolve,'image/png'):c.toBlob(resolve,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');const bytes=await blob.arrayBuffer();
-        await writer.request('page',{bytes,width:c.width,height:c.height,format},[bytes]);
-        await new Promise(resolve=>requestAnimationFrame(resolve));
+        let bytes,width,height,format;
+        if(idLayout){const c=await _renderIdSheet(state.pages.slice(i*2,i*2+2),pageSize,orientation);const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',quality));if(!blob)throw new Error('Page encoding failed');bytes=await blob.arrayBuffer();width=c.width;height=c.height;format='JPEG';}
+        else{
+          // Pure black-and-white pages compress far better as PNG than as JPEG (decided in _encodedPage).
+          const cur=_encodedPage(state.pages[i],quality);if(i+1<total)_encodedPage(state.pages[i+1],quality); // next page renders while this one is written
+          const e=await cur;bytes=await e.blob.arrayBuffer();width=e.width;height=e.height;format=e.format;
+        }
+        await writer.request('page',{bytes,width,height,format},[bytes]);
       }
       const result=await writer.request('finish');_downloadBlob(new Blob([result.bytes],{type:'application/pdf'}),`${base}.pdf`);
       hideProcessing();
@@ -597,6 +610,28 @@ const ScannerApp = (() => {
       const d=g.getImageData(0,0,w,h).data;
       for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){const k=(y*w+x)*4,v=d[k];if((v>8&&v<247)||Math.abs(d[k+1]-v)>8||Math.abs(d[k+2]-v)>8)return false;}
       return true;}catch(e){return false;}
+  }
+
+  /* Export cache: each page is rendered and encoded once per look (crop +
+     filter + sliders + quality). The download window starts this in the
+     background, so by the time Download is pressed most pages are ready, and a
+     second download of the same pages is instant. */
+  const _imgIds=new WeakMap();let _imgSeq=0;
+  const _imgId=o=>{if(!o||typeof o!=='object')return 0;if(!_imgIds.has(o))_imgIds.set(o,++_imgSeq);return _imgIds.get(o);};
+  function _exportKey(p,q){return [_imgId(p.croppedImg),_imgId(p.sourceImg),p.previewOnly?1:0,p.pdfSource?1:0,p.filter,JSON.stringify(p.adjustments||{}),JSON.stringify(p.cropCorners||0),q].join('|');}
+  function _encodedPage(p,q){
+    const key=_exportKey(p,q);
+    if(p._xp&&p._xp.key===key)return p._xp.promise;
+    const promise=(async()=>{const c=await _renderExportPage(p);const bilevel=p.filter==='bw'&&_isBilevel(c),format=bilevel?'PNG':'JPEG';
+      const blob=await new Promise(r=>bilevel?c.toBlob(r,'image/png'):c.toBlob(r,'image/jpeg',q));if(!blob)throw new Error('Page encoding failed');
+      return {blob,format,width:c.width,height:c.height};})();
+    p._xp={key,promise};promise.catch(()=>{if(p._xp&&p._xp.promise===promise)p._xp=null;});
+    return promise;
+  }
+  let _warmGen=0;
+  async function _warmExport(){
+    const gen=++_warmGen,q=+(document.getElementById('pdfQuality')?.value||0.98);
+    for(const p of [...state.pages]){if(gen!==_warmGen||(!busy&&!$('scanDlDialog')?.classList.contains('show')))return;try{await _encodedPage(p,q);}catch(e){}await new Promise(r=>setTimeout(r,0));}
   }
 
   // Render one page (cropped + filtered) to an image blob.

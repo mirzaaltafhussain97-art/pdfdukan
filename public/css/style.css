@@ -1886,7 +1886,13 @@ html[data-theme="light"] .blog-sidebar-tip {
   pointer-events: none;
   transition: transform 0.28s var(--ease), opacity 0.2s var(--ease), visibility 0s linear 0.28s;
   box-shadow: var(--shadow-lg);
+  max-height: calc(100vh - var(--header-h));
+  max-height: calc(100dvh - var(--header-h));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
+html.mnd-lock, html.mnd-lock body { overflow: hidden; }
 .mobile-nav-drawer.open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
 @media(min-width: 821px) { .mobile-nav-drawer { display: none !important; } }
 .mnd-link {

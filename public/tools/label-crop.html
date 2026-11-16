@@ -37,7 +37,7 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script>window.addEventListener('DOMContentLoaded',function(){if(window.pdfjsLib)pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';});</script>
-<link rel="stylesheet" href="../css/style.css?v=20261114b">
+<link rel="stylesheet" href="../css/style.css?v=20261116a">
 <style>
 /* Crop stage */
 .crop-stage-wrap{margin-top:14px;overflow:auto;max-height:72vh;border:1px solid var(--border);border-radius:12px;background:var(--card-2);padding:10px}
@@ -332,19 +332,19 @@
 
   <div class="ad-slot"><div class="adsense-slot" style="min-height:90px;width:100%;display:block;"></div></div>
 
-  <section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
-    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with 7 label PDFs: label + invoice pages, 2 and 4 labels per A4 sheet, a scanned PDF, a 4x6 file and a 200-page batch</span><span>Free to use · No fake ratings · Limits listed below</span></aside>
+    <section class="seo-section i2p-copy" style="max-width:800px;margin:24px auto;padding:0 20px">
+    <aside class="cm-review-note" aria-label="Tool review information"><strong>PDFdukan product review</strong><span>Last updated: November 2026 · Tested with 7 sample label PDFs we built in common layouts, plus a 200-page batch</span><span>Free to use · No fake ratings · Limits listed below</span></aside>
 
     <h2>What Is Label Crop?</h2>
-    <p class="lead">Label crop is the job of cutting the shipping label out of an A4 label PDF so it prints on a 4x6 thermal label. PDFdukan’s label crop tool finds each label in your PDF, crops it, and places it on a 4x6, 4x4, 3x5, A6 or A4 page, ready for your label printer.</p>
+    <p class="lead">Label crop means cutting the shipping label out of an A4 label PDF so it prints on a 4x6 thermal label. PDFdukan Label Crop finds each label, crops it, and places it on a 4x6, 4x4, 3x5, A6 or A4 page for your printer.</p>
     <p>Marketplaces such as Flipkart, Meesho and Amazon give sellers labels as A4 pages, often with the tax invoice on the same sheet. Printing that page on a thermal printer shrinks the barcode or cuts it off. A shipping label cropper fixes that in one step, and this one works on a phone or laptop with no app.</p>
 
     <h3>How Do You Crop a Shipping Label?</h3>
     <p>You crop shipping labels with PDFdukan in four steps:</p>
     <ol>
-      <li><span><strong>Download your label PDF</strong> from the seller panel, the same file you would normally print on A4.</span></li>
+      <li><span><strong>Download your label PDF</strong> from the seller panel, the one you would print on A4.</span></li>
       <li><span><strong>Drop it here.</strong> Add one PDF or many at once. Labels are found and cropped right away.</span></li>
-      <li><span><strong>Pick your options:</strong> label size, label with or without invoice, and the order you want to pack in.</span></li>
+      <li><span><strong>Pick your options:</strong> label size, invoice, and packing order.</span></li>
       <li><span><strong>Download or print.</strong> Tap Download PDF, or Print to send it straight to your label printer.</span></li>
     </ol>
     <figure class="lc-fig"><img src="../images/tools/label-crop-found.webp" alt="Label crop tool showing green boxes around the shipping label on each A4 page and blue dashed boxes around the invoice" width="900" height="615" loading="lazy" decoding="async"><figcaption>Each label is marked in green; the invoice, when you include it, in blue.</figcaption></figure>
@@ -352,11 +352,11 @@
     <h3>Which Label PDFs Does It Work With?</h3>
     <p>The tool looks for the barcode block on each page, so it does not depend on one marketplace’s layout. It handles these common layouts:</p>
     <ul>
-      <li><strong>Label on top, invoice below</strong>, split by a dashed or solid line. This is the usual Flipkart and Meesho label format.</li>
-      <li><strong>One label in a corner</strong> of an A4 page with notes or an invoice elsewhere, as many Amazon self-ship and courier PDFs do.</li>
+      <li><strong>Label on top, invoice below</strong>, as in most Flipkart and Meesho PDFs.</li>
+      <li><strong>One label in a corner</strong> of an A4 page, as in many Amazon PDFs.</li>
       <li><strong>2 or 4 labels per A4 sheet.</strong> Each label becomes its own 4x6 page.</li>
       <li><strong>Scanned or photographed label PDFs.</strong> Detection works on the page image, not the text.</li>
-      <li><strong>PDFs that are already 4x6.</strong> They pass through and can be merged with others into one print file.</li>
+      <li><strong>PDFs already 4x6.</strong> They pass through into the same print file.</li>
     </ul>
     <p>Flipkart’s own seller API describes its label file as an <a href="https://seller.flipkart.com/api-docs/order-api-docs/v3/GetLabelByShipmentId.html" target="_blank" rel="noopener">integrated shipping label with an optional invoice</a>, merged into one PDF for many shipments. That is exactly the file this tool splits. If a label is ever missed, tap <strong>Adjust crop box</strong>, drag one box over the label, and it is used on every page.</p>
 
@@ -365,7 +365,7 @@
     <div class="i2p-tablewrap"><table class="i2p-table">
       <thead><tr><th scope="col">Option</th><th scope="col">Page size</th><th scope="col">Use it for</th></tr></thead>
       <tbody>
-        <tr><th scope="row">4 × 6 in</th><td>101.6 × 152.4 mm</td><td>Standard thermal shipping labels (often sold as 100 × 150 mm)</td></tr>
+        <tr><th scope="row">4 × 6 in</th><td>101.6 × 152.4 mm</td><td>Standard thermal labels (sold as 100 × 150 mm)</td></tr>
         <tr><th scope="row">4 × 4 in</th><td>101.6 × 101.6 mm</td><td>Square rolls some Meesho and small sellers use</td></tr>
         <tr><th scope="row">3 × 5 in</th><td>76.2 × 127 mm</td><td>Smaller rolls for light parcels</td></tr>
         <tr><th scope="row">A6</th><td>105 × 148 mm</td><td>A6 label stock, common outside India</td></tr>
@@ -385,16 +385,17 @@
     </div>
 
     <h3>How Do You Sort Labels by SKU or Courier?</h3>
-    <p>Tap <strong>Sort by SKU</strong> or <strong>Sort by courier</strong> before you print. The tool reads the SKU and courier name printed on each label, such as Ekart, Delhivery, Xpressbees, Shadowfax, Valmo, DTDC or Amazon Shipping, and reorders the pages. Packing goes faster when all orders of one product, or all parcels for one pickup, sit together.</p>
+    <p>Tap <strong>Sort by SKU</strong> or <strong>Sort by courier</strong> before you print. PDFdukan Label Crop reads the SKU and courier printed on each label and reorders the pages. Couriers it knows include Ekart, Delhivery, Xpressbees, Shadowfax, Valmo, DTDC and Amazon Shipping. Packing goes faster when all orders of one product, or all parcels for one pickup, sit together.</p>
     <p>Below the preview you also get a <strong>pick list</strong>: each SKU with its total quantity, and a count of labels per courier. Use it to collect stock before you pack and to check the pickup count with the courier.</p>
     <figure class="lc-fig"><img src="../images/tools/label-crop-result.webp" alt="Cropped 4x6 shipping labels with a pick list of SKUs and quantities and a count of labels per courier" width="900" height="760" loading="lazy" decoding="async"><figcaption>Result: 4x6 labels, plus a pick list by SKU and a count by courier.</figcaption></figure>
     <p>Sorting needs the text inside the PDF. Labels from seller panels have it. A scanned label PDF has no text layer, so its labels keep their original order.</p>
 
     <h3>Why Do Barcodes Stay Sharp?</h3>
-    <p>The label is not turned into a picture. The tool places the original page inside the new 4x6 page and hides everything outside the label, using the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library. Text and barcode bars stay as vector shapes, so the courier’s scanner reads them at any size and the file stays small. A 200-label print file from our test was under 1 MB.</p>
+    <p>PDFdukan Label Crop never turns the label into a picture. It places the original page inside the new 4x6 page and hides everything outside the label, using the open-source <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> library.</p>
+    <p>Text and barcode bars stay vector shapes, so courier scanners read them at any size. A 200-label file from our test was under 1 MB.</p>
 
     <h3>How Do You Print Cropped Labels on a Thermal Printer?</h3>
-    <p>Most thermal label printers sold for e-commerce (TVS, Zebra, TSC, HPRT, iDPRT and similar) print a 4x6 PDF the same way:</p>
+    <p>Most e-commerce thermal printers, such as TVS, Zebra, TSC, HPRT and iDPRT models, print a 4x6 PDF the same way:</p>
     <ol>
       <li><span>Set the printer’s paper size to <strong>4 × 6 in or 100 × 150 mm</strong> in its driver.</span></li>
       <li><span>In the print window, choose <strong>Actual size</strong> or <strong>100% scale</strong>, not “Fit to page”.</span></li>
@@ -422,10 +423,10 @@
 
     <h3>What Label Crop Doesn’t Do</h3>
     <ul>
-      <li>It does not create labels or AWB numbers; it only crops the labels your marketplace gives you.</li>
-      <li>It does not add or change SKU text on the label. Sorting uses the SKU that is already printed.</li>
+      <li>It does not create labels or AWB numbers; it crops the ones you have.</li>
+      <li>It does not add SKU text; sorting uses the SKU already printed.</li>
       <li>Password-protected PDFs need <a href="unlock-pdf-without-password.html">Unlock PDF</a> first.</li>
-      <li>On a very large batch, an older phone works more slowly because your device does the work. In our test, a laptop cropped 200 pages in about 16 seconds.</li>
+      <li>Big batches run slower on older phones. Our laptop test: 200 pages in about 16 seconds.</li>
     </ul>
     <p>Need something else for your orders? <a href="merge-pdf.html">Merge PDF</a> joins label files, <a href="crop-pdf-online.html">Crop PDF</a> trims any page, and <a href="compress-pdf-reduce-file-size.html">Compress PDF</a> shrinks invoices for email.</p>
 
@@ -491,7 +492,7 @@
 
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-<script src="../js/app.js?v=20261114a"></script>
+<script src="../js/app.js?v=20261116a"></script>
 <script src="../js/tools.js?v=20261111c"></script>
 <script defer src="../js/label-crop.js?v=20261114a"></script>
 

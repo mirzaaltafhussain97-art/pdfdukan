@@ -1975,29 +1975,27 @@ function updatePwStrength(val) {
 }
 
 /* ── MOBILE NAV DRAWER ────────────────────────────────────────── */
-function toggleMobileNav() {
+function _setMobileNav(open) {
   const drawer = document.getElementById('mobileNavDrawer');
   if (!drawer) return;
   const btn = document.getElementById('hamburgerBtn');
-  const isOpen = drawer.classList.contains('open');
-  drawer.classList.toggle('open', !isOpen);
-  drawer.setAttribute('aria-hidden', String(isOpen));
-  btn?.setAttribute('aria-expanded', String(!isOpen));
-  if (!isOpen) {
-    setTimeout(() => {
-      document.addEventListener('click', _closeMobileNavOutside, { once: true });
-    }, 10);
-  }
+  drawer.classList.toggle('open', open);
+  drawer.setAttribute('aria-hidden', String(!open));
+  btn?.setAttribute('aria-expanded', String(open));
+  document.documentElement.classList.toggle('mnd-lock', open);   // page behind stays still; the menu scrolls
+  document.removeEventListener('click', _closeMobileNavOutside);
+  if (open) { drawer.scrollTop = 0; setTimeout(() => document.addEventListener('click', _closeMobileNavOutside), 10); }
+}
+function toggleMobileNav() {
+  const drawer = document.getElementById('mobileNavDrawer');
+  if (drawer) _setMobileNav(!drawer.classList.contains('open'));
 }
 function _closeMobileNavOutside(e) {
   const drawer = document.getElementById('mobileNavDrawer');
   const btn    = document.getElementById('hamburgerBtn');
-  if (drawer && !drawer.contains(e.target) && !btn?.contains(e.target)) {
-    drawer.classList.remove('open');
-    drawer.setAttribute('aria-hidden', 'true');
-    btn?.setAttribute('aria-expanded', 'false');
-  }
+  if (drawer && !drawer.contains(e.target) && !btn?.contains(e.target)) _setMobileNav(false);
 }
+window.addEventListener('resize', () => { if (window.innerWidth > 820) _setMobileNav(false); });
 
 /* ── MODAL ───────────────────────────────────────────────────── */
 function initModal() {
