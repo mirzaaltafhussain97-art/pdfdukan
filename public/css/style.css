@@ -2760,3 +2760,8 @@ html[data-theme="dark"] .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,tra
 .sb-icon .pd-ico3 svg{width:16px;height:16px}
 .mnd-search{position:sticky;top:-12px;background:var(--card);padding:4px 0 10px;z-index:1}
 .mnd-search input{width:100%;height:42px;border:1px solid var(--border);border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:var(--bg-2);color:var(--text)}
+/* Header dropdowns stay open while the mouse moves into them:
+   an invisible bridge covers the gap, and closing waits a moment. */
+.nav-dropdown::before{content:"";position:absolute;left:-12px;right:-12px;top:-16px;height:16px}
+.nav-item.has-dropdown .nav-dropdown{transition:opacity .18s var(--ease) .22s,transform .18s var(--ease) .22s,visibility 0s linear .4s}
+.nav-item.has-dropdown:hover .nav-dropdown,.nav-item.has-dropdown:focus-within .nav-dropdown{transition-delay:0s,0s,0s}
