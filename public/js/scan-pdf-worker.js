@@ -1,4 +1,4 @@
-importScripts('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+try{importScripts('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');}catch(e){importScripts('vendor/jspdf.umd.min.js');} // own copy if the CDN fails
 let doc,index=0;
 self.onmessage=({data})=>{try{
  if(data.method==='start'){doc=new jspdf.jsPDF({orientation:data.orientation,unit:'mm',format:data.pageSize,compress:true});index=0;self.postMessage({id:data.id});}

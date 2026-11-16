@@ -1974,6 +1974,50 @@ function updatePwStrength(val) {
   bar.style.background = colors[score] || '#10b981';
 }
 
+/* ── PDF ENGINE FALLBACK ──────────────────────────────────────
+   PDF libraries load from cdnjs. If the CDN is blocked or down, the same
+   versions are loaded from our own server (js/vendor/), so PDF tools never
+   stop working. The pdf.js worker always comes from our server. */
+(function () {
+  var cur = document.currentScript && document.currentScript.src;
+  var base = cur ? cur.replace(/js\/app\.js.*$/, 'js/vendor/') : '/js/vendor/';
+  var LIBS = {
+    jspdf:  { file: 'jspdf.umd.min.js', ok: function () { return !!window.jspdf; }, tag: /jspdf/ },
+    pdfjs:  { file: 'pdf.min.js',       ok: function () { return !!window.pdfjsLib; }, tag: /pdf\.js\/[\d.]+\/pdf\.min\.js/ },
+    pdflib: { file: 'pdf-lib.min.js',   ok: function () { return !!window.PDFLib; }, tag: /pdf-lib/ },
+    jszip:  { file: 'jszip.min.js',     ok: function () { return !!window.JSZip; }, tag: /jszip/ },
+    sortable: { file: 'Sortable.min.js', ok: function () { return !!window.Sortable; }, tag: /Sortable/ },
+    filesaver: { file: 'FileSaver.min.js', ok: function () { return !!window.saveAs; }, tag: /FileSaver/ },
+    html2canvas: { file: 'html2canvas.min.js', ok: function () { return !!window.html2canvas; }, tag: /html2canvas/ },
+    docxpreview: { file: 'docx-preview.min.js', ok: function () { return !!window.docx; }, tag: /docx-preview/ }
+  };
+  var pending = {};
+  function load(name) {
+    var L = LIBS[name];
+    if (!L || L.ok()) return Promise.resolve(true);
+    if (pending[name]) return pending[name];
+    pending[name] = new Promise(function (resolve) {
+      var s = document.createElement('script');
+      s.src = base + L.file;
+      s.onload = function () { fixWorker(); resolve(L.ok()); };
+      s.onerror = function () { pending[name] = null; resolve(false); };
+      document.head.appendChild(s);
+    });
+    return pending[name];
+  }
+  function fixWorker() {
+    if (window.pdfjsLib && pdfjsLib.GlobalWorkerOptions) pdfjsLib.GlobalWorkerOptions.workerSrc = base + 'pdf.worker.min.js';
+  }
+  // Libraries this page asked for (by its script tags) but that did not arrive.
+  function wanted() {
+    var srcs = [].map.call(document.querySelectorAll('script[src]'), function (s) { return s.src; });
+    return Object.keys(LIBS).filter(function (n) { return srcs.some(function (u) { return LIBS[n].tag.test(u); }); });
+  }
+  function ensure(names) { return Promise.all((names || wanted()).map(load)).then(function (r) { return r.every(Boolean); }); }
+  window.CMVendor = { ensure: ensure, base: base };
+  window.addEventListener('load', function () { fixWorker(); ensure(); });
+})();
+
 /* ── MOBILE NAV DRAWER ────────────────────────────────────────── */
 function _setMobileNav(open) {
   const drawer = document.getElementById('mobileNavDrawer');

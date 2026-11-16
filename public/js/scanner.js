@@ -536,7 +536,8 @@ const ScannerApp = (() => {
     if (base === null) return;
     showProcessing('Creating PDF…');
 
-    if (!window.jspdf) { hideProcessing(); toast('PDF engine is still loading. Check your connection and try again.', 'error'); return; }
+    if (!window.jspdf && window.CMVendor) await CMVendor.ensure(['jspdf']);
+    if (!window.jspdf) { hideProcessing(); toast('Could not load the PDF engine. Check your connection and try again.', 'error'); return; }
     const { jsPDF } = window.jspdf;
     const pageSize = document.getElementById('pdfPageSize')?.value || 'a4';
     const orientation = document.getElementById('pdfOrientation')?.value || 'portrait';
@@ -544,7 +545,7 @@ const ScannerApp = (() => {
     let writer;
     try {
       if(typeof Worker!=='undefined'){
-        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261113',document.baseURI));let id=0;
+        const worker=new Worker(new URL('js/scan-pdf-worker.js?v=20261116',document.baseURI));let id=0;
         const request=(method,fields={},transfer=[])=>new Promise((resolve,reject)=>{const own=++id,timer=setTimeout(()=>reject(new Error('PDF processing timed out')),120000);worker.onmessage=({data})=>{if(data.id!==own)return;clearTimeout(timer);data.error?reject(new Error(data.error)):resolve(data);};worker.onerror=e=>{clearTimeout(timer);reject(new Error(e.message));};worker.postMessage({id:own,method,...fields},transfer);});
         writer={request,dispose:()=>worker.terminate()};await request('start',{orientation,pageSize});
       }else{

@@ -291,7 +291,8 @@
   async function addFiles(list) {
     var pdfs = [].slice.call(list).filter(function (f) { return /\.pdf$/i.test(f.name) || f.type === 'application/pdf'; });
     if (!pdfs.length) { say('Please choose label PDF files.', 'error'); return; }
-    if (!window.pdfjsLib || !window.PDFLib) { say('Still loading the PDF engine. Try again in a second.', 'error'); return; }
+    if ((!window.pdfjsLib || !window.PDFLib) && window.CMVendor) await CMVendor.ensure(['pdfjs', 'pdflib']);
+    if (!window.pdfjsLib || !window.PDFLib) { say('Could not load the PDF engine. Check your connection and try again.', 'error'); return; }
     for (var i = 0; i < pdfs.length; i++) st.files.push({ file: pdfs[i], bytes: new Uint8Array(await pdfs[i].arrayBuffer()) });
     if (st.files.length && st.base === 'labels') st.base = cleanBase(st.files[0].file.name) + (st.files.length > 1 ? '-and-more' : '');
     renderFileList();
