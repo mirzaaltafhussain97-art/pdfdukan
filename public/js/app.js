@@ -1798,6 +1798,9 @@ const TOOL_PAGES = {
   'pdf-metadata':       'tools/pdf-metadata-editor.html',
   'pdf-text-extractor': 'tools/pdf-text-extractor.html',
   'searchable-pdf':     'tools/searchable-pdf-converter-online.html',
+  'pdf-organizer':      'tools/organize-pdf-pages-online.html',
+  'label-crop':         'tools/label-crop.html',
+  'photo-scanner':      'photo-scanner.html',
 };
 function openTool(toolId) {
   const isInTools = window.location.pathname.includes('/tools/');
@@ -1849,11 +1852,49 @@ const TOOL_SEARCH_INDEX = [
   { id:'delete-pages', name:'Delete PDF Pages', desc:'Remove pages from a PDF by click or page number', icon:'🗑️', category:'PDF Tools', keywords:['delete','remove','pages','blank'] },
   { id:'html-to-pdf',  name:'HTML to PDF',           desc:'Paste HTML or upload a page and get a paginated PDF',    icon:'🌐', category:'PDF Tools',   keywords:['html','url','web','page','convert','website','css'] },
   { id:'pdf-editor',   name:'PDF Editor',            desc:'Edit PDF text, sign, fill forms and add links free',    icon:'✏️', category:'PDF Tools',   keywords:['edit','text','modify','annotate','interactive','editor'] },
+  { id:'label-crop',   name:'Label Crop',            desc:'Crop Flipkart, Meesho, Amazon shipping labels to 4x6', icon:'🏷️', category:'PDF Tools', keywords:['label','label crop','shipping label','crop label','4x6','thermal','flipkart','meesho','amazon','invoice','courier','sku','barcode','awb','seller'] },
+  { id:'photo-scanner', name:'Photo Scanner',        desc:'Scan photos and pictures online to JPG or PDF',  icon:'🖼️', category:'Scanner', keywords:['photo','photo scanner','picture','scan photo','scan image','image scanner','old photo','jpg'] },
+  { id:'unlock-pdf',   name:'Unlock PDF',            desc:'Remove print, copy and edit limits from a PDF', icon:'🔓', category:'PDF Tools', keywords:['unlock','password','restriction','secure','protected','decrypt','permissions'] },
+  { id:'pdf-restriction-check', name:'PDF Restriction Check', desc:'See what a PDF blocks: print, copy, edit', icon:'🛡️', category:'PDF Tools', keywords:['restriction','check','permissions','security','protected','print','copy'] },
+  { id:'pdf-metadata', name:'PDF Metadata Editor',   desc:'Edit PDF title, author, subject and keywords', icon:'🏷️', category:'PDF Tools', keywords:['metadata','title','author','properties','keywords','info'] },
+  { id:'pdf-text-extractor', name:'PDF Text Extractor', desc:'Copy all text out of a PDF', icon:'📄', category:'PDF Tools', keywords:['text','extract','copy','pdf to text','txt'] },
+  { id:'searchable-pdf', name:'Searchable PDF',      desc:'Add an OCR text layer to scanned PDFs', icon:'🔍', category:'PDF Tools', keywords:['searchable','ocr','scanned','text layer','search','select text'] },
   { id:'word-counter', name:'Word & Character Counter', desc:'Count words, characters, sentences and reading time', icon:'🔢', category:'Text Tools', keywords:['word','words','word count','word counter','character','characters','character count','character counter','letter','letters','count','counter','text','essay','sentence','paragraph','reading time','limit'] },
 ];
 
 /* ── SEARCH ──────────────────────────────────────────────────── */
+/* Every page gets the tool search: header box on desktop, a filter at the
+   top of the mobile menu on phones, so each tool is found by menu or search. */
+function _ensureSearchUI() {
+  const header = document.querySelector('header.header');
+  if (header && !header.querySelector('.search-input')) {
+    const w = document.createElement('div');
+    w.className = 'search-wrap'; w.setAttribute('role', 'search');
+    w.innerHTML = '<span class="search-icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><input type="search" class="search-input" placeholder="Search tools… (Ctrl+K)" aria-label="Search tools">';
+    const actions = header.querySelector('.header-actions');
+    actions ? header.insertBefore(w, actions) : header.appendChild(w);
+  }
+  const drawer = document.getElementById('mobileNavDrawer');
+  if (drawer && !drawer.querySelector('.mnd-search')) {
+    const box = document.createElement('div'); box.className = 'mnd-search';
+    box.innerHTML = '<input type="search" placeholder="Search tools…" aria-label="Search tools in menu">';
+    drawer.insertBefore(box, drawer.firstChild);
+    const inp = box.querySelector('input');
+    inp.addEventListener('click', e => e.stopPropagation());
+    inp.addEventListener('input', () => {
+      const q = inp.value.trim().toLowerCase();
+      const hit = new Set();
+      if (q) TOOL_SEARCH_INDEX.forEach(t => { if (t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.keywords.some(k => k.includes(q))) { const p = TOOL_PAGES[t.id]; if (p) hit.add(p.replace(/#.*$/, '')); } });
+      drawer.querySelectorAll('.mnd-link').forEach(l => {
+        let path = ''; try { path = new URL(l.getAttribute('href'), location.href).pathname.replace(/^\//, ''); } catch (e) {}
+        l.style.display = !q || hit.has(path) || l.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+      drawer.querySelectorAll('.mnd-section').forEach(s => { s.style.display = q ? 'none' : ''; });
+    });
+  }
+}
 function initSearch() {
+  _ensureSearchUI();
   const input = document.querySelector('.search-input');
   if (!input) return;
 
@@ -1900,13 +1941,14 @@ function _showSearchResults(q) {
   ).slice(0, 12);
 
   if (!results.length) {
-    overlay.innerHTML = `<div class="sr-empty">No tools match "<strong>${q}</strong>"<br><small>Try 'compress', 'sign', 'merge'…</small></div>`;
+    const qe = q.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    overlay.innerHTML = `<div class="sr-empty">No tools match "<strong>${qe}</strong>"<br><small>Try 'compress', 'sign', 'merge', 'label'…</small></div>`;
   } else {
     overlay.innerHTML = `
-      <div class="sr-header">🔍 ${results.length} result${results.length !== 1 ? 's' : ''} for "${q}"</div>
+      <div class="sr-header">🔍 ${results.length} result${results.length !== 1 ? 's' : ''} for "${q.replace(/[&<>"']/g, '')}"</div>
       ${results.map(t => `
         <div class="sr-item" onclick="openTool('${t.id}');hideSearchResults();document.querySelector('.search-input').value=''">
-          <span class="sr-icon">${t.icon}</span>
+          <span class="sr-icon">${(window.PDIcons && PDIcons.forPage(TOOL_PAGES[t.id])) || t.icon}</span>
           <div class="sr-body">
             <div class="sr-name">${t.name}</div>
             <div class="sr-desc">${t.desc}</div>
@@ -2566,31 +2608,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ── PDFdukan tool icons (SVG, one style) ───────────────────────── */
 (function _toolIcons() {
+  /* Same filled two-tone style as the homepage icons (24px grid):
+     .l light shape, .f solid shape, .w/.ws white fill/stroke, .fs solid stroke. */
   var G = {
-    'image-to-pdf':   '<rect x="4.5" y="5.5" width="9" height="7" rx="1"/><path d="M5 12l2.5-3 2 2 1.5-1.5 2.5 2.5"/>',
-    'pdf-to-jpg':     '<rect x="4.5" y="5" width="9" height="8" rx="1"/><circle cx="7.5" cy="7.8" r="1"/><path d="M5 12.5l3-3 2 2 1.2-1 2.3 2"/>',
-    'pdf-to-word':    '<path d="M4.5 5.5l1.6 7 2.4-6 2.4 6 1.6-7"/>',
-    'word-to-pdf':    '<path d="M4 9h7M8.5 6l3 3-3 3"/><path d="M13.5 5v8"/>',
-    'html-to-pdf':    '<path d="M7 5.5L4 9l3 3.5M11 5.5L14 9l-3 3.5"/>',
-    'merge':          '<path d="M4.5 4.5L9 9l4.5-4.5M9 9v4.5"/><path d="M6.8 11.5L9 13.7l2.2-2.2"/>',
-    'split':          '<path d="M9 4.5v9" stroke-dasharray="1.6 1.6"/><path d="M6.5 7L4 9l2.5 2M11.5 7L14 9l-2.5 2"/>',
-    'compress':       '<path d="M9 4v4M7 6l2 2 2-2M9 14v-4M7 12l2-2 2 2M5 9h8"/>',
-    'delete-pages':   '<path d="M5.5 6.5h7M7.5 6.5V5h3v1.5M6.5 6.5l.6 7h3.8l.6-7"/>',
-    'organize':       '<path d="M13 8.5A4 4 0 1 0 12 12"/><path d="M13.5 5.5V9H10"/>',
-    'crop':           '<path d="M6.5 4v8.5H15M4 6.5h8.5V15"/>',
-    'edit':           '<path d="M5 13l.6-2.6 6.2-6.2 2 2-6.2 6.2z"/><path d="M10.6 5.4l2 2"/>',
-    'fill-sign':      '<path d="M4 12c1.5-4 2.5-6 3.5-5s-1.5 5 0 5 2-3 3-3 1 2 2 2 1.5-1 2.5-1"/>',
-    'watermark':      '<path d="M9 4.5c2 2.6 3.5 4.4 3.5 6.1a3.5 3.5 0 0 1-7 0C5.5 8.9 7 7.1 9 4.5z"/>',
-    'page-numbers':   '<path d="M5 6.5l1.5-1v7M10 6.5a1.6 1.6 0 1 1 2.6 1.4L10 12.5h3.4"/>',
-    'unlock':         '<rect x="5" y="8.5" width="8" height="5.5" rx="1.2"/><path d="M7 8.5V7a2.5 2.5 0 0 1 4.8-1"/>',
-    'restriction':    '<path d="M9 4l4.5 1.8v3.4c0 2.6-2 4.3-4.5 5-2.5-.7-4.5-2.4-4.5-5V5.8z"/><path d="M7 9.2l1.5 1.5L11.2 8"/>',
-    'metadata':       '<path d="M4.5 9.5V5h4.5l5 5-4.5 4.5z"/><circle cx="7" cy="7.2" r=".9"/>',
-    'scan':           '<path d="M4 7V5h2M12 5h2v2M14 11v2h-2M6 13H4v-2"/><rect x="6.5" y="7" width="5" height="4" rx=".8"/>',
-    'ocr':            '<path d="M4 6V4.5h1.5M12.5 4.5H14V6M14 12v1.5h-1.5M5.5 13.5H4V12"/><path d="M6.5 7h5M9 7v4.5"/>',
-    'text-extract':   '<path d="M4.5 6h6M4.5 9h6M4.5 12h4"/><path d="M11.5 10.5l2 2 2-2M13.5 7v5.5"/>',
-    'searchable':     '<circle cx="8" cy="8" r="3.2"/><path d="M10.4 10.4L13.5 13.5"/>',
-    'img-compress':   '<rect x="4.5" y="5" width="9" height="8" rx="1"/><path d="M7 7.3l2 1.7 2-1.7M7 10.7l2-1.7 2 1.7"/>',
-    'word-counter':   '<path d="M4.5 6.5l1.4-1v7M8 6.5a1.4 1.4 0 1 1 2.3 1.2L8 12.5h3M12.5 5.5h2l-1.3 2.2a1.6 1.6 0 1 1-1 2.8"/>'
+    'scan':         ['#ff6333','<path class="f" d="M4 8a2 2 0 0 1 2-2h2l1.2-1.8h5.6L16 6h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><circle class="w" cx="12" cy="12.5" r="3.7"/><circle class="f" cx="12" cy="12.5" r="1.9"/>'],
+    'photo-scanner':['#ff6333','<path class="fs" d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect class="f" x="6.5" y="7" width="11" height="10" rx="2"/><circle class="w" cx="10" cy="10.4" r="1.3"/><path class="w" d="M7.6 16l3-3 2 1.8 1.5-1.2 2.4 2.4z"/>'],
+    'pdf-to-word':  ['#2f6bff','<path class="l" d="M8 3h7l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><rect class="f" x="3" y="9" width="12" height="9" rx="2"/><path class="ws" d="M5.6 11.6l1.3 3.9 1.6-3.1 1.6 3.1 1.3-3.9"/>'],
+    'word-to-pdf':  ['#2563eb','<path class="l" d="M8 3h7l4 4v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><rect class="f" x="3" y="9" width="12" height="9" rx="2"/><path class="ws" d="M6 13.5h5.6M9.7 11.6l1.9 1.9-1.9 1.9"/>'],
+    'image-to-pdf': ['#e5383b','<rect class="l" x="3" y="4" width="13" height="11" rx="2.5"/><circle class="f" cx="7" cy="8" r="1.5"/><rect class="f" x="9.5" y="11.5" width="11.5" height="8.5" rx="2.2"/><path class="ws" d="M12.5 15.8h5.2M15.6 13.7l2.1 2.1-2.1 2.1"/>'],
+    'pdf-to-jpg':   ['#1f9d55','<path class="l" d="M5 3h8l4 4v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><rect class="f" x="9" y="11" width="12" height="10" rx="2.2"/><circle class="w" cx="12.6" cy="14.6" r="1.3"/><path class="w" d="M10.2 20l3.4-3 2.4 2 1.8-1.5 2.2 2.3v.2H10.2z"/>'],
+    'html-to-pdf':  ['#7c3aed','<rect class="l" x="3" y="4" width="18" height="16" rx="3"/><path class="fs" d="M9.5 9.5L7 12l2.5 2.5M14.5 9.5L17 12l-2.5 2.5"/>'],
+    'merge':        ['#7c4dff','<rect class="l" x="3" y="3" width="12" height="12" rx="2.8"/><rect class="f" x="9" y="9" width="12" height="12" rx="2.8"/><path class="ws" d="M12.5 15h5M15 12.5v5"/>'],
+    'split':        ['#e69500','<path class="f" d="M6 3h5v18H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path class="l" d="M13 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5z"/>'],
+    'compress':     ['#0ea5b7','<rect class="l" x="4" y="3" width="16" height="18" rx="3.5"/><rect class="f" x="7" y="11" width="10" height="2.2" rx="1.1"/><path class="fs" d="M12 5.2v3.6M10.2 7.3l1.8 1.8 1.8-1.8M12 18.8v-3.6M10.2 16.7l1.8-1.8 1.8 1.8"/>'],
+    'delete-pages': ['#dc2626','<rect class="l" x="4" y="3" width="16" height="18" rx="3.5"/><rect class="f" x="7.5" y="7" width="9" height="1.9" rx=".95"/><path class="f" d="M8.6 10h6.8l-.7 7.6a1 1 0 0 1-1 .9h-3.4a1 1 0 0 1-1-.9z"/>'],
+    'organize':     ['#0891b2','<rect class="l" x="3" y="3" width="8" height="10" rx="2"/><rect class="f" x="13" y="11" width="8" height="10" rx="2"/><path class="fs" d="M14 4.5h3.5a2 2 0 0 1 2 2v1.5M10 19.5H6.5a2 2 0 0 1-2-2V16"/>'],
+    'crop':         ['#db2777','<rect class="l" x="7" y="7" width="10" height="10" rx="1.5"/><path class="fs" d="M7 3v14h14M3 7h14v14"/>'],
+    'edit':         ['#9333ea','<rect class="l" x="3" y="3" width="13" height="18" rx="3"/><path class="f" d="M9.5 18.5l.8-3.6 7.6-7.6 2.8 2.8-7.6 7.6z"/>'],
+    'fill-sign':    ['#4f46e5','<rect class="l" x="3" y="5" width="18" height="14" rx="3"/><path class="fs" d="M6 15c1.6-3.6 2.6-5.4 3.5-4.6s-1.2 4.6.3 4.6 2-2.6 3-2.6.9 1.8 2 1.8 1.4-.8 2.2-.8"/>'],
+    'watermark':    ['#0284c7','<rect class="l" x="4" y="3" width="16" height="18" rx="3.5"/><path class="f" d="M12 6.5c2.3 2.9 3.9 5 3.9 6.8a3.9 3.9 0 0 1-7.8 0c0-1.8 1.6-3.9 3.9-6.8z"/>'],
+    'page-numbers': ['#65a30d','<rect class="l" x="4" y="3" width="16" height="18" rx="3.5"/><rect class="f" x="7.5" y="13" width="9" height="5.5" rx="1.6"/><path class="ws" d="M11.2 14.6l1-.6v3.2"/>'],
+    'unlock':       ['#0d9488','<path class="fs" d="M8 10V7.5a4 4 0 0 1 7.7-1.5"/><rect class="f" x="5" y="10" width="14" height="11" rx="3"/><circle class="w" cx="12" cy="15.5" r="1.6"/>'],
+    'restriction':  ['#475569','<path class="f" d="M12 3l7.5 3v5.5c0 4.4-3.2 7.8-7.5 9.5-4.3-1.7-7.5-5.1-7.5-9.5V6z"/><path class="ws" d="M8.7 12.2l2.3 2.3 4.3-4.5"/>'],
+    'metadata':     ['#b45309','<path class="f" d="M3 11.5V4.5A1.5 1.5 0 0 1 4.5 3h7l9.5 9.5-8.5 8.5z"/><circle class="w" cx="8" cy="8" r="1.8"/>'],
+    'ocr':          ['#475569','<rect class="l" x="3" y="4" width="18" height="16" rx="3.5"/><path class="fs" d="M8 9h8M12 9v7"/>'],
+    'text-extract': ['#0369a1','<rect class="l" x="3" y="3" width="14" height="18" rx="3"/><path class="fs" d="M6.5 8h7M6.5 11.5h5"/><circle class="f" cx="17" cy="16.5" r="4.5"/><path class="ws" d="M17 14.3v4.2M15.3 16.9l1.7 1.7 1.7-1.7"/>'],
+    'searchable':   ['#059669','<rect class="l" x="3" y="3" width="14" height="18" rx="3"/><circle class="f" cx="14.5" cy="13.5" r="5"/><circle class="w" cx="14.5" cy="13.5" r="2.5"/><path class="fs" d="M18.2 17.2L21 20"/>'],
+    'img-compress': ['#d97706','<rect class="l" x="3" y="4" width="18" height="16" rx="3.5"/><circle class="f" cx="8.5" cy="9" r="1.8"/><path class="f" d="M3 16.5l5-4.5 3.5 3 3-2.5L21 17.5v1A1.5 1.5 0 0 1 19.5 20h-15A1.5 1.5 0 0 1 3 18.5z"/>'],
+    'word-counter': ['#6366f1','<rect class="l" x="3" y="4" width="18" height="16" rx="3.5"/><rect class="f" x="6" y="8" width="12" height="8" rx="2"/><path class="ws" d="M8.8 10.8l1-.6v3.6M12.2 11a1 1 0 1 1 1.6.9l-1.6 1.9h2.1"/>'],
+    'label-crop':   ['#ea580c','<path class="l" d="M3 6.5A2.5 2.5 0 0 1 5.5 4H11l3 3v13H5.5A2.5 2.5 0 0 1 3 17.5z"/><rect class="f" x="10" y="9" width="11" height="12" rx="2"/><path class="ws" d="M12.6 12v6M14.4 12v6M16.6 12v6M18.4 12v6"/>'],
+    'all-tools':    ['#334155','<rect class="f" x="4" y="4" width="7" height="7" rx="2"/><rect class="l" x="13" y="4" width="7" height="7" rx="2"/><rect class="l" x="4" y="13" width="7" height="7" rx="2"/><rect class="f" x="13" y="13" width="7" height="7" rx="2"/>']
   };
   var MAP = {
     '/tools/image-to-pdf-converter.html': 'image-to-pdf', '/tools/pdf-to-image-converter.html': 'pdf-to-jpg',
@@ -2603,23 +2650,14 @@ document.addEventListener('DOMContentLoaded', () => {
     '/tools/unlock-pdf-without-password.html': 'unlock', '/tools/pdf-restriction-compatibility-check.html': 'restriction',
     '/tools/pdf-metadata-editor.html': 'metadata', '/scanner.html': 'scan', '/tools/ocr-image-to-text.html': 'ocr',
     '/tools/pdf-text-extractor.html': 'text-extract', '/tools/searchable-pdf-converter-online.html': 'searchable',
-    '/tools/image-compress-resize.html': 'img-compress', '/tools/word-character-counter.html': 'word-counter'
+    '/tools/image-compress-resize.html': 'img-compress', '/tools/word-character-counter.html': 'word-counter',
+    '/tools/label-crop.html': 'label-crop', '/photo-scanner.html': 'photo-scanner', '/tools.html': 'all-tools'
   };
-  /* Colourful tile per tool: gradient square, soft page shape, bold white glyph. */
-  var C = {'image-to-pdf':['#fbbf24','#f59e0b'],'pdf-to-jpg':['#facc15','#eab308'],'pdf-to-word':['#60a5fa','#2563eb'],'word-to-pdf':['#3b82f6','#1e40af'],
-    'html-to-pdf':['#a78bfa','#7c3aed'],'merge':['#fb7185','#e11d48'],'split':['#fb923c','#ea580c'],'compress':['#4ade80','#16a34a'],
-    'delete-pages':['#f87171','#dc2626'],'organize':['#22d3ee','#0891b2'],'crop':['#f472b6','#db2777'],'edit':['#c084fc','#9333ea'],
-    'fill-sign':['#818cf8','#4f46e5'],'watermark':['#38bdf8','#0284c7'],'page-numbers':['#a3e635','#65a30d'],'unlock':['#2dd4bf','#0d9488'],
-    'restriction':['#94a3b8','#475569'],'metadata':['#fbbf24','#b45309'],'scan':['#ff8a5c','#e8562a'],'ocr':['#e879f9','#c026d3'],
-    'text-extract':['#38bdf8','#0369a1'],'searchable':['#34d399','#059669'],'img-compress':['#fcd34d','#d97706'],'word-counter':['#a5b4fc','#6366f1']};
-  var n = 0;
+  function tint(hex) { var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255, k = .88;
+    return 'rgb(' + Math.round(r + (255 - r) * k) + ',' + Math.round(g + (255 - g) * k) + ',' + Math.round(b + (255 - b) * k) + ')'; }
   function svg(key) {
-    var c = C[key] || ['#ff8a5c','#e8562a'], id = 'pdg' + (n++);
-    return '<svg class="pd-ico pd-ico2" viewBox="0 0 48 48" aria-hidden="true" focusable="false">' +
-      '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + c[0] + '"/><stop offset="1" stop-color="' + c[1] + '"/></linearGradient></defs>' +
-      // Flat, scanner-app style: soft tinted tile, glyph in the tool's colour.
-      '<rect width="48" height="48" rx="13" fill="' + c[1] + '" opacity=".14"/>' +
-      '<g class="pd-ico-glyph pd-ico-flat" transform="translate(4.6 5) scale(2.15)" style="stroke:' + c[1] + ';color:' + c[1] + '">' + G[key] + '</g></svg>';
+    var d = G[key] || G.scan;
+    return '<span class="cs-ic pd-ico pd-ico3" style="--ic-fg:' + d[0] + ';--ic-bg:' + tint(d[0]) + '" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false">' + d[1] + '</svg></span>';
   }
   function keyOf(href) { try { return MAP[new URL(href, location.href).pathname]; } catch (e) { return null; } }
   function apply(root) {
@@ -2629,10 +2667,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!box || box.querySelector('.pd-ico')) return;
       box.innerHTML = svg(k); box.classList.add('has-pd-ico');
     });
+    (root || document).querySelectorAll('.sb-item[data-tool]').forEach(function (b) {
+      var page = typeof TOOL_PAGES !== 'undefined' && TOOL_PAGES[b.dataset.tool], box = b.querySelector('.sb-icon');
+      if (!page || !box || box.querySelector('.pd-ico')) return; var k = MAP['/' + page]; if (!k) return;
+      box.innerHTML = svg(k); box.classList.add('has-pd-ico');
+    });
+    (root || document).querySelectorAll('a.nd-link').forEach(function (a) {
+      var k = keyOf(a.getAttribute('href')), box = a.querySelector('.nd-link-icon'); if (!k || !box || box.querySelector('.pd-ico')) return;
+      box.innerHTML = svg(k); box.classList.add('has-pd-ico');
+    });
     var k = MAP[location.pathname], hero = document.querySelector('.tool-hero-icon');
     if (k && hero && !hero.querySelector('.pd-ico')) { hero.innerHTML = svg(k); hero.classList.add('has-pd-ico'); }
   }
-  window.PDIcons = { apply: apply, svg: svg, MAP: MAP };
+  function forPage(page) { if (!page) return ''; var k = MAP['/' + String(page).replace(/^\/+/, '').replace(/#.*$/, '')]; return k ? svg(k) : ''; }
+  window.PDIcons = { apply: apply, svg: svg, MAP: MAP, forPage: forPage };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { apply(); }); else apply();
 })();
 
@@ -2640,7 +2688,7 @@ document.addEventListener('DOMContentLoaded', () => {
    Saved in this browser only (localStorage "pd-favs-v1"). */
 (function _favorites() {
   var KEY = 'pd-favs-v1';
-  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/delete-pages-from-pdf.html": ["Delete PDF Pages", "🗑️"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata-editor.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf-converter-online.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"]};
+  var TOOLS = {"/tools/image-to-pdf-converter.html": ["Image to PDF", "📑"], "/tools/pdf-to-image-converter.html": ["PDF to JPG", "🖼️"], "/tools/pdf-to-word-converter.html": ["PDF to Word", "📝"], "/tools/word-to-pdf-converter.html": ["Word to PDF", "📄"], "/tools/html-to-pdf-converter-online.html": ["HTML to PDF", "🌐"], "/tools/merge-pdf.html": ["Merge PDF", "🔗"], "/tools/extract-pdf-pages.html": ["Split PDF", "✂️"], "/tools/compress-pdf-reduce-file-size.html": ["Compress PDF", "📉"], "/tools/organize-pdf-pages-online.html": ["Organize PDF", "🔄"], "/tools/delete-pages-from-pdf.html": ["Delete PDF Pages", "🗑️"], "/tools/crop-pdf-online.html": ["Crop PDF", "🔲"], "/tools/pdf-editor.html": ["Edit PDF", "✏️"], "/tools/add-watermark-to-pdf-online.html": ["Add Watermark", "💧"], "/tools/add-page-numbers-to-pdf-online.html": ["Page Numbers", "🔢"], "/tools/unlock-pdf-without-password.html": ["Unlock PDF", "🔓"], "/tools/pdf-restriction-compatibility-check.html": ["Restriction Check", "🛡️"], "/tools/pdf-metadata-editor.html": ["PDF Metadata", "🏷️"], "/scanner.html": ["Smart Scan", "📷"], "/tools/ocr-image-to-text.html": ["Image to Text (OCR)", "🔤"], "/tools/pdf-text-extractor.html": ["PDF Text Extractor", "📃"], "/tools/searchable-pdf-converter-online.html": ["Searchable PDF", "🔍"], "/tools/image-compress-resize.html": ["Image Compressor", "🗜️"], "/tools/word-character-counter.html": ["Word Counter", "🧮"], "/tools/label-crop.html": ["Label Crop", "🏷️"], "/photo-scanner.html": ["Photo Scanner", "🖼️"]};
   var STAR = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8z"/></svg>';
   function load() { try { var a = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(a) ? a.filter(function (p) { return TOOLS[p]; }) : []; } catch (e) { return []; } }
   function save(a) { try { localStorage.setItem(KEY, JSON.stringify(a)); } catch (e) {} }

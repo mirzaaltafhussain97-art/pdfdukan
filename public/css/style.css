@@ -2721,3 +2721,42 @@ html[data-theme="light"] .tool-icon-wrap.has-pd-ico,html[data-theme="dark"] .too
 /* auth modal switch: a real button that looks like the old link */
 .auth-switch-link{background:none;border:0;padding:0;font:inherit;color:var(--primary);font-weight:700;cursor:pointer}
 .auth-switch-link:hover{text-decoration:underline}
+
+/* ── Tool icons: same filled two-tone style as the homepage, on every page ── */
+.cs-ic{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--ic-bg);flex-shrink:0}
+html[data-theme="dark"] .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,transparent)}
+@media (prefers-color-scheme:dark){html:not([data-theme="light"]) .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,transparent)}}
+.cs-ic svg{width:24px;height:24px;fill:none;stroke:var(--ic-fg);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cs-ic svg .f{fill:var(--ic-fg);stroke:none}
+.cs-ic svg .l{fill:var(--ic-fg);opacity:.36;stroke:none}
+.cs-ic svg .w{fill:#fff;stroke:none}
+.cs-ic svg .ws{fill:none;stroke:#fff;stroke-width:1.7}
+.cs-ic svg .fs{fill:none;stroke:var(--ic-fg);stroke-width:2.1}
+.has-pd-ico:has(.pd-ico3){background:none!important;box-shadow:none!important}
+.has-pd-ico .pd-ico3{width:100%;height:100%;border-radius:inherit;display:grid}
+.has-pd-ico .pd-ico3 svg{width:56%;height:56%}
+.tool-icon-wrap.has-pd-ico:has(.pd-ico3),.btc-icon.has-pd-ico:has(.pd-ico3){width:56px;height:56px;border-radius:16px}
+.tool-hero-icon.has-pd-ico:has(.pd-ico3){border-radius:18px}
+.related-tool-card .rtc-icon.has-pd-ico:has(.pd-ico3){width:40px;height:40px;border-radius:11px}
+.nd-link-icon.has-pd-ico{width:30px;height:30px;min-width:30px;font-size:0;display:inline-grid;place-items:center}
+.nd-link-icon .pd-ico3{width:30px;height:30px;border-radius:8px}
+.nd-link-icon .pd-ico3 svg{width:18px;height:18px}
+.sr-icon .pd-ico3{width:32px;height:32px;border-radius:9px}
+.sr-icon .pd-ico3 svg{width:19px;height:19px}
+/* Bigger tool cards (Nov 2026): easier to read and tap */
+.tools-grid{grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:14px}
+.tool-card{padding:22px 14px 18px;border-radius:16px}
+.tool-card .tc-name{font-size:15px;margin-bottom:6px}
+.tool-card .tc-desc{font-size:13px;line-height:1.45}
+.tool-icon-wrap.has-pd-ico:has(.pd-ico3){width:64px;height:64px;border-radius:18px;margin:0 auto 12px}
+.tool-card:hover{transform:translateY(-2px)}
+@media(max-width:600px){.tools-grid{grid-template-columns:repeat(2,1fr);gap:10px}.tool-card{padding:18px 10px 14px}.tool-icon-wrap.has-pd-ico:has(.pd-ico3){width:56px;height:56px}.tool-card .tc-name{font-size:14px}.tool-card .tc-desc{font-size:12px}}
+.cs-hero .cs-tools .cs-ic{width:56px;height:56px;border-radius:16px}
+.cs-hero .cs-tools .cs-ic svg{width:29px;height:29px}
+.cs-hero .cs-tool{font-size:13.5px;gap:9px}
+@media(max-width:600px){.cs-hero .cs-tools .cs-ic{width:50px;height:50px;border-radius:14px}.cs-hero .cs-tools .cs-ic svg{width:26px;height:26px}.cs-hero .cs-tool{font-size:12.5px}}
+.sb-icon.has-pd-ico{font-size:0;display:inline-grid;place-items:center;width:26px;height:26px}
+.sb-icon .pd-ico3{width:26px;height:26px;border-radius:7px}
+.sb-icon .pd-ico3 svg{width:16px;height:16px}
+.mnd-search{position:sticky;top:-12px;background:var(--card);padding:4px 0 10px;z-index:1}
+.mnd-search input{width:100%;height:42px;border:1px solid var(--border);border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:var(--bg-2);color:var(--text)}
