@@ -2262,6 +2262,10 @@ function loadAnalyticsOnIdle() {
     anonymize_ip: true,
     cookie_flags: 'SameSite=None;Secure',
   });
+  window.gtag('config', 'G-RM7DDQ4WSC', {   // second GA4 property (Nov 2026); both receive the same data
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure',
+  });
 
   _analyticsLoadPromise = new Promise((resolve, reject) => {
     const existing = document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
