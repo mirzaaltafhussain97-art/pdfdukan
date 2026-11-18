@@ -2765,3 +2765,8 @@ html[data-theme="dark"] .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,tra
 .nav-dropdown::before{content:"";position:absolute;left:-12px;right:-12px;top:-16px;height:16px}
 .nav-item.has-dropdown .nav-dropdown{transition:opacity .18s var(--ease) .22s,transform .18s var(--ease) .22s,visibility 0s linear .4s}
 .nav-item.has-dropdown:hover .nav-dropdown,.nav-item.has-dropdown:focus-within .nav-dropdown{transition-delay:0s,0s,0s}
+
+/* Footer with tool + guide columns */
+.footer-grid{grid-template-columns:2fr repeat(auto-fit,minmax(150px,1fr))}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.footer-grid{grid-template-columns:1fr 1fr;gap:20px}}
