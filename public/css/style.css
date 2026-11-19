@@ -2770,3 +2770,9 @@ html[data-theme="dark"] .cs-ic{background:color-mix(in srgb,var(--ic-fg) 18%,tra
 .footer-grid{grid-template-columns:2fr repeat(auto-fit,minmax(150px,1fr))}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.footer-grid{grid-template-columns:1fr 1fr;gap:20px}}
+
+/* Long lists scroll inside their own box instead of stretching the page */
+#fileList,#pnFiles,#wmFiles,#hpFiles,#lcFiles,#ocrFiles,#mdFiles,#spFiles,#ulList,.file-list,.files-list{max-height:min(460px,60vh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--border-2,#d6cfc9) transparent;padding-right:4px}
+#pageGrid,#dpGrid,#orgGrid,#wmPages,#hpPages,#ocrPdfPages,#txPages,#lcPages{max-height:min(640px,70vh);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--border-2,#d6cfc9) transparent;padding-right:4px}
+#fileList::-webkit-scrollbar,#pageGrid::-webkit-scrollbar,#dpGrid::-webkit-scrollbar,#orgGrid::-webkit-scrollbar,#lcPages::-webkit-scrollbar{width:8px}
+#fileList::-webkit-scrollbar-thumb,#pageGrid::-webkit-scrollbar-thumb,#dpGrid::-webkit-scrollbar-thumb,#orgGrid::-webkit-scrollbar-thumb,#lcPages::-webkit-scrollbar-thumb{background:#d6cfc9;border-radius:8px}
