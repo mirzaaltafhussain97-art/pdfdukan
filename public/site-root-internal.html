@@ -575,5 +575,12 @@ document.getElementById('fileInputPDF').addEventListener('change', function() {
   </div>
   <div id="notifList" class="notif-list"></div>
 </div>
+<script>
+/* When a visitor reaches for the upload box, fetch the scanner's corner-detection
+   models in the background, so the scanner page finds them in the browser cache. */
+(function(){var box=document.getElementById('uploadBox');if(!box)return;var done=false;
+function go(){if(done)return;done=true;try{['https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js','https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort-wasm-simd-threaded.wasm','/models/lcnet100_h_e_bifpn_256_fp32.onnx','/models/fastvit_t8_h_e_bifpn_256_fp32.onnx'].forEach(function(u){var l=document.createElement('link');l.rel='prefetch';l.href=u;l.crossOrigin='anonymous';document.head.appendChild(l);});}catch(e){}}
+['pointerdown','dragenter','touchstart','focusin'].forEach(function(e){box.addEventListener(e,go,{once:true,passive:true});});})();
+</script>
 </body>
 </html>

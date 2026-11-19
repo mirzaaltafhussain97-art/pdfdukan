@@ -62,6 +62,11 @@ const ScannerApp = (() => {
     // scan (the file picker is open for a few seconds), not for every reader.
     const preload=()=>window.ScanProcessor?.preloadModels?.();
     for(const ev of ['pointerdown','dragenter','focusin','touchstart'])zone.addEventListener(ev,preload,{once:true,passive:true});
+    // Visitors on the scanner page are here to scan: start fetching and
+    // compiling the models once the page is idle, so the first auto-crop
+    // does not wait for the download.
+    const idle=window.requestIdleCallback||(f=>setTimeout(f,1200));
+    if(document.readyState==='complete')idle(preload,{timeout:2500});else window.addEventListener('load',()=>idle(preload,{timeout:2500}),{once:true});
   }
   async function _loadFile(file){
     const url=URL.createObjectURL(file);
