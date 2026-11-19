@@ -244,11 +244,11 @@ const nextConfig = {
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
-        source: '/favicon:path*',
+        source: '/:file(favicon.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
-        source: '/apple-touch-icon:path*',
+        source: '/:file(apple-touch-icon.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
@@ -257,7 +257,7 @@ const nextConfig = {
       },
       // HTML pages — short cache so content updates reach users within an hour.
       {
-        source: '/:path*.html',
+        source: '/:path(.*\\.html)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=3600, must-revalidate' }],
       },
     ];
