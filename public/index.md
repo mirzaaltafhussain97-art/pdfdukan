@@ -1,6 +1,6 @@
 # PDFdukan — Free Online PDF Tools & Document Scanner
 
-> PDFdukan is a free, browser-based collection of PDF and document tools plus the CamMaster document scanner. Files are processed in the visitor's browser and are not uploaded to PDFdukan's servers. No sign-up and no watermark. Based in Rawalpindi, Pakistan.
+> PDFdukan is a free, browser-based collection of PDF and document tools plus the CamMaster document scanner. Files are processed in the visitor's browser and are not uploaded to PDFdukan's servers. No sign-up and no watermark. Based in Faisalabad, Pakistan.
 
 ## Tools
 
