@@ -240,6 +240,18 @@ const nextConfig = {
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
+        // Homepage points agents at its Markdown version and llms.txt (RFC 8288).
+        source: '/',
+        headers: [
+          { key: 'Link', value: '</index.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"; type="text/plain"' },
+          { key: 'Vary', value: 'Accept' },
+        ],
+      },
+      {
+        source: '/index.md',
+        headers: [{ key: 'Content-Type', value: 'text/markdown; charset=utf-8' }],
+      },
+      {
         // Scanner corner-detection models: large files that rarely change.
         source: '/models/:path*',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=604800' }],

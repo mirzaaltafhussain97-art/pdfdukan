@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  // AI agents that ask for Markdown get the homepage as Markdown (far fewer tokens than HTML).
+  if (request.nextUrl.pathname === '/' && (request.headers.get('accept') || '').includes('text/markdown')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/index.md';
+    const res = NextResponse.rewrite(url);
+    res.headers.set('Content-Type', 'text/markdown; charset=utf-8');
+    res.headers.set('Vary', 'Accept');
+    return res;
+  }
+
   if (
     request.nextUrl.pathname === '/index.html' ||
     request.nextUrl.pathname === '/home.html'
@@ -19,5 +29,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/index.html', '/home.html', '/feed', '/feed/', '/comments/feed', '/comments/feed/', '/category/:path*'],
+  matcher: ['/', '/index.html', '/home.html', '/feed', '/feed/', '/comments/feed', '/comments/feed/', '/category/:path*'],
 };

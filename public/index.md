@@ -1,0 +1,57 @@
+# PDFdukan — Free Online PDF Tools & Document Scanner
+
+> PDFdukan is a free, browser-based collection of PDF and document tools plus the CamMaster document scanner. Files are processed in the visitor's browser and are not uploaded to PDFdukan's servers. No sign-up and no watermark. Based in Rawalpindi, Pakistan.
+
+## Tools
+
+- [Smart Scan](https://pdfdukan.com/scanner.html): AI document scanner with auto edge detection and Magic Pro enhancement. Works with camera or uploaded images.
+- [Photo Scanner](https://pdfdukan.com/photo-scanner.html): Scan printed photos and pictures into straight, cropped JPG or PDF files, right in your browser.
+- [Image to PDF](https://pdfdukan.com/tools/image-to-pdf-converter.html): Convert JPG, PNG, WEBP images to PDF. Supports multi-page, A4/Letter/custom sizes.
+- [PDF to JPG](https://pdfdukan.com/tools/pdf-to-image-converter.html): Turn PDF pages into JPG, PNG or WebP images up to 600 DPI, or save the photos inside. Download one or a ZIP.
+- [Crop PDF](https://pdfdukan.com/tools/crop-pdf-online.html): Cut any region out of a PDF page and save it as a high-quality image. Perfect for large maps, plans and scans.
+- [Label Crop](https://pdfdukan.com/tools/label-crop.html): Crop Flipkart, Meesho and Amazon shipping labels from A4 PDFs onto 4x6 thermal labels. Bulk files, invoice option, SKU sort.
+- [Merge PDF](https://pdfdukan.com/tools/merge-pdf.html): Combine multiple PDF files into one document. Drag to reorder before merging.
+- [Split PDF](https://pdfdukan.com/tools/extract-pdf-pages.html): Split PDF by page ranges, every N pages, or extract individual pages. Download as ZIP.
+- [PDF Organizer](https://pdfdukan.com/tools/organize-pdf-pages-online.html): Reorder, rotate and delete PDF pages visually. Drag thumbnails to rearrange, then download.
+- [Delete PDF Pages](https://pdfdukan.com/tools/delete-pages-from-pdf.html): Click pages or type numbers like 2, 5-7 to remove them. Finds blank pages and keeps bookmarks.
+- [PDF to Word](https://pdfdukan.com/tools/pdf-to-word-converter.html): Turn digital or scanned PDFs into an editable .docx Word file, with OCR. Runs in your browser.
+- [Word to PDF](https://pdfdukan.com/tools/word-to-pdf-converter.html): Convert DOCX, DOC, ODT or RTF to PDF with your page layout kept. Runs in your browser, no upload.
+- [Compress PDF](https://pdfdukan.com/tools/compress-pdf-reduce-file-size.html): Shrink a PDF in your browser, or set a target size like 200 KB for upload forms.
+- [HTML to PDF](https://pdfdukan.com/tools/html-to-pdf-converter-online.html): Paste HTML or upload a page with its CSS and images; get a paged A4 or Letter PDF.
+- [Edit PDF](https://pdfdukan.com/tools/pdf-editor.html): Retype text, add images, links and signatures, then download. No watermark.
+- [Add Watermark](https://pdfdukan.com/tools/add-watermark-to-pdf-online.html): Stamp custom text or a logo at any angle, opacity and position.
+- [Page Numbers](https://pdfdukan.com/tools/add-page-numbers-to-pdf-online.html): Add page numbers in the header or footer, in the format you choose.
+- [Compress Image](https://pdfdukan.com/tools/image-compress-resize.html): Reduce image file size by up to 90% with quality control. Supports JPG, PNG, WEBP output.
+- [Image to Text (OCR)](https://pdfdukan.com/tools/ocr-image-to-text.html): Extract editable text from one JPG, PNG or WEBP image. Includes Urdu, Arabic and listed mixed-language modes.
+- [Unlock PDF](https://pdfdukan.com/tools/unlock-pdf-without-password.html): Remove print, copy and edit restrictions, free and in your browser.
+- [PDF Restriction Check](https://pdfdukan.com/tools/pdf-restriction-compatibility-check.html): See passwords, blocked actions, encryption, signatures and PDF/A issues.
+- [PDF Metadata Editor](https://pdfdukan.com/tools/pdf-metadata-editor.html): Edit title, author, keywords, dates and XMP, or remove all metadata.
+- [PDF Text Extractor](https://pdfdukan.com/tools/pdf-text-extractor.html): Pull all text from a PDF and copy it or save as a .txt file.
+- [Word & Character Counter](https://pdfdukan.com/tools/word-character-counter.html): Count words, characters, sentences and reading time as you type.
+- [Searchable PDF](https://pdfdukan.com/tools/searchable-pdf-converter-online.html): Make scanned PDFs and photos searchable with OCR in 37 languages.
+
+## Guides
+
+- [How OCR Works & How to Improve Accuracy](https://pdfdukan.com/blog/how-ocr-works.html)
+- [How Accurate Is OCR on Scanned Documents?](https://pdfdukan.com/blog/how-accurate-is-ocr.html)
+- [How to Scan a Document](https://pdfdukan.com/blog/how-to-scan-a-document.html)
+- [Scan Documents on Your Phone](https://pdfdukan.com/blog/scan-documents-phone.html)
+- [Scan CNIC & Documents to PDF Safely](https://pdfdukan.com/blog/scan-cnic-documents-pdf-safely.html)
+- [Compress Images Without Losing Quality](https://pdfdukan.com/blog/compress-images-without-losing-quality.html)
+- [Merge, Split & Organize PDFs in the Right Order](https://pdfdukan.com/blog/merge-split-organize-pdf-right-order.html)
+- [How to Convert JPG to PDF Without Losing Quality](https://pdfdukan.com/blog/jpg-to-pdf-without-losing-quality.html)
+- [Convert PDF to JPG Free in High Quality](https://pdfdukan.com/blog/pdf-to-jpg-high-quality.html)
+- [How to Convert PDF to Word Without Losing Formatting](https://pdfdukan.com/blog/pdf-to-word-without-losing-formatting.html)
+- [Reduce PDF File Size](https://pdfdukan.com/blog/compress-pdf-reduce-size.html)
+- [Merge PDFs Without Losing Quality](https://pdfdukan.com/blog/merge-pdf-without-losing-quality.html)
+- [Split a PDF into Separate Files](https://pdfdukan.com/blog/split-pdf-guide.html)
+- [Going Paperless](https://pdfdukan.com/blog/going-paperless-guide.html)
+- [PDF vs Word](https://pdfdukan.com/blog/pdf-vs-word.html)
+- [Best Free PDF Tools 2026, Picked by Task and Tested](https://pdfdukan.com/blog/best-free-pdf-tools.html)
+
+## About
+
+- [About PDFdukan](https://pdfdukan.com/about.html)
+- [Contact (form only)](https://pdfdukan.com/contact.html)
+- [Privacy Policy](https://pdfdukan.com/privacy.html)
+- [Terms of Service](https://pdfdukan.com/terms.html)
