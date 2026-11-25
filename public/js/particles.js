@@ -48,6 +48,13 @@
     s.pointerEvents = 'none';
     s.opacity       = '0.18';
 
+    // No GPU (software WebGL): the sphere would hog the main thread. Skip it.
+    try {
+      var gl = document.createElement('canvas').getContext('webgl');
+      var dbg = gl && gl.getExtension('WEBGL_debug_renderer_info');
+      var r = gl ? String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)) : '';
+      if (!gl || /swiftshader|llvmpipe|software|basic render/i.test(r)) { canvas.style.display = 'none'; return; }
+    } catch (e) {}
     if (window.THREE) {
       _setupScene(canvas);
     } else {
@@ -138,6 +145,7 @@
   /* ── Render loop ─────────────────────────────────────────────── */
   function _loop() {
     _rafId = requestAnimationFrame(_loop);
+    if (document.hidden) return;   // no work in a background tab
 
     /* Smooth interpolation toward cursor target */
     _currX += (_targetX - _currX) * 0.032;

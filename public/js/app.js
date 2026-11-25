@@ -2568,9 +2568,14 @@ function initAmbientGlobe() {
   if (window.__pdSphere) return; window.__pdSphere = 1;
   function add() {
     if (document.querySelector('script[src*="particles.js"]')) return;
-    var t = document.createElement('script'); t.src = '/js/particles.js?v=20261111'; t.defer = true; document.body.appendChild(t);
+    var t = document.createElement('script'); t.src = '/js/particles.js?v=20261125'; t.defer = true; document.body.appendChild(t);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', add); else add();
+  // Decorative only: wait for the visitor's first real interaction, so the
+  // WebGL loop never competes with page load (it cost ~17 s of blocking time
+  // in PageSpeed, which renders WebGL in software).
+  var evs = ['pointermove', 'scroll', 'keydown', 'pointerdown', 'wheel'];
+  function once() { evs.forEach(function (e) { window.removeEventListener(e, once, { passive: true }); }); setTimeout(add, 400); }
+  evs.forEach(function (e) { window.addEventListener(e, once, { passive: true }); });
 })();
 
 /* ── INIT ─────────────────────────────────────────────────────── */
