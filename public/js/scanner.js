@@ -136,11 +136,11 @@ const ScannerApp = (() => {
         const source=page.sourceImg,version=page.editVersion;page.autoStatus='processing';_updateAutoStatus();
         await new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
         try{
-          let cropped,corners,previousCorners,needsCropReview,autoProfile=false,previewOnly=false;
+          let cropped,corners,previousCorners,needsCropReview,autoProfile=false,previewOnly=false,dewarped=false;
           if(window.ScanProcessor?.available){
             const result=await ScanProcessor.detect(source,{preview:true},()=>state.pages.includes(page)&&page.editVersion===version);
             if(!result)continue;
-            cropped=result.blob?await _imageFromBlob(result.blob):source;corners=result.corners;previousCorners=result.previousCorners;needsCropReview=result.needsReview;autoProfile=result.hasPhotoPadding&&!!result.blob;previewOnly=!!result.previewOnly;
+            cropped=result.blob?await _imageFromBlob(result.blob):source;corners=result.corners;previousCorners=result.previousCorners;needsCropReview=result.needsReview;autoProfile=result.hasPhotoPadding&&!!result.blob;previewOnly=!!result.previewOnly;dewarped=!!result.dewarped;
           }else{
             await autoCropEditor.setImageAsync(source);
             const warped=window.cvReady?await autoCropEditor.applyCrop():await autoCropEditor.perspectiveCrop();
@@ -149,7 +149,7 @@ const ScannerApp = (() => {
           // The job owns a page object and source revision, never a page index.
           // Manual edits, rotations, deletions and reordering cannot redirect it.
           if(!state.pages.includes(page)||page.editVersion!==version||page.sourceImg!==source)continue;
-          Object.assign(page,{croppedImg:cropped,cropCorners:copy(corners),previousCorners:copy(previousCorners||corners),needsCropReview:!!needsCropReview,autoProfile,previewOnly,autoStatus:'ready'});
+          Object.assign(page,{croppedImg:cropped,cropCorners:copy(corners),previousCorners:copy(previousCorners||corners),needsCropReview:!!needsCropReview,autoProfile,previewOnly,dewarped,autoStatus:'ready'});
         }catch(error){
           console.warn('Automatic crop unavailable; keeping this original:',error);
           if(!state.pages.includes(page)||page.editVersion!==version)continue;
@@ -393,7 +393,7 @@ const ScannerApp = (() => {
       let result,image;
       if(window.ScanProcessor?.available){result=await ScanProcessor.warp(cropEditor._getRotatedImg(),copy(cropEditor.corners),{preview:true});image=await _imageFromBlob(result.blob);}
       else image=window.cvReady?await cropEditor.applyCrop():await cropEditor.perspectiveCrop();
-      const p=state.pages[state.editingIndex];p.previewOnly=!!result?.previewOnly;
+      const p=state.pages[state.editingIndex];p.previewOnly=!!result?.previewOnly;p.dewarped=!!result?.dewarped;
       p.sourceImg=cropEditor._getRotatedImg();p.cropCorners=copy(cropEditor.corners);p.previousCorners=copy(cropEditor.legacyCorners||cropEditor.corners);p.croppedImg=image;p.needsCropReview=false;p.autoProfile=false;
       if(cropEditor.pendingTransform){(p.sourceOperations||=[]).push(cropEditor.pendingTransform);cropEditor.pendingTransform=null;}
       cropEditor.img=p.sourceImg;cropEditor.rotation=0;state._currentCropped=image;zoom=1;showScreen('filter');_renderPages();_reprocess();
@@ -624,7 +624,7 @@ const ScannerApp = (() => {
      second download of the same pages is instant. */
   const _imgIds=new WeakMap();let _imgSeq=0;
   const _imgId=o=>{if(!o||typeof o!=='object')return 0;if(!_imgIds.has(o))_imgIds.set(o,++_imgSeq);return _imgIds.get(o);};
-  function _exportKey(p,q){return [_imgId(p.croppedImg),_imgId(p.sourceImg),p.previewOnly?1:0,p.pdfSource?1:0,p.filter,JSON.stringify(p.adjustments||{}),JSON.stringify(p.cropCorners||0),q].join('|');}
+  function _exportKey(p,q){return [_imgId(p.croppedImg),_imgId(p.sourceImg),p.previewOnly?1:0,p.dewarped?1:0,p.pdfSource?1:0,p.filter,JSON.stringify(p.adjustments||{}),JSON.stringify(p.cropCorners||0),q].join('|');}
   function _encodedPage(p,q){
     const key=_exportKey(p,q);
     if(p._xp&&p._xp.key===key)return p._xp.promise;
@@ -642,7 +642,7 @@ const ScannerApp = (() => {
 
   // Render one page (cropped + filtered) to an image blob.
   async function _renderExportPage(page){
-    const source=page.pdfSource?await ScanPdf.exportSource(page):page.previewOnly?await _imageFromBlob((await ScanProcessor.warp(page.sourceImg,page.cropCorners,{rectify:!!page.autoProfile})).blob):page.croppedImg;
+    const source=page.pdfSource?await ScanPdf.exportSource(page):page.previewOnly?await _imageFromBlob((await ScanProcessor.warp(page.sourceImg,page.cropCorners,{rectify:!!page.autoProfile,dewarp:page.dewarped?'force':false})).blob):page.croppedImg;
     try{return await _renderFiltered(source,page.filter,page.adjustments);}finally{if(page.pdfSource&&source instanceof HTMLCanvasElement)source.width=source.height=1;}
   }
   async function _pageToBlob(page, format) {

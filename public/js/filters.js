@@ -511,7 +511,11 @@ function _paperField(data, w, h) {
   // 2) printed dark blocks: a strong step within 2 px (a shadow's edge is a ramp).
   //    Seed the dark side, then grow through pixels about as dark as the seed.
   const dark = new Uint8Array(n), limit = new Float32Array(n), queue = new Int32Array(n); let qh = 0, qt = 0;
-  const seed = (p, bright) => { if (!dark[p]) { dark[p] = 1; limit[p] = Math.min(bright * 0.8, lum[p] * 1.3 + 6); queue[qt++] = p; } };
+  // Only something clearly darker than the page as a whole can be a printed
+  // block. Without this, paper next to a white patch (correction fluid, a
+  // glare spot) is taken for a dark block and the page is left grey.
+  const lumRef = (() => { const v = Float32Array.from(order.map(p => lum[p])).sort(); return v.length ? v[Math.floor(v.length * 0.25)] : 255; })();
+  const seed = (p, bright) => { if (!dark[p] && lum[p] < lumRef * 0.74) { dark[p] = 1; limit[p] = Math.min(bright * 0.8, lum[p] * 1.3 + 6); queue[qt++] = p; } };
   for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) { const p = y * sw + x, a = lum[p];
     if (x + 2 < sw) { const b = lum[p + 2]; if (a < b * 0.66) seed(p, b); else if (b < a * 0.66) seed(p + 2, a); }
     if (y + 2 < sh) { const b = lum[p + 2 * sw]; if (a < b * 0.66) seed(p, b); else if (b < a * 0.66) seed(p + 2 * sw, a); } }
@@ -606,9 +610,21 @@ function _applyMagicPro(data,w,h){
   if(_scanPhotoFrame(data,w,h)||_isColourCard(data,w,h)){_applyMagicProLegacy(data,w,h);return;}
   const field=_paperField(data,w,h);
   // An ID-card-shaped scan with a tinted security background keeps its colours.
-  const ar=Math.max(w,h)/Math.max(1,Math.min(w,h)),idCard=field&&ar>1.45&&ar<1.75&&field.tinted2>0.2;
+  // A card's security print leaves fine faint texture all over it; a printed
+  // page under warm light is tinted too, but its paper is smooth.
+  const ar=Math.max(w,h)/Math.max(1,Math.min(w,h)),idCard=field&&ar>1.45&&ar<1.75&&field.tinted2>0.2&&_faintShare(data,w,h,field)>0.055;
   if(!field||idCard||field.covered>0.55||field.tinted>0.25){_applyMagicProLegacy(data,w,h);return;}
   _applyPaperTone(data,w,h,field,'magic');
+}
+/* Share of the open paper that is faintly marked (6-30 % darker than the
+   paper level), measured on ~1100 px blocks so preview and export agree. */
+function _faintShare(data,w,h,field){
+  const {sw,sh,maps,mask}=field,bs=Math.max(1,Math.round(Math.max(w,h)/1100)),kx=(sw-1)/Math.max(1,w-1),ky=(sh-1)/Math.max(1,h-1);let faint=0,tot=0;
+  for(let y=0;y+bs<=h;y+=bs*2){const q0=Math.round((y+bs/2)*ky)*sw;
+    for(let x=0;x+bs<=w;x+=bs*2){const q=q0+Math.round((x+bs/2)*kx);if(mask[q]>0.3)continue;
+      let L=0;for(let yy=y;yy<y+bs;yy++)for(let xx=x,i=(yy*w+x)*4;xx<x+bs;xx++,i+=4)L+=.299*data[i]+.587*data[i+1]+.114*data[i+2];
+      const d=1-L/(bs*bs)/Math.max(24,.299*maps[0][q]+.587*maps[1][q]+.114*maps[2][q]);tot++;if(d>0.07&&d<=0.3)faint++;}}
+  return tot?faint/tot:0;
 }
 /* Broad, varied colour across the sheet (security card, certificate art). */
 function _isColourCard(data,w,h){
