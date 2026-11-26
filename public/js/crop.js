@@ -1747,60 +1747,116 @@ class CropEditor {
     const { sample } = _blurField(src, w, h);
     return { sample, k, W, H };
   }
-  // Best parallel shift of segment A→B (image px) toward a strong straight
-  // edge, within ±R image px. Only the part of the side near `focus` counts
-  // (0 = A end, 1 = B end, null = whole side).
-  _magnetSide(f, A, B, R, focus) {
+  /* Find the straight edge a side should sit on. Short step profiles are
+     taken across the side at several stations; every clear colour step is a
+     candidate point; the line that most stations agree on wins (a lone text
+     row or a shadow does not). Lines may tilt, so a corner dragged a little
+     off still finds the true edge direction. Of two well supported parallel
+     lines (the sheet edge and a printed border inside it) the outer one wins.
+     A, B: side in image px, clockwise order; [t0, t1]: part of the side used.
+     Returns the candidate lines { p, d, s } (point, unit direction in image
+     px, support), strongest first; empty when the side has no clear edge. */
+  _magnetLines(f, A, B, R, t0, t1) {
     const ax = A.x * f.k, ay = A.y * f.k, bx = B.x * f.k, by = B.y * f.k, len = Math.hypot(bx-ax, by-ay);
-    if (len < 12) return null;
-    const nx = -(by-ay) / len, ny = (bx-ax) / len, r = Math.max(3, R * f.k), u = [0,0,0], v = [0,0,0];
-    const ts = []; for (let j = 0; j < 24; j++) { const t = focus == null ? 0.08 + 0.84 * j / 23 : (focus ? 0.55 + 0.4 * j / 23 : 0.05 + 0.4 * j / 23); ts.push(t); }
-    let best = { off: 0, g: -1 }, g0 = 0; const prof = [];
-    for (let off = -r; off <= r; off += 0.5) {
-      // A paper edge is a STEP: one colour on one side all along the line,
-      // another on the other. Text and printed rules average out here.
-      let n = 0; const su = [0,0,0], sv = [0,0,0];
-      for (const t of ts) { const px = ax + (bx-ax)*t + nx*off, py = ay + (by-ay)*t + ny*off;
-        if (!f.sample(px - nx*3, py - ny*3, u) || !f.sample(px + nx*3, py + ny*3, v)) continue; n++;
-        for (let c = 0; c < 3; c++) { su[c] += u[c]; sv[c] += v[c]; } }
-      if (n < 8) continue;
-      const g = Math.hypot(su[0]-sv[0], su[1]-sv[1], su[2]-sv[2]) / n;
-      if (Math.abs(off) < 0.26) g0 = g;
-      prof.push({ off, g });
-      if (g > best.g) best = { off, g };
+    if (len < 16) return [];
+    const tx = (bx-ax) / len, ty = (by-ay) / len, nx = -ty, ny = tx, r = Math.max(4, R * f.k * 1.3), step = 0.5;
+    const N = 11, cands = [], u = [0,0,0], v = [0,0,0], half = 1.5;
+    for (let j = 0; j < N; j++) {
+      const t = t0 + (t1 - t0) * j / (N - 1), cx = ax + (bx-ax) * t, cy = ay + (by-ay) * t;
+      // colour along the normal, averaged over a short stretch of the side
+      const m = Math.round((r + 4) / step), prof = [];
+      for (let i = -m; i <= m; i++) {
+        const o = i * step; let n = 0, s0 = 0, s1 = 0, s2 = 0;
+        for (const q of [-half, 0, half]) if (f.sample(cx + nx*o + tx*q, cy + ny*o + ty*q, u)) { s0 += u[0]; s1 += u[1]; s2 += u[2]; n++; }
+        prof.push(n ? [s0/n, s1/n, s2/n] : null);
+      }
+      // step strength at each offset: outer 1.5-3 px against inner 1.5-3 px
+      const g = new Float32Array(prof.length).fill(-1), k3 = Math.round(3 / step), k1 = Math.round(1.5 / step);
+      for (let i = k3; i < prof.length - k3; i++) {
+        const o1 = prof[i-k1], o2 = prof[i-k3], i1 = prof[i+k1], i2 = prof[i+k3];
+        if (!o1 || !o2 || !i1 || !i2) continue;
+        g[i] = Math.hypot((o1[0]+o2[0]) - (i1[0]+i2[0]), (o1[1]+o2[1]) - (i1[1]+i2[1]), (o1[2]+o2[2]) - (i1[2]+i2[2])) / 2;
+      }
+      const peaks = [];
+      for (let i = 1; i < g.length - 1; i++) { const o = (i - m) * step; if (Math.abs(o) > r || g[i] < 18 || g[i] < g[i-1] || g[i] < g[i+1]) continue; peaks.push({ o, g: g[i] }); }
+      peaks.sort((p, q) => q.g - p.g);
+      for (const pk of peaks.slice(0, 3)) cands.push({ j, x: cx + nx*pk.o, y: cy + ny*pk.o, o: pk.o, g: pk.g });
     }
-    // Snap only to a clear edge, clearly stronger than where the side is now;
-    // of several strong edges (a card's printed header line), take the nearest.
-    if (best.g < 32) return null;
-    const peaks = prof.filter((q, i) => (i === 0 || q.g >= prof[i-1].g) && (i === prof.length - 1 || q.g >= prof[i+1].g));
-    // The sheet's edge is the OUTERMOST clear step (inside it there can be
-    // printed headers or text rows). For clockwise corners the outward
-    // direction is negative offset.
-    for (const q of peaks.sort((a, b) => a.off - b.off)) if (q.g >= 0.4 * best.g && q.g >= 32) { best = q; break; }
-    const d = best.off / f.k;
-    return { A: { x: A.x + nx/1 * d, y: A.y + ny * d }, B: { x: B.x + nx * d, y: B.y + ny * d } };
+    if (cands.length < 4) return [];
+    const tol = 1.3, fit = (P, Q) => { const dx = Q.x-P.x, dy = Q.y-P.y, L = Math.hypot(dx, dy); if (L < 1e-6) return null; return { px: P.x, py: P.y, dx: dx/L, dy: dy/L }; };
+    const score = ln => { const best = new Map(); for (const c of cands) { const dist = Math.abs((c.x-ln.px)*ln.dy - (c.y-ln.py)*ln.dx); if (dist <= tol && (best.get(c.j) || 0) < c.g) best.set(c.j, c.g); }
+      let s = 0; for (const g of best.values()) s += g; return { s, n: best.size }; };
+    const lines = [];
+    for (let a = 0; a < cands.length; a++) for (let b = a + 1; b < cands.length; b++) {
+      if (cands[a].j === cands[b].j || Math.abs(cands[a].j - cands[b].j) < 3) continue;
+      const ln = fit(cands[a], cands[b]); if (!ln || Math.abs(ln.dx*tx + ln.dy*ty) < 0.94) continue;   // within ~20° of the side
+      const sc = score(ln); if (sc.n >= Math.ceil(N * 0.6)) lines.push({ ln, ...sc });
+    }
+    if (!lines.length) return [];
+    lines.sort((p, q) => q.s - p.s);
+    // Of the strong lines, the one nearest the user's hand (the dragged
+    // corner, or the dragged side): a magnet pulls to the edge you are at,
+    // it does not jump to another one further away.
+    // Every well supported line goes back (strongest first); the caller
+    // picks the one that fits where the user's hand is.
+    const out = [];
+    for (const L of lines) {
+      if (L.s < 0.5 * lines[0].s || out.length >= 4) break;
+      const ln = L.ln;
+      if (out.some(o => Math.abs((ln.px - o._fx)*o._fdy - (ln.py - o._fy)*o._fdx) <= tol * 1.5 && Math.abs(ln.dx*o._fdx + ln.dy*o._fdy) > 0.995)) continue;
+      // least squares through this line's inliers (one point per station)
+      const byJ = new Map(); for (const c of cands) { const dist = Math.abs((c.x-ln.px)*ln.dy - (c.y-ln.py)*ln.dx); if (dist <= tol && (!byJ.has(c.j) || byJ.get(c.j).g < c.g)) byJ.set(c.j, c); }
+      const pts = [...byJ.values()];
+      let mx = 0, my = 0; for (const c of pts) { mx += c.x; my += c.y; } mx /= pts.length; my /= pts.length;
+      let sxx = 0, sxy = 0, syy = 0; for (const c of pts) { const ex = c.x-mx, ey = c.y-my; sxx += ex*ex; sxy += ex*ey; syy += ey*ey; }
+      const ang = 0.5 * Math.atan2(2*sxy, sxx - syy); let dx = Math.cos(ang), dy = Math.sin(ang); if (dx*tx + dy*ty < 0) { dx = -dx; dy = -dy; }
+      out.push({ p: { x: mx / f.k, y: my / f.k }, d: { x: dx, y: dy }, s: L.s, _fx: ln.px, _fy: ln.py, _fdx: ln.dx, _fdy: ln.dy });
+    }
+    return out;
   }
   _magnetApply() {
     if (!this._drag || this.magnet === false) return;
-    const f = this._magnetField(), ks = ['tl','tr','br','bl'], C = this.corners, R = 10 / Math.max(1e-6, this.scale);
-    const meet = (p1, p2, q1, q2) => { const d = (p2.x-p1.x)*(q2.y-q1.y) - (p2.y-p1.y)*(q2.x-q1.x); if (Math.abs(d) < 1e-9) return null;
-      const t = ((q1.x-p1.x)*(q2.y-q1.y) - (q1.y-p1.y)*(q2.x-q1.x)) / d; return { x: p1.x + (p2.x-p1.x)*t, y: p1.y + (p2.y-p1.y)*t }; };
+    const f = this._magnetField(), ks = ['tl','tr','br','bl'], C = this.corners, R = 22 / Math.max(1e-6, this.scale);
+    const cross = (L1, L2) => { const d = L1.d.x*L2.d.y - L1.d.y*L2.d.x; if (Math.abs(d) < 0.2) return null;
+      const t = ((L2.p.x-L1.p.x)*L2.d.y - (L2.p.y-L1.p.y)*L2.d.x) / d; return { x: L1.p.x + L1.d.x*t, y: L1.p.y + L1.d.y*t }; };
+    const asLine = (A, B) => { const L = Math.hypot(B.x-A.x, B.y-A.y) || 1; return { p: A, d: { x: (B.x-A.x)/L, y: (B.y-A.y)/L } }; };
     const inside = p => p && p.x >= -1 && p.y >= -1 && p.x <= f.W + 1 && p.y <= f.H + 1;
+    const clampP = p => ({ x: Math.max(0, Math.min(f.W, p.x)), y: Math.max(0, Math.min(f.H, p.y)) });
+    // the part of a side next to its end at `atB` (true: B end), staying clear of the corner itself
+    const near = (A, B, atB) => { const len = Math.hypot(B.x-A.x, B.y-A.y), a = Math.min(0.3, 2.2 * R / Math.max(1, len)), b = Math.max(a + 0.15, Math.min(0.6, 7 * R / Math.max(1, len))); return atB ? [1 - b, 1 - a] : [a, b]; };
+    this._snapped = false;
     if (this._drag.type === 'corner') {
       const i = ks.indexOf(this._drag.key), P = C[ks[i]], prev = C[ks[(i+3)%4]], next = C[ks[(i+1)%4]];
-      const s1 = this._magnetSide(f, prev, P, R, 1), s2 = this._magnetSide(f, P, next, R, 0);
-      const L1 = s1 ? [s1.A, s1.B] : [prev, P], L2 = s2 ? [s2.A, s2.B] : [P, next];
-      if (!s1 && !s2) { this._snapped = false; return; }
-      const q = meet(L1[0], L1[1], L2[0], L2[1]);
-      if (inside(q) && Math.hypot(q.x - P.x, q.y - P.y) <= R * 1.5) { C[ks[i]] = { x: Math.max(0, Math.min(f.W, q.x)), y: Math.max(0, Math.min(f.H, q.y)) }; this._snapped = true; }
-      else this._snapped = false;
+      const r1 = near(prev, P, true), r2 = near(P, next, false);
+      const A1 = this._magnetLines(f, prev, P, R, r1[0], r1[1]), A2 = this._magnetLines(f, P, next, R, r2[0], r2[1]);
+      // the corner the user is at: of all crossings of a candidate on each
+      // side, the one closest to the hand (strength breaks near-ties)
+      let best = null;
+      for (const L1 of A1) for (const L2 of A2) {
+        const q = cross(L1, L2); if (!inside(q)) continue;
+        const d = Math.hypot(q.x - P.x, q.y - P.y), cost = d - 0.02 * R * Math.min(L1.s, L2.s) / 40;
+        if (d <= R * 1.25 && (!best || cost < best.cost)) best = { q, cost };
+      }
+      if (best) { C[ks[i]] = clampP(best.q); this._snapped = true; }
+      else {
+        // only one side has a clear edge here: slide the corner onto it
+        let one = null;
+        for (const L of [...A1, ...A2]) { const t = (P.x - L.p.x)*L.d.x + (P.y - L.p.y)*L.d.y, q = { x: L.p.x + L.d.x*t, y: L.p.y + L.d.y*t }, d = Math.hypot(q.x - P.x, q.y - P.y);
+          if (d <= R * 0.8 && (!one || d < one.d)) one = { q, d }; }
+        if (one) { C[ks[i]] = clampP(one.q); this._snapped = true; }
+      }
     } else {
       const map = { top: [0, 1], right: [1, 2], bottom: [2, 3], left: [3, 0] }[this._drag.key], a = ks[map[0]], b = ks[map[1]];
-      const sd = this._magnetSide(f, C[a], C[b], R, null);
-      if (!sd) { this._snapped = false; return; }
+      // Of the clear edges within reach of the dragged side, the outer one of
+      // the strong ones: the sheet's own edge, not a printed border inside it.
+      const M = { x: (C[a].x + C[b].x) / 2, y: (C[a].y + C[b].y) / 2 }, sl = Math.hypot(C[b].x - C[a].x, C[b].y - C[a].y) || 1, nx = -(C[b].y - C[a].y) / sl, ny = (C[b].x - C[a].x) / sl;
+      const reach = this._magnetLines(f, C[a], C[b], R, 0.1, 0.9).map(c => { const t = (M.x - c.p.x)*c.d.x + (M.y - c.p.y)*c.d.y, qx = c.p.x + c.d.x*t, qy = c.p.y + c.d.y*t; return { ...c, off: (qx - M.x)*nx + (qy - M.y)*ny }; }).filter(c => Math.abs(c.off) <= R * 1.25);
+      if (!reach.length) return;
+      const top = Math.max(...reach.map(c => c.s));let L = null;
+      for (const c of reach) if (c.s >= 0.7 * top && (!L || c.off < L.off)) L = c;
       const pa = C[ks[(map[0]+3)%4]], nb = C[ks[(map[1]+1)%4]];
-      const qa = meet(sd.A, sd.B, pa, C[a]), qb = meet(sd.A, sd.B, C[b], nb);
-      if (inside(qa) && inside(qb)) { C[a] = qa; C[b] = qb; this._snapped = true; } else this._snapped = false;
+      const qa = cross(L, asLine(pa, C[a])), qb = cross(L, asLine(C[b], nb));
+      if (inside(qa) && inside(qb) && Math.hypot(qa.x - C[a].x, qa.y - C[a].y) <= R * 1.5 && Math.hypot(qb.x - C[b].x, qb.y - C[b].y) <= R * 1.5) { C[a] = clampP(qa); C[b] = clampP(qb); this._snapped = true; }
     }
   }
 
