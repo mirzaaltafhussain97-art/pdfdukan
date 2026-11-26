@@ -150,6 +150,7 @@ const ScannerApp = (() => {
           // Manual edits, rotations, deletions and reordering cannot redirect it.
           if(!state.pages.includes(page)||page.editVersion!==version||page.sourceImg!==source)continue;
           Object.assign(page,{croppedImg:cropped,cropCorners:copy(corners),previousCorners:copy(previousCorners||corners),needsCropReview:!!needsCropReview,autoProfile,previewOnly,dewarped,autoStatus:'ready'});
+          if(state.screen==='filter'&&state.pages[state.editingIndex]!==page)_prefetchNeighbours(previewRevision);
         }catch(error){
           console.warn('Automatic crop unavailable; keeping this original:',error);
           if(!state.pages.includes(page)||page.editVersion!==version)continue;
@@ -172,7 +173,7 @@ const ScannerApp = (() => {
     const page=state.pages[index];state.currentFilter=page.filter;state.adjustments={...page.adjustments};state._currentCropped=page.croppedImg;
     $('scanSourceName').textContent=page.sourceName||`Page ${index+1}`;
     cropEditor.img=page.sourceImg;cropEditor.rotation=0;cropEditor.pendingTransform=null;cropEditor.corners=copy(page.cropCorners);cropEditor.legacyCorners=copy(page.previousCorners||page.cropCorners);cropEditor.detectionNeedsReview=page.needsCropReview;
-    zoom=1;showScreen('filter');_syncControls();_renderPages();_paintImmediate(page.croppedImg);const rendering=_reprocess();_updateAutoStatus();return rendering;
+    zoom=1;showScreen('filter');_syncControls();_renderPages();_paintPageNow(page);const rendering=_reprocess();_updateAutoStatus();return rendering;
   }
   function _syncControls(){
     for(const key of ['brightness','contrast','sharpness','saturation']){$('sl_'+key).value=state.adjustments[key]||0;$('sv_'+key).textContent=state.adjustments[key]||0;}
@@ -230,12 +231,34 @@ const ScannerApp = (() => {
       const active=state.pages[state.editingIndex];
       if(active&&active.croppedImg===img){_cacheThumbnail(active,rendered,_thumbnailKey(active));_renderPages();}
       $('scanPreviewStatus').textContent=active&&(active.autoStatus==='pending'||active.autoStatus==='processing')?'Finding document edges…':'';
-      $('previewCanvas').setAttribute('aria-busy','false');
+      $('previewCanvas').setAttribute('aria-busy','false');shownPage=active;
+      _prefetchNeighbours(rev);
     }catch(error){if(current()){$('scanPreviewStatus').textContent='Preview failed. Please try another filter.';$('previewCanvas').setAttribute('aria-busy','false');}console.error(error);}
   }
-  function _paintImmediate(image){
-    const target=$('previewCanvas'),w=image.naturalWidth||image.width,h=image.naturalHeight||image.height,s=Math.min(1400/w,1400/h,1);
-    target.width=Math.max(1,Math.round(w*s));target.height=Math.max(1,Math.round(h*s));target.getContext('2d').drawImage(image,0,0,target.width,target.height);_applyZoom();
+  function _paintImmediate(image,sizeFrom=image){
+    const target=$('previewCanvas'),w=sizeFrom.naturalWidth||sizeFrom.width,h=sizeFrom.naturalHeight||sizeFrom.height,s=Math.min(1400/w,1400/h,1);
+    target.width=Math.max(1,Math.round(w*s));target.height=Math.max(1,Math.round(h*s));const x=target.getContext('2d');x.imageSmoothingQuality='high';x.drawImage(image,0,0,target.width,target.height);_applyZoom();
+  }
+  /* What the page looks like right now, before its filter has run again:
+     the treated preview if one is kept, else its treated thumbnail; never the
+     untreated photo flashing in for a moment. Same page re-opened (its crop
+     just finished): keep showing what is there until the new render is ready. */
+  let shownPage=null;
+  function _paintPageNow(page){
+    const img=page.croppedImg,hit=window.ScanRenderer?.peek?.(img,state.currentFilter,state.adjustments),a=state.adjustments||{};
+    const untreated=state.currentFilter==='original'&&!a.brightness&&!a.contrast&&!a.sharpness&&!a.saturation;
+    if(hit)_paintImmediate(hit,img);
+    else if(untreated)_paintImmediate(img);
+    else if(shownPage!==page){const t=page._thumbnail;if(t&&t.source===img&&t.key===_thumbnailKey(page))_paintImmediate(t.canvas,img);else _paintImmediate(img);}
+    shownPage=page;
+  }
+  /* While the user looks at a page, treat the nearby pages (three each way)
+     in the background so a wheel notch or swipe lands on a finished page. */
+  function _prefetchNeighbours(rev){
+    if(!window.ScanRenderer?.peek)return;const i=state.editingIndex;
+    for(const d of [1,-1,2,-2,3,-3]){const j=i+d,p=state.pages[j];if(!p?.croppedImg||p.autoStatus==='pending'||p.autoStatus==='processing')continue;
+      const f=p.filter||state.currentFilter,a={...(p.adjustments||{})};if(ScanRenderer.peek(p.croppedImg,f,a))continue;
+      ScanRenderer.preview(p.croppedImg,f,a,()=>rev===previewRevision).catch(()=>{});}
   }
   function _thumbnailKey(page){const a=page.adjustments||{};return JSON.stringify([!!window.cvReady,page.filter,a.brightness||0,a.contrast||0,a.sharpness||0,a.saturation||0]);}
   function _smallThumbnail(image){

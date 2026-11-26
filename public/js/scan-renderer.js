@@ -2,7 +2,7 @@
 window.ScanRenderer = (() => {
   const workerUrl = new URL('scan-filter-worker.js?v=20261126a', document.currentScript.src);
   let worker, workerFailed = false, cached, queue = Promise.resolve();
-  let previewImage, previewSource, previewCache = [];
+  let previewCache = [];
   const settingsKey = (filter, settings) => JSON.stringify([!!window.cvReady, filter,
     settings.brightness || 0, settings.contrast || 0, settings.sharpness || 0, settings.saturation || 0]);
 
@@ -69,28 +69,53 @@ window.ScanRenderer = (() => {
     target.height = Math.max(1, Math.round(source.height * scale));
     target.getContext('2d').drawImage(source, 0, 0, target.width, target.height);
   }
+  // Filtered previews of the last few pages stay ready, so moving between
+  // pages (wheel, swipe, page list) shows the treated page at once instead of
+  // the untreated photo while the filter runs again.
+  const PREVIEW_KEEP = 8, inflight = [];
+  let sourceOf = { image: null, source: null };
+  function remember(image, key, canvas) {
+    previewCache = [{ image, key, canvas }, ...previewCache.filter(e => !(e.image === image && e.key === key))].slice(0, PREVIEW_KEEP);
+  }
+  function peek(image, filter, adjustments = {}) {
+    if (!image) return null;
+    const key = settingsKey(filter, { ...adjustments }), hit = previewCache.find(e => e.image === image && e.key === key);
+    if (hit) remember(image, key, hit.canvas);
+    return hit ? hit.canvas : null;
+  }
+  function sourceFor(image) {
+    if (sourceOf.image === image) return sourceOf.source;
+    const w = image.naturalWidth || image.width, h = image.naturalHeight || image.height;
+    const scale = Math.min(1, 1400 / Math.max(w, h), Math.sqrt(1_400_000 / (w*h)));
+    let source = image;
+    if (scale < 1) {
+      source = document.createElement('canvas');
+      source.width = Math.max(1, Math.round(w*scale));
+      source.height = Math.max(1, Math.round(h*scale));
+      source.getContext('2d').drawImage(image, 0, 0, source.width, source.height);
+    }
+    sourceOf = { image, source };
+    return source;
+  }
   async function preview(image, filter, adjustments = {}, isCurrent = () => true) {
     if (!isCurrent()) return null;
     const settings = { ...adjustments }, key = settingsKey(filter, settings);
-    if (previewImage !== image) {
-      // Keep only one page's source and four recent treatments in memory.
-      previewImage = image; previewCache = [];
-      const w = image.naturalWidth || image.width, h = image.naturalHeight || image.height;
-      const scale = Math.min(1, 1400 / Math.max(w, h), Math.sqrt(1_400_000 / (w*h)));
-      if (scale === 1) previewSource = image;
-      else {
-        previewSource = document.createElement('canvas');
-        previewSource.width = Math.max(1, Math.round(w*scale));
-        previewSource.height = Math.max(1, Math.round(h*scale));
-        previewSource.getContext('2d').drawImage(image, 0, 0, previewSource.width, previewSource.height);
-      }
+    const hit = peek(image, filter, settings);
+    if (hit) return hit;
+    // One job per page and treatment: a page prefetched in the background and
+    // then opened by the user is rendered once, not twice.
+    let job = inflight.find(j => j.image === image && j.key === key);
+    if (!job) {
+      job = { image, key, askers: [] };
+      job.promise = render(sourceFor(image), filter, settings, () => job.askers.some(f => f()))
+        .then(result => { if (result) remember(image, key, result); return result; })
+        .finally(() => { const i = inflight.indexOf(job); if (i >= 0) inflight.splice(i, 1); });
+      inflight.push(job);
     }
-    const hit = previewCache.find(entry => entry.key === key);
-    if (hit) return hit.canvas;
-    const result = await render(previewSource, filter, settings, isCurrent);
-    if (result && isCurrent() && previewImage === image) {
-      previewCache = [{key, canvas:result}, ...previewCache.filter(entry => entry.key !== key)].slice(0,4);
-    }
+    job.askers.push(isCurrent);
+    const result = await job.promise;
+    // skipped while nobody wanted it, but wanted again now: render it
+    if (!result && isCurrent()) return preview(image, filter, adjustments, isCurrent);
     return result;
   }
   function warmup(){
@@ -100,5 +125,5 @@ window.ScanRenderer = (() => {
     const pixel=document.createElement('canvas');pixel.width=pixel.height=1;
     return render(pixel,'enhance').then(()=>{});
   }
-  return { render, preview, fit, warmup };
+  return { render, preview, peek, fit, warmup };
 })();
