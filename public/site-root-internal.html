@@ -52,13 +52,13 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
 <!-- ===== PRELOAD critical above-the-fold resources ===== -->
-<link rel="preload" href="css/style.css?v=20261119a" as="style">
+<link rel="preload" href="css/style.css?v=20261127a" as="style">
 <link rel="preload" href="/images/dropzone-pc.svg" as="image" fetchpriority="high">
 
 <!-- ===== GOOGLE ADSENSE (add your ID after approval) ===== -->
 <!--  -->
 
-<link rel="stylesheet" href="css/style.css?v=20261119a">
+<link rel="stylesheet" href="css/style.css?v=20261127a">
 </head>
 <body>
 
@@ -159,7 +159,7 @@
 <div class="layout">
 
   <!-- SIDEBAR -->
-  <aside class="sidebar" role="navigation" aria-label="Main navigation">
+  <nav class="sidebar" aria-label="Main navigation">
     <div class="sb-section">
       <div class="sb-label">Main</div>
       <button class="sb-item active" data-nav="home"><span class="sb-icon">🏠</span><span>Home</span></button>
@@ -196,7 +196,7 @@
       <div class="sc-bar"><div class="sc-fill" id="storageBar" style="width:2%"></div></div>
       <p class="sc-hint" id="storageHint">Sign in to save documents to Google Drive</p>
     </div>
-  </aside>
+  </nav>
 
   <!-- CONTENT -->
   <main class="content" id="mainContent" role="main">
@@ -236,7 +236,7 @@
         <h1 data-i18n="hero.title">Free Online PDF Tools &amp; Document Scanner</h1>
         <p class="cs-sub">Merge, split, compress, convert and OCR PDFs free. Files stay on your device — no sign-up, no watermark.</p>
         <div class="upload-box" id="uploadBox" role="button" tabindex="0">
-          <div class="upload-icon cs-dz-art" aria-hidden="true"><img src="/images/dropzone-pc.svg" width="168" height="112" alt="Upload documents from your computer"></div>
+          <div class="upload-icon cs-dz-art" aria-hidden="true"><img src="/images/dropzone-pc.svg" width="168" height="112" alt="Upload documents from your computer" loading="eager" fetchpriority="high"></div>
           <h2 class="upload-text" data-i18n="upload.drop">Drag and drop files here, or click to upload</h2>
           <p class="upload-hint" data-i18n="upload.hint">JPG, PNG or PDF — several files at once</p>
           <div class="upload-actions">
@@ -527,7 +527,7 @@
   <div class="brand-loader-sub">Please wait</div>
 </div>
 
-<script src="js/app.js?v=20261125a"></script>
+<script src="js/app.js?v=20261127a"></script>
 <script>
 /* ── HOME PAGE UPLOAD & UNIFIED FILE HANDOFF ───────────────── */
 async function _redirectWithFiles(files, dest) {

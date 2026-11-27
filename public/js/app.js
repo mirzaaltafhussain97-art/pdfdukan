@@ -2363,7 +2363,7 @@ function _initCookieBanner() {
     '.ccb-btns{display:flex;gap:10px;align-items:center;flex-shrink:0}' +
     '.ccb-more{font-size:13px;color:var(--text-2,#ccc);padding:8px 14px;border-radius:7px;' +
     'text-decoration:none;border:1px solid var(--border,#333);background:transparent;white-space:nowrap}' +
-    '.ccb-accept{font-size:13px;font-weight:700;color:#fff;background:#ff6333;border:none;' +
+    '.ccb-accept{font-size:13px;font-weight:700;color:#1a0800;background:#ff6333;border:none;' +
     'padding:9px 22px;border-radius:7px;cursor:pointer;white-space:nowrap}' +
     '.ccb-accept:hover{opacity:.85}' +
     '@media(max-width:540px){#cmCookieBanner{flex-direction:column;align-items:flex-start}}';
@@ -2914,8 +2914,10 @@ var PD_CLOUD = {
         data = await r.json(); saveVote(tool, v); show(); say('Thanks for rating! ⭐', 'success');
       } catch (err) { say('Rating could not be saved right now. Please try again later.', 'error'); show(); }
     });
-    fetch('/api/rating.php?tool=' + encodeURIComponent(tool), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) { if (j && typeof j.count === 'number') data = j; show(); }).catch(show);
+    // vote counts are not needed for the first paint: ask once the page is idle
+    var getVotes = function () { fetch('/api/rating.php?tool=' + encodeURIComponent(tool), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { if (j && typeof j.count === 'number') data = j; show(); }).catch(show); };
+    if ('requestIdleCallback' in window) requestIdleCallback(getVotes, { timeout: 4000 }); else setTimeout(getVotes, 1500);
     show();
     return w;
   }

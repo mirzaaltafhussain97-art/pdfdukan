@@ -12,7 +12,15 @@ $TOOLS = ['merge-pdf','extract-pdf-pages','compress-pdf-reduce-file-size','organ
   'pdf-editor','fill-sign','add-watermark-to-pdf-online','add-page-numbers-to-pdf-online','unlock-pdf-without-password',
   'pdf-restriction-compatibility-check','pdf-metadata','pdf-metadata-editor','delete-pages-from-pdf','pdf-to-word-converter','pdf-to-image-converter',
   'image-to-pdf-converter','word-to-pdf-converter','ocr-image-to-text','pdf-text-extractor','searchable-pdf','searchable-pdf-converter-online',
-  'image-compress-resize','html-to-pdf-converter-online','word-character-counter','scanner'];
+  'image-compress-resize','html-to-pdf-converter-online','word-character-counter','scanner','home'];
+/* any other real page of the site may be rated too (a tool page added later) */
+function known_tool($t) {
+  global $TOOLS;
+  if (in_array($t, $TOOLS, true)) return true;
+  if (!preg_match('/^[a-z0-9][a-z0-9-]{1,79}$/', $t)) return false;
+  $root = dirname(__DIR__);
+  return is_file($root . '/tools/' . $t . '.html') || is_file($root . '/' . $t . '.html');
+}
 
 $dir  = __DIR__ . '/data';
 $file = $dir . '/ratings.json';
@@ -29,7 +37,7 @@ function load($fh) { rewind($fh); $raw = stream_get_contents($fh); $db = json_de
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method === 'GET') {
   $tool = $_GET['tool'] ?? '';
-  if (!in_array($tool, $TOOLS, true)) out(400, ['error' => 'unknown tool']);
+  if (!known_tool($tool)) out(400, ['error' => 'unknown tool']);
   $fh = @fopen($file, 'c+'); if (!$fh) out(200, ['tool' => $tool, 'avg' => 0, 'count' => 0]);
   flock($fh, LOCK_SH); $db = load($fh); flock($fh, LOCK_UN); fclose($fh);
   out(200, summary($db, $tool));
@@ -45,7 +53,7 @@ if ($origin && $norm(parse_url($origin, PHP_URL_HOST)) !== $norm($host)) out(403
 $in = json_decode(file_get_contents('php://input', false, null, 0, 2000), true);
 $tool = is_array($in) ? ($in['tool'] ?? '') : '';
 $score = is_array($in) ? intval($in['score'] ?? 0) : 0;
-if (!in_array($tool, $TOOLS, true) || $score < 1 || $score > 5) out(400, ['error' => 'bad input']);
+if (!known_tool($tool) || $score < 1 || $score > 5) out(400, ['error' => 'bad input']);
 
 $saltFile = $dir . '/salt.txt';
 if (!is_file($saltFile)) @file_put_contents($saltFile, bin2hex(random_bytes(16)));

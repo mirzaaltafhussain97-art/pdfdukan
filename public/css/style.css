@@ -40,8 +40,8 @@ table { max-width: 100%; }
 
   --text:           #f0f0f0;
   --text-2:         #b0b0b0;
-  --text-3:         #888888;
-  --text-muted:     #555555;
+  --text-3:         #a0a0a0;
+  --text-muted:     #8f8f8f;
 
   --success:        #10b981;
   --warning:        #f59e0b;
@@ -83,8 +83,8 @@ html[data-theme="light"] {
   --border-strong:  #d3cec6;
   --text:           #1d252c;
   --text-2:         #46515a;
-  --text-3:         #65717a;
-  --text-muted:     #8a949b;
+  --text-3:         #59646c;
+  --text-muted:     #67727a;
   --shadow-sm:  0 1px 3px rgba(43,36,30,0.06);
   --shadow:     0 4px 14px rgba(43,36,30,0.08);
   --shadow-lg:  0 12px 40px rgba(43,36,30,0.12);
@@ -2662,8 +2662,8 @@ html[data-theme="dark"] .related-tool-card .rtc-icon.has-pd-ico{background:linea
 .pdz-rate{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-3)}
 .pdz-rate b{color:var(--text);font-size:13.5px}
 .pdz-stars{display:inline-flex}
-.pdz-star{width:22px;height:22px;min-height:0;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
-.pdz-star svg{width:19px;height:19px;fill:none;stroke:#c9c2bb;stroke-width:1.8;stroke-linejoin:round;transition:transform .12s}
+.pdz-star{width:28px;height:28px;min-height:0;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.pdz-star svg{width:20px;height:20px;fill:none;stroke:#c9c2bb;stroke-width:1.8;stroke-linejoin:round;transition:transform .12s}
 .pdz-star.on svg{fill:#f5a400;stroke:#f5a400}
 .pdz-star:hover svg{transform:scale(1.18)}
 .cloud-pick{margin:0;margin-left:auto}
